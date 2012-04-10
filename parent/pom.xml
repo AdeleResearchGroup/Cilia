@@ -1,0 +1,232 @@
+<!--
+ Copyright Adele Team LIG
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+   http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>fr.liglab.adele.cilia</groupId>
+	<artifactId>cilia-project</artifactId>
+	<packaging>pom</packaging>
+	<name>Cilia Project</name>
+	<version>1.2.2-SNAPSHOT</version>
+	<url>http://cilia.ligforge.imag.fr</url>	
+        <scm>
+    		<connection>scm:svn:svn+ssh://cilia@svn.ligforge.imag.fr/svnroot/cilia/trunk</connection>
+		<developerConnection>scm:svn:svn+ssh://cilia@svn.ligforge.imag.fr/svnroot/cilia/trunk</developerConnection>
+		<url>https://svn.ligforge.imag.fr/svnroot/cilia/</url>
+	</scm>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+			        <artifactId>maven-release-plugin</artifactId>
+		        	<configuration>
+			          <!--tagBase>https://svn.ligforge.imag.fr/svnroot/cilia/tags/releases</tagBase-->
+				  <allowTimestampedSnapshots>true</allowTimestampedSnapshots> 
+			        </configuration>
+			</plugin>
+		    </plugins>
+	</build>
+
+	<licenses>
+		<license>
+			<name>Apache License, Version 2.0</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0.html</url>
+			<distribution>manual</distribution>
+		</license>
+	</licenses>
+
+	<organization>
+		<name>Adele Team | LIG</name>
+		<url>http://adele.imag.fr</url>
+	</organization>
+
+	<mailingLists>
+		<mailingList>
+			<name>cilia-commits</name>
+			<subscribe>https://ligforge.imag.fr/mail/?group_id=75</subscribe>
+			<unsubscribe>https://ligforge.imag.fr/mail/?group_id=75</unsubscribe>
+			<post>cilia-commits@lists.ligforge.imag.fr</post>
+			<archive>https://lists.ligforge.imag.fr/pipermail/cilia-commits/</archive>
+		</mailingList>
+		<mailingList>
+			<name>cilia-developer</name>
+			<subscribe>https://ligforge.imag.fr/mail/?group_id=75</subscribe>
+			<unsubscribe>https://ligforge.imag.fr/mail/?group_id=75</unsubscribe>
+			<post>cilia-devel@lists.ligforge.imag.fr</post>
+			<archive>http://lists.ligforge.imag.fr/pipermail/cilia-devel/</archive>
+		</mailingList>
+		<mailingList>
+			<name>cilia-user</name>
+			<subscribe>https://ligforge.imag.fr/mail/?group_id=75</subscribe>
+			<unsubscribe>https://ligforge.imag.fr/mail/?group_id=75</unsubscribe>
+			<post>cilia-users@lists.ligforge.imag.fr</post>
+			<archive>https://lists.ligforge.imag.fr/pipermail/cilia-users/</archive>
+		</mailingList>
+	</mailingLists>
+
+	<issueManagement>
+		<system>GForge</system>
+		<url>https://ligforge.imag.fr/tracker/?group_id=75</url>
+	</issueManagement>
+
+	<developers>
+		<developer>			
+			<name>Philippe Lalanda</name>	 	 
+			<email> philippe.lalanda @nospam@ imag.fr	</email>
+			<roles>		
+					<role>Project Manager</role>
+			</roles>
+			<organization>Adele | LIG</organization>
+			<organizationUrl>http://adele.imag.fr</organizationUrl>
+		</developer>		
+		<developer>			
+			<name>Catherine Hamon</name>	 	 
+			<email> Catherine.Hamon @nospam@ orange-ftgroup.com	</email>
+			<roles>		
+					<role>Project Manager</role>
+			</roles>
+			<organization>Orange Labs</organization>
+			<organizationUrl>http://orange-ftgroup.com</organizationUrl>				
+		</developer>		
+
+		<developer>
+			<name>Bassem Debbabi</name>
+			<email>bassem @nospam@ debbabi.net</email>
+			<roles>
+			</roles>
+			<organization>Adele | LIG</organization>
+			<organizationUrl>http://adele.imag.fr</organizationUrl>
+		</developer>
+		<developer>
+			<name>Issac Noé Garcia Garza</name>
+			<email> 	 torito @nospam@ gmail.com</email>
+			<roles>
+			</roles>
+			<organization>Adele | LIG</organization>
+			<organizationUrl>http://adele.imag.fr</organizationUrl>
+		</developer>
+		<developer>
+			<name>Gabriel Pedraza Ferreira</name>
+			<email>gabriel.pedraza-ferreira @nospam@ imag.fr</email>
+			<roles>
+			</roles>
+			<organization>Adele | LIG</organization>
+			<organizationUrl>http://adele.imag.fr</organizationUrl>
+		</developer>
+		<developer>
+			<name>Denis Morand</name>
+			<email>denis.morand @nospam@ imag.fr</email>
+			<roles>
+			</roles>
+			<organization>Adele | LIG</organization>
+			<organizationUrl>http://adele.imag.fr</organizationUrl>
+		</developer>
+
+
+		<developer>		
+			<name>Clement Escoffier</name>	 	 
+			<email> clement.escoffier @nospam@ gmail.com	</email>
+			<roles>			
+			</roles>
+			<organization>akquinet</organization>
+			<organizationUrl>http://www.akquinet.com</organizationUrl>
+		</developer>
+		<developer>			
+			<name>Ada Diaconescu</name>	 	 
+			<email> ada.diaconescu @nospam@ gmail.com	</email>
+			<roles>			
+			</roles>
+			<organization>Telecom Paris-Tech</organization>
+			<organizationUrl>http://www.telecom-paristech.fr/</organizationUrl>
+		</developer>	
+	</developers>
+
+	<contributors>
+		<contributor>
+			<name>Elias Ricken de Medeiros</name>
+			<email>eliasrdm @nospam@ gmail.com</email>
+			<organization>Orange Labs</organization>
+			<organizationUrl>http://orange-ftgroup.com</organizationUrl>				
+			<roles>
+				<role>Developer</role>
+			</roles>
+		</contributor>
+		<contributor>
+			<name>Elmehdi Damou</name>
+			<email>elmehdi.damou @nospam@ imag.fr</email>	
+			<organization>Adele | LIG</organization>
+			<organizationUrl>http://adele.imag.fr</organizationUrl>			
+			<roles>
+				<role>Developer</role>
+			</roles>
+		</contributor>
+		<contributor>
+			<name>Pierre Bourret</name>
+			<email> 	 bourretp @nospam@ gmail.com</email>	
+			<organization>Adele | LIG</organization>
+			<organizationUrl>http://adele.imag.fr</organizationUrl>			
+			<roles>
+				<role>Developer</role>
+			</roles>
+		</contributor>
+		<contributor>
+			<name>Anthony Bozon</name>
+			<email> 	 Antony.bozon @nospam@ orange-ftgroup.com</email>		
+			<organization>Orange Labs</organization>
+			<organizationUrl>http://orange-ftgroup.com</organizationUrl>					
+			<roles>
+				<role>Developer</role>
+			</roles>		
+		</contributor>
+		<contributor>
+			<name>Jerome Bodineau</name>
+			<email> 	 bodineauj @nospam@ gmail.com</email>		
+			<organization>Orange Labs</organization>
+			<organizationUrl>http://orange-ftgroup.com</organizationUrl>				
+			<roles>
+				<role>Developer</role>
+			</roles>		
+		</contributor>
+
+
+	</contributors>
+
+
+	<distributionManagement>
+		<!--
+		<site>
+			<id>LIGForge</id>
+			<url>scp://cilia.ligforge.imag.fr/var/lib/gforge/chroot/home/groups/cilia/htdocs</url>
+		</site>
+		-->
+		<repository>
+			<id>LIGForge</id>
+			<name>LIGForge Repository</name>
+			<url>scp://cilia.ligforge.imag.fr/var/lib/gforge/chroot/home/groups/cilia/htdocs/repo</url>
+		</repository>
+		<snapshotRepository>
+			<id>LIGForge</id>
+			<name>LIGForge Repository</name>
+			<url>scp://cilia.ligforge.imag.fr/var/lib/gforge/chroot/home/groups/cilia/htdocs/repo</url>
+		</snapshotRepository>
+	</distributionManagement>
+
+	<profiles>
+		<profile>
+			
+		</profile>
+	</profiles>
+
+</project>
