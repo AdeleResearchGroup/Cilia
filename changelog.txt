@@ -1,0 +1,103 @@
+=======================================================================================
+RELEASE CILIA 1.2.0
+=======================================================================================
+
+---------------------------------------------------------------------------------------
+cilia-core 1.2.0 DONE!
+  FIXED BUGS
+* remove binding reference in model to mediators when unbinding components.
+* Id in components must be alphanumeric only
+   NEW FEATURES
+* Add monitoring capabilities.
+* Use of slf4j instead of a custom CiliaLogger
+* lock the runtime using the model.
+* in PatternType added getName method.
+* Add basic concurrent utils fr.liglab.adele.cilia.util.concurrent based on Doug Lea work.
+* Add ReadOnly API
+---------------------------------------------------------------------------------------
+cilia-ipojo-runtime 1.2.0
+   FIXED BUGS
+* change log level to info messages
+   NEW FEATURES
+* Notify ea events when performing some operations.
+* Use a Data Container Manager to be used by schedulers. This instead of store incoming data on the scheduler.
+* Add monitoring capabilities to mediators.
+* Add state variable approach to monitor cilia applications
+* Use of slf4j instead of a custom CiliaLogger
+----------------------------------------------------------------------------------------
+cilia-ipojo-compendium 1.2.0
+FIXED BUGS
+* removed deprecated properties (scheduler.* and dispatcher.*)
+NEW FEATURES
+* Add Content Based Dispatcher extended parser
+* Add Monitoring extended parser
+* Use of slf4j instead of a custom CiliaLogger
+----------------------------------------------------------------------------------------
+cilia-compendium-mediators 1.2.0
+FIXED BUG
+* Remove deprecated properties (processor.*)
+NEW FEATURES
+* Add sufix enricher processor (data.content + sufix)
+* Add simple enricher processor (prefix + data.content)
+* Add prefix enricher processor (add new key/value pair to each Data)
+* Add enricher extended parser
+----------------------------------------------------------------------------------------
+Other Releases
+cilia-deployer 2.2.0 (Don't ask why 2)
+cilia-chain-parser 1.2.3
+----------------------------------------------------------------------------------------
+
+NEW PROJECTS
+cilia-admin-chain: A cilia chain used to manage others mediation chain at runtime.
+cilia-admin-command: A felix command to interact with the cilia-admin-chain service.
+cilia-admin-gogo: A gogo command to interact with the cilia-admin-chain service.
+
+========================================================================================
+RELEASE Cilia 1.1.1
+========================================================================================
+In Cilia-core
+* Add CiliaExceptions classes in fr.liglab.adele.cilia.exceptions.
+* Add IComponent interface, the ...model.Component class implement it.
+In Cilia-ipojo-runtime
+* Data Source metadata information is add by default by the framework
+* Fix bug in CiliaContext, when removing chain it must notify the ChainListeners
+ 
+========================================================================================
+RELEASE Cilia 1.1.0
+========================================================================================
+NEW PROJECTS
+------------
+
+CHANGES
+-------
+
+* Dispatcher and scheduler are not handlers any more.
+* Change cilia.debug to cilia.log.level in mediator properties. 
+
+
+Cilia 1.0.0
+===========
+
+NEW PROJECTS
+------------
+
+- "cilia-extender" project
+- "cilia-maven-plugin" project
+- "cilia-admin" project
+- Adding a list of basic examples
+
+CHANGES
+-------
+
+- changing the project "core" to "cilia-ipojo-runtime"
+- changing the project "model" to "cilia-core"
+- changing the project "compendium" to "cilia-ipojo-compendium"
+- changing all the package names from "org.ow2.chameleon" to "fr.liglab.adele.cilia"
+- changing all the headers to be Adele Team copyrighted
+- 
+- No changed on the framework. All Cilia 0.9.3 components are compatible with the new version. However you should change the imported cilia package names.
+
+- binding services names
+
+
+
