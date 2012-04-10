@@ -1,0 +1,171 @@
+
+<!-- Copyright Adele Team LIG Licensed under the Apache License, Version 
+	2.0 (the "License"); you may not use this file except in compliance with 
+	the License. You may obtain a copy of the License at    http://www.apache.org/licenses/LICENSE-2.0 
+	Unless required by applicable law or agreed to in writing, software distributed 
+	under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES 
+	OR CONDITIONS OF ANY KIND, either express or implied. See the License for 
+	the specific language governing permissions and limitations under the License. -->
+
+<ipojo>
+
+
+	<component classname="fr.liglab.adele.cilia.runtime.impl.CiliaContextImpl"
+		name="CiliaContext" architecture="false" immediate="true">
+		<provides>
+			<property name="cilia.context.type" type="string" value="ipojo" />
+		</provides>
+		<callback transition="validate" method="start" />
+		<callback transition="invalidate" method="stop" />
+	</component>
+
+
+	<!-- Declare the handlers -->
+	<handler
+		classname="fr.liglab.adele.cilia.factories.handlers.MediatorDummyHandler"
+		name="processor-tracker" namespace="fr.liglab.adele.cilia">
+	</handler>
+
+	<handler
+		classname="fr.liglab.adele.cilia.factories.handlers.MediatorDummyHandler"
+		name="scheduler-tracker" namespace="fr.liglab.adele.cilia">
+	</handler>
+
+	<handler
+		classname="fr.liglab.adele.cilia.factories.handlers.MediatorDummyHandler"
+		name="dispatcher-tracker" namespace="fr.liglab.adele.cilia">
+	</handler>
+
+	<handler classname="fr.liglab.adele.cilia.framework.DispatcherHandler"
+		name="dispatcher" namespace="fr.liglab.adele.cilia" architecture="false">
+		<requires field="m_applicationQueue"
+			specification="fr.liglab.adele.cilia.framework.utils.WorkQueue"
+			filter="(cilia.pool.scope=application)" />
+		<callback transition="validate" method="validate" />
+		<callback transition="invalidate" method="unvalidate" />
+	</handler>
+
+	<handler classname="fr.liglab.adele.cilia.framework.monitor.MonitorHandler"
+		name="monitor-handler" level="2" namespace="fr.liglab.adele.cilia"
+		architecture="false">
+	</handler>
+
+	<handler
+		classname="fr.liglab.adele.cilia.framework.monitor.statevariable.MonitorHandlerStateVar"
+		name="monitor-statevar-handler" namespace="fr.liglab.adele.cilia"
+		architecture="true">
+		<provides>
+			<property name="mediator.service" value="monitor" type="String" />
+		</provides>
+		<requires field="m_systemQueue"
+			specification="fr.liglab.adele.cilia.framework.utils.WorkQueue"
+			filter="(cilia.pool.scope=application)" />
+		<callback transition="validate" method="validate" />
+		<callback transition="invalidate" method="unvalidate" />
+	</handler>
+
+	<handler classname="fr.liglab.adele.cilia.framework.SchedulerHandler"
+		name="scheduler" namespace="fr.liglab.adele.cilia">
+		<requires field="m_systemQueue"
+			specification="fr.liglab.adele.cilia.framework.utils.WorkQueue"
+			filter="(cilia.pool.scope=system)" />
+		<callback transition="validate" method="validate" />
+		<callback transition="invalidate" method="unvalidate" />
+	</handler>
+
+
+	<!-- Declaring Immediate Scheduler -->
+	<scheduler classname="fr.liglab.adele.cilia.framework.CiliaScheduler"
+		name="immediate-scheduler" namespace="fr.liglab.adele.cilia"
+		architecture="false">
+	</scheduler>
+	<!-- Declaring Multicast Dispatcher -->
+	<dispatcher classname="fr.liglab.adele.cilia.framework.CiliaDispatcher"
+		name="multicast-dispatcher" namespace="fr.liglab.adele.cilia"
+		architecture="false">
+	</dispatcher>
+
+	<component classname="fr.liglab.adele.cilia.framework.GenericBindingService"
+		name="Generic-Binding" architecture="false" immediate="true">
+		<provides>
+			<property name="cilia.binding.type" type="string" />
+		</provides>
+		<properties>
+			<property name="collector.type" method="setCollectorType"
+				type="String" />
+			<property name="sender.type" method="setSenderType" type="String" />
+		</properties>
+	</component>
+
+
+	<processor name="simple-processor" namespace="fr.liglab.adele.cilia"
+		classname="fr.liglab.adele.cilia.runtime.impl.SimpleProcessor" />
+
+	<!-- INSTANCES -->
+	<instance component="CiliaContext" name="Cilia Context" />
+
+
+	<!-- Composant System Thread Pool -->
+	<component classname="fr.liglab.adele.cilia.framework.utils.impl.WorkQueueImpl"
+		name="WorkQueue" immediate="true">
+		<properties>
+			<property name="system.thread.pool.size" field="m_size" />
+			<property name="thread.pool.name" field="m_name" />
+		</properties>
+		<provides specification="fr.liglab.adele.cilia.framework.utils.WorkQueue">
+			<property name="cilia.pool.scope" type="String" />
+		</provides>
+		<callback transition="validate" method="start" />
+		<callback transition="invalidate" method="stop" />
+	</component>
+
+	<instance component="WorkQueue" name="workqueue-system">
+		<property name="cilia.pool.scope" value="system" />
+		<property name="m_size" value="1" />
+		<property name="m_priority" method="setPriority" value="5" />
+		<property name="m_name" value="system.threadPool" />
+	</instance>
+
+	<instance component="WorkQueue" name="workqueue-application">
+		<property name="cilia.pool.scope" value="application" />
+		<property name="m_size" value="1" />
+		<property name="m_priority" method="setPriority" value="3" />
+		<property name="m_name" value="application.threadPool" />
+	</instance>
+
+	<!-- Component Admin Data 'Global data storage per chain -->
+	<component classname="fr.liglab.adele.cilia.framework.utils.impl.AdminDataImpl"
+		name="AdminData" immediate="true">
+		<provides specification="fr.liglab.adele.cilia.framework.utils.AdminData">
+			<property name="chain.name" type="String" />
+		</provides>
+		<callback transition="validate" method="start" />
+		<callback transition="invalidate" method="stop" />
+	</component>
+
+	<!-- Component CiliaContextReadOnly ( ciliaContext readonly ) -->
+	<component
+		classname="fr.liglab.adele.cilia.runtime.impl.CiliaContextReadOnlyImpl"
+		name="CiliaContextReadOnly" architecture="false" immediate="true">
+		<requires name="CiliaContext" field="ciliaContext" />
+		<provides>
+			<property name="cilia.context.readonly.type" type="string"
+				value="ipojo" />
+		</provides>
+		<callback transition="validate" method="start" />
+		<callback transition="invalidate" method="stop" />
+	</component>
+	<instance component="CiliaContextReadOnly" name="Cilia.Context.ReadOnly" />
+
+	<!-- Component CiliaFrameworkListener -->
+	<component
+		classname="fr.liglab.adele.cilia.runtime.impl.CiliaFrameworkEventListenerImpl"
+		name="CiliaFrameworkEventListener" architecture="false" immediate="true">
+		<provides specification="fr.liglab.adele.cilia.event.CiliaFrameworkListener">
+		</provides>
+		<callback transition="validate" method="start" />
+		<callback transition="invalidate" method="stop" />
+	</component>
+	<instance component="CiliaFrameworkEventListener" name="Cilia.Framework.EventListener" />
+
+</ipojo>

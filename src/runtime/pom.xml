@@ -1,0 +1,136 @@
+	<!--
+		Copyright Adele Team LIG Licensed under the Apache License, Version
+		2.0 (the "License"); you may not use this file except in compliance
+		with the License. You may obtain a copy of the License at
+
+		   http://www.apache.org/licenses/LICENSE-2.0 Unless required by
+		applicable law or agreed to in writing, software distributed under the
+		License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
+		CONDITIONS OF ANY KIND, either express or implied. See the License for
+		the specific language governing permissions and limitations under the
+		License.
+	-->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>fr.liglab.adele.cilia</groupId>
+		<artifactId>cilia-project</artifactId>
+		<version>1.2.2-SNAPSHOT</version>
+	</parent>
+
+	<groupId>fr.liglab.adele.cilia</groupId>
+	<artifactId>cilia-ipojo-runtime</artifactId>
+	<packaging>bundle</packaging>
+	<name>Cilia iPOJO Runtime</name>
+	<version>1.2.2-SNAPSHOT</version>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>1.6.1</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.osgi</groupId>
+			<artifactId>org.osgi.core</artifactId>
+			<version>4.2.0</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.osgi</groupId>
+			<artifactId>org.osgi.compendium</artifactId>
+			<version>4.2.0</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.felix</groupId>
+			<artifactId>org.apache.felix.ipojo</artifactId>
+			<version>1.6.2</version>
+		</dependency>
+
+		<dependency>
+			<groupId>fr.liglab.adele.cilia</groupId>
+			<artifactId>cilia-core</artifactId>
+			<version>1.2.1</version>
+		</dependency>
+
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>maven-bundle-plugin</artifactId>
+				<extensions>true</extensions>
+				<configuration>
+					<instructions>
+						<Bundle-SymbolicName>${pom.artifactId}</Bundle-SymbolicName>
+						<Export-Package>
+							fr.liglab.adele.cilia.framework,
+							fr.liglab.adele.cilia.framework.monitor,
+							fr.liglab.adele.cilia.framework.monitor.statevariable,
+							fr.liglab.adele.cilia.framework.utils,
+							fr.liglab.adele.cilia.runtime		
+            			</Export-Package>
+						<Private-Package>
+							fr.liglab.adele.cilia.factories,
+							fr.liglab.adele.cilia.runtime.impl,
+							fr.liglab.adele.cilia.controller,
+							fr.liglab.adele.cilia.controller.impl,
+							fr.liglab.adele.cilia.factories.handlers,
+							fr.liglab.adele.cilia.framework.utils.impl,
+							fr.liglab.adele.cilia.framework.scheduler.impl
+						</Private-Package>
+						<Include-Resource>
+							{maven-resources},
+							META-INF/LICENSE = LICENSE,
+							META-INF/NOTICE = NOTICE
+           	 				</Include-Resource>
+						<IPOJO-Extension>
+							mediator-component:fr.liglab.adele.cilia.factories.MediatorComponentFactory,
+							scheduler:fr.liglab.adele.cilia.factories.SchedulerFactory,
+							dispatcher:fr.liglab.adele.cilia.factories.DispatcherFactory,
+							processor:fr.liglab.adele.cilia.factories.ProcessorFactory,
+							collector:fr.liglab.adele.cilia.factories.CollectorFactory,
+							sender:fr.liglab.adele.cilia.factories.SenderFactory,
+							adapter:fr.liglab.adele.cilia.factories.AdapterFactory,
+							io-adapter:fr.liglab.adele.cilia.factories.IOAdapterFactory,
+							binding:fr.liglab.adele.cilia.factories.BindingFactory,
+							monitor:fr.liglab.adele.cilia.factories.MonitorHandlerFactory,
+							protocol:fr.liglab.adele.cilia.factories.BindingFactory,
+							linker:fr.liglab.adele.cilia.factories.BindingFactory
+
+						</IPOJO-Extension>
+					</instructions>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>1.5</source>
+					<target>1.5</target>
+					<debug>true</debug>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>maven-ipojo-plugin</artifactId>
+				<version>1.6.0</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>ipojo-bundle</goal>
+						</goals>
+						<configuration>
+							<metadata>metadata.xml</metadata>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+</project>
