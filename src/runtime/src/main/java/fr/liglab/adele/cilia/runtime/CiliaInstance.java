@@ -17,8 +17,6 @@ package fr.liglab.adele.cilia.runtime;
 
 import java.util.Dictionary;
 
-import org.apache.felix.ipojo.ComponentInstance;
-
 
 public interface CiliaInstance {
 

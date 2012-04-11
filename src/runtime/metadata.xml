@@ -10,7 +10,7 @@
 <ipojo>
 
 
-	<component classname="fr.liglab.adele.cilia.runtime.impl.CiliaContextImpl"
+	<component classname="fr.liglab.adele.cilia.internals.CiliaContextImpl"
 		name="CiliaContext" architecture="false" immediate="true">
 		<provides>
 			<property name="cilia.context.type" type="string" value="ipojo" />
@@ -22,17 +22,17 @@
 
 	<!-- Declare the handlers -->
 	<handler
-		classname="fr.liglab.adele.cilia.factories.handlers.MediatorDummyHandler"
+		classname="fr.liglab.adele.cilia.internals.factories.MediatorDummyHandler"
 		name="processor-tracker" namespace="fr.liglab.adele.cilia">
 	</handler>
 
 	<handler
-		classname="fr.liglab.adele.cilia.factories.handlers.MediatorDummyHandler"
+		classname="fr.liglab.adele.cilia.internals.factories.MediatorDummyHandler"
 		name="scheduler-tracker" namespace="fr.liglab.adele.cilia">
 	</handler>
 
 	<handler
-		classname="fr.liglab.adele.cilia.factories.handlers.MediatorDummyHandler"
+		classname="fr.liglab.adele.cilia.internals.factories.MediatorDummyHandler"
 		name="dispatcher-tracker" namespace="fr.liglab.adele.cilia">
 	</handler>
 
@@ -167,5 +167,32 @@
 		<callback transition="invalidate" method="stop" />
 	</component>
 	<instance component="CiliaFrameworkEventListener" name="Cilia.Framework.EventListener" />
+
+
+<!-- PARSERS -->
+	<component
+		classname="fr.liglab.adele.cilia.internals.CiliaChainInstanceParser"
+		name="Cilia-Chain-Parser" architecture="false">
+		<provides />
+		<requires aggregate="true" optional="true">
+			<callback type="bind" method="bindExtenderParsers" />
+			<callback type="unbind" method="unbindExtenderParser" />
+		</requires>
+	</component>
+
+	<component
+		classname="fr.liglab.adele.cilia.internals.CiliaFileManagerImpl"
+		name="Cilia-File-Manager" architecture="false">
+		<provides />
+		<requires field="parser" />
+		<requires field="ccontext" />
+		<callback transition="validate" method="start" />
+		<callback transition="invalidate" method="stop" />
+	</component>
+
+	<!-- INSTANCES -->
+
+	<instance component="Cilia-Chain-Parser" name="Cilia-Chain-Parser" />
+	<instance component="Cilia-File-Manager" name="Cilia-File-Manager" />
 
 </ipojo>

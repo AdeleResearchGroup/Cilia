@@ -18,13 +18,12 @@
 	<groupId>fr.liglab.adele.cilia</groupId>
 	<artifactId>cilia-tests</artifactId>
 	<packaging>pom</packaging>
-	<name>Cilia tests Reactor</name>
+	<name>Cilia Tests Reactor</name>
 	<version>1.0.0</version>
 
 	<modules>
-		<!--
-		<module>examples</module>
-		-->
+		<module>core</module>
+		<module>runtime</module>
 	</modules>
 
 </project>

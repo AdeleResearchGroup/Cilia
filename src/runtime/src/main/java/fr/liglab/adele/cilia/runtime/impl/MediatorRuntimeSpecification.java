@@ -5,7 +5,7 @@ import org.apache.felix.ipojo.metadata.Attribute;
 import org.apache.felix.ipojo.metadata.Element;
 import org.osgi.framework.BundleContext;
 
-import fr.liglab.adele.cilia.factories.MediatorComponentFactory;
+import fr.liglab.adele.cilia.internals.factories.MediatorComponentFactory;
 import fr.liglab.adele.cilia.specification.AbstractMediatorSpecification;
 import fr.liglab.adele.cilia.specification.MediatorSpecification;
 
@@ -20,6 +20,12 @@ public class MediatorRuntimeSpecification extends AbstractMediatorSpecification 
 		super(name, namespace, category);
 	}
 
+	public MediatorRuntimeSpecification(String name, String namespace,
+			String category, BundleContext c) {
+		this(name, namespace, category);
+		setContext(c);
+	}
+	
 	protected void setContext(BundleContext bc) {
 		context = bc;
 	}
