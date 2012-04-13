@@ -17,14 +17,18 @@ package fr.liglab.adele.cilia.administration.processors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import fr.liglab.adele.cilia.Adapter;
+import fr.liglab.adele.cilia.Chain;
 import fr.liglab.adele.cilia.CiliaContext;
 import fr.liglab.adele.cilia.Data;
+import fr.liglab.adele.cilia.Mediator;
+import fr.liglab.adele.cilia.MediatorComponent;
 import fr.liglab.adele.cilia.administration.util.ParserUtils;
 import fr.liglab.adele.cilia.framework.utils.Const;
-import fr.liglab.adele.cilia.model.Adapter;
-import fr.liglab.adele.cilia.model.Chain;
-import fr.liglab.adele.cilia.model.Mediator;
-import fr.liglab.adele.cilia.model.MediatorComponent;
+import fr.liglab.adele.cilia.model.AdapterImpl;
+import fr.liglab.adele.cilia.model.ChainImpl;
+import fr.liglab.adele.cilia.model.MediatorComponentImpl;
+import fr.liglab.adele.cilia.model.MediatorImpl;
 import fr.liglab.adele.cilia.model.PatternType;
 
 /**
@@ -81,7 +85,7 @@ public class CiliaCreatorProcessor {
 	 *            The chain identifier.
 	 */
 	private void createChain(String chainId) {
-		Chain ch = new Chain(chainId, null, null, null);
+		ChainImpl ch = new ChainImpl(chainId, null, null, null);
 		ccontext.addChain(ch);
 	}
 
@@ -100,7 +104,7 @@ public class CiliaCreatorProcessor {
 		String chainId = String.valueOf(data.getProperty("chain"));
 		ch = ccontext.getChain(chainId);
 		if (ch == null) {
-			logger.error("Chain [{}] not found." + chainId);
+			logger.error("ChainImpl [{}] not found." + chainId);
 			return;
 		}
 		if (mediatorId == null) {
@@ -111,7 +115,7 @@ public class CiliaCreatorProcessor {
 			logger.error("Parameter 'type' must not be null");
 			return;
 		}
-		String mediatorInfo[] = ParserUtils.split(mediatorType, ":");
+		String mediatorInfo[] = ParserUtils.split(mediatorType, ":"); 
 		String type = null;
 		String namespace = null;
 		if (mediatorInfo.length == 2) {
@@ -120,7 +124,7 @@ public class CiliaCreatorProcessor {
 		} else {
 			type = mediatorType;
 		}
-		med = new Mediator(mediatorId, type, namespace, null);
+		med = new MediatorImpl(mediatorId, type, namespace, null);
 		ch.add(med);
 		logger.info ("Command 'create mediator ' [{}]",med.getQualifiedId());
 	}
@@ -140,7 +144,7 @@ public class CiliaCreatorProcessor {
 		String chainId = String.valueOf(data.getProperty("chain"));
 		chain = ccontext.getChain(chainId);
 		if (chain == null) {
-			logger.error("Chain [{}] not found." + chainId);
+			logger.error("ChainImpl [{}] not found." + chainId);
 			return;
 		}
 		if (adapterId == null) {
@@ -160,7 +164,7 @@ public class CiliaCreatorProcessor {
 		} else {
 			type = adapterType;
 		}
-		adapter = new Adapter(adapterId, type, namespace, null, PatternType.UNASSIGNED);
+		adapter = new AdapterImpl(adapterId, type, namespace, null, PatternType.UNASSIGNED);
 		chain.add(adapter);
 		logger.info ("Command 'create mediator ' [{}]",adapter.getQualifiedId());
 	}
@@ -182,25 +186,25 @@ public class CiliaCreatorProcessor {
 		String chainId = String.valueOf(data.getProperty("chain"));
 		chain = ccontext.getChain(chainId);
 		if (chain == null) {
-			logger.error("Chain [{}] not found." + chainId);
+			logger.error("ChainImpl [{}] not found." + chainId);
 			return;
 		}
 		if (to == null) {
-			logger.error("Binding must have receiver component (to)");
+			logger.error("BindingImpl must have receiver component (to)");
 			return;
 		}
 		if (from == null) {
-			logger.error("Binding must have sender component (from)");
+			logger.error("BindingImpl must have sender component (from)");
 			return;
 		}
 		mediatorTo = getMediator(chain, to);
 		mediatorFrom = getMediator(chain, from);
 		if (mediatorTo == null) {
-			logger.error("Component [{}] not found in chain [{}]",mediatorTo,chainId);
+			logger.error("ComponentImpl [{}] not found in chain [{}]",mediatorTo,chainId);
 			return;
 		}
 		if (mediatorFrom == null) {
-			logger.error("Component [{}] not found in chain [{}]",mediatorFrom,chainId);
+			logger.error("ComponentImpl [{}] not found in chain [{}]",mediatorFrom,chainId);
 			return;
 		}
 		chain.bind(mediatorFrom.getOutPort(getPortName(from)),

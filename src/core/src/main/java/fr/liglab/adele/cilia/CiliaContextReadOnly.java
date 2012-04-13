@@ -22,7 +22,7 @@ public interface CiliaContextReadOnly {
 
 	String getCiliaVersion();
 	
-	ChainReadOnly getChain(String chainId) ;
+	Chain getChain(String chainId) ;
 	
 	Set getAllChains() ;
 	

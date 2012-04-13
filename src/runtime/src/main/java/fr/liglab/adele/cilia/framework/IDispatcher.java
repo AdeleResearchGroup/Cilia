@@ -20,8 +20,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-import fr.liglab.adele.cilia.CiliaException;
 import fr.liglab.adele.cilia.Data;
+import fr.liglab.adele.cilia.exceptions.CiliaException;
 
 
 /**

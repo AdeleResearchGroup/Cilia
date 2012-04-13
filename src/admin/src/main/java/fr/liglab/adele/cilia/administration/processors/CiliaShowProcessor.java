@@ -19,13 +19,18 @@ import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.Set;
 
+import fr.liglab.adele.cilia.Adapter;
+import fr.liglab.adele.cilia.Binding;
+import fr.liglab.adele.cilia.Chain;
 import fr.liglab.adele.cilia.CiliaContext;
 import fr.liglab.adele.cilia.Data;
-import fr.liglab.adele.cilia.model.Adapter;
-import fr.liglab.adele.cilia.model.Binding;
-import fr.liglab.adele.cilia.model.Chain;
-import fr.liglab.adele.cilia.model.Mediator;
-import fr.liglab.adele.cilia.model.MediatorComponent;
+import fr.liglab.adele.cilia.Mediator;
+import fr.liglab.adele.cilia.MediatorComponent;
+import fr.liglab.adele.cilia.model.AdapterImpl;
+import fr.liglab.adele.cilia.model.BindingImpl;
+import fr.liglab.adele.cilia.model.ChainImpl;
+import fr.liglab.adele.cilia.model.MediatorImpl;
+import fr.liglab.adele.cilia.model.MediatorComponentImpl;
 
 /**
  * CiliaShowProcessor: The processor class. Shows cilia chain instances, chains,
@@ -82,7 +87,7 @@ public class CiliaShowProcessor {
 		}
 		Iterator it = chains.iterator();
 		while (it.hasNext()) {
-			Chain ch = (Chain) it.next();
+			ChainImpl ch = (ChainImpl) it.next();
 			toShow.append(ch.getId());
 			toShow.append("\n");
 		}
@@ -97,7 +102,7 @@ public class CiliaShowProcessor {
 	 */
 	private void showChainInfo(String chainId) {
 		Chain ch = ccontext.getChain(chainId);
-		StringBuffer toShow = new StringBuffer("Chain: ");
+		StringBuffer toShow = new StringBuffer("ChainImpl: ");
 		if (ch == null) {
 			toShow.append(chainId);
 			toShow.append(" not found\n");
@@ -116,16 +121,16 @@ public class CiliaShowProcessor {
 				toShow.append("[Mediators]\n");
 			}
 			while (itm.hasNext()) {
-				Mediator mediator = (Mediator) itm.next();
+				MediatorImpl mediator = (MediatorImpl) itm.next();
 				toShow.append(mediator.getId());
 				toShow.append("\n");
 			}
-			// Add the Adapter id's to the StringBuffer.
+			// Add the AdapterImpl id's to the StringBuffer.
 			if (ita.hasNext()) {
 				toShow.append("[Adapters]\n");
 			}
 			while (ita.hasNext()) {
-				Adapter adapter = (Adapter) ita.next();
+				AdapterImpl adapter = (AdapterImpl) ita.next();
 				toShow.append(adapter.getId());
 				toShow.append("\n");
 			}
@@ -133,7 +138,7 @@ public class CiliaShowProcessor {
 				toShow.append("[Bindings]\n");
 			}
 			while (itb.hasNext()) {
-				Binding binding = (Binding) itb.next();
+				BindingImpl binding = (BindingImpl) itb.next();
 				toShow.append(getBindingInfo(binding));
 			}
 		}
@@ -155,17 +160,17 @@ public class CiliaShowProcessor {
 		String chainId = String.valueOf(data.getProperty("chain"));
 		ch = ccontext.getChain(chainId);
 		if (ch == null) {
-			System.out.println("Chain " + chainId + " Not found.");
+			System.out.println("ChainImpl " + chainId + " Not found.");
 			return;
 		}
 		med = ch.getMediator(mediatorId);
 		if (med == null) {
-			System.out.println("Mediator " + mediatorId + " in Chain " + chainId
+			System.out.println("MediatorImpl " + mediatorId + " in ChainImpl " + chainId
 					+ " Not found.");
 			showChainInfo(chainId);
 			return;
 		}
-		toShow.append("Mediator Id: ");
+		toShow.append("MediatorImpl Id: ");
 		toShow.append(getMediatorInfo(med));
 		System.err.println(toShow.toString());
 	}
@@ -185,17 +190,17 @@ public class CiliaShowProcessor {
 		String chainId = String.valueOf(data.getProperty("chain"));
 		ch = ccontext.getChain(chainId);
 		if (ch == null) {
-			System.err.println("Chain " + chainId + " Not found.");
+			System.err.println("ChainImpl " + chainId + " Not found.");
 			return;
 		}
 		med = ch.getAdapter(mediatorId);
 		if (med == null) {
-			System.err.println("Adapter " + mediatorId + " in Chain " + chainId
+			System.err.println("AdapterImpl " + mediatorId + " in ChainImpl " + chainId
 					+ " Not found.");
 			showChainInfo(chainId);
 			return;
 		}
-		toShow.append("Adapter Id: ");
+		toShow.append("AdapterImpl Id: ");
 		toShow.append(getMediatorInfo(med));
 		System.err.println(toShow.toString());
 	}

@@ -18,7 +18,8 @@ package fr.liglab.adele.cilia;
 import java.io.FileNotFoundException;
 import java.net.URL;
 
-import fr.liglab.adele.cilia.model.Chain;
+import fr.liglab.adele.cilia.exceptions.CiliaException;
+
 
 /**
  * 

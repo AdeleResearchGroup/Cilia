@@ -19,16 +19,19 @@ import java.util.Hashtable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import fr.liglab.adele.cilia.Adapter;
+import fr.liglab.adele.cilia.Binding;
+import fr.liglab.adele.cilia.Chain;
 import fr.liglab.adele.cilia.CiliaContext;
 import fr.liglab.adele.cilia.Data;
+import fr.liglab.adele.cilia.Mediator;
+import fr.liglab.adele.cilia.MediatorComponent;
+import fr.liglab.adele.cilia.Port;
 import fr.liglab.adele.cilia.administration.util.ParserUtils;
 import fr.liglab.adele.cilia.framework.utils.Const;
-import fr.liglab.adele.cilia.model.Adapter;
-import fr.liglab.adele.cilia.model.Binding;
-import fr.liglab.adele.cilia.model.Chain;
-import fr.liglab.adele.cilia.model.Mediator;
-import fr.liglab.adele.cilia.model.MediatorComponent;
-import fr.liglab.adele.cilia.model.Port;
+import fr.liglab.adele.cilia.model.BindingImpl;
+import fr.liglab.adele.cilia.model.ChainImpl;
+import fr.liglab.adele.cilia.model.MediatorComponentImpl;
 
 /**
  * CiliaRemoverProcessor: The processor class. Remove cilia chain instances,
@@ -89,7 +92,7 @@ public class CiliaModifierProcessor {
 		ch = ccontext.getChain(chainId);
 		Hashtable prop = (Hashtable) getProperties(data);
 		if (ch == null) {
-			logger.error("Chain [{}] not found." + chainId);
+			logger.error("ChainImpl [{}] not found." + chainId);
 			return;
 		}
 		if (prop == null) {
@@ -118,7 +121,7 @@ public class CiliaModifierProcessor {
 			return;
 		}
 		if (ch == null) {
-			logger.error("Chain [{}] not found." + chainId);
+			logger.error("ChainImpl [{}] not found." + chainId);
 			return;
 		}
 		if (mediatorId == null) {
@@ -127,7 +130,7 @@ public class CiliaModifierProcessor {
 		}
 		mediator = ch.getMediator(mediatorId);
 		if (mediator == null) {
-			logger.error("Component [{}] not found in chain [{}]",mediatorId,chainId);
+			logger.error("ComponentImpl [{}] not found in chain [{}]",mediatorId,chainId);
 			return;
 		}
 		logger.info ("Command 'modify property mediator' [{}]",mediator.getQualifiedId());
@@ -153,7 +156,7 @@ public class CiliaModifierProcessor {
 			return;
 		}
 		if (ch == null) {
-			logger.error("Chain [{}] not found." + chainId);
+			logger.error("ChainImpl [{}] not found." + chainId);
 			return;
 		}
 		if (adapterId == null) {
@@ -162,7 +165,7 @@ public class CiliaModifierProcessor {
 		}
 		adapter = ch.getAdapter(adapterId);
 		if (adapter == null) {
-			logger.error("Component [{}] not found in chain [{}]",adapterId,chainId);
+			logger.error("ComponentImpl [{}] not found in chain [{}]",adapterId,chainId);
 			return;
 		}
 		logger.info ("Command 'modify property adapter' [{}]",adapter.getQualifiedId());
@@ -186,26 +189,26 @@ public class CiliaModifierProcessor {
 		Hashtable props = getProperties(data);
 		chain = ccontext.getChain(chainId);
 		if (chain == null) {
-			logger.error("Chain [{}] not found" + chainId);
+			logger.error("ChainImpl [{}] not found" + chainId);
 			return;
 		}
 		if (to == null) {
-			logger.error("Binding must have receiver component (to)");
+			logger.error("BindingImpl must have receiver component (to)");
 			return;
 		}
 		if (from == null) {
-			logger.error("Binding must have sender component (from)");
+			logger.error("BindingImpl must have sender component (from)");
 			return;
 		}
 
 		mediatorTo = getMediator(chain, to);
 		mediatorFrom = getMediator(chain, from);
 		if (mediatorTo == null) {
-			logger.error("Component " + to + " not found in " + chainId);
+			logger.error("ComponentImpl " + to + " not found in " + chainId);
 			return;
 		}
 		if (mediatorFrom == null) {
-			logger.error("Mediator [{}] not found.",mediatorFrom );
+			logger.error("MediatorImpl [{}] not found.",mediatorFrom );
 			return;
 		}
 		Binding bindings[] = mediatorFrom.getBinding(mediatorFrom

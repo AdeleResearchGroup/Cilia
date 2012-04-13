@@ -37,7 +37,7 @@ public interface MonitoredApplication extends RuntimePerformance, ChangeSet,
 
 	MonitoredChain getMonitoredChain(String chainId);
 
-	/* List of Monitored Component id per chain */
+	/* List of Monitored ComponentImpl id per chain */
 	String[] getMonitoredComponentId(String chain);
 
 	/* Monitored component */

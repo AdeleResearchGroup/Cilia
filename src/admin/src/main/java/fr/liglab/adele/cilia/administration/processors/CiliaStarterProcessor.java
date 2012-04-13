@@ -17,10 +17,11 @@ package fr.liglab.adele.cilia.administration.processors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import fr.liglab.adele.cilia.Chain;
 import fr.liglab.adele.cilia.CiliaContext;
 import fr.liglab.adele.cilia.Data;
 import fr.liglab.adele.cilia.framework.utils.Const;
-import fr.liglab.adele.cilia.model.Chain;
+import fr.liglab.adele.cilia.model.ChainImpl;
 /**
  * CiliaStarterProcessor: The processor class. Start cilia chain instances. 
  * 
@@ -60,7 +61,7 @@ public class CiliaStarterProcessor {
 	private void startChain(String chainId) {
 		Chain chain = ccontext.getChain(chainId);
 		if (chain == null) {
-			logger.error("Chain [{}] not found." + chainId);
+			logger.error("ChainImpl [{}] not found." + chainId);
 			return;
 		}
 		logger.info("Command 'start chain' [{}]",chainId);

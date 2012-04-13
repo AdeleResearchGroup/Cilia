@@ -24,7 +24,7 @@ import java.util.Map;
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project Team</a>
  *
  */
-public class Dispatcher extends MediatorElement {
+public class Dispatcher extends InternalComponent {
 
 
 

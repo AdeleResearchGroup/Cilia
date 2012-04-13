@@ -25,12 +25,15 @@ import org.osgi.framework.ServiceReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import fr.liglab.adele.cilia.CiliaException;
-import fr.liglab.adele.cilia.model.Binding;
-import fr.liglab.adele.cilia.model.Collector;
-import fr.liglab.adele.cilia.model.MediatorComponent;
-import fr.liglab.adele.cilia.model.Port;
-import fr.liglab.adele.cilia.model.Sender;
+import fr.liglab.adele.cilia.Binding;
+import fr.liglab.adele.cilia.exceptions.CiliaException;
+import fr.liglab.adele.cilia.Component;
+import fr.liglab.adele.cilia.MediatorComponent;
+import fr.liglab.adele.cilia.Port;
+
+
+import fr.liglab.adele.cilia.model.CollectorImpl;
+import fr.liglab.adele.cilia.model.SenderImpl;
 import fr.liglab.adele.cilia.runtime.CiliaBindingService;
 
 /**
@@ -95,15 +98,15 @@ public class BindingControllerImpl implements TrackerCustomizer {
 	private void createModels(ServiceReference ref) throws CiliaException {
 
 		CiliaBindingService cbs = null;
-		Collector collector = null;
-		Sender sender = null;
+		Component collector = null;
+		Component sender = null;
 		String bindingId = null;
 		cbs = (CiliaBindingService) bcontext.getService(ref);
 
 		if (log.isDebugEnabled())
 			log.debug("Adding Binding:" + getBindingType());
-		Collector collectorModel = cbs.getCollectorModel(modelBinding.getProperties());
-		Sender senderModel = cbs.getSenderModel(modelBinding.getProperties());
+		Component collectorModel = cbs.getCollectorModel(modelBinding.getProperties());
+		Component senderModel = cbs.getSenderModel(modelBinding.getProperties());
 		Dictionary colProps = null;
 		Dictionary senProps = null;
 		if (collectorModel != null) {
@@ -144,14 +147,14 @@ public class BindingControllerImpl implements TrackerCustomizer {
 		if (collectorModel != null) {
 			colProps.put("cilia.collector.identifier", bindingId);
 			colProps.put("cilia.collector.port", modelBinding.getTargetPort().getName());
-			collector = new Collector(modelBinding.getTargetPort().getName(),
-					collectorModel.getType(), colProps);
+			collector = new CollectorImpl(modelBinding.getTargetPort().getName(),
+					collectorModel.getType(),null,  colProps);
 		}
 		if (senderModel != null) {
 			senProps.put("cilia.sender.identifier", bindingId);
 			senProps.put("cilia.sender.port", modelBinding.getSourcePort().getName());
-			sender = new Sender(modelBinding.getSourcePort().getName(),
-					senderModel.getType(), senProps);
+			sender = new SenderImpl(modelBinding.getSourcePort().getName(),
+					senderModel.getType(),null, senProps);
 		}
 		addModels(sender, collector);
 	}
@@ -164,7 +167,7 @@ public class BindingControllerImpl implements TrackerCustomizer {
 	 * @param collectorm
 	 *            the collector model.
 	 */
-	private void addModels(Sender senderm, Collector collectorm) {
+	private void addModels(Component senderm, Component collectorm) {
 		MediatorComponent sm = modelBinding.getSourceMediator();
 		MediatorComponent tm = modelBinding.getTargetMediator();
 
@@ -202,12 +205,12 @@ public class BindingControllerImpl implements TrackerCustomizer {
 	public void stop() {
 		unregisterTracker();
 		if (sourceController != null) {
-			Sender s = modelBinding.getSender(); 
+			Component s = modelBinding.getSender(); 
 			modelBinding.addSender(null);
 			sourceController.removeSender(s);
 		}
 		if (targetController != null) {
-			Collector c = modelBinding.getCollector();
+			Component c = modelBinding.getCollector();
 			modelBinding.addCollector(null);
 			targetController.removeCollector(c);
 		}

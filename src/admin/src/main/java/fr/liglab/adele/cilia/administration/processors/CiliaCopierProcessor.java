@@ -23,13 +23,16 @@ import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import fr.liglab.adele.cilia.Adapter;
+import fr.liglab.adele.cilia.Chain;
 import fr.liglab.adele.cilia.CiliaContext;
 import fr.liglab.adele.cilia.Data;
+import fr.liglab.adele.cilia.Mediator;
 import fr.liglab.adele.cilia.framework.utils.Const;
-import fr.liglab.adele.cilia.model.Adapter;
-import fr.liglab.adele.cilia.model.Chain;
+import fr.liglab.adele.cilia.model.AdapterImpl;
 import fr.liglab.adele.cilia.model.ConstModel;
-import fr.liglab.adele.cilia.model.Mediator;
+import fr.liglab.adele.cilia.model.MediatorImpl;
+
 
 public class CiliaCopierProcessor {
 	private static final Logger logger = LoggerFactory.getLogger(Const.LOGGER_ADAPTATION);
@@ -82,18 +85,18 @@ public class CiliaCopierProcessor {
 
 		chain = ccontext.getChain(chainId);
 		if (chain == null) {
-			logger.error("Chain [{}] not found" + chainId);
+			logger.error("ChainImpl [{}] not found" + chainId);
 			return;
 		}
 		mediatorSource = ccontext.getChain(chainId).getMediator(mediatorIdSource);
 		if (mediatorSource == null) {
-			logger.error("Component [{}] not found in chain [{}]",mediatorSource,chainId);
+			logger.error("ComponentImpl [{}] not found in chain [{}]",mediatorSource,chainId);
 			return;
 		}
 		mediatorDest = ccontext.getChain(chainId).getMediator(mediatorIdDest);
 
 		if (mediatorDest != null) {
-			logger.error("Component [{}] in chain [{}]is already existing",mediatorSource,chainId);		
+			logger.error("ComponentImpl [{}] in chain [{}]is already existing",mediatorSource,chainId);		
 			return;
 		}
 
@@ -104,7 +107,7 @@ public class CiliaCopierProcessor {
 			properties.remove(ConstModel.PROPERTY_CHAIN_ID);
 			properties.remove(ConstModel.PROPERTY_LOCK_UNLOCK);
 		}
-		mediatorDest = new Mediator(mediatorIdDest, mediatorSource.getType(),
+		mediatorDest = new MediatorImpl(mediatorIdDest, mediatorSource.getType(),
 				mediatorSource.getNamespace(), properties);
 		
 		if (mediatorDest != null) {
@@ -112,7 +115,7 @@ public class CiliaCopierProcessor {
 			logger.info("Command 'copy mediator' [{}] to [{}] ",mediatorSource.getQualifiedId(),mediatorDest.getQualifiedId());
 
 		} else
-			logger.error("Component [{}] not created",mediatorDest );
+			logger.error("ComponentImpl [{}] not created",mediatorDest );
 	}
 
 	private void copyAdapter(Data data) {
@@ -125,18 +128,18 @@ public class CiliaCopierProcessor {
 
 		chain = ccontext.getChain(chainId);
 		if (chain == null) {
-			logger.error("Chain [{}] not found" + chainId);
+			logger.error("ChainImpl [{}] not found" + chainId);
 			return;
 		}
 		adapterSource = ccontext.getChain(chainId).getAdapter(adapterIdSource);
 		if (adapterSource == null) {
-			logger.error("Component [{}] not found in chain [{}]",adapterIdSource,chainId);
+			logger.error("ComponentImpl [{}] not found in chain [{}]",adapterIdSource,chainId);
 			return;
 		}
 		adapterDest = ccontext.getChain(chainId).getAdapter(adapterIdDest);
 
 		if (adapterDest != null) {
-			logger.error("Component [{}] in chain [{}]is already existing",adapterDest,chainId);	
+			logger.error("ComponentImpl [{}] in chain [{}]is already existing",adapterDest,chainId);	
 			return;
 		}
 
@@ -155,7 +158,7 @@ public class CiliaCopierProcessor {
 				properties.put(key,value);
 			}
 		}
-		adapterDest = new Adapter(adapterIdDest, adapterSource.getType(),
+		adapterDest = new AdapterImpl(adapterIdDest, adapterSource.getType(),
 				adapterSource.getNamespace(), properties, adapterSource.getPattern());
 		
 		if (adapterDest != null) {
@@ -163,6 +166,6 @@ public class CiliaCopierProcessor {
 			logger.info("Command 'copy adapter' [{}] to [{}] ",adapterSource.getQualifiedId(),adapterDest.getQualifiedId());
 
 		} else
-			logger.error("Component [{}] not created",adapterDest );
+			logger.error("ComponentImpl [{}] not created",adapterDest );
 	}
 }

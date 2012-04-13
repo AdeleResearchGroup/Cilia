@@ -33,11 +33,12 @@ import org.slf4j.LoggerFactory;
 
 import fr.liglab.adele.cilia.event.CiliaEvent;
 import fr.liglab.adele.cilia.framework.utils.AdminData;
-import fr.liglab.adele.cilia.model.Adapter;
-import fr.liglab.adele.cilia.model.Binding;
-import fr.liglab.adele.cilia.model.Chain;
-import fr.liglab.adele.cilia.model.Mediator;
-import fr.liglab.adele.cilia.model.MediatorComponent;
+import fr.liglab.adele.cilia.Adapter;
+import fr.liglab.adele.cilia.Binding;
+import fr.liglab.adele.cilia.Chain;
+import fr.liglab.adele.cilia.Mediator;
+import fr.liglab.adele.cilia.MediatorComponent;
+import fr.liglab.adele.cilia.model.ChainImpl;
 import fr.liglab.adele.cilia.model.UpdateActions;
 import fr.liglab.adele.cilia.model.UpdateEvent;
 import fr.liglab.adele.cilia.runtime.AbstractCiliaInstance;
@@ -56,7 +57,7 @@ public class ChainControllerImpl implements Observer {
 	/**
 	 * Model chain this controller will observe.
 	 */
-	private final Chain modelChain;
+	private final ChainImpl modelChain;
 
 	private CreatorThread creator;
 
@@ -97,7 +98,7 @@ public class ChainControllerImpl implements Observer {
 	 */
 	public ChainControllerImpl(BundleContext context, Chain model, CreatorThread crea) {
 		bcontext = context;
-		modelChain = model;
+		modelChain = (ChainImpl)model;
 		creator = crea;
 		eventNotifier = new CiliaFrameworkEventPublisher(context);
 	}

@@ -16,7 +16,7 @@
 package fr.liglab.adele.cilia.model;
 
 public interface ChainRuntime {
-	/* The Chain has never received a start or a stop command */
+	/* The ChainImpl has never received a start or a stop command */
 	public static final int STATE_IDLE = 0;
 	/* the chain has received a command 'startChain' */
 	public static final int STATE_STARTED =1 ;
@@ -25,7 +25,7 @@ public interface ChainRuntime {
 	
 	public String getUUID() ;
 	
-	/* return the current state of the Chain */
+	/* return the current state of the ChainImpl */
 	public int getState() ;
 
 }

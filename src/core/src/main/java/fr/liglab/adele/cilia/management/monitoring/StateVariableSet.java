@@ -18,7 +18,7 @@ package fr.liglab.adele.cilia.management.monitoring;
 import fr.liglab.adele.cilia.event.ChangeStateListener;
 
 /**
- * Runtime value updated by Component ( mediator / adapter) <br>
+ * Runtime value updated by ComponentImpl ( mediator / adapter) <br>
  * ChangeStateListener :callcack on events , see list of events see ComponentEvent <br>
  * event fired is a Map ( key = state variable id, value = events ->see ComponentEvent.java) <br>
  * 
@@ -48,7 +48,7 @@ public interface StateVariableSet extends ChangeStateListener {
 	boolean setWindow(String stateVarId, int window);
 
 	/**
-	 * The Component is now publishing data
+	 * The ComponentImpl is now publishing data
 	 * 
 	 * @param stateVarId
 	 */

@@ -25,7 +25,7 @@ import java.util.Map;
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project Team</a>
  *
  */
-public class Scheduler extends MediatorElement {
+public class Scheduler extends InternalComponent {
 
 
 

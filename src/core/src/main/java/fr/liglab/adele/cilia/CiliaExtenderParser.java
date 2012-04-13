@@ -15,7 +15,6 @@
 package fr.liglab.adele.cilia;
 
 import fr.liglab.adele.cilia.exceptions.CiliaParserException;
-import fr.liglab.adele.cilia.model.IComponent;
 
 /**
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project Team</a>
@@ -23,11 +22,11 @@ import fr.liglab.adele.cilia.model.IComponent;
  */
 public interface CiliaExtenderParser {
 	/**
-	 * Creates or modifies a Component based on the component description.
+	 * Creates or modifies a ComponentImpl based on the component description.
 	 * @param componentDescription
 	 * @return
 	 */
-	IComponent getComponent(Object componentDescription, IComponent currentComponent) throws CiliaParserException; 
+	Component getComponent(Object componentDescription, Component currentComponent) throws CiliaParserException; 
 
 	/**
 	 * See if the parser could handle the component description

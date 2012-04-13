@@ -30,7 +30,7 @@
 		</dependency>
 		<dependency>
 			<groupId>fr.liglab.adele.cilia</groupId>
-			<artifactId>cilia-ipojo-runtime</artifactId>
+			<artifactId>cilia-runtime</artifactId>
 			<version>1.2.2-SNAPSHOT</version>
 		</dependency>
 		<dependency>

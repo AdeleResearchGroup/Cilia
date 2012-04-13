@@ -2,10 +2,9 @@ package fr.liglab.adele.cilia.internals.controller;
 
 import org.osgi.framework.BundleContext;
 
-import fr.liglab.adele.cilia.model.Adapter;
+import fr.liglab.adele.cilia.Adapter;
+import fr.liglab.adele.cilia.MediatorComponent;
 import fr.liglab.adele.cilia.model.ConstModel;
-import fr.liglab.adele.cilia.model.Mediator;
-import fr.liglab.adele.cilia.model.MediatorComponent;
 
 public class AdapterControllerImpl extends MediatorControllerImpl {
 

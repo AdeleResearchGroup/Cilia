@@ -17,8 +17,9 @@ package fr.liglab.adele.cilia.administration.adapter;
 import java.util.HashSet;
 import java.util.Set;
 
+import fr.liglab.adele.cilia.Chain;
 import fr.liglab.adele.cilia.ChainListener;
-import fr.liglab.adele.cilia.model.Chain;
+import fr.liglab.adele.cilia.model.ChainImpl;
 /**
  * 
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project
@@ -35,7 +36,7 @@ public class ChainTracker implements ChainListener {
 	 */
 	Set removingInstructions = new HashSet();
 	/**
-	 * Adapter used to perform instructions.
+	 * AdapterImpl used to perform instructions.
 	 */
 	CiliaInstructionsAdapter adapter ;
 	/**

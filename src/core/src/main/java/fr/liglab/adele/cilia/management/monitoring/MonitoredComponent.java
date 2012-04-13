@@ -17,10 +17,10 @@ package fr.liglab.adele.cilia.management.monitoring;
 
 public interface MonitoredComponent extends ChangeSet, RuntimePerformance {
 
-	/* Chain id */
+	/* ChainImpl id */
 	String getChainId();
 
-	/* Mediator Id */
+	/* MediatorImpl Id */
 	String getId();
 
 }

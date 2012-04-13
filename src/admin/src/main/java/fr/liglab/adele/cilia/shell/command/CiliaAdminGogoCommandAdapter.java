@@ -21,7 +21,7 @@ import fr.liglab.adele.cilia.administration.util.CiliaInstructionConverter;
 import fr.liglab.adele.cilia.framework.AbstractCollector;
 
 /**
- * Felix Gogo Shell to Cilia-Admin Adapter.
+ * Felix Gogo Shell to Cilia-Admin AdapterImpl.
  * 
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project
  *         Team</a>
