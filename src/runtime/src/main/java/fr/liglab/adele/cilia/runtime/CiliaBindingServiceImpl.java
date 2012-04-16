@@ -21,12 +21,13 @@ import java.util.Properties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import fr.liglab.adele.cilia.CiliaException;
+import fr.liglab.adele.cilia.Binding;
+import fr.liglab.adele.cilia.exceptions.CiliaException;
+import fr.liglab.adele.cilia.Component;
 
 import fr.liglab.adele.cilia.framework.utils.Const;
-import fr.liglab.adele.cilia.model.Binding;
-import fr.liglab.adele.cilia.model.Collector;
-import fr.liglab.adele.cilia.model.Sender;
+import fr.liglab.adele.cilia.model.CollectorImpl;
+import fr.liglab.adele.cilia.model.SenderImpl;
 
 
 public abstract class CiliaBindingServiceImpl implements CiliaBindingService {
@@ -48,7 +49,7 @@ public abstract class CiliaBindingServiceImpl implements CiliaBindingService {
     public abstract Dictionary getProperties(Dictionary collectorProperties,
             Dictionary senderProperties, Binding b) throws CiliaException;
 
-    public Collector getCollectorModel(Dictionary props) {
+    public Component getCollectorModel(Dictionary props) {
         
         if (collectorType == null || collectorType.compareTo("") == 0) {
             if ((nature & NATURE_IN) > 0) {
@@ -59,12 +60,11 @@ public abstract class CiliaBindingServiceImpl implements CiliaBindingService {
         if (props == null) {
             props = new Properties();
         }
-        Collector collector = new Collector(collectorType+identificator++, collectorType, props);
-        collector.setNamespace(collectorNS);
+        Component collector = new CollectorImpl(collectorType+identificator++, collectorType,collectorNS, props);
         return collector;
     }
 
-    public Sender getSenderModel(Dictionary props) {
+    public Component getSenderModel(Dictionary props) {
         if (senderType == null || senderType.compareTo("") == 0) {
             if ((nature & NATURE_OUT) > 0) {
                 logger.error("Binding is not well configured, Sender.type not set");
@@ -74,8 +74,7 @@ public abstract class CiliaBindingServiceImpl implements CiliaBindingService {
         if (props == null) {
             props = new Properties();
         }
-        Sender sender = new Sender(senderType+identificator++, senderType, props);
-        sender.setNamespace(senderNS);
+        Component sender = new SenderImpl(senderType+identificator++, senderType, senderNS, props);
         return sender;
     }
     

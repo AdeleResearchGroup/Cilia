@@ -15,6 +15,8 @@
 
 package fr.liglab.adele.cilia.model;
 
+import fr.liglab.adele.cilia.Component;
+
 
 public class UpdateEvent {
 

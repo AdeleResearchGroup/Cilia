@@ -39,7 +39,7 @@ import fr.liglab.adele.cilia.framework.monitor.AbstractMonitor;
 import fr.liglab.adele.cilia.framework.utils.Const;
 import fr.liglab.adele.cilia.management.UUID;
 import fr.liglab.adele.cilia.management.Watch;
-import fr.liglab.adele.cilia.model.Component;
+import fr.liglab.adele.cilia.model.ComponentImpl;
 import fr.liglab.adele.cilia.model.ConstModel;
 import fr.liglab.adele.cilia.util.concurrent.ReadWriteLock;
 import fr.liglab.adele.cilia.util.concurrent.WriterPreferenceReadWriteLock;
@@ -71,7 +71,7 @@ public abstract class AbstractStateVariable extends AbstractMonitor implements
 		m_properties.put(MONITOR_NODE_ID, componentId);
 		m_properties.put(MONITOR_UUID, UUID.generate().toString());
 		topic = TOPIC_HEADER + chainId;
-		m_qualifiedId = Component.buildQualifiedId(chainId, componentId);
+		m_qualifiedId = ComponentImpl.buildQualifiedId(chainId, componentId);
 	}
 
 	public void validate() {
@@ -327,7 +327,7 @@ public abstract class AbstractStateVariable extends AbstractMonitor implements
 	protected void addStateVarId(String stateVarId, String ldapFilter) {
 		if (stateVarId == null)
 			throw new NullPointerException();
-		Component.checkID(stateVarId);
+		ComponentImpl.checkID(stateVarId);
 		try {
 			m_lock.writeLock().acquire();
 			try {

@@ -51,8 +51,9 @@ import fr.liglab.adele.cilia.framework.utils.AdminData;
 import fr.liglab.adele.cilia.framework.utils.Const;
 import fr.liglab.adele.cilia.framework.utils.ProcessorMetadata;
 import fr.liglab.adele.cilia.framework.utils.WorkQueue;
-import fr.liglab.adele.cilia.model.Component;
+import fr.liglab.adele.cilia.Component;
 import fr.liglab.adele.cilia.model.ConstModel;
+import fr.liglab.adele.cilia.model.Scheduler;
 import fr.liglab.adele.cilia.runtime.AbstractCiliaInstance;
 import fr.liglab.adele.cilia.runtime.CiliaInstance;
 import fr.liglab.adele.cilia.runtime.CiliaInstanceManager;
@@ -541,7 +542,7 @@ InstanceStateListener, Observer, Runnable {
 			}
 		}
 
-		schedulerDescription = new Component("scheduler", schedulerName, schedulerNS,
+		schedulerDescription = new Scheduler("scheduler", schedulerName, schedulerNS,
 				null);
 		logger.debug("create scheduler '" + schedulerName + "'");
 	}

@@ -17,15 +17,19 @@ package fr.liglab.adele.cilia.administration.processors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import fr.liglab.adele.cilia.Binding;
+import fr.liglab.adele.cilia.Chain;
 import fr.liglab.adele.cilia.CiliaContext;
 import fr.liglab.adele.cilia.Data;
+import fr.liglab.adele.cilia.MediatorComponent;
+import fr.liglab.adele.cilia.Port;
 import fr.liglab.adele.cilia.administration.util.ParserUtils;
 import fr.liglab.adele.cilia.framework.utils.Const;
-import fr.liglab.adele.cilia.model.Binding;
-import fr.liglab.adele.cilia.model.Chain;
-import fr.liglab.adele.cilia.model.Component;
-import fr.liglab.adele.cilia.model.MediatorComponent;
-import fr.liglab.adele.cilia.model.Port;
+import fr.liglab.adele.cilia.model.BindingImpl;
+import fr.liglab.adele.cilia.model.ChainImpl;
+import fr.liglab.adele.cilia.model.ComponentImpl;
+import fr.liglab.adele.cilia.model.MediatorComponentImpl;
+import fr.liglab.adele.cilia.model.PortImpl;
 
 /**
  * CiliaRemoverProcessor: The processor class. Remove cilia chain instances,
@@ -84,7 +88,7 @@ public class CiliaRemoverProcessor {
 	private void removeChain(String chainId) {
 		Chain ch = ccontext.getChain(chainId);
 		if (ch == null) {
-			logger.error("Chain [{}] not found.", chainId);
+			logger.error("ChainImpl [{}] not found.", chainId);
 			return;
 		}
 		logger.info("Command 'remove chain' [{}]", chainId);
@@ -104,19 +108,19 @@ public class CiliaRemoverProcessor {
 		String chainId = String.valueOf(data.getProperty("chain"));
 		ch = ccontext.getChain(chainId);
 		if (ch == null) {
-			logger.error("Chain [{}] not found.", chainId);
+			logger.error("ChainImpl [{}] not found.", chainId);
 			return;
 		}
 		if (mediatorId == null) {
-			logger.error("Mediator must have an id");
+			logger.error("MediatorImpl must have an id");
 			return;
 		}
 		if (ch.removeMediator(mediatorId)) {
 			logger.info("Command 'remove mediator' [{}]",
-					Component.buildQualifiedId(chainId, mediatorId));
+					ComponentImpl.buildQualifiedId(chainId, mediatorId));
 		} else {
 			logger.error("Command 'remove mediator' [{}], mediator not removed",
-					Component.buildQualifiedId(chainId, mediatorId));
+					ComponentImpl.buildQualifiedId(chainId, mediatorId));
 		}
 	}
 
@@ -133,19 +137,19 @@ public class CiliaRemoverProcessor {
 		String chainId = String.valueOf(data.getProperty("chain"));
 		ch = ccontext.getChain(chainId);
 		if (ch == null) {
-			logger.error("Chain [{}] not found.", chainId);
+			logger.error("ChainImpl [{}] not found.", chainId);
 			return;
 		}
 		if (mediatorId == null) {
-			logger.error("Adapter must have an id");
+			logger.error("AdapterImpl must have an id");
 			return;
 		}
 		if (ch.removeAdapter(mediatorId)) {
 			logger.info("Command 'remove adapter' [{}]",
-					Component.buildQualifiedId(chainId, mediatorId));
+					ComponentImpl.buildQualifiedId(chainId, mediatorId));
 		} else {
 			logger.error("Command 'remove adapter' [{}], adapter not removed",
-					Component.buildQualifiedId(chainId, mediatorId));
+					ComponentImpl.buildQualifiedId(chainId, mediatorId));
 		}
 	}
 
@@ -165,15 +169,15 @@ public class CiliaRemoverProcessor {
 		String chainId = String.valueOf(data.getProperty("chain"));
 		chain = ccontext.getChain(chainId);
 		if (chain == null) {
-			logger.error("Chain [{}] not found.", chainId);
+			logger.error("ChainImpl [{}] not found.", chainId);
 			return;
 		}
 		if (to == null) {
-			logger.error("Binding must have receiver component (to)");
+			logger.error("BindingImpl must have receiver component (to)");
 			return;
 		}
 		if (from == null) {
-			logger.error("Binding must have sender component (from)");
+			logger.error("BindingImpl must have sender component (from)");
 			return;
 		}
 		mediatorTo = getMediator(chain, to);
@@ -182,11 +186,11 @@ public class CiliaRemoverProcessor {
 				mediatorFrom.getQualifiedId(), mediatorTo.getQualifiedId());
 
 		if (mediatorTo == null) {
-			logger.error("Component [{}] not found in chain [{}]",to,chainId);
+			logger.error("ComponentImpl [{}] not found in chain [{}]",to,chainId);
 			return;
 		}
 		if (mediatorFrom == null) {
-			logger.error("Component [{}] not found in chain [{}]",from,chainId);
+			logger.error("ComponentImpl [{}] not found in chain [{}]",from,chainId);
 			return;
 		}
 		Binding bindings[] = mediatorFrom.getBinding(mediatorFrom

@@ -31,7 +31,7 @@ public interface BookMark {
 
 	/**
 	 * 
-	 * @return Component Id
+	 * @return ComponentImpl Id
 	 */
 	String getComponentId();
 

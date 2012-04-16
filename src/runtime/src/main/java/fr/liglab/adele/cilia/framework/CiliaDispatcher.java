@@ -9,8 +9,8 @@ import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import fr.liglab.adele.cilia.CiliaException;
 import fr.liglab.adele.cilia.Data;
+import fr.liglab.adele.cilia.exceptions.CiliaException;
 
 public class CiliaDispatcher implements IDispatcher {
 

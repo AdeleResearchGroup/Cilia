@@ -22,8 +22,10 @@
 	<version>1.0.0</version>
 
 	<modules>
+		<!--
 		<module>core</module>
 		<module>runtime</module>
+		-->
 	</modules>
 
 </project>

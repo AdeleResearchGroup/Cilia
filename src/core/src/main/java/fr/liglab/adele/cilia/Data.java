@@ -24,7 +24,7 @@ import fr.liglab.adele.cilia.util.concurrent.ReadWriteLock;
 import fr.liglab.adele.cilia.util.concurrent.ReentrantWriterPreferenceReadWriteLock;
 
 /**
- * Data Used to encapsulate the data to be processed on the Mediator. It has a
+ * Data Used to encapsulate the data to be processed on the MediatorImpl. It has a
  * 'content' of type Object, and a dictionary of extra informations (metadata).
  * 
  * The values of the metadata cannot be <code>null</code>.

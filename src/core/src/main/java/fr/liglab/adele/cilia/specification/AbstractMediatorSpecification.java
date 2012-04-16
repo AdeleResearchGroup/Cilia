@@ -1,25 +1,25 @@
 package fr.liglab.adele.cilia.specification;
 
 
-import fr.liglab.adele.cilia.model.Component;
-import fr.liglab.adele.cilia.model.Mediator;
+import fr.liglab.adele.cilia.model.ComponentImpl;
+import fr.liglab.adele.cilia.model.MediatorImpl;
 
 public abstract class AbstractMediatorSpecification implements MediatorSpecification{
 
-	private Mediator mediatorSpec;
+	private MediatorImpl mediatorSpec;
 	
-	private Component dispatcherDef;
+	private ComponentImpl dispatcherDef;
 	
-	private Component processorDef;
+	private ComponentImpl processorDef;
 	
-	private Component schedulerDef;
+	private ComponentImpl schedulerDef;
 	
 	private static final String DEFAULT_CAT = "generic";
 	
 	private static final String DEFAULT_NS = "fr.liglab.adele.cilia";
 	
 	public AbstractMediatorSpecification(String name, String namespace, String category){
-		mediatorSpec = new Mediator(name, name, namespace, category, null, null);
+		mediatorSpec = new MediatorImpl(name, name, namespace, category, null, null);
 	}
 	
 	/**
@@ -75,7 +75,7 @@ public abstract class AbstractMediatorSpecification implements MediatorSpecifica
 	 * @param schedulareNamespace
 	 */
 	public MediatorSpecification setScheduler(String schedulareName, String schedulerNamespace){
-		schedulerDef = new Component(schedulareName, schedulareName, schedulerNamespace, null);
+		schedulerDef = new ComponentImpl(schedulareName, schedulareName, schedulerNamespace, null);
 		return this;	
 	}
 	/**
@@ -109,7 +109,7 @@ public abstract class AbstractMediatorSpecification implements MediatorSpecifica
 	 * @param processorNamespace the processor namesâce.
 	 */
 	public MediatorSpecification setProcessor(String processorName, String processorNamespace){
-		processorDef = new Component(processorName, processorName, processorNamespace,null);
+		processorDef = new ComponentImpl(processorName, processorName, processorNamespace,null);
 		return this;	
 	}
 	/**
@@ -143,7 +143,7 @@ public abstract class AbstractMediatorSpecification implements MediatorSpecifica
 	 * @param dispatcherNamespace the chosen dispatcher namespace.
 	 */
 	public MediatorSpecification setDispatcher(String dispatcherName, String dispatcherNamespace){
-		dispatcherDef = new Component(dispatcherName,dispatcherName, dispatcherName, null);
+		dispatcherDef = new ComponentImpl(dispatcherName,dispatcherName, dispatcherName, null);
 		return this;	
 	}
 	/**
@@ -175,8 +175,8 @@ public abstract class AbstractMediatorSpecification implements MediatorSpecifica
 	 * Get a mediator model from the mediator specification.
 	 * @return
 	 */
-	public Mediator getMediatorModel(String mediatorid){
-		Mediator med = new Mediator(mediatorid, this.getName());
+	public MediatorImpl getMediatorModel(String mediatorid){
+		MediatorImpl med = new MediatorImpl(mediatorid, this.getName());
 		return med;
 	}
 	/**

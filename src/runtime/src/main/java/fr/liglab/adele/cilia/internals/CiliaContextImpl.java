@@ -31,7 +31,8 @@ import fr.liglab.adele.cilia.event.CiliaEvent;
 import fr.liglab.adele.cilia.framework.utils.Const;
 import fr.liglab.adele.cilia.internals.controller.ChainControllerImpl;
 import fr.liglab.adele.cilia.internals.controller.CreatorThread;
-import fr.liglab.adele.cilia.model.Chain;
+import fr.liglab.adele.cilia.Chain;
+import fr.liglab.adele.cilia.model.ChainImpl;
 import fr.liglab.adele.cilia.model.ChainRuntime;
 
 import fr.liglab.adele.cilia.runtime.impl.ChainRuntimeImpl;
@@ -256,7 +257,7 @@ public class CiliaContextImpl implements CiliaContext {
 				notifyRemove(chain);
 				toBeRemoved.dispose();
 				toBeRemoved = null;
-				chain.dispose();
+				ChainImpl.class.cast(chain).dispose();
 				chain = null;
 				eventNotifier.publish(chainId, CiliaEvent.EVENT_CHAIN_REMOVED);
 				logger.info("Chain [{}] removed",chainId) ;

@@ -21,14 +21,16 @@ import org.osgi.framework.ServiceReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import fr.liglab.adele.cilia.Adapter;
+import fr.liglab.adele.cilia.Binding;
+import fr.liglab.adele.cilia.Chain;
 import fr.liglab.adele.cilia.CiliaContext;
 import fr.liglab.adele.cilia.Data;
+import fr.liglab.adele.cilia.Mediator;
 import fr.liglab.adele.cilia.framework.utils.AdminData;
 import fr.liglab.adele.cilia.framework.utils.Const;
-import fr.liglab.adele.cilia.model.Adapter;
-import fr.liglab.adele.cilia.model.Binding;
-import fr.liglab.adele.cilia.model.Chain;
-import fr.liglab.adele.cilia.model.Mediator;
+import fr.liglab.adele.cilia.model.AdapterImpl;
+import fr.liglab.adele.cilia.model.MediatorImpl;
 
 public class CiliaReplacerProcessor {
 	private static final Logger logger = LoggerFactory.getLogger(Const.LOGGER_ADAPTATION);
@@ -116,18 +118,18 @@ public class CiliaReplacerProcessor {
 		}
 		chain = ccontext.getChain(chainId);
 		if (chain == null) {
-			logger.error("Chain [{}] not found." + chainId);
+			logger.error("ChainImpl [{}] not found." + chainId);
 			return;
 		}
 		mediatorSource = ccontext.getChain(chainId).getMediator(mediatorIdSource);
 		if (mediatorSource == null) {
-			logger.error("Mediator [{}] not found.", mediatorIdSource);
+			logger.error("MediatorImpl [{}] not found.", mediatorIdSource);
 			return;
 		}
 		mediatorDest = ccontext.getChain(chainId).getMediator(mediatorIdDest);
 
 		if (mediatorDest == null) {
-			logger.error("Mediator [{}] not found.", mediatorIdDest);
+			logger.error("MediatorImpl [{}] not found.", mediatorIdDest);
 			return;
 		}
 		logger.info("Command 'replace mediator' [{}] by [{}]",
@@ -135,8 +137,8 @@ public class CiliaReplacerProcessor {
 
 		bindings = mediatorSource.getInBindings();
 
-		mediatorSource.lockRuntime();
-		mediatorDest.lockRuntime();
+		((MediatorImpl)mediatorSource).lockRuntime();
+		((MediatorImpl)mediatorDest).lockRuntime();
 		if (bindings != null) {
 			for (int i = 0; i < bindings.length; i++) {
 				chain.bind(bindings[i].getSourcePort(),
@@ -155,8 +157,8 @@ public class CiliaReplacerProcessor {
 		}
 		/* Now data are injected */
 		copyData(chain.getId(), mediatorSource.getId(), mediatorDest.getId());
-		mediatorDest.unLockRuntime();
-		mediatorSource.unLockRuntime();
+		((MediatorImpl)mediatorDest).unLockRuntime();
+		((MediatorImpl)mediatorSource).unLockRuntime();
 	}
 
 	private void replaceAdapter(Data data) {
@@ -172,18 +174,18 @@ public class CiliaReplacerProcessor {
 		}
 		chain = ccontext.getChain(chainId);
 		if (chain == null) {
-			logger.error("Chain [{}] not found." + chainId);
+			logger.error("ChainImpl [{}] not found." + chainId);
 			return;
 		}
 		adapter = ccontext.getChain(chainId).getAdapter(adapterSource);
 		if (adapter == null) {
-			logger.error("Adapter [{}] not found.", adapterSource);
+			logger.error("AdapterImpl [{}] not found.", adapterSource);
 			return;
 		}
 		adapterNew = ccontext.getChain(chainId).getAdapter(adapterDest);
 
 		if (adapterNew == null) {
-			logger.error("Adapter [{}] not found.", adapterSource);
+			logger.error("AdapterImpl [{}] not found.", adapterSource);
 			return;
 		}
 
@@ -192,8 +194,8 @@ public class CiliaReplacerProcessor {
 
 		bindings = adapter.getInBindings();
 
-		adapter.lockRuntime();
-		adapterNew.lockRuntime();
+		((AdapterImpl)adapter).lockRuntime();
+		((AdapterImpl)adapterNew).lockRuntime();
 		if (bindings != null) {
 			for (int i = 0; i < bindings.length; i++) {
 				chain.bind(bindings[i].getSourcePort(),
@@ -224,7 +226,7 @@ public class CiliaReplacerProcessor {
 			}
 		}
 		copyData(chain.getId(), adapter.getId(), adapterNew.getId());
-		adapterNew.unLockRuntime();
-		adapter.unLockRuntime();
+		((AdapterImpl)adapterNew).unLockRuntime();
+		((AdapterImpl)adapter).unLockRuntime();
 	}
 }

@@ -17,10 +17,10 @@ package fr.liglab.adele.cilia.runtime;
 
 import java.util.Dictionary;
 
-import fr.liglab.adele.cilia.CiliaException;
-import fr.liglab.adele.cilia.model.Binding;
-import fr.liglab.adele.cilia.model.Collector;
-import fr.liglab.adele.cilia.model.Sender;
+import fr.liglab.adele.cilia.Binding;
+import fr.liglab.adele.cilia.exceptions.CiliaException;
+import fr.liglab.adele.cilia.Component;
+
 
 
 public interface CiliaBindingService {
@@ -46,8 +46,8 @@ public interface CiliaBindingService {
     short NATURE_INOUT = 3;
 
     
-    public Collector getCollectorModel(Dictionary props) ;
-    public Sender getSenderModel(Dictionary props);
+    public Component getCollectorModel(Dictionary props) ;
+    public Component getSenderModel(Dictionary props);
     public void setSenderType(String senderType);
     public void setCollectorType(String collectorType);
     public void setSenderNS(String senderNS);

@@ -8,7 +8,7 @@ import java.util.Map;
 import java.util.Stack;
 import java.util.StringTokenizer;
 
-import fr.liglab.adele.cilia.CiliaException;
+import fr.liglab.adele.cilia.exceptions.CiliaException;
 
 
 

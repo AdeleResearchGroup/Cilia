@@ -28,13 +28,12 @@ import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import fr.liglab.adele.cilia.CiliaContext;
-import fr.liglab.adele.cilia.CiliaException;
+import fr.liglab.adele.cilia.exceptions.CiliaException;
 
-import fr.liglab.adele.cilia.Data;
+import fr.liglab.adele.cilia.CiliaContext;
 import fr.liglab.adele.cilia.CiliaFileManager;
-import fr.liglab.adele.cilia.model.Chain;
-import fr.liglab.adele.cilia.model.parser.ChainParser;
+import fr.liglab.adele.cilia.Chain;
+import fr.liglab.adele.cilia.ChainParser;
 
 /**
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project Team</a>

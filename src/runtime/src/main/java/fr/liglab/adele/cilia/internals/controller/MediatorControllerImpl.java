@@ -27,19 +27,19 @@ import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import fr.liglab.adele.cilia.Binding;
+import fr.liglab.adele.cilia.Component;
+import fr.liglab.adele.cilia.Mediator;
+import fr.liglab.adele.cilia.MediatorComponent;
 import fr.liglab.adele.cilia.framework.DispatcherHandler;
 import fr.liglab.adele.cilia.framework.IDispatcher;
 import fr.liglab.adele.cilia.framework.IScheduler;
 import fr.liglab.adele.cilia.framework.SchedulerHandler;
 import fr.liglab.adele.cilia.framework.utils.Const;
-import fr.liglab.adele.cilia.model.Binding;
-import fr.liglab.adele.cilia.model.Collector;
 import fr.liglab.adele.cilia.model.ConstModel;
 import fr.liglab.adele.cilia.model.Dispatcher;
-import fr.liglab.adele.cilia.model.Mediator;
-import fr.liglab.adele.cilia.model.MediatorComponent;
+import fr.liglab.adele.cilia.model.MediatorComponentImpl;
 import fr.liglab.adele.cilia.model.Scheduler;
-import fr.liglab.adele.cilia.model.Sender;
 import fr.liglab.adele.cilia.model.UpdateActions;
 import fr.liglab.adele.cilia.model.UpdateEvent;
 import fr.liglab.adele.cilia.runtime.AbstractCiliaInstance;
@@ -59,7 +59,7 @@ public class MediatorControllerImpl implements Observer {
 	/**
 	 * Mediator representation model that will be observed.
 	 */
-	protected MediatorComponent mediatorModel;
+	protected MediatorComponentImpl mediatorModel;
 	/**
 	 * OSGi Bundle Context
 	 */
@@ -95,7 +95,7 @@ public class MediatorControllerImpl implements Observer {
 			CreatorThread creat) {
 		bcontext = context;
 		creator = creat;
-		mediatorModel = model;
+		mediatorModel = (MediatorComponentImpl) model;
 		filter = createComponentFilter(mediatorModel);
 		updateProperties();
 		mediatorModel.addObserver(this);
@@ -216,7 +216,7 @@ public class MediatorControllerImpl implements Observer {
 	private void createCollectorInstances() {
 		Binding[] bs = mediatorModel.getInBindings();
 		for (int i = 0; i < bs.length; i++) {
-			Collector collector = bs[i].getCollector();
+			Component collector = bs[i].getCollector();
 			if (collector != null) {
 				createCollector(collector);
 			}
@@ -230,7 +230,7 @@ public class MediatorControllerImpl implements Observer {
 	private void createSenderInstances() {
 		Binding[] bs = mediatorModel.getOutBindings();
 		for (int i = 0; i < bs.length; i++) {
-			Sender sender = bs[i].getSender();
+			Component sender = bs[i].getSender();
 			if (sender != null) {
 				createSender(sender);
 			}
@@ -251,8 +251,7 @@ public class MediatorControllerImpl implements Observer {
 					"Updating Mediator instance when object is not valid" + getState());
 		}
 		mediatorInstance.updateInstanceProperties(properties);
-		eventNotifier.publish(mediatorModel,
-				eventNotifier.EVENT_MEDIATOR_PROPERTIES_UPDATED);
+		eventNotifier.publish(mediatorModel,eventNotifier.EVENT_MEDIATOR_PROPERTIES_UPDATED);
 	}
 
 	/**
@@ -286,7 +285,7 @@ public class MediatorControllerImpl implements Observer {
 	 * @param collector
 	 *            collector model to add to the mediator.
 	 */
-	public void createCollector(Collector collector) {
+	public void createCollector(Component collector) {
 		updateMediatorModel();
 		SchedulerHandler scheduler = getScheduler();
 		boolean toAdd = true;
@@ -345,10 +344,10 @@ public class MediatorControllerImpl implements Observer {
 	/**
 	 * Create the Sender instance from mthe given model.
 	 * 
-	 * @param sender
+	 * @param senderm
 	 *            the sender model added to the mediator model.
 	 */
-	public void createSender(Sender sender) {
+	public void createSender(Component senderm) {
 		updateMediatorModel();
 		DispatcherHandler dispatcher = getDispatcher();
 		boolean readytoAdd = true;
@@ -383,14 +382,14 @@ public class MediatorControllerImpl implements Observer {
 
 		// get sender information.
 		if (readytoAdd) {
-			String senderType = sender.getType();
-			String senderId = sender.getId();
-			Dictionary properties = sender.getProperties();
+			String senderType = senderm.getType();
+			String senderId = senderm.getId();
+			Dictionary properties = senderm.getProperties();
 			// add sender to the mediator instance.
 			synchronized (lockObject) {
-				if (!addedSenders.contains(sender.getId())) {
+				if (!addedSenders.contains(senderm.getId())) {
 					log.debug(" adding sender with " + properties);
-					addedSenders.put(sender.getId(), sender);
+					addedSenders.put(senderm.getId(), senderm);
 				} else {
 					toAdd = false;
 					log.warn(" (addSender) Object instance in " + mediatorModel
@@ -411,7 +410,7 @@ public class MediatorControllerImpl implements Observer {
 	 * @param collector
 	 *            Collector to remove.
 	 */
-	public void removeCollector(Collector collector) {
+	public void removeCollector(Component collector) {
 		String id = (String) collector.getProperty("cilia.collector.identifier");
 		String port = (String) collector.getProperty("cilia.collector.port");
 		;
@@ -432,7 +431,7 @@ public class MediatorControllerImpl implements Observer {
 	 * @param sender
 	 *            Sender to remove.
 	 */
-	public void removeSender(Sender sender) {
+	public void removeSender(Component sender) {
 		String id = (String) sender.getProperty("cilia.sender.identifier");
 		String port = (String) sender.getProperty("cilia.sender.port");
 		synchronized (lockObject) {

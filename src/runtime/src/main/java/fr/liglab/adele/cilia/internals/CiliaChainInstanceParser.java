@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -20,19 +19,23 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import fr.liglab.adele.cilia.CiliaException;
+import fr.liglab.adele.cilia.Adapter;
+import fr.liglab.adele.cilia.Binding;
+import fr.liglab.adele.cilia.Chain;
+import fr.liglab.adele.cilia.ChainParser;
+import fr.liglab.adele.cilia.CiliaExtenderParser;
+import fr.liglab.adele.cilia.Component;
+import fr.liglab.adele.cilia.Mediator;
+import fr.liglab.adele.cilia.MediatorComponent;
+import fr.liglab.adele.cilia.Port;
+import fr.liglab.adele.cilia.exceptions.CiliaException;
 import fr.liglab.adele.cilia.exceptions.CiliaParserException;
-import fr.liglab.adele.cilia.model.Adapter;
-import fr.liglab.adele.cilia.model.Binding;
-import fr.liglab.adele.cilia.model.Chain;
-import fr.liglab.adele.cilia.model.IComponent;
-import fr.liglab.adele.cilia.model.Mediator;
-import fr.liglab.adele.cilia.model.MediatorComponent;
+import fr.liglab.adele.cilia.framework.utils.impl.XMLTools;
+import fr.liglab.adele.cilia.model.AdapterImpl;
+import fr.liglab.adele.cilia.model.BindingImpl;
+import fr.liglab.adele.cilia.model.ChainImpl;
+import fr.liglab.adele.cilia.model.MediatorImpl;
 import fr.liglab.adele.cilia.model.PatternType;
-import fr.liglab.adele.cilia.model.Port;
-import fr.liglab.adele.cilia.model.parser.ChainParser;
-import fr.liglab.adele.cilia.model.parser.CiliaExtenderParser;
-import fr.liglab.adele.cilia.model.parser.XmlTools;
 
 public class CiliaChainInstanceParser implements ChainParser {
 
@@ -108,7 +111,7 @@ public class CiliaChainInstanceParser implements ChainParser {
 					+ " File.");
 		}
 		// First child is the root node.
-		Node node = XmlTools.streamToNode(fis).getFirstChild();
+		Node node = XMLTools.streamToNode(fis).getFirstChild();
 		String rootName = node.getNodeName();
 		if (rootName.compareTo(ROOT_FILE) != 0) {
 			throw new CiliaException(xmlFile.getPath() + " Root element must be <"
@@ -161,7 +164,7 @@ public class CiliaChainInstanceParser implements ChainParser {
 		String id = getId(nchain);
 		String type = getType(nchain);
 		Properties props = getProperties(nchain);
-		newChain = new Chain(id, type, null, props);
+		newChain = new ChainImpl(id, type, null, props);
 		Node node = nchain.getFirstChild();
 		while (node != null) {
 			if (node.getNodeName().compareToIgnoreCase(CHAIN_MEDIATORS) == 0) {
@@ -236,7 +239,7 @@ public class CiliaChainInstanceParser implements ChainParser {
 			}
 		}
 		Properties bindingProperties = getProperties(bindingNode);
-		bindingModel = new Binding(bindingId, bindingType, null, bindingProperties);
+		bindingModel = new BindingImpl(bindingId, bindingType, null, bindingProperties);
 		//
 		String colport = getAttributeValue(bindingNode, BINDING_to);
 		String sendport = getAttributeValue(bindingNode, BINDING_from);
@@ -374,7 +377,7 @@ public class CiliaChainInstanceParser implements ChainParser {
 		}
 		do {
 			if (mediatorNode.getNodeName().compareTo(MEDIATOR) == 0) {
-				IComponent mediator = getMediator(mediatorNode);
+				Component mediator = getMediator(mediatorNode);
 				if (mediator == null) {
 					log.error("Unable to obtain Mediator :");
 				} else {
@@ -408,7 +411,7 @@ public class CiliaChainInstanceParser implements ChainParser {
 		}
 		do {
 			if (mediatorNode.getNodeName().compareTo(ADAPTER) == 0) {
-				IComponent mediator = getAdapter(mediatorNode);
+				Component mediator = getAdapter(mediatorNode);
 				if (mediator == null) {
 					log.error("Unable to obtain Adapter :");
 				} else {
@@ -435,9 +438,9 @@ public class CiliaChainInstanceParser implements ChainParser {
 	 *            Mediator node.
 	 * @return the new mediator.
 	 */
-	protected IComponent getMediator(Node nmediator) {
+	protected Mediator getMediator(Node nmediator) {
 		mediatorNumbers++;
-		IComponent mediator = null;
+		Mediator mediator = null;
 		String mediatorId = getId(nmediator);
 		String mediatorType = getType(nmediator);
 		;
@@ -451,8 +454,8 @@ public class CiliaChainInstanceParser implements ChainParser {
 			mediatorId = mediatorType + mediatorNumbers;
 		}
 
-		mediator = new Mediator(mediatorId, mediatorType, mediatorProperties);
-		mediator = extendersParsers(nmediator, mediator);
+		mediator = new MediatorImpl(mediatorId, mediatorType, mediatorProperties);
+		mediator = (Mediator)extendersParsers(nmediator, mediator);
 
 		return mediator;
 	}
@@ -464,9 +467,9 @@ public class CiliaChainInstanceParser implements ChainParser {
 	 *            adapter node.
 	 * @return the new adapter.
 	 */
-	protected IComponent getAdapter(Node nadapter) {
+	protected Adapter getAdapter(Node nadapter) {
 		mediatorNumbers++;
-		IComponent adapter = null;
+		Adapter adapter = null;
 		PatternType pt = getPattern(nadapter);
 		String adapterId = getId(nadapter);
 		String adapterType = getType(nadapter);
@@ -481,8 +484,8 @@ public class CiliaChainInstanceParser implements ChainParser {
 		}
 
 		// String pattern = getAttributeValue(nmediator, pattern)
-		adapter = new Adapter(adapterId, adapterType, null, adapterProperties, pt);
-		adapter = extendersParsers(nadapter, adapter);
+		adapter = new AdapterImpl(adapterId, adapterType, null, adapterProperties, pt);
+		adapter = (Adapter)extendersParsers(nadapter, adapter);
 		return adapter;
 	}
 
@@ -761,7 +764,7 @@ public class CiliaChainInstanceParser implements ChainParser {
 		}
 	}
 
-	private IComponent extendersParsers(Node node, IComponent component) {
+	private Component extendersParsers(Node node, Component component) {
 		Set currentParsers = null;
 		synchronized (customParsers) {
 			currentParsers = new HashSet(customParsers);
@@ -771,7 +774,7 @@ public class CiliaChainInstanceParser implements ChainParser {
 			CiliaExtenderParser cep = (CiliaExtenderParser) it.next();
 			if (cep.canHandle(node)) {
 				try {
-					component = cep.getComponent(node, component);
+					component =  cep.getComponent(node, component);
 				} catch (CiliaParserException e) {
 					e.printStackTrace();
 				}

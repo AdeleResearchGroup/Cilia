@@ -17,9 +17,9 @@ package fr.liglab.adele.cilia.administration.activator;
 
 import fr.liglab.adele.cilia.CiliaContext;
 import fr.liglab.adele.cilia.components.model.ContentBasedRouting;
-import fr.liglab.adele.cilia.model.Adapter;
-import fr.liglab.adele.cilia.model.Chain;
-import fr.liglab.adele.cilia.model.Mediator;
+import fr.liglab.adele.cilia.model.AdapterImpl;
+import fr.liglab.adele.cilia.model.ChainImpl;
+import fr.liglab.adele.cilia.model.MediatorImpl;
 import fr.liglab.adele.cilia.model.PatternType;
 /**
  * AdminChainActivator: Generate and initialize the cilia-admin chan. 
@@ -35,7 +35,7 @@ public class AdminChainActivator {
 	/**
 	 * The cilia-admin chain.
 	 */
-	Chain adminChain;
+	ChainImpl adminChain;
 	/**
 	 * Method called when initializing the component.
 	 * When the component is started, the cilia-admin chain is generated and initialized.
@@ -55,19 +55,19 @@ public class AdminChainActivator {
 	 * Create the cilia-admin chain and its mediators.
 	 * @return the cilia-admin chain reference.
 	 */
-	private Chain createChain(){
-		Chain chain = new Chain("admin-chain", "AdministrationChain", "fr.liglab.adele.cilia", null);
-		Adapter adapter = getAdapter();
-		Mediator entry = getEntryMediator();
-		Mediator creator = getCreatorMediator();
-		Mediator shower =  getShowMediator();
-		Mediator remover = getRemoverMediator();
-		Mediator starter = getStarterMediator();
-		Mediator stop =    getStopMediator();
-		Mediator modifier =    getModifierMediator();
-		Mediator loader =    getLoaderMediator();
-		Mediator replacer = getReplacerMediator() ;
-		Mediator copier = getCopierMediator();
+	private ChainImpl createChain(){
+		ChainImpl chain = new ChainImpl("admin-chain", "AdministrationChain", "fr.liglab.adele.cilia", null);
+		AdapterImpl adapter = getAdapter();
+		MediatorImpl entry = getEntryMediator();
+		MediatorImpl creator = getCreatorMediator();
+		MediatorImpl shower =  getShowMediator();
+		MediatorImpl remover = getRemoverMediator();
+		MediatorImpl starter = getStarterMediator();
+		MediatorImpl stop =    getStopMediator();
+		MediatorImpl modifier =    getModifierMediator();
+		MediatorImpl loader =    getLoaderMediator();
+		MediatorImpl replacer = getReplacerMediator() ;
+		MediatorImpl copier = getCopierMediator();
 		
 		chain.add(adapter);
 		chain.add(entry);
@@ -98,12 +98,12 @@ public class AdminChainActivator {
 	/**
 	 * @return
 	 */
-	private Adapter getAdapter() {
+	private AdapterImpl getAdapter() {
 		// TODO Auto-generated method stub
-		return new Adapter("service-adapter", "cilia-admin-service-adapter", "fr.liglab.adele.cilia", null, PatternType.IN_ONLY);
+		return new AdapterImpl("service-adapter", "cilia-admin-service-adapter", "fr.liglab.adele.cilia", null, PatternType.IN_ONLY);
 	}
-	private Mediator getEntryMediator() {
-		Mediator creator = new Mediator("admin-entry-mediator", "CiliaAdminCBMediator","fr.liglab.adele.cilia.admin", null);
+	private MediatorImpl getEntryMediator() {
+		MediatorImpl creator = new MediatorImpl("admin-entry-mediator", "CiliaAdminCBMediator","fr.liglab.adele.cilia.admin", null);
 		ContentBasedRouting routing = new ContentBasedRouting(creator);
 		routing.evaluator("ldap");
 		routing.condition("(data.content=create)").to("create");
@@ -119,38 +119,38 @@ public class AdminChainActivator {
 		return creator;
 	}
 	
-	private Mediator getCreatorMediator(){
-		return new Mediator("admin-creator", "CiliaAdminCreator","fr.liglab.adele.cilia.admin", null);
+	private MediatorImpl getCreatorMediator(){
+		return new MediatorImpl("admin-creator", "CiliaAdminCreator","fr.liglab.adele.cilia.admin", null);
 	}
 
-	private Mediator getRemoverMediator(){
-		return new Mediator("admin-remove", "CiliaAdminRemover","fr.liglab.adele.cilia.admin", null);
+	private MediatorImpl getRemoverMediator(){
+		return new MediatorImpl("admin-remove", "CiliaAdminRemover","fr.liglab.adele.cilia.admin", null);
 	}
 
-	private Mediator getShowMediator(){
-		return new Mediator("admin-show", "CiliaAdminShow","fr.liglab.adele.cilia.admin", null);
+	private MediatorImpl getShowMediator(){
+		return new MediatorImpl("admin-show", "CiliaAdminShow","fr.liglab.adele.cilia.admin", null);
 	}
 
-	private Mediator getStarterMediator(){
-		return  new Mediator("admin-starter", "CiliaAdminStarter","fr.liglab.adele.cilia.admin", null);
+	private MediatorImpl getStarterMediator(){
+		return  new MediatorImpl("admin-starter", "CiliaAdminStarter","fr.liglab.adele.cilia.admin", null);
 	}
 
-	private Mediator getStopMediator(){
-		return new Mediator("admin-stop", "CiliaAdminStop","fr.liglab.adele.cilia.admin", null);
+	private MediatorImpl getStopMediator(){
+		return new MediatorImpl("admin-stop", "CiliaAdminStop","fr.liglab.adele.cilia.admin", null);
 	}
 	
-	private Mediator getModifierMediator(){
-		return new Mediator("admin-modify", "CiliaAdminModifier","fr.liglab.adele.cilia.admin", null);
+	private MediatorImpl getModifierMediator(){
+		return new MediatorImpl("admin-modify", "CiliaAdminModifier","fr.liglab.adele.cilia.admin", null);
 	}
 
-	private Mediator getLoaderMediator(){
-		return new Mediator("admin-loader", "CiliaAdminLoader","fr.liglab.adele.cilia.admin", null);
+	private MediatorImpl getLoaderMediator(){
+		return new MediatorImpl("admin-loader", "CiliaAdminLoader","fr.liglab.adele.cilia.admin", null);
 	}
 	
-	private Mediator getReplacerMediator() {
-		return new Mediator("admin-replacer", "CiliaAdminReplacer","fr.liglab.adele.cilia.admin", null);		
+	private MediatorImpl getReplacerMediator() {
+		return new MediatorImpl("admin-replacer", "CiliaAdminReplacer","fr.liglab.adele.cilia.admin", null);		
 	}
-	private Mediator getCopierMediator() {
-		return new Mediator("admin-copier", "CiliaAdminCopier","fr.liglab.adele.cilia.admin", null);		
+	private MediatorImpl getCopierMediator() {
+		return new MediatorImpl("admin-copier", "CiliaAdminCopier","fr.liglab.adele.cilia.admin", null);		
 	}
 }

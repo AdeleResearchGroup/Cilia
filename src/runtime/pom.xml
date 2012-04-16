@@ -21,9 +21,9 @@
 	</parent>
 
 	<groupId>fr.liglab.adele.cilia</groupId>
-	<artifactId>cilia-ipojo-runtime</artifactId>
+	<artifactId>cilia-runtime</artifactId>
 	<packaging>bundle</packaging>
-	<name>Cilia iPOJO Runtime</name>
+	<name>Cilia Runtime</name>
 	<version>1.2.2-SNAPSHOT</version>
 
 	<dependencies>
@@ -54,9 +54,13 @@
 		<dependency>
 			<groupId>fr.liglab.adele.cilia</groupId>
 			<artifactId>cilia-core</artifactId>
-			<version>1.2.1</version>
+			<version>1.2.2-SNAPSHOT</version>
 		</dependency>
-
+		<dependency>
+			<groupId>org.apache.felix</groupId>
+			<artifactId>org.apache.felix.ipojo</artifactId>
+			<version>1.8.0</version>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -74,15 +78,24 @@
 							fr.liglab.adele.cilia.framework.monitor.statevariable,
 							fr.liglab.adele.cilia.framework.utils,
 							fr.liglab.adele.cilia.runtime,
-							fr.liglab.adele.cilia.components.model		
+							fr.liglab.adele.cilia.components.model,
+fr.liglab.adele.cilia.components.collectors,
+							fr.liglab.adele.cilia.components.schedulers.impl,
+							fr.liglab.adele.cilia.components.dispatchers.impl,
+							fr.liglab.adele.cilia.components.model,
+							fr.liglab.adele.cilia.components.senders,
+							fr.liglab.adele.cilia.compendium.data.manipulation,
+							fr.liglab.adele.cilia.compendium.extender.parsers,
+					fr.liglab.adele.cilia.compendium.expressioncommands,											fr.liglab.adele.cilia.handler.dependency,fr.liglab.adele.cilia.monitor.error		
             			</Export-Package>
 						<Private-Package>
 							fr.liglab.adele.cilia.internals,
+							fr.liglab.adele.cilia.internals.controller,
 							fr.liglab.adele.cilia.internals.factories,
 							fr.liglab.adele.cilia.runtime.impl,
 							fr.liglab.adele.cilia.framework.utils.impl,
-							fr.liglab.adele.cilia.framework.scheduler.impl,
-							fr.liglab.adele.cilia.utils.filemanager.impl
+fr.liglab.adele.cilia.components.bindings,
+							fr.liglab.adele.cilia.framework.scheduler.impl
 						</Private-Package>
 						<Include-Resource>
 							{maven-resources},
@@ -90,19 +103,18 @@
 							META-INF/NOTICE = NOTICE
            	 				</Include-Resource>
 						<IPOJO-Extension>
-							mediator-component:fr.liglab.adele.cilia.factories.MediatorComponentFactory,
-							scheduler:fr.liglab.adele.cilia.factories.SchedulerFactory,
-							dispatcher:fr.liglab.adele.cilia.factories.DispatcherFactory,
-							processor:fr.liglab.adele.cilia.factories.ProcessorFactory,
-							collector:fr.liglab.adele.cilia.factories.CollectorFactory,
-							sender:fr.liglab.adele.cilia.factories.SenderFactory,
-							adapter:fr.liglab.adele.cilia.factories.AdapterFactory,
-							io-adapter:fr.liglab.adele.cilia.factories.IOAdapterFactory,
-							binding:fr.liglab.adele.cilia.factories.BindingFactory,
-							monitor:fr.liglab.adele.cilia.factories.MonitorHandlerFactory,
-							protocol:fr.liglab.adele.cilia.factories.BindingFactory,
-							linker:fr.liglab.adele.cilia.factories.BindingFactory
-
+							mediator-component:fr.liglab.adele.cilia.internals.factories.MediatorComponentFactory,
+							scheduler:fr.liglab.adele.cilia.internals.factories.SchedulerFactory,
+							dispatcher:fr.liglab.adele.cilia.internals.factories.DispatcherFactory,
+							processor:fr.liglab.adele.cilia.internals.factories.ProcessorFactory,
+							collector:fr.liglab.adele.cilia.internals.factories.CollectorFactory,
+							sender:fr.liglab.adele.cilia.internals.factories.SenderFactory,
+							adapter:fr.liglab.adele.cilia.internals.factories.AdapterFactory,
+							io-adapter:fr.liglab.adele.cilia.internals.factories.IOAdapterFactory,
+							binding:fr.liglab.adele.cilia.internals.factories.BindingFactory,
+							monitor:fr.liglab.adele.cilia.internals.factories.MonitorHandlerFactory,
+							protocol:fr.liglab.adele.cilia.internals.factories.BindingFactory,
+							linker:fr.liglab.adele.cilia.internals.factories.BindingFactory
 						</IPOJO-Extension>
 					</instructions>
 				</configuration>

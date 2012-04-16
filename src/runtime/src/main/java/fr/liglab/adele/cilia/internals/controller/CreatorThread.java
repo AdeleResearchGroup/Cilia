@@ -3,9 +3,11 @@ package fr.liglab.adele.cilia.internals.controller;
 import java.util.ArrayList;
 import java.util.List;
 
-import fr.liglab.adele.cilia.model.Collector;
-import fr.liglab.adele.cilia.model.Component;
-import fr.liglab.adele.cilia.model.Sender;
+import fr.liglab.adele.cilia.Component;
+import fr.liglab.adele.cilia.model.CollectorImpl;
+import fr.liglab.adele.cilia.model.SenderImpl;
+
+
 
 public class CreatorThread implements Runnable {
 
@@ -47,13 +49,13 @@ public class CreatorThread implements Runnable {
 	}
 
 
-	public void addSender(MediatorControllerImpl mediator, Sender sender, boolean postpone) {
+	public void addSender(MediatorControllerImpl mediator, Component sender, boolean postpone) {
 		ControllerPair controller = new ControllerPair(mediator, sender);
 		addTask(controller, postpone);
 	}
 
 
-	public void addCollector(MediatorControllerImpl mediator, Collector collector, boolean postpone) {
+	public void addCollector(MediatorControllerImpl mediator, Component collector, boolean postpone) {
 		ControllerPair controller = new ControllerPair(mediator, collector);
 		addTask(controller, postpone);
 	}
@@ -74,10 +76,10 @@ public class CreatorThread implements Runnable {
 	protected void startTask(ControllerPair pair) {
 		MediatorControllerImpl controller = pair.getController();
 		Component comp = pair.getModel();
-		if (comp instanceof Sender) {
-			controller.createSender((Sender)comp);
-		} else if (comp instanceof Collector) {
-			controller.createCollector((Collector)comp);
+		if (comp instanceof SenderImpl) {
+			controller.createSender(comp);
+		} else if (comp instanceof CollectorImpl) {
+			controller.createCollector(comp);
 		}
 	}
 

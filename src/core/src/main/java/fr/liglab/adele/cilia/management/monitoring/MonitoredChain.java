@@ -26,7 +26,7 @@ public interface MonitoredChain extends ChangeSet {
 	/* Return the chain ID */
 	String getId();
 
-	/* List of component ID providing Component informations at runtime */
+	/* List of component ID providing ComponentImpl informations at runtime */
 	String[] getMonitoredComponentId();
 
 	/* Runtime informations for the given component Id */
