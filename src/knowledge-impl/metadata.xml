@@ -62,7 +62,7 @@
 		<property name="cache.capacity" value="100" />
 	</instance>
 
-	<!-- Private serviced Publisher to the event bus, provides publish APIs -->
+	<!-- Private service ,Publisher to the event bus -->
 	<component
 		classname="fr.liglab.adele.cilia.knowledge.impl.eventbus.EventPublisherImpl"
 		name="ModelRuntime_Core.EventPublisher">
