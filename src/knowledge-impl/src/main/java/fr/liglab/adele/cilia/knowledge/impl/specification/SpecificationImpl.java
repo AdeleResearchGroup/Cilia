@@ -37,16 +37,17 @@ import fr.liglab.adele.cilia.MediatorComponent;
 import fr.liglab.adele.cilia.event.CiliaEvent;
 import fr.liglab.adele.cilia.event.CiliaFrameworkEvent;
 import fr.liglab.adele.cilia.event.CiliaFrameworkListener;
-import fr.liglab.adele.cilia.exceptions.IllegalParameterException;
+import fr.liglab.adele.cilia.exceptions.CiliaIllegalParameterException;
+import fr.liglab.adele.cilia.exceptions.CiliaIllegalStateException;
 import fr.liglab.adele.cilia.knowledge.Constants;
 import fr.liglab.adele.cilia.knowledge.Node;
 import fr.liglab.adele.cilia.knowledge.eventbus.EventProperties;
 import fr.liglab.adele.cilia.knowledge.impl.Knowledge;
 import fr.liglab.adele.cilia.knowledge.impl.eventbus.Publisher;
 import fr.liglab.adele.cilia.knowledge.specification.Application;
-import fr.liglab.adele.cilia.knowledge.util.UnModifiableDictionary;
 import fr.liglab.adele.cilia.model.ChainRuntime;
 import fr.liglab.adele.cilia.model.PatternType;
+import fr.liglab.adele.cilia.util.UnModifiableDictionary;
 import fr.liglab.adele.cilia.util.Watch;
 
 /**
@@ -131,9 +132,10 @@ public class SpecificationImpl extends SpecificationListenerSupport implements
 
 	/**
 	 * Type = pattern matching
+	 * @throws CiliaIllegalParameterException 
 	 */
 	private Node[] getEndpoints(String ldapFilter, PatternType type)
-			throws InvalidSyntaxException {
+			throws InvalidSyntaxException, CiliaIllegalParameterException {
 
 		Adapter adapter;
 		Set adapterResult = new HashSet();
@@ -162,15 +164,15 @@ public class SpecificationImpl extends SpecificationListenerSupport implements
 		return (Node[]) adapterResult.toArray(new Node[adapterResult.size()]);
 	}
 
-	public Node[] endpointIn(String ldapFilter) throws InvalidSyntaxException {
+	public Node[] endpointIn(String ldapFilter) throws InvalidSyntaxException, CiliaIllegalParameterException {
 		return getEndpoints(ldapFilter, PatternType.IN_ONLY);
 	}
 
-	public Node[] endpointOut(String ldapFilter) throws InvalidSyntaxException {
+	public Node[] endpointOut(String ldapFilter) throws InvalidSyntaxException, CiliaIllegalParameterException {
 		return getEndpoints(ldapFilter, PatternType.OUT_ONLY);
 	}
 
-	public Node[] connectedTo(Node node) throws IllegalStateException {
+	public Node[] connectedTo(Node node) throws CiliaIllegalStateException {
 
 		Binding[] bindings;
 		Set nodeSet = new HashSet();
@@ -185,13 +187,12 @@ public class SpecificationImpl extends SpecificationListenerSupport implements
 							.getTargetMediator().getId()));
 				}
 			}
-		} catch (IllegalParameterException e) {
+		} catch (CiliaIllegalParameterException e) {
 		}
 		return (Node[]) nodeSet.toArray(new Node[nodeSet.size()]);
 	}
 
-	
-	public Node[] connectedTo(String ldapFilter) throws InvalidSyntaxException {
+	public Node[] connectedTo(String ldapFilter) throws InvalidSyntaxException, CiliaIllegalParameterException {
 
 		Node[] nodes = new Node[0];
 		Node[] source = findByFilter(ldapFilter);
@@ -201,19 +202,20 @@ public class SpecificationImpl extends SpecificationListenerSupport implements
 				for (int i = 0; i < nodes.length; i++) {
 					nodes = Knowledge.concat(nodes, connectedTo(source[i]));
 				}
-			} catch (IllegalStateException e) {
+			} catch (CiliaIllegalStateException e) {
 
 			}
 		}
 		return nodes;
 	}
 
-	public int getChainState(String chainId) {
+	public int getChainState(String chainId) throws CiliaIllegalParameterException,
+			CiliaIllegalStateException {
 		if (chainId == null)
-			throw new RuntimeException("chain id is null");
+			throw new CiliaIllegalParameterException("chain id is null");
 		ChainRuntime chain = ciliaContext.getChainRuntime(chainId);
 		if (chain == null)
-			throw new RuntimeException("'" + chainId + "' not found");
+			throw new CiliaIllegalStateException("'" + chainId + "' not found");
 		return chain.getState();
 	}
 
@@ -280,8 +282,8 @@ public class SpecificationImpl extends SpecificationListenerSupport implements
 	 * fr.liglab.adele.cilia.knowledge.core.specification.Application#properties
 	 * (fr.liglab.adele.cilia.knowledge.core.Node)
 	 */
-	public Dictionary properties(Node node) throws IllegalStateException,
-			IllegalParameterException, IllegalStateException {
+	public Dictionary properties(Node node) throws CiliaIllegalStateException,
+			CiliaIllegalParameterException {
 		MediatorComponent mc = getModel(node);
 		return new UnModifiableDictionary(mc.getProperties());
 	}
@@ -293,10 +295,10 @@ public class SpecificationImpl extends SpecificationListenerSupport implements
 	 * fr.liglab.adele.cilia.knowledge.core.specification.Application#getModel
 	 * (fr.liglab.adele.cilia.knowledge.core.Node)
 	 */
-	public MediatorComponent getModel(Node node) throws IllegalParameterException,
-			IllegalStateException {
+	public MediatorComponent getModel(Node node) throws CiliaIllegalParameterException,
+			CiliaIllegalStateException {
 		if (node == null)
-			throw new IllegalParameterException("node is null !");
+			throw new CiliaIllegalParameterException("node is null !");
 		Chain chain;
 		MediatorComponent mc;
 		try {
@@ -323,7 +325,7 @@ public class SpecificationImpl extends SpecificationListenerSupport implements
 		return mc;
 	}
 
-	public Node[] findByFilter(String ldapFilter) throws InvalidSyntaxException {
+	public Node[] findByFilter(String ldapFilter) throws InvalidSyntaxException, CiliaIllegalParameterException {
 
 		Filter filter = Knowledge.createFilter(ldapFilter);
 
@@ -358,8 +360,14 @@ public class SpecificationImpl extends SpecificationListenerSupport implements
 		return (Node[]) componentSet.toArray(new Node[componentSet.size()]);
 	}
 
-	public Date lastStart(String chainId) {
-		throw new UnsupportedOperationException("a mettre dans ChainRuntime l'heure du Start");
+	public Date lastStart(String chainId) throws CiliaIllegalParameterException,
+			CiliaIllegalStateException {
+		if (chainId == null)
+			throw new CiliaIllegalParameterException("chain id is null");
+		ChainRuntime chain = ciliaContext.getChainRuntime(chainId);
+		if (chain == null)
+			throw new CiliaIllegalStateException("'" + chainId + "' not found");
+		return chain.lastStart();
 	}
 
 }

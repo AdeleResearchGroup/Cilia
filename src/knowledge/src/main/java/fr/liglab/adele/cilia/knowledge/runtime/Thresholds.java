@@ -15,7 +15,7 @@
 
 package fr.liglab.adele.cilia.knowledge.runtime;
 
-import fr.liglab.adele.cilia.exceptions.IllegalParameterException;
+import fr.liglab.adele.cilia.exceptions.CiliaIllegalParameterException;
 import fr.liglab.adele.cilia.knowledge.Node;
 
 /**
@@ -34,11 +34,11 @@ public interface Thresholds extends Node {
 	 * @param low
 	 * @param veryLow
 	 *            Double.Na if for no veryLow threshold
-	 * @throws IllegalParameterException
+	 * @throws CiliaIllegalParameterException
 	 *             if variable name is null
 	 */
 	public void setLow(String variableId, double low, double veryLow)
-			throws IllegalParameterException;
+			throws CiliaIllegalParameterException;
 
 	/**
 	 * Set thresholds high
@@ -48,10 +48,10 @@ public interface Thresholds extends Node {
 	 * @param high
 	 * @param veryhigh
 	 *            Double.Na if for no threshold very high
-	 * @throws IllegalParameterException
+	 * @throws CiliaIllegalParameterException
 	 */
 	public void setHigh(String variableId, double high, double veryhigh)
-			throws IllegalParameterException;
+			throws CiliaIllegalParameterException;
 
 	/**
 	 * 
@@ -59,10 +59,10 @@ public interface Thresholds extends Node {
 	 *            variable name
 	 * @return double value setted for the low threshold , Double.Na if no
 	 *         thresolhold
-	 * @throws IllegalParameterException
+	 * @throws CiliaIllegalParameterException
 	 *             if variable name is null
 	 */
-	public double getLow(String variableId) throws IllegalParameterException;
+	public double getLow(String variableId) throws CiliaIllegalParameterException;
 
 	/**
 	 * 
@@ -70,9 +70,9 @@ public interface Thresholds extends Node {
 	 *            variable name
 	 * @return double value setted for the very low threshold, Double.Na if no
 	 *         thresolhold
-	 * @throws IllegalParameterException
+	 * @throws CiliaIllegalParameterException
 	 */
-	public double getVeryLow(String variableId) throws IllegalParameterException;
+	public double getVeryLow(String variableId) throws CiliaIllegalParameterException;
 
 	/**
 	 * 
@@ -80,16 +80,16 @@ public interface Thresholds extends Node {
 	 *            variable name
 	 * @return double value setted for the high threshold, Double.Na if no
 	 *         thresolhold
-	 * @throws IllegalParameterException
+	 * @throws CiliaIllegalParameterException
 	 */
-	public double getHigh(String variableId) throws IllegalParameterException;
+	public double getHigh(String variableId) throws CiliaIllegalParameterException;
 	/**
 	 * 
 	 * @param variableId
 	 *            variable name
 	 * @return double value setted for the very high threshold, Double.Na if no
 	 *         thresolhold
-	 * @throws IllegalParameterException
+	 * @throws CiliaIllegalParameterException
 	 */
-	public double getVeryHigh(String variableId) throws IllegalParameterException;
+	public double getVeryHigh(String variableId) throws CiliaIllegalParameterException;
 }

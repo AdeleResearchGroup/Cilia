@@ -17,7 +17,7 @@ package fr.liglab.adele.cilia.knowledge.runtime;
 
 import org.osgi.framework.InvalidSyntaxException;
 
-import fr.liglab.adele.cilia.exceptions.IllegalParameterException;
+import fr.liglab.adele.cilia.exceptions.CiliaIllegalParameterException;
 import fr.liglab.adele.cilia.knowledge.Node;
 
 /**
@@ -61,7 +61,7 @@ public interface SetUp extends Node {
 	 * @return true if action done , false otherwhise
 	 */
 	public void setMonitoring(String variableId, int queueSize, String LdapFilter,
-			boolean enable) throws InvalidSyntaxException,IllegalParameterException;
+			boolean enable) throws InvalidSyntaxException,CiliaIllegalParameterException;
 
 	/**
 	 * Configure the monitoring on this object ( others parameters are not
@@ -74,7 +74,7 @@ public interface SetUp extends Node {
 	 * @return true if action done , false otherwhise
 	 */
 	public void setMonitoring(String variableId, int queueSize)
-			throws IllegalParameterException;
+			throws CiliaIllegalParameterException;
 
 	/**
 	 * Configure the monitoring on this object
@@ -86,7 +86,7 @@ public interface SetUp extends Node {
 	 * @return true if action done , false otherwhise
 	 */
 	public void setMonitoring(String variableId, String LdapFilter)
-			throws IllegalParameterException, InvalidSyntaxException;
+			throws CiliaIllegalParameterException, InvalidSyntaxException;
 
 	/**
 	 * Configure the monitoring on this object
@@ -98,7 +98,7 @@ public interface SetUp extends Node {
 	 * @return true if action done , false otherwhise
 	 */
 	public void setMonitoring(String variableId, boolean enable)
-			throws IllegalParameterException;
+			throws CiliaIllegalParameterException;
 
 	/**
 	 * 
@@ -111,13 +111,13 @@ public interface SetUp extends Node {
 	 * @param variableId
 	 * @return number of objects stored
 	 */
-	public int queueSize(String variableId) throws IllegalParameterException;
+	public int queueSize(String variableId) throws CiliaIllegalParameterException;
 
 	/**
 	 * @param variableId
 	 * @return ldap filter for the flow control
-	 * @throws IllegalParameterException 
+	 * @throws CiliaIllegalParameterException 
 	 */
-	public String flowControl(String variableId) throws  IllegalParameterException;
+	public String flowControl(String variableId) throws  CiliaIllegalParameterException;
 
 }

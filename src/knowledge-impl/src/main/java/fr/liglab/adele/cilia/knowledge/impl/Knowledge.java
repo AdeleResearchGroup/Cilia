@@ -25,34 +25,33 @@ import org.osgi.framework.Filter;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.InvalidSyntaxException;
 
+import fr.liglab.adele.cilia.exceptions.CiliaIllegalParameterException;
 import fr.liglab.adele.cilia.knowledge.Constants;
 import fr.liglab.adele.cilia.knowledge.Node;
 
 /**
  * Privates constants
+ * 
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project
  *         Team</a>
- *
+ * 
  */
 public final class Knowledge {
 	/**
 	 * by default the cache service is running
 	 */
-	public static final boolean CACHED_AUTORUN = true ;
+	public static final boolean CACHED_AUTORUN = true;
 	/*
 	 * logger name
 	 */
 	public static final String LOG_NAME = "cilia.knowledge";
-	/*
-	 * Framework period in ms
-	 */
-	public static final int FRAMEWORK_PERIOD = 1000;
+	
 	/*
 	 * #items stored per state variables
 	 */
 	public static final int DEFAULT_QUEUE_SIZE = 10;
 	/*
-	 * 
+	 * State var default condition (none)
 	 */
 	public static final String DEFAULT_CONDITION = null;
 
@@ -79,9 +78,9 @@ public final class Knowledge {
 	}
 
 	public synchronized static final Filter createFilter(String filter)
-			throws InvalidSyntaxException {
+			throws CiliaIllegalParameterException,InvalidSyntaxException {
 		if (filter == null)
-			throw new InvalidSyntaxException("filter is null !", null);
+			throw new CiliaIllegalParameterException("filter is null !");
 		boolean found = false;
 		/* at least one keyword is required */
 		Iterator it = ldapKeys.iterator();
@@ -93,8 +92,8 @@ public final class Knowledge {
 			}
 		}
 		if (found == false)
-			throw new InvalidSyntaxException("missing ldap filter keyword "
-					+ ldapKeys.toString() + "!", filter);
+			throw new CiliaIllegalParameterException("missing ldap filter keyword "
+					+ ldapKeys.toString() + "!" + filter);
 		return FrameworkUtil.createFilter(filter);
 	}
 }

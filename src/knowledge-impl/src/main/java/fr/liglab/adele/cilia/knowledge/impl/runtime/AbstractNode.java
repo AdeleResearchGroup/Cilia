@@ -24,7 +24,7 @@ import org.osgi.util.measurement.Measurement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import fr.liglab.adele.cilia.exceptions.IllegalParameterException;
+import fr.liglab.adele.cilia.exceptions.CiliaIllegalParameterException;
 import fr.liglab.adele.cilia.knowledge.eventbus.EventProperties;
 import fr.liglab.adele.cilia.knowledge.impl.Knowledge;
 import fr.liglab.adele.cilia.knowledge.runtime.RawData;
@@ -73,54 +73,54 @@ public abstract class AbstractNode implements SetUp, RawData, Thresholds {
 		return node;
 	}
 
-	public void setLow(String variableId, double low, double verylow) throws IllegalParameterException {
+	public void setLow(String variableId, double low, double verylow) throws CiliaIllegalParameterException {
 		if (variableId == null)
-			throw new IllegalParameterException("Variable id must not be null !");
+			throw new CiliaIllegalParameterException("Variable id must not be null !");
 		Observations measures = (Observations) stateVariables.get(variableId);
 		if (measures == null)
-			throw new IllegalParameterException(
+			throw new CiliaIllegalParameterException(
 					"Monitoring has not been set for this variable " + variableId);
 		measures.setLow(low);
 		measures.setVeryLow(verylow);
 	}
 
-	public void setHigh(String variableId, double high, double veryhigh) throws IllegalParameterException {
+	public void setHigh(String variableId, double high, double veryhigh) throws CiliaIllegalParameterException {
 		Observations measures = (Observations) stateVariables.get(variableId);
 		if (measures == null)
-			throw new IllegalParameterException(
+			throw new CiliaIllegalParameterException(
 					"Monitoring has not been set for this variable " + variableId);
 		measures.setHigh(high);
 		measures.setVeryHigh(veryhigh);
 	}
 
-	public double getLow(String variableId) throws IllegalParameterException {
+	public double getLow(String variableId) throws CiliaIllegalParameterException {
 		Observations measures = (Observations) stateVariables.get(variableId);
 		if (measures == null)
-			throw new IllegalParameterException(
+			throw new CiliaIllegalParameterException(
 					"Monitoring has not been set for this variable " + variableId);
 		return measures.getLow();
 	}
 
-	public double getVeryLow(String variableId) throws IllegalParameterException  {
+	public double getVeryLow(String variableId) throws CiliaIllegalParameterException  {
 		Observations measures = (Observations) stateVariables.get(variableId);
 		if (measures == null)
-			throw new IllegalParameterException(
+			throw new CiliaIllegalParameterException(
 					"Monitoring has not been set for this variable " + variableId);
 		return measures.getVeryLow();
 	}
 
-	public double getHigh(String variableId) throws IllegalParameterException  {
+	public double getHigh(String variableId) throws CiliaIllegalParameterException  {
 		Observations measures = (Observations) stateVariables.get(variableId);
 		if (measures == null)
-			throw new IllegalParameterException(
+			throw new CiliaIllegalParameterException(
 					"Monitoring has not been set for this variable " + variableId);
 		return measures.getHigh();
 	}
 
-	public double getVeryHigh(String variableId) throws IllegalParameterException   {
+	public double getVeryHigh(String variableId) throws CiliaIllegalParameterException   {
 		Observations measures = (Observations) stateVariables.get(variableId);
 		if (measures == null)
-			throw new IllegalParameterException(
+			throw new CiliaIllegalParameterException(
 					"Monitoring has not been set for this variable " + variableId);
 		return measures.getVeryHigh();
 	}

@@ -27,6 +27,7 @@ import org.osgi.framework.InvalidSyntaxException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import fr.liglab.adele.cilia.exceptions.CiliaIllegalParameterException;
 import fr.liglab.adele.cilia.knowledge.Constants;
 import fr.liglab.adele.cilia.knowledge.UniformResourceName;
 import fr.liglab.adele.cilia.knowledge.impl.Knowledge;
@@ -97,8 +98,8 @@ public class RegistryManager implements RuntimeRegistry {
 				/* avoid infinite wait */
 				if (mutex.attempt(10000) == false) {
 					unlock_uuid(uuid);
-					logger.error("uuid is locked since 10 seconds, automatic unlock done," +
-							     "to avoid infinite lock");
+					logger.error("uuid is locked since 10 seconds, automatic unlock done,"
+							+ "to avoid infinite lock");
 				}
 			}
 			RegistryItemImpl item = (RegistryItemImpl) registry.remove(uuid);
@@ -122,28 +123,16 @@ public class RegistryManager implements RuntimeRegistry {
 		return registry.size();
 	}
 
-/*
-	public String dumpRegistry() {
-		StringBuffer sb = new StringBuffer();
-		try {
-			registry.readerSync().acquire();
-			try {
-				Iterator it = registry.entrySet().iterator();
-				while (it.hasNext()) {
-					Map.Entry pairs = (Map.Entry) it.next();
-					RegistryItem item = (RegistryItem) pairs.getValue();
-					sb.append(item.toString()).append("\n");
-				}
-				return sb.toString();
-			} finally {
-				registry.readerSync().release();
-			}
-		} catch (Exception e) {
-			Thread.currentThread().interrupt();
-			throw new RuntimeException(e.getMessage());
-		}
-	}
-*/
+	/*
+	 * public String dumpRegistry() { StringBuffer sb = new StringBuffer(); try
+	 * { registry.readerSync().acquire(); try { Iterator it =
+	 * registry.entrySet().iterator(); while (it.hasNext()) { Map.Entry pairs =
+	 * (Map.Entry) it.next(); RegistryItem item = (RegistryItem)
+	 * pairs.getValue(); sb.append(item.toString()).append("\n"); } return
+	 * sb.toString(); } finally { registry.readerSync().release(); } } catch
+	 * (Exception e) { Thread.currentThread().interrupt(); throw new
+	 * RuntimeException(e.getMessage()); } }
+	 */
 	/*
 	 * This uuid is locked temporaly (max 10 10seconds) from removal
 	 * (non-Javadoc)
@@ -191,7 +180,8 @@ public class RegistryManager implements RuntimeRegistry {
 	 * fr.liglab.adele.cilia.knowledge.core.registry.RuntimeRegistry#findByFilter
 	 * (java.lang.String)
 	 */
-	public RegistryItem[] findByFilter(String ldap) throws InvalidSyntaxException {
+	public RegistryItem[] findByFilter(String ldap) throws InvalidSyntaxException,
+			CiliaIllegalParameterException {
 		Set itemfound = new HashSet();
 		Filter filter = Knowledge.createFilter(ldap);
 		try {

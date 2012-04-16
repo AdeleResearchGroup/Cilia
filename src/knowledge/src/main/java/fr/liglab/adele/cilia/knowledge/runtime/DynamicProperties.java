@@ -17,7 +17,8 @@ package fr.liglab.adele.cilia.knowledge.runtime;
 
 import org.osgi.framework.InvalidSyntaxException;
 
-import fr.liglab.adele.cilia.exceptions.IllegalParameterException;
+import fr.liglab.adele.cilia.exceptions.CiliaIllegalParameterException;
+import fr.liglab.adele.cilia.exceptions.CiliaIllegalStateException;
 import fr.liglab.adele.cilia.knowledge.Node;
 import fr.liglab.adele.cilia.knowledge.NodeRegistration;
 import fr.liglab.adele.cilia.knowledge.Registry;
@@ -31,7 +32,7 @@ import fr.liglab.adele.cilia.knowledge.Topology;
  * 
  */
 public interface DynamicProperties extends Topology, NodeRegistration,
-		ThresholdsRegistration ,Registry {
+		ThresholdsRegistration, Registry {
 
 	/**
 	 * 
@@ -40,9 +41,11 @@ public interface DynamicProperties extends Topology, NodeRegistration,
 	 * @return array of Setup , size is 0 if no node found matching the filter
 	 * @throws InvalidSyntaxException
 	 *             if syntax error for the filter
+	 * @throws
 	 * 
 	 */
-	SetUp[] nodeSetup(String ldapFilter) throws InvalidSyntaxException;
+	SetUp[] nodeSetup(String ldapFilter) throws CiliaIllegalParameterException,
+			InvalidSyntaxException;
 
 	/**
 	 * fast access using the node reference
@@ -51,10 +54,12 @@ public interface DynamicProperties extends Topology, NodeRegistration,
 	 * @return object Setup
 	 * @throws IllegalStateException
 	 *             if the node is no more existing
-	 * @throws IllegalParameterException
+	 * @throws CiliaIllegalParameterException
 	 *             if the node is null
+	 * @throws CiliaIllegalStateException
 	 */
-	SetUp nodeSetup(Node node) throws IllegalStateException, IllegalParameterException;
+	SetUp nodeSetup(Node node) throws CiliaIllegalParameterException,
+			CiliaIllegalStateException;
 
 	/**
 	 * 
@@ -63,8 +68,10 @@ public interface DynamicProperties extends Topology, NodeRegistration,
 	 * @return array of object raw data matching the ldap filter
 	 * @throws InvalidSyntaxException
 	 *             if ldap syntax is not valid
+	 * @throws CiliaIllegalParameterException
 	 */
-	RawData[] nodeRawData(String ldapFilter) throws InvalidSyntaxException;
+	RawData[] nodeRawData(String ldapFilter) throws CiliaIllegalParameterException,
+			InvalidSyntaxException;
 
 	/**
 	 * fast access using the node reference
@@ -73,13 +80,12 @@ public interface DynamicProperties extends Topology, NodeRegistration,
 	 * @return object providing raw data
 	 * @throws InvalidSyntaxException
 	 *             if ldap syntax is not valid
-	 * @throws IllegalStateException
-	 *             if the node is no more existing
-	 * @throws IllegalParameterException
+	 * @throws CiliaIllegalParameterException
 	 *             if the node is null
+	 * @throws CiliaIllegalStateException
 	 */
-	RawData nodeRawData(Node node) throws IllegalStateException,
-			IllegalParameterException;
+	RawData nodeRawData(Node node) throws CiliaIllegalParameterException,
+			CiliaIllegalStateException;
 
 	/**
 	 * 
@@ -88,20 +94,21 @@ public interface DynamicProperties extends Topology, NodeRegistration,
 	 * @return array of object type Diagnostic matching the ldap filter
 	 * @throws InvalidSyntaxException
 	 *             if ldap syntax is not valid
+	 * @throws CiliaIllegalParameterException
 	 */
-	Thresholds[] nodeMonitoring(String ldapFilter) throws InvalidSyntaxException;
+	Thresholds[] nodeMonitoring(String ldapFilter) throws CiliaIllegalParameterException,
+			InvalidSyntaxException;
 
 	/**
 	 * fast access using the node reference
 	 * 
 	 * @param node
 	 * @return object Diagnostics
-	 * @throws IllegalStateException
-	 *             if the node is no more existing
-	 * @throws IllegalParameterException
+	 * @throws CiliaIllegalParameterException
 	 *             if the node is null
+	 * @throws CiliaIllegalStateException
 	 */
-	Thresholds nodeMonitoring(Node node) throws IllegalStateException,
-			IllegalParameterException;
+	Thresholds nodeMonitoring(Node node) throws CiliaIllegalParameterException,
+			CiliaIllegalStateException;
 
 }

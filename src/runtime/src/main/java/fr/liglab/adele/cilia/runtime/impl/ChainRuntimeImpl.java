@@ -15,16 +15,19 @@
 
 package fr.liglab.adele.cilia.runtime.impl;
 
+import java.util.Date;
+
 import fr.liglab.adele.cilia.model.ChainRuntime;
 import fr.liglab.adele.cilia.util.UUID;
 
 public class ChainRuntimeImpl implements ChainRuntime {
 	public int state;
-	private String uuid;
+
+	private Date lastStart ;
 
 	public ChainRuntimeImpl() {
 		state = STATE_IDLE;
-		uuid = UUID.generate().toString();
+
 	}
 
 	public void setState(int state) {
@@ -35,8 +38,13 @@ public class ChainRuntimeImpl implements ChainRuntime {
 		return state;
 	}
 
-	public String getUUID() {
-		return uuid;
+
+	public Date lastStart() {
+		return lastStart ;
+	}
+	
+	public void setLastDate() {
+		lastStart = new Date(System.currentTimeMillis());
 	}
 
 }

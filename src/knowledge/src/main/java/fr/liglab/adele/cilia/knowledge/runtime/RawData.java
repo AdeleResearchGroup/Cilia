@@ -17,7 +17,7 @@ package fr.liglab.adele.cilia.knowledge.runtime;
 
 import java.util.List;
 
-import fr.liglab.adele.cilia.exceptions.IllegalParameterException;
+import fr.liglab.adele.cilia.exceptions.CiliaIllegalParameterException;
 import fr.liglab.adele.cilia.knowledge.Node;
 
 /**
@@ -32,24 +32,24 @@ public interface RawData extends Node {
 	 * @param variableId
 	 * @return list of measures stored
 	 */
-	public List measures(String variableId) throws IllegalParameterException;
+	public List measures(String variableId) throws CiliaIllegalParameterException;
 
 	/**
 	 * 
 	 * @return list of state variable enabled
 	 */
-	public String[] enabledVariable() throws IllegalParameterException;
+	public String[] enabledVariable() throws CiliaIllegalParameterException;
 
 	/**
 	 * 
 	 * @param variableId
 	 * @return number of objects stored
 	 */
-	public int queueSize(String variableId) throws IllegalParameterException;
+	public int queueSize(String variableId) throws CiliaIllegalParameterException;
 
 	/**
 	 * @param variableId
 	 * @return ldap filter for the flow control
 	 */
-	public String flowControl(String variableId) throws IllegalParameterException;
+	public String flowControl(String variableId) throws CiliaIllegalParameterException;
 }

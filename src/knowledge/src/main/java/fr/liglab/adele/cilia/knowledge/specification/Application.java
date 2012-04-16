@@ -21,7 +21,9 @@ import java.util.Dictionary;
 import org.osgi.framework.InvalidSyntaxException;
 
 import fr.liglab.adele.cilia.MediatorComponent;
-import fr.liglab.adele.cilia.exceptions.IllegalParameterException;
+import fr.liglab.adele.cilia.exceptions.CiliaIllegalParameterException;
+import fr.liglab.adele.cilia.exceptions.CiliaIllegalStateException;
+import fr.liglab.adele.cilia.exceptions.CiliaRuntimeException;
 import fr.liglab.adele.cilia.knowledge.Node;
 import fr.liglab.adele.cilia.knowledge.NodeRegistration;
 import fr.liglab.adele.cilia.knowledge.Topology;
@@ -30,10 +32,9 @@ import fr.liglab.adele.cilia.knowledge.Topology;
  * 
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project
  *         Team</a>
- *
+ * 
  */
 public interface Application extends Topology, NodeRegistration, ChainRegistration {
-
 
 	/**
 	 * @return list of chain Id
@@ -44,15 +45,21 @@ public interface Application extends Topology, NodeRegistration, ChainRegistrati
 	 * 
 	 * @param chainId
 	 * @return 0=IDLE, 1 = STARTED , 2 = STOPPED
+	 * @throws CiliaIllegalParameterException
 	 */
-	int getChainState(String chainId);
-	
+	int getChainState(String chainId) throws CiliaIllegalParameterException,
+			CiliaIllegalStateException;
+
 	/**
-	 * Return last start 
+	 * Return last start
+	 * 
 	 * @param chainId
 	 * @return
+	 * @throws CiliaIllegalParameterException
+	 * @throws CiliaIllegalStateException
 	 */
-	Date lastStart(String chainId) ;
+	Date lastStart(String chainId) throws CiliaIllegalParameterException,
+			CiliaIllegalStateException;
 
 	/**
 	 * 
@@ -60,27 +67,33 @@ public interface Application extends Topology, NodeRegistration, ChainRegistrati
 	 *            define a node , ldap filters, keywords
 	 * @return array of node matching the filter, array size 0 if no node
 	 *         matching the filterá
+	 * @throws
 	 */
-	Node[] findByFilter(String ldapFilter) throws InvalidSyntaxException;
+	Node[] findByFilter(String ldapFilter) throws CiliaIllegalParameterException,
+			InvalidSyntaxException;
 
 	/**
 	 * 
 	 * @param node
 	 * @return Readonly properties or empty if no property found
-	 * @throws IllegalParameterException
+	 * @throws CiliaIllegalParameterException
 	 *             if null
-	 *             
+	 * 
 	 */
-	Dictionary properties(Node node) throws IllegalParameterException,
-			IllegalStateException;
+	Dictionary properties(Node node) throws CiliaIllegalParameterException,
+			CiliaIllegalStateException;
 
 	/**
 	 * 
 	 * @param node
 	 * @return
-	 * @throws IllegalParameterException
-	 * @throws IllegalStateException
+	 * @throws CiliaIllegalParameterException
+	 *             , wrong parameter
+	 * @throws CiliaRuntimeException
+	 *             , internal error !
+	 * @throws CiliaIllegalStateException
+	 *             , the node object doesn't exist anymore
 	 */
-	MediatorComponent getModel(Node node) throws IllegalParameterException,
-			IllegalStateException;
+	MediatorComponent getModel(Node node) throws CiliaIllegalParameterException,
+			CiliaIllegalStateException, CiliaRuntimeException;
 }

@@ -17,7 +17,7 @@ package fr.liglab.adele.cilia.knowledge.impl.runtime;
 
 import org.osgi.framework.InvalidSyntaxException;
 
-import fr.liglab.adele.cilia.exceptions.IllegalParameterException;
+import fr.liglab.adele.cilia.exceptions.CiliaIllegalParameterException;
 import fr.liglab.adele.cilia.framework.monitor.statevariable.ComponentStateVarService;
 import fr.liglab.adele.cilia.knowledge.impl.Knowledge;
 
@@ -63,13 +63,13 @@ public class NodeImpl extends AbstractNode {
 	}
 
 	public void setMonitoring(String variableId, int queueSize, String ldapFilter,
-			boolean enable) throws IllegalParameterException, InvalidSyntaxException {
+			boolean enable) throws CiliaIllegalParameterException, InvalidSyntaxException {
 
 		if (variableId == null)
-			throw new IllegalParameterException("Variable id is null !");
+			throw new CiliaIllegalParameterException("Variable id is null !");
 
 		if (queueSize < 1)
-			throw new IllegalParameterException("queue size must be a positive integer");
+			throw new CiliaIllegalParameterException("queue size must be a positive integer");
 
 		if (!stateVariables.containsKey(variableId)) {
 			stateVariables.put(variableId, new Observations(queueSize));
@@ -83,12 +83,12 @@ public class NodeImpl extends AbstractNode {
 	}
 
 	public void setMonitoring(String variableId, int queueSize)
-			throws IllegalParameterException {
+			throws CiliaIllegalParameterException {
 		if (variableId == null)
-			throw new IllegalParameterException("Variable id is null !");
+			throw new CiliaIllegalParameterException("Variable id is null !");
 
 		if (queueSize < 1)
-			throw new IllegalParameterException(
+			throw new CiliaIllegalParameterException(
 					"Queue size must be a positive integer value=" + queueSize);
 
 		if (!stateVariables.containsKey(variableId)) {
@@ -109,10 +109,10 @@ public class NodeImpl extends AbstractNode {
 	}
 
 	public void setMonitoring(String variableId, String ldapFilter)
-			throws IllegalParameterException, InvalidSyntaxException {
+			throws CiliaIllegalParameterException, InvalidSyntaxException {
 
 		if (variableId == null)
-			throw new IllegalParameterException("Variable id is null !");
+			throw new CiliaIllegalParameterException("Variable id is null !");
 
 		if (!stateVariables.containsKey(variableId)) {
 			/* a variable with defaults configuration is created */
@@ -132,9 +132,9 @@ public class NodeImpl extends AbstractNode {
 	 * .lang.String, boolean)
 	 */
 	public void setMonitoring(String variableId, boolean enable)
-			throws IllegalParameterException {
+			throws CiliaIllegalParameterException {
 		if (variableId == null)
-			throw new IllegalParameterException("Variable id is null !");
+			throw new CiliaIllegalParameterException("Variable id is null !");
 		if (!stateVariables.containsKey(variableId)) {
 			/* a variable with defaults configuration is created */
 			stateVariables
@@ -158,13 +158,13 @@ public class NodeImpl extends AbstractNode {
 	 * fr.liglab.adele.cilia.knowledge.core.execution.SetUp#queueSize(java.lang
 	 * .String)
 	 */
-	public int queueSize(String variableId) throws IllegalParameterException {
+	public int queueSize(String variableId) throws CiliaIllegalParameterException {
 		if (variableId == null)
-			throw new IllegalParameterException("Variable id is null !");
+			throw new CiliaIllegalParameterException("Variable id is null !");
 
 		Observations observations = (Observations) stateVariables.get(variableId);
 		if (observations == null)
-			throw new IllegalParameterException(toString() + " missing configuration !");
+			throw new CiliaIllegalParameterException(toString() + " missing configuration !");
 
 		return observations.queueSize;
 	}
@@ -176,9 +176,9 @@ public class NodeImpl extends AbstractNode {
 	 * fr.liglab.adele.cilia.knowledge.core.execution.SetUp#flowControl(java
 	 * .lang.String)
 	 */
-	public String flowControl(String variableId) throws IllegalParameterException {
+	public String flowControl(String variableId) throws CiliaIllegalParameterException {
 		if (variableId == null)
-			throw new IllegalParameterException("variable id must not be null !");
+			throw new CiliaIllegalParameterException("variable id must not be null !");
 
 		if (!stateVariables.containsKey(variableId))
 			throw new RuntimeException(toString() + " missing configuration !");

@@ -218,6 +218,7 @@ public class CiliaContextImpl implements CiliaContext {
 			cinstance.start();
 			ChainRuntimeImpl chainRt=(ChainRuntimeImpl)chainRuntime.get(chainId) ;
 			chainRt.setState(ChainRuntime.STATE_STARTED) ;
+			chainRt.setLastDate();
 			eventNotifier.publish(chainId, CiliaEvent.EVENT_CHAIN_STARTED);
 			logger.info("Chain [{}] started",chainId) ;
 		}

@@ -17,6 +17,8 @@ package fr.liglab.adele.cilia.knowledge.registry;
 
 import org.osgi.framework.InvalidSyntaxException;
 
+import fr.liglab.adele.cilia.exceptions.CiliaIllegalParameterException;
+
 /**
  * Access to Registry
  * 
@@ -55,8 +57,10 @@ public interface RuntimeRegistry {
 	 * @param ldapFilter
 	 *            , LDAP filter
 	 * @return entries matching the filter or an array size 0  if not item founded
+	 * @throws CiliaIllegalParameterException parameter is invalid
+	 * @t
 	 */
-	RegistryItem[] findByFilter(String ldapFilter) throws InvalidSyntaxException;
+	RegistryItem[] findByFilter(String ldapFilter) throws CiliaIllegalParameterException,InvalidSyntaxException;
 
 	/**
 	 * Fast access

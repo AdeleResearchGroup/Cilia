@@ -13,12 +13,18 @@
  * limitations under the License.
  */
 
-package fr.liglab.adele.cilia.knowledge.util;
+package fr.liglab.adele.cilia.util;
 
 import java.util.Dictionary;
 import java.util.Enumeration;
 
-
+/**
+ * Unmodifiable dictionnary
+ * 
+ * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project
+ *         Team</a>
+ * 
+ */
 public class UnModifiableDictionary extends Dictionary {
 	private final Dictionary dico;
 

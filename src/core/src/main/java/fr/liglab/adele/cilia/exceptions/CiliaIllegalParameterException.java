@@ -18,19 +18,19 @@ package fr.liglab.adele.cilia.exceptions;
 import fr.liglab.adele.cilia.exceptions.CiliaException;
 
 /**
- * Exception fired if the object doesn't exist anymore
+ * Illegal argument 
  * 
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project
  *         Team</a>
+ * 
  */
-public class IllegalStateException extends CiliaException {
-	private static final long serialVersionUID = -1599280766499136722L;
+public class CiliaIllegalParameterException extends CiliaException {
+	private static final long serialVersionUID = -1389067402013653551L;
 
-	public IllegalStateException() {
-		super();
+	public CiliaIllegalParameterException() {
 	}
 
-	public IllegalStateException(String message) {
+	public CiliaIllegalParameterException(String message) {
 		super(message);
 	}
 
