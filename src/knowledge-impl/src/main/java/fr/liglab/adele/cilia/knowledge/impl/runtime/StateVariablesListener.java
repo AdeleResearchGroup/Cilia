@@ -39,7 +39,7 @@ import fr.liglab.adele.cilia.knowledge.registry.RuntimeRegistry;
 import fr.liglab.adele.cilia.knowledge.runtime.RawData;
 import fr.liglab.adele.cilia.knowledge.runtime.SetUp;
 import fr.liglab.adele.cilia.knowledge.runtime.Thresholds;
-import fr.liglab.adele.cilia.management.Watch;
+import fr.liglab.adele.cilia.util.Watch;
 
 /**
  * This class is in charge to store data sent by <br>

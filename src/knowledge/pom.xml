@@ -21,7 +21,7 @@
 	<parent>
 		<groupId>fr.liglab.adele.cilia</groupId>
 		<artifactId>cilia-project</artifactId>
-		<version>1.2.0</version>
+		<version>1.2.2-SNAPSHOT</version>
 		<relativePath></relativePath>
 	</parent>
 
@@ -29,7 +29,7 @@
 	<properties>
 		<ipojo.plugin.version>1.6.0</ipojo.plugin.version>
 		<osgi.version>4.2.0</osgi.version>
-		<cilia.core.version>1.2.1-SNAPSHOT</cilia.core.version>		
+		<cilia.core.version>1.2.2-SNAPSHOT</cilia.core.version>		
 		<cilia.knowledge.version>0.0.1-SNAPSHOT</cilia.knowledge.version>
 	</properties>
 	
@@ -88,18 +88,12 @@
 						<Import-Package>
 							fr.liglab.adele.cilia,
 							fr.liglab.adele.cilia.model,		
-							fr.liglab.adele.cilia.util.concurrent,	
-									
-							<!-- a remplacer uudi et watch  -->
-							fr.liglab.adele.cilia.management,
-							
-							fr.liglab.adele.cilia.util.concurrent,							
+							fr.liglab.adele.cilia.exceptions,													
 							org.osgi.framework,
 						</Import-Package>
 						<Export-Package >
 						    fr.liglab.adele.cilia.knowledge,
 							fr.liglab.adele.cilia.knowledge.eventbus,
-							fr.liglab.adele.cilia.knowledge.exception,
 							fr.liglab.adele.cilia.knowledge.runtime,
 							fr.liglab.adele.cilia.knowledge.specification,
 							fr.liglab.adele.cilia.knowledge.util

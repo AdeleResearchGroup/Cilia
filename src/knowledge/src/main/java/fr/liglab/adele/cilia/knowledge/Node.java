@@ -15,7 +15,6 @@
 
 package fr.liglab.adele.cilia.knowledge;
 
-import fr.liglab.adele.cilia.knowledge.exception.IllegalStateException;
 
 /**
  * A Node is the model@runtime for a mediator/adapter

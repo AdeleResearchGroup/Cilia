@@ -15,13 +15,20 @@
 
 package fr.liglab.adele.cilia.framework.monitor.statevariable;
 
+import java.util.Dictionary;
+
 import org.osgi.framework.InvalidSyntaxException;
 
 import fr.liglab.adele.cilia.framework.monitor.IMonitor;
-import fr.liglab.adele.cilia.management.Configurable;
 
-public interface ComponentStateVarService extends IMonitor,Configurable {
-	
+public interface ComponentStateVarService extends IMonitor{
+
+	void setProperty(String key, Object value);
+
+	Object getProperty(String key);
+
+	Dictionary getProperties();
+
 	/**
 	 * Define a condition to publish a new value
 	 * 
@@ -84,10 +91,6 @@ public interface ComponentStateVarService extends IMonitor,Configurable {
 	 */
 	public String[] getStateVarIdCategory(String category) ;
 	
-	/** 
-	 * Enable/ disable all state-var 
-	 */
-	public void enable(boolean enable) ;
 	
 	
 }

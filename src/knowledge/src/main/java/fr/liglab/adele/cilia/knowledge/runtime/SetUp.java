@@ -17,9 +17,8 @@ package fr.liglab.adele.cilia.knowledge.runtime;
 
 import org.osgi.framework.InvalidSyntaxException;
 
+import fr.liglab.adele.cilia.exceptions.IllegalParameterException;
 import fr.liglab.adele.cilia.knowledge.Node;
-import fr.liglab.adele.cilia.knowledge.exception.IllegalParameterException;
-import fr.liglab.adele.cilia.knowledge.exception.IllegalStateException;
 
 /**
  * Monitoring Configuration

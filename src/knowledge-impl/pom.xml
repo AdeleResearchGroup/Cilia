@@ -21,7 +21,7 @@
 	<parent>
 		<groupId>fr.liglab.adele.cilia</groupId>
 		<artifactId>cilia-project</artifactId>
-		<version>1.2.0</version>
+		<version>1.2.2-SNAPSHOT</version>
 		<relativePath></relativePath>
 	</parent>
 	
@@ -32,8 +32,8 @@
 		<felix.event.admin.version>1.0.0</felix.event.admin.version>
 		<slf4j.version>1.6.1</slf4j.version>
 
-		<cilia.core.version>1.2.1-SNAPSHOT</cilia.core.version>	
-		<cilia.ipojo.runtime.version>1.2.1-SNAPSHOT</cilia.ipojo.runtime.version>	
+		<cilia.core.version>1.2.2-SNAPSHOT</cilia.core.version>	
+		<cilia.runtime.version>1.2.2-SNAPSHOT</cilia.runtime.version>	
 		<cilia.knowledge.version>0.0.1-SNAPSHOT</cilia.knowledge.version>	
 		<cilia.knowledge.impl.version>0.0.1-SNAPSHOT</cilia.knowledge.impl.version>
 	</properties>
@@ -63,8 +63,8 @@
 
 		<dependency>
 			<groupId>fr.liglab.adele.cilia</groupId>
-			<artifactId>cilia-ipojo-runtime</artifactId>
-			<version>${cilia.ipojo.runtime.version}</version>
+			<artifactId>cilia-runtime</artifactId>
+			<version>${cilia.runtime.version}</version>
 		</dependency>
 	
 		<dependency>
@@ -112,21 +112,19 @@
 						    fr.liglab.adele.cilia.knowledge.impl.*			                 		          
 						</Private-Package>
 						<Import-Package>
-							<!--  K -->
-							fr.liglab.adele.cilia.knowledge,
-							fr.liglab.adele.cilia.knowledge.eventbus,
-							fr.liglab.adele.cilia.knowledge.exception,
-							fr.liglab.adele.cilia.knowledge.runtime,
-							fr.liglab.adele.cilia.knowledge.specification,
-							fr.liglab.adele.cilia.knowledge.util,
 							fr.liglab.adele.cilia,
 							fr.liglab.adele.cilia.event,
 							fr.liglab.adele.cilia.model,
-							<!-- a supprimer UDDI et watch   -->
-							fr.liglab.adele.cilia.management,
-							
+							fr.liglab.adele.cilia.util,
+							<!--  K -->
+							fr.liglab.adele.cilia.knowledge,
+							fr.liglab.adele.cilia.knowledge.eventbus,
+							fr.liglab.adele.cilia.knowledge.runtime,
+							fr.liglab.adele.cilia.knowledge.specification,
+							fr.liglab.adele.cilia.knowledge.util,
+					
 							fr.liglab.adele.cilia.util.concurrent,
-
+							fr.liglab.adele.cilia.exceptions,
 							fr.liglab.adele.cilia.framework.monitor.statevariable,
 							fr.liglab.adele.cilia.framework.utils,
 							fr.liglab.adele.cilia.specification,

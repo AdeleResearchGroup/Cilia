@@ -17,8 +17,8 @@ package fr.liglab.adele.cilia.knowledge.impl.runtime;
 
 import org.osgi.framework.InvalidSyntaxException;
 
+import fr.liglab.adele.cilia.exceptions.IllegalParameterException;
 import fr.liglab.adele.cilia.framework.monitor.statevariable.ComponentStateVarService;
-import fr.liglab.adele.cilia.knowledge.exception.IllegalParameterException;
 import fr.liglab.adele.cilia.knowledge.impl.Knowledge;
 
 /**

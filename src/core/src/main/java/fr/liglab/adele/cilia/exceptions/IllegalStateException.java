@@ -13,12 +13,12 @@
  * limitations under the License.
  */
 
-package fr.liglab.adele.cilia.knowledge.exception;
+package fr.liglab.adele.cilia.exceptions;
 
-import fr.liglab.adele.cilia.CiliaException;
+import fr.liglab.adele.cilia.exceptions.CiliaException;
 
 /**
- * Exception fired if the object doesn't exist
+ * Exception fired if the object doesn't exist anymore
  * 
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project
  *         Team</a>

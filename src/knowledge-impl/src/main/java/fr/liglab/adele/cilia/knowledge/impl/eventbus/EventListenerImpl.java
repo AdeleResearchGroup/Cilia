@@ -45,7 +45,7 @@ import fr.liglab.adele.cilia.knowledge.eventbus.SubscriberRegistration;
 import fr.liglab.adele.cilia.knowledge.eventbus.VetoSubscriberRegistration;
 import fr.liglab.adele.cilia.knowledge.impl.Knowledge;
 import fr.liglab.adele.cilia.knowledge.registry.RuntimeRegistry;
-import fr.liglab.adele.cilia.management.Watch;
+import fr.liglab.adele.cilia.util.Watch;
 import fr.liglab.adele.cilia.util.concurrent.CopyOnWriteArrayList;
 import fr.liglab.adele.cilia.util.concurrent.ReentrantWriterPreferenceReadWriteLock;
 import fr.liglab.adele.cilia.util.concurrent.SyncList;

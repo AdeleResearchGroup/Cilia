@@ -29,28 +29,25 @@ import org.osgi.framework.InvalidSyntaxException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import fr.liglab.adele.cilia.Adapter;
+import fr.liglab.adele.cilia.Binding;
+import fr.liglab.adele.cilia.Chain;
 import fr.liglab.adele.cilia.CiliaContext;
+import fr.liglab.adele.cilia.MediatorComponent;
 import fr.liglab.adele.cilia.event.CiliaEvent;
 import fr.liglab.adele.cilia.event.CiliaFrameworkEvent;
 import fr.liglab.adele.cilia.event.CiliaFrameworkListener;
+import fr.liglab.adele.cilia.exceptions.IllegalParameterException;
 import fr.liglab.adele.cilia.knowledge.Constants;
 import fr.liglab.adele.cilia.knowledge.Node;
-import fr.liglab.adele.cilia.knowledge.UniformResourceName;
 import fr.liglab.adele.cilia.knowledge.eventbus.EventProperties;
-import fr.liglab.adele.cilia.knowledge.exception.IllegalParameterException;
-import fr.liglab.adele.cilia.knowledge.exception.IllegalStateException;
 import fr.liglab.adele.cilia.knowledge.impl.Knowledge;
 import fr.liglab.adele.cilia.knowledge.impl.eventbus.Publisher;
-import fr.liglab.adele.cilia.knowledge.registry.RegistryItem;
 import fr.liglab.adele.cilia.knowledge.specification.Application;
 import fr.liglab.adele.cilia.knowledge.util.UnModifiableDictionary;
-import fr.liglab.adele.cilia.management.Watch;
-import fr.liglab.adele.cilia.model.Adapter;
-import fr.liglab.adele.cilia.model.Binding;
-import fr.liglab.adele.cilia.model.Chain;
 import fr.liglab.adele.cilia.model.ChainRuntime;
-import fr.liglab.adele.cilia.model.MediatorComponent;
 import fr.liglab.adele.cilia.model.PatternType;
+import fr.liglab.adele.cilia.util.Watch;
 
 /**
  * Specification

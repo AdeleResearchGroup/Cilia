@@ -16,7 +16,6 @@
 package fr.liglab.adele.cilia.knowledge;
 
 import org.osgi.framework.InvalidSyntaxException;
-import fr.liglab.adele.cilia.knowledge.exception.IllegalStateException;
 
 /**
  * Node retreival using the topology

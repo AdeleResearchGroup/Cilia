@@ -12,7 +12,7 @@
  * limitations under the License.
  */
 
-package fr.liglab.adele.cilia.management;
+package fr.liglab.adele.cilia.util;
 
 import java.util.Calendar;
 import java.util.TimeZone;

@@ -14,14 +14,13 @@
 
 package fr.liglab.adele.cilia.knowledge.impl.runtime;
 
-import java.lang.reflect.*;
-import java.lang.ref.*;
+import java.lang.ref.WeakReference;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 
-import org.osgi.framework.InvalidSyntaxException;
-
-import fr.liglab.adele.cilia.knowledge.exception.IllegalStateException;
 import fr.liglab.adele.cilia.knowledge.registry.RuntimeRegistry;
-import fr.liglab.adele.cilia.knowledge.util.Callable;
 
 /**
  * Build a Weak Reference proxy

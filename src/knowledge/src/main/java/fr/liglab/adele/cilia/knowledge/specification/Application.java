@@ -20,12 +20,11 @@ import java.util.Dictionary;
 
 import org.osgi.framework.InvalidSyntaxException;
 
+import fr.liglab.adele.cilia.MediatorComponent;
+import fr.liglab.adele.cilia.exceptions.IllegalParameterException;
 import fr.liglab.adele.cilia.knowledge.Node;
 import fr.liglab.adele.cilia.knowledge.NodeRegistration;
 import fr.liglab.adele.cilia.knowledge.Topology;
-import fr.liglab.adele.cilia.knowledge.exception.IllegalParameterException;
-import fr.liglab.adele.cilia.knowledge.exception.IllegalStateException;
-import fr.liglab.adele.cilia.model.MediatorComponent;
 
 /**
  * 

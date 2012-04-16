@@ -45,11 +45,6 @@
 			<version>4.2.0</version>
 		</dependency>
 
-		<dependency>
-			<groupId>org.apache.felix</groupId>
-			<artifactId>org.apache.felix.ipojo</artifactId>
-			<version>1.6.2</version>
-		</dependency>
 
 		<dependency>
 			<groupId>fr.liglab.adele.cilia</groupId>

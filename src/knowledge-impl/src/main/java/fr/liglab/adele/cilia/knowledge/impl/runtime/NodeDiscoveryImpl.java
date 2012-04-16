@@ -31,7 +31,7 @@ import fr.liglab.adele.cilia.knowledge.impl.eventbus.Publisher;
 import fr.liglab.adele.cilia.knowledge.impl.registry.RegistryItemImpl;
 import fr.liglab.adele.cilia.knowledge.registry.RegistryItem;
 import fr.liglab.adele.cilia.knowledge.registry.RuntimeRegistry;
-import fr.liglab.adele.cilia.management.Watch;
+import fr.liglab.adele.cilia.util.Watch;
 
 /**
  * Track mediator/adapter at runtime

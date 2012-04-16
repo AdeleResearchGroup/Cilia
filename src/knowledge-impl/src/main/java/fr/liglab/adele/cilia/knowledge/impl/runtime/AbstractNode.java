@@ -24,8 +24,8 @@ import org.osgi.util.measurement.Measurement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import fr.liglab.adele.cilia.exceptions.IllegalParameterException;
 import fr.liglab.adele.cilia.knowledge.eventbus.EventProperties;
-import fr.liglab.adele.cilia.knowledge.exception.IllegalParameterException;
 import fr.liglab.adele.cilia.knowledge.impl.Knowledge;
 import fr.liglab.adele.cilia.knowledge.runtime.RawData;
 import fr.liglab.adele.cilia.knowledge.runtime.SetUp;

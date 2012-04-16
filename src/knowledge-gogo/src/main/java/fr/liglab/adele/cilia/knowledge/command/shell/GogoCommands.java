@@ -34,7 +34,7 @@ import fr.liglab.adele.cilia.knowledge.runtime.DynamicProperties;
 import fr.liglab.adele.cilia.knowledge.runtime.RawData;
 import fr.liglab.adele.cilia.knowledge.runtime.SetUp;
 import fr.liglab.adele.cilia.knowledge.specification.Application;
-import fr.liglab.adele.cilia.management.Watch;
+import fr.liglab.adele.cilia.util.Watch;
 
 /**
  * Simple gogo commands for debug purpose

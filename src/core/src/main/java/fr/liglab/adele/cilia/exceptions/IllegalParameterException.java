@@ -13,16 +13,25 @@
  * limitations under the License.
  */
 
-package fr.liglab.adele.cilia.management;
+package fr.liglab.adele.cilia.exceptions;
 
-import java.util.Dictionary;
+import fr.liglab.adele.cilia.exceptions.CiliaException;
 
-public interface Configurable {
+/**
+ * Illegal argument 
+ * 
+ * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project
+ *         Team</a>
+ * 
+ */
+public class IllegalParameterException extends CiliaException {
+	private static final long serialVersionUID = -1389067402013653551L;
 
-	void setProperty(String key, Object value);
+	public IllegalParameterException() {
+	}
 
-	Object getProperty(String key);
-
-	Dictionary getProperties();
+	public IllegalParameterException(String message) {
+		super(message);
+	}
 
 }

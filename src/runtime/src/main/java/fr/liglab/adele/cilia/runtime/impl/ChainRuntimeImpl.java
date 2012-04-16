@@ -15,8 +15,8 @@
 
 package fr.liglab.adele.cilia.runtime.impl;
 
-import fr.liglab.adele.cilia.management.UUID;
 import fr.liglab.adele.cilia.model.ChainRuntime;
+import fr.liglab.adele.cilia.util.UUID;
 
 public class ChainRuntimeImpl implements ChainRuntime {
 	public int state;

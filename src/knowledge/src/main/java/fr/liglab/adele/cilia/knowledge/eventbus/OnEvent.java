@@ -17,8 +17,6 @@ package fr.liglab.adele.cilia.knowledge.eventbus;
 
 import java.util.Dictionary;
 
-import fr.liglab.adele.cilia.knowledge.exception.IllegalParameterException;
-
 /**
  * Bus event , call bacjk subsciption (cache overrun )
  * 

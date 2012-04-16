@@ -31,7 +31,7 @@ import org.slf4j.LoggerFactory;
 import fr.liglab.adele.cilia.Data;
 import fr.liglab.adele.cilia.framework.utils.Const;
 import fr.liglab.adele.cilia.framework.utils.WorkQueue;
-import fr.liglab.adele.cilia.management.Watch;
+import fr.liglab.adele.cilia.util.Watch;
 
 public class MonitorHandlerStateVar extends AbstractStateVariable {
 	private static Logger logger = LoggerFactory.getLogger(Const.LOGGER_CORE);
