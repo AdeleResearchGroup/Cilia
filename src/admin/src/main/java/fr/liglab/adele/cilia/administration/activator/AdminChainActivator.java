@@ -16,7 +16,7 @@ package fr.liglab.adele.cilia.administration.activator;
 
 
 import fr.liglab.adele.cilia.CiliaContext;
-import fr.liglab.adele.cilia.components.model.ContentBasedRouting;
+import fr.liglab.adele.cilia.ext.ContentBasedRouting;
 import fr.liglab.adele.cilia.model.AdapterImpl;
 import fr.liglab.adele.cilia.model.ChainImpl;
 import fr.liglab.adele.cilia.model.MediatorImpl;

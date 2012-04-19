@@ -1,6 +1,7 @@
 package fr.liglab.adele.cilia.specification;
 
 
+import fr.liglab.adele.cilia.Mediator;
 import fr.liglab.adele.cilia.model.ComponentImpl;
 import fr.liglab.adele.cilia.model.MediatorImpl;
 
@@ -175,8 +176,8 @@ public abstract class AbstractMediatorSpecification implements MediatorSpecifica
 	 * Get a mediator model from the mediator specification.
 	 * @return
 	 */
-	public MediatorImpl getMediatorModel(String mediatorid){
-		MediatorImpl med = new MediatorImpl(mediatorid, this.getName());
+	public Mediator getMediatorModel(String mediatorid){
+		Mediator med = new MediatorImpl(mediatorid, this.getName());
 		return med;
 	}
 	/**

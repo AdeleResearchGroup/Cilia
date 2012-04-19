@@ -99,7 +99,7 @@
 
 
 	<processor name="simple-processor" namespace="fr.liglab.adele.cilia"
-		classname="fr.liglab.adele.cilia.runtime.impl.SimpleProcessor" />
+		classname="fr.liglab.adele.cilia.framework.components.SimpleProcessor" />
 
 	<!-- INSTANCES -->
 	<instance component="CiliaContext" name="Cilia Context" />
@@ -189,7 +189,7 @@
 
 	<!-- SCHEDULERS DEFINITIONS WITH CILIA DEFINITION LANGUAGE -->
 	<scheduler name="periodic-scheduler"
-		classname="fr.liglab.adele.cilia.components.schedulers.impl.PeriodicSchedulerImpl"
+		classname="fr.liglab.adele.cilia.framework.components.PeriodicSchedulerImpl"
 		namespace="fr.liglab.adele.cilia">
 		<properties>
 			<property name="delay" field="delay" value="3000" />
@@ -200,7 +200,7 @@
 	</scheduler>
 
 	<scheduler name="correlation-scheduler"
-		classname="fr.liglab.adele.cilia.components.schedulers.impl.CorrelationSchedulerImpl"
+		classname="fr.liglab.adele.cilia.framework.components.CorrelationSchedulerImpl"
 		namespace="fr.liglab.adele.cilia">
 		<properties>
 			<property name="correlation" method="setCorrelation" type="String"
@@ -209,7 +209,7 @@
 	</scheduler>
 
 	<scheduler name="counter-scheduler"
-		classname="fr.liglab.adele.cilia.components.schedulers.impl.CounterSchedulerImpl"
+		classname="fr.liglab.adele.cilia.framework.components.CounterSchedulerImpl"
 		namespace="fr.liglab.adele.cilia">
 		<properties>
 			<property name="correlation" method="setCorrelation" type="String"
@@ -221,7 +221,7 @@
 
 	<!-- DISPATCHER DEFINITIONS WITH CILIA DEFINITION LANGUAGE -->
 	<dispatcher name="content-based-dispatcher"
-		classname="fr.liglab.adele.cilia.components.dispatchers.impl.ContentBasedDispatcherImpl"
+		classname="fr.liglab.adele.cilia.framework.components.ContentBasedDispatcherImpl"
 		namespace="fr.liglab.adele.cilia">
 		<properties>
 			<property name="conditions" method="setRouteConditions"
@@ -232,7 +232,7 @@
 	</dispatcher>
 
 	<dispatcher name="descriptor-based-dispatcher"
-		classname="fr.liglab.adele.cilia.components.dispatchers.impl.DescriptorBasedDispatcherImpl"
+		classname="fr.liglab.adele.cilia.framework.components.DescriptorBasedDispatcherImpl"
 		namespace="fr.liglab.adele.cilia">
 		<properties>
 			<property name="conditions" method="setRouteConditions"
@@ -242,7 +242,7 @@
 	</dispatcher>
 
 	<dispatcher name="content-based-dispatcher-with-correlation"
-		classname="fr.liglab.adele.cilia.components.dispatchers.impl.CorrelationContentBasedDispatcherImpl"
+		classname="fr.liglab.adele.cilia.framework.components.CorrelationContentBasedDispatcherImpl"
 		namespace="fr.liglab.adele.cilia">
 		<properties>
 			<property name="conditions" method="setRouteConditions"
@@ -253,7 +253,7 @@
 	</dispatcher>
 
 	<dispatcher name="multicast-dispatcher-with-correlation"
-		classname="fr.liglab.adele.cilia.components.dispatchers.impl.CorrelationMulticastDispatcherImpl"
+		classname="fr.liglab.adele.cilia.framework.components.CorrelationMulticastDispatcherImpl"
 		namespace="fr.liglab.adele.cilia">
 	</dispatcher>
 
@@ -262,7 +262,7 @@
 
 	<!-- *********************************************************************************** -->
 	<collector
-		classname="fr.liglab.adele.cilia.components.collectors.DirectCollector"
+		classname="fr.liglab.adele.cilia.framework.components.DirectCollector"
 		name="direct-collector" namespace="fr.liglab.adele.cilia"
 		architecture="false" immediate="true">
 		<provides>
@@ -274,19 +274,19 @@
 				type="String" />
 		</properties>
 	</collector>
-	<sender classname="fr.liglab.adele.cilia.components.senders.DirectSender"
+	<sender classname="fr.liglab.adele.cilia.framework.components.DirectSender"
 		name="direct-sender" namespace="fr.liglab.adele.cilia" architecture="false"
 		immediate="true">
 		<requires field="collector" id="mediator.address" filter="(mediator.address=...)" />
 	</sender>
 
 	<linker name="direct"
-		classname="fr.liglab.adele.cilia.components.bindings.DirectBindingService">
+		classname="fr.liglab.adele.cilia.framework.components.DirectBindingService">
 		<collector type="direct-collector" namespace="fr.liglab.adele.cilia" />
 		<sender type="direct-sender" namespace="fr.liglab.adele.cilia" />
 	</linker>
 	<!-- *********************************************************************************** -->
-	<sender classname="fr.liglab.adele.cilia.components.senders.ConsoleSender"
+	<sender classname="fr.liglab.adele.cilia.framework.components.ConsoleSender"
 		name="console-sender" architecture="false">
 		<properties>
 			<property name="console.detail" field="detail" value="false" />
@@ -301,7 +301,7 @@
 
 	<!-- *********************************************************************************** -->
 	<collector
-		classname="fr.liglab.adele.cilia.components.collectors.RandomNumberCollector"
+		classname="fr.liglab.adele.cilia.framework.components.RandomNumberCollector"
 		name="random-number-collector" architecture="false">
 		<properties>
 			<property name="collector.sourceName" method="setSourceName"
@@ -326,39 +326,39 @@
 
 	<!-- PARSERS -->
 	<component
-		classname="fr.liglab.adele.cilia.compendium.extender.parsers.PeriodicParser"
+		classname="fr.liglab.adele.cilia.internals.PeriodicParser"
 		immediate="true">
 		<provides />
 	</component>
 	<instance
-		component="fr.liglab.adele.cilia.compendium.extender.parsers.PeriodicParser" />
+		component="fr.liglab.adele.cilia.internals.PeriodicParser" />
 
 	<component
-		classname="fr.liglab.adele.cilia.compendium.extender.parsers.ContentBasedParser"
+		classname="fr.liglab.adele.cilia.internals.ContentBasedParser"
 		immediate="true">
 		<provides />
 	</component>
 	<instance
-		component="fr.liglab.adele.cilia.compendium.extender.parsers.ContentBasedParser" />
+		component="fr.liglab.adele.cilia.internals.ContentBasedParser" />
 
 	<component
-		classname="fr.liglab.adele.cilia.compendium.extender.parsers.MonitoringParser"
+		classname="fr.liglab.adele.cilia.internals.MonitoringParser"
 		immediate="true">
 		<provides />
 	</component>
 	<instance
-		component="fr.liglab.adele.cilia.compendium.extender.parsers.MonitoringParser" />
+		component="fr.liglab.adele.cilia.internals.MonitoringParser" />
 
 	<component
-		classname="fr.liglab.adele.cilia.compendium.extender.parsers.DependencyParser"
+		classname="fr.liglab.adele.cilia.internals.DependencyParser"
 		immediate="true">
 		<provides />
 	</component>
 	<instance
-		component="fr.liglab.adele.cilia.compendium.extender.parsers.DependencyParser" />
+		component="fr.liglab.adele.cilia.internals.DependencyParser" />
 
 	<component
-		classname="fr.liglab.adele.cilia.compendium.extender.parsers.MonitorErrorHandlerParser"
+		classname="fr.liglab.adele.cilia.internals.MonitorErrorHandlerParser"
 		immediate="true">
 		<provides />
 	</component>

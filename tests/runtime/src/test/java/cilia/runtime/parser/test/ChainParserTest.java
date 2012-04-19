@@ -36,6 +36,7 @@ import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
 
 import fr.liglab.adele.cilia.ChainParser;
+import fr.liglab.adele.cilia.core.tests.tools.CiliaTools;
 
 
 /**
@@ -73,7 +74,7 @@ public class ChainParserTest {
 						mavenBundle().groupId("org.slf4j").artifactId("slf4j-api").versionAsInProject(),
 						mavenBundle().groupId("org.slf4j").artifactId("slf4j-simple").version("1.6.1"),
 						mavenBundle().groupId("fr.liglab.adele.cilia").artifactId("cilia-core").versionAsInProject(),
-						mavenBundle().groupId("fr.liglab.adele.cilia").artifactId("cilia-ipojo-runtime").versionAsInProject()
+						mavenBundle().groupId("fr.liglab.adele.cilia").artifactId("cilia-runtime").versionAsInProject()
 				)); // The target
 		Option[] r = OptionUtils.combine(platform, bundles);
 		return r;
@@ -89,10 +90,9 @@ public class ChainParserTest {
 	
 	@Test
 	public void validateService() {
+		CiliaTools.waitToInitialize();
 		ServiceReference sr[] = null;
-		try {
-			sr = context.getServiceReferences (ChainParser.class.getName(), null);
-		} catch (InvalidSyntaxException e) {}
+		sr = osgi.getServiceReferences (ChainParser.class.getName(), null);
 		assertNotNull(sr[0]);
 		ChainParser parser = (ChainParser) context.getService(sr[0]);
 		assertNotNull(parser);

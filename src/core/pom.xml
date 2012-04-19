@@ -57,12 +57,12 @@
 						<Bundle-SymbolicName>${pom.artifactId}</Bundle-SymbolicName>
 						<Export-Package>
 							fr.liglab.adele.cilia,
+							fr.liglab.adele.cilia.ext,
 							fr.liglab.adele.cilia.util,
 							fr.liglab.adele.cilia.util.concurrent,
 							fr.liglab.adele.cilia.model,
 							fr.liglab.adele.cilia.exceptions,
 							fr.liglab.adele.cilia.specification,
-							fr.liglab.adele.cilia.management.monitoring,
 							fr.liglab.adele.cilia.event
             			</Export-Package>
 						<Private-Package>

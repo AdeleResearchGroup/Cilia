@@ -1,6 +1,6 @@
 package fr.liglab.adele.cilia.specification;
 
-import fr.liglab.adele.cilia.model.MediatorImpl;
+import fr.liglab.adele.cilia.Mediator;
 /**
  * 
  * This interface is the api to specify new mediators specifications.
@@ -76,7 +76,7 @@ public interface MediatorSpecification {
 	 * Get a mediator model from the mediator specification.
 	 * @return
 	 */
-	MediatorImpl getMediatorModel(String mediatorid);
+	Mediator getMediatorModel(String mediatorid);
 	/**
 	 *Initialize the mediator specification type. 
 	 */
