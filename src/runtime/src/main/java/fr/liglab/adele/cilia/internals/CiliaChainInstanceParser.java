@@ -30,7 +30,7 @@ import fr.liglab.adele.cilia.MediatorComponent;
 import fr.liglab.adele.cilia.Port;
 import fr.liglab.adele.cilia.exceptions.CiliaException;
 import fr.liglab.adele.cilia.exceptions.CiliaParserException;
-import fr.liglab.adele.cilia.framework.utils.impl.XMLTools;
+import fr.liglab.adele.cilia.framework.data.XmlTools;
 import fr.liglab.adele.cilia.model.AdapterImpl;
 import fr.liglab.adele.cilia.model.BindingImpl;
 import fr.liglab.adele.cilia.model.ChainImpl;
@@ -111,7 +111,7 @@ public class CiliaChainInstanceParser implements ChainParser {
 					+ " File.");
 		}
 		// First child is the root node.
-		Node node = XMLTools.streamToNode(fis).getFirstChild();
+		Node node = XmlTools.streamToNode(fis).getFirstChild();
 		String rootName = node.getNodeName();
 		if (rootName.compareTo(ROOT_FILE) != 0) {
 			throw new CiliaException(xmlFile.getPath() + " Root element must be <"

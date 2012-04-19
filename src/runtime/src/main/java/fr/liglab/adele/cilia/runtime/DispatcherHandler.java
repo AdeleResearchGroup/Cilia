@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package fr.liglab.adele.cilia.framework;
+package fr.liglab.adele.cilia.runtime;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -40,15 +40,12 @@ import org.slf4j.LoggerFactory;
 
 import fr.liglab.adele.cilia.exceptions.CiliaException;
 import fr.liglab.adele.cilia.Data;
-import fr.liglab.adele.cilia.framework.monitor.MonitorHandler;
-import fr.liglab.adele.cilia.framework.utils.Const;
-import fr.liglab.adele.cilia.framework.utils.ProcessorMetadata;
-import fr.liglab.adele.cilia.framework.utils.WorkQueue;
+import fr.liglab.adele.cilia.framework.CiliaDispatcher;
+import fr.liglab.adele.cilia.framework.IDispatcher;
+import fr.liglab.adele.cilia.framework.IDispatcherHandler;
+import fr.liglab.adele.cilia.framework.ISender;
 import fr.liglab.adele.cilia.Component;
 import fr.liglab.adele.cilia.model.Dispatcher;
-import fr.liglab.adele.cilia.runtime.AbstractCiliaInstance;
-import fr.liglab.adele.cilia.runtime.CiliaInstance;
-import fr.liglab.adele.cilia.runtime.CiliaInstanceManager;
 import fr.liglab.adele.cilia.runtime.impl.CiliaInstanceManagerSet;
 import fr.liglab.adele.cilia.util.concurrent.ReadWriteLock;
 import fr.liglab.adele.cilia.util.concurrent.WriterPreferenceReadWriteLock;

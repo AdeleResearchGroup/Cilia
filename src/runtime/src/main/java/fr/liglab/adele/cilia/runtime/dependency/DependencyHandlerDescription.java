@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package fr.liglab.adele.cilia.handler.dependency;
+package fr.liglab.adele.cilia.runtime.dependency;
 
 import java.util.Iterator;
 import java.util.List;
@@ -27,7 +27,7 @@ import org.apache.felix.ipojo.metadata.Element;
 import org.osgi.framework.Constants;
 import org.osgi.framework.ServiceReference;
 
-import fr.liglab.adele.cilia.framework.utils.Const;
+import fr.liglab.adele.cilia.runtime.Const;
 
 
 /**

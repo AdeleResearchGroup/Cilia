@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-package fr.liglab.adele.cilia.runtime;
+package fr.liglab.adele.cilia.framework;
 
 import java.util.Dictionary;
 import java.util.Properties;
@@ -25,12 +25,12 @@ import fr.liglab.adele.cilia.Binding;
 import fr.liglab.adele.cilia.exceptions.CiliaException;
 import fr.liglab.adele.cilia.Component;
 
-import fr.liglab.adele.cilia.framework.utils.Const;
 import fr.liglab.adele.cilia.model.CollectorImpl;
 import fr.liglab.adele.cilia.model.SenderImpl;
+import fr.liglab.adele.cilia.runtime.Const;
 
 
-public abstract class CiliaBindingServiceImpl implements CiliaBindingService {
+public abstract class AbstractBindingService implements CiliaBindingService {
 
     String collectorType ;
     

@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-package fr.liglab.adele.cilia.framework.utils.impl;
+package fr.liglab.adele.cilia.runtime.impl;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -21,7 +21,7 @@ import java.util.LinkedList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import fr.liglab.adele.cilia.framework.utils.WorkQueue;
+import fr.liglab.adele.cilia.runtime.WorkQueue;
 
 public class WorkQueueImpl implements WorkQueue {
 	private ArrayList threads;

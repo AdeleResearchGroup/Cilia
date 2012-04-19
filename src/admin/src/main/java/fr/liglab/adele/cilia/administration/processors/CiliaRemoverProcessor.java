@@ -24,12 +24,8 @@ import fr.liglab.adele.cilia.Data;
 import fr.liglab.adele.cilia.MediatorComponent;
 import fr.liglab.adele.cilia.Port;
 import fr.liglab.adele.cilia.administration.util.ParserUtils;
-import fr.liglab.adele.cilia.framework.utils.Const;
-import fr.liglab.adele.cilia.model.BindingImpl;
-import fr.liglab.adele.cilia.model.ChainImpl;
 import fr.liglab.adele.cilia.model.ComponentImpl;
-import fr.liglab.adele.cilia.model.MediatorComponentImpl;
-import fr.liglab.adele.cilia.model.PortImpl;
+import fr.liglab.adele.cilia.runtime.Const;
 
 /**
  * CiliaRemoverProcessor: The processor class. Remove cilia chain instances,

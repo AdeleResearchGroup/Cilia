@@ -29,8 +29,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import fr.liglab.adele.cilia.Data;
-import fr.liglab.adele.cilia.framework.utils.Const;
-import fr.liglab.adele.cilia.framework.utils.WorkQueue;
+import fr.liglab.adele.cilia.runtime.Const;
+import fr.liglab.adele.cilia.runtime.WorkQueue;
 import fr.liglab.adele.cilia.util.Watch;
 
 public class MonitorHandlerStateVar extends AbstractStateVariable {

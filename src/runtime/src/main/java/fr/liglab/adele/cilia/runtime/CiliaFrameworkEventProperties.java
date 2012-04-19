@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-package fr.liglab.adele.cilia.runtime.impl;
+package fr.liglab.adele.cilia.runtime;
 
 public interface CiliaFrameworkEventProperties {
 	/* 

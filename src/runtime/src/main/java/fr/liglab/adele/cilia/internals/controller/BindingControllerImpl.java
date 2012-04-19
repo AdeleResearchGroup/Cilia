@@ -27,6 +27,7 @@ import org.slf4j.LoggerFactory;
 
 import fr.liglab.adele.cilia.Binding;
 import fr.liglab.adele.cilia.exceptions.CiliaException;
+import fr.liglab.adele.cilia.framework.CiliaBindingService;
 import fr.liglab.adele.cilia.Component;
 import fr.liglab.adele.cilia.MediatorComponent;
 import fr.liglab.adele.cilia.Port;
@@ -34,7 +35,6 @@ import fr.liglab.adele.cilia.Port;
 
 import fr.liglab.adele.cilia.model.CollectorImpl;
 import fr.liglab.adele.cilia.model.SenderImpl;
-import fr.liglab.adele.cilia.runtime.CiliaBindingService;
 
 /**
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project

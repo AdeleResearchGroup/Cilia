@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package fr.liglab.adele.cilia.handler.dependency;
+package fr.liglab.adele.cilia.runtime.dependency;
 
 import java.util.Collection;
 import java.util.Comparator;
@@ -43,7 +43,7 @@ import org.osgi.framework.ServiceReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import fr.liglab.adele.cilia.framework.utils.Const;
+import fr.liglab.adele.cilia.runtime.Const;
 
 /**
  * The dependency handler manages a list of service dependencies.

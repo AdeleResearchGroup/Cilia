@@ -5,10 +5,10 @@ import java.util.Properties;
 import java.util.Random;
 
 import fr.liglab.adele.cilia.Binding;
-import fr.liglab.adele.cilia.runtime.CiliaBindingService;
-import fr.liglab.adele.cilia.runtime.CiliaBindingServiceImpl;
+import fr.liglab.adele.cilia.framework.AbstractBindingService;
+import fr.liglab.adele.cilia.framework.CiliaBindingService;
 
-public class DirectBindingService extends CiliaBindingServiceImpl implements CiliaBindingService {
+public class DirectBindingService extends AbstractBindingService implements CiliaBindingService {
    protected static final String senderProperty = "mediator.address";
    protected static final String collectorProperty = senderProperty;
    private static Random rn = new Random();

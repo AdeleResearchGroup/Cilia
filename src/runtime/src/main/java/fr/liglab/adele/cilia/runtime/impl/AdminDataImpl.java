@@ -13,13 +13,13 @@
  * limitations under the License.
  */
 
-package fr.liglab.adele.cilia.framework.utils.impl;
+package fr.liglab.adele.cilia.runtime.impl;
 
 import java.util.HashMap;
 import java.util.Map;
 
 
-import fr.liglab.adele.cilia.framework.utils.AdminData;
+import fr.liglab.adele.cilia.runtime.AdminData;
 import fr.liglab.adele.cilia.util.concurrent.ReadWriteLock;
 import fr.liglab.adele.cilia.util.concurrent.WriterPreferenceReadWriteLock;
 

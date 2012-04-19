@@ -22,7 +22,7 @@ import fr.liglab.adele.cilia.exceptions.CiliaParserException;
 import fr.liglab.adele.cilia.Component;
 import fr.liglab.adele.cilia.CiliaExtenderParser;
 
-import static fr.liglab.adele.cilia.handler.dependency.DependencyHandler.DEFAULT_FILTER_NAME;
+import static fr.liglab.adele.cilia.runtime.dependency.DependencyHandler.DEFAULT_FILTER_NAME;
 
 /**
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project

@@ -65,22 +65,18 @@
 						<Bundle-SymbolicName>${pom.artifactId}</Bundle-SymbolicName>
 						<Export-Package>
 							fr.liglab.adele.cilia.framework,
-							fr.liglab.adele.cilia.framework.monitor,
-							fr.liglab.adele.cilia.framework.monitor.statevariable,
-							fr.liglab.adele.cilia.framework.utils,
-							fr.liglab.adele.cilia.runtime,
-							fr.liglab.adele.cilia.framework.components,
 							fr.liglab.adele.cilia.framework.data,
-							fr.liglab.adele.cilia.handler.dependency,fr.liglab.adele.cilia.monitor.error
+							fr.liglab.adele.cilia.framework.monitor,
+							fr.liglab.adele.cilia.framework.components,
+							fr.liglab.adele.cilia.framework.monitor.statevariable,
+							fr.liglab.adele.cilia.runtime,
+							fr.liglab.adele.cilia.runtime.dependency
 						</Export-Package>
 						<Private-Package>
 							fr.liglab.adele.cilia.internals,
 							fr.liglab.adele.cilia.internals.controller,
 							fr.liglab.adele.cilia.internals.factories,
-							fr.liglab.adele.cilia.runtime.impl,
-							fr.liglab.adele.cilia.framework.utils.impl,
-							fr.liglab.adele.cilia.components.bindings,
-							fr.liglab.adele.cilia.framework.scheduler.impl
+							fr.liglab.adele.cilia.runtime.impl
 						</Private-Package>
 						<Include-Resource>
 							{maven-resources},

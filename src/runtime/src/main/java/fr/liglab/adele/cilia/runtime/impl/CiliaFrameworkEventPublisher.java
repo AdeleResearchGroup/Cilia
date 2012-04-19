@@ -28,6 +28,7 @@ import org.slf4j.LoggerFactory;
 import fr.liglab.adele.cilia.Chain;
 import fr.liglab.adele.cilia.MediatorComponent;
 import fr.liglab.adele.cilia.event.CiliaEvent;
+import fr.liglab.adele.cilia.runtime.CiliaFrameworkEventProperties;
 import fr.liglab.adele.cilia.util.concurrent.Mutex;
 
 public class CiliaFrameworkEventPublisher implements CiliaEvent,

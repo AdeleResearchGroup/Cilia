@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-package fr.liglab.adele.cilia.runtime;
+package fr.liglab.adele.cilia.framework;
 
 import java.util.Dictionary;
 

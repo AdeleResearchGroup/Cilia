@@ -30,6 +30,7 @@ import org.slf4j.LoggerFactory;
 import fr.liglab.adele.cilia.event.CiliaEvent;
 import fr.liglab.adele.cilia.event.CiliaFrameworkEvent;
 import fr.liglab.adele.cilia.event.CiliaFrameworkListener;
+import fr.liglab.adele.cilia.runtime.CiliaFrameworkEventProperties;
 
 public class CiliaFrameworkEventListenerImpl implements CiliaFrameworkListener,
 		CiliaEvent, CiliaFrameworkEventProperties {

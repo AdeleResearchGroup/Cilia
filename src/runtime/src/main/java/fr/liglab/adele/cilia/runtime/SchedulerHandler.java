@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-package fr.liglab.adele.cilia.framework;
+package fr.liglab.adele.cilia.runtime;
 
 import java.util.ArrayList;
 import java.util.Dictionary;
@@ -44,19 +44,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import fr.liglab.adele.cilia.Data;
+import fr.liglab.adele.cilia.framework.CiliaScheduler;
+import fr.liglab.adele.cilia.framework.ICollector;
+import fr.liglab.adele.cilia.framework.IScheduler;
+import fr.liglab.adele.cilia.framework.ISchedulerHandler;
 import fr.liglab.adele.cilia.framework.monitor.IMonitor;
 import fr.liglab.adele.cilia.framework.monitor.IProcessorMonitor;
-import fr.liglab.adele.cilia.framework.monitor.MonitorHandler;
-import fr.liglab.adele.cilia.framework.utils.AdminData;
-import fr.liglab.adele.cilia.framework.utils.Const;
-import fr.liglab.adele.cilia.framework.utils.ProcessorMetadata;
-import fr.liglab.adele.cilia.framework.utils.WorkQueue;
 import fr.liglab.adele.cilia.Component;
 import fr.liglab.adele.cilia.model.ConstModel;
 import fr.liglab.adele.cilia.model.Scheduler;
-import fr.liglab.adele.cilia.runtime.AbstractCiliaInstance;
-import fr.liglab.adele.cilia.runtime.CiliaInstance;
-import fr.liglab.adele.cilia.runtime.CiliaInstanceManager;
 import fr.liglab.adele.cilia.runtime.impl.CiliaInstanceManagerSet;
 import fr.liglab.adele.cilia.util.concurrent.ReadWriteLock;
 import fr.liglab.adele.cilia.util.concurrent.WriterPreferenceReadWriteLock;

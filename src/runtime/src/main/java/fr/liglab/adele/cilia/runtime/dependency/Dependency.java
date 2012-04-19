@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package fr.liglab.adele.cilia.handler.dependency;
+package fr.liglab.adele.cilia.runtime.dependency;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
@@ -46,7 +46,7 @@ import org.osgi.framework.Filter;
 import org.osgi.framework.ServiceReference;
 
 import fr.liglab.adele.cilia.framework.monitor.IServiceMonitor;
-import fr.liglab.adele.cilia.handler.dependency.ServiceUsage.Usage;
+import fr.liglab.adele.cilia.runtime.dependency.ServiceUsage.Usage;
 
 /**
  * Represent a service dependency of the component instance.

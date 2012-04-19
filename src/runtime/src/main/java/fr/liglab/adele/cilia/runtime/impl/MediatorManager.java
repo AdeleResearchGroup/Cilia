@@ -19,14 +19,14 @@ import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import fr.liglab.adele.cilia.framework.DispatcherHandler;
-import fr.liglab.adele.cilia.framework.SchedulerHandler;
 import fr.liglab.adele.cilia.framework.monitor.IMonitor;
-import fr.liglab.adele.cilia.framework.monitor.MonitorHandler;
-import fr.liglab.adele.cilia.framework.utils.Const;
 import fr.liglab.adele.cilia.internals.factories.MediatorComponentFactory;
 import fr.liglab.adele.cilia.internals.factories.ProcessorFactory;
+import fr.liglab.adele.cilia.runtime.Const;
+import fr.liglab.adele.cilia.runtime.DispatcherHandler;
 import fr.liglab.adele.cilia.runtime.MediatorHandler;
+import fr.liglab.adele.cilia.runtime.MonitorHandler;
+import fr.liglab.adele.cilia.runtime.SchedulerHandler;
 
 public class MediatorManager extends InstanceManager implements ComponentInstance, InstanceStateListener {
 

@@ -27,10 +27,10 @@ import fr.liglab.adele.cilia.Chain;
 import fr.liglab.adele.cilia.CiliaContext;
 import fr.liglab.adele.cilia.Data;
 import fr.liglab.adele.cilia.Mediator;
-import fr.liglab.adele.cilia.framework.utils.AdminData;
-import fr.liglab.adele.cilia.framework.utils.Const;
 import fr.liglab.adele.cilia.model.AdapterImpl;
 import fr.liglab.adele.cilia.model.MediatorImpl;
+import fr.liglab.adele.cilia.runtime.AdminData;
+import fr.liglab.adele.cilia.runtime.Const;
 
 public class CiliaReplacerProcessor {
 	private static final Logger logger = LoggerFactory.getLogger(Const.LOGGER_ADAPTATION);

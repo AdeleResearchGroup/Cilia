@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package fr.liglab.adele.cilia.monitor.error;
+package fr.liglab.adele.cilia.framework.monitor;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -25,7 +25,6 @@ import org.slf4j.LoggerFactory;
 
 import fr.liglab.adele.cilia.Data;
 import fr.liglab.adele.cilia.exceptions.CiliaException;
-import fr.liglab.adele.cilia.framework.monitor.AbstractMonitor;
 
 /**
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project Team</a>

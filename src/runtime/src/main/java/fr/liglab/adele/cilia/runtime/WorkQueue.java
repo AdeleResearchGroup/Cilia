@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-package fr.liglab.adele.cilia.framework.utils;
+package fr.liglab.adele.cilia.runtime;
 
 public interface WorkQueue {
 

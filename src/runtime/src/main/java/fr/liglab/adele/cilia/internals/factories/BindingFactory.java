@@ -18,9 +18,9 @@ import org.apache.felix.ipojo.metadata.Attribute;
 import org.apache.felix.ipojo.metadata.Element;
 import org.osgi.framework.BundleContext;
 
+import fr.liglab.adele.cilia.framework.AbstractBindingService;
+import fr.liglab.adele.cilia.framework.CiliaBindingService;
 import fr.liglab.adele.cilia.framework.GenericBindingService;
-import fr.liglab.adele.cilia.runtime.CiliaBindingService;
-import fr.liglab.adele.cilia.runtime.CiliaBindingServiceImpl;
 /**
  * This class defines the binding factory.
  * @author torito
@@ -288,7 +288,7 @@ public class BindingFactory extends CiliaComponentFactory implements FactoryStat
         if (isGeneric) {
             Element manip = new Element("manipulation", null);
             //Add parent class.
-            manip.addAttribute(new Attribute("super", CiliaBindingServiceImpl.class.getName()));
+            manip.addAttribute(new Attribute("super", AbstractBindingService.class.getName()));
             //Add init method added to by ipojo manipulation.
             Element methodInit = new Element("method", null);
             methodInit.addAttribute(new Attribute("name", "init"));

@@ -14,12 +14,12 @@ import org.osgi.framework.BundleContext;
 
 import fr.liglab.adele.cilia.Data;
 import fr.liglab.adele.cilia.framework.CiliaAdapter;
-import fr.liglab.adele.cilia.framework.DispatcherHandler;
-import fr.liglab.adele.cilia.framework.SchedulerHandler;
 import fr.liglab.adele.cilia.framework.monitor.IMonitor;
-import fr.liglab.adele.cilia.framework.monitor.MonitorHandler;
-import fr.liglab.adele.cilia.framework.utils.Const;
+import fr.liglab.adele.cilia.runtime.Const;
+import fr.liglab.adele.cilia.runtime.DispatcherHandler;
 import fr.liglab.adele.cilia.runtime.MediatorHandler;
+import fr.liglab.adele.cilia.runtime.MonitorHandler;
+import fr.liglab.adele.cilia.runtime.SchedulerHandler;
 
 public class IOAdapterFactory extends ProcessorFactory {
 

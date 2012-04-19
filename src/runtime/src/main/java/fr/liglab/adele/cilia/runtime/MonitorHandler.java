@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package fr.liglab.adele.cilia.framework.monitor;
+package fr.liglab.adele.cilia.runtime;
 
 import java.util.ArrayList;
 import java.util.Dictionary;
@@ -24,6 +24,10 @@ import org.apache.felix.ipojo.PrimitiveHandler;
 import org.apache.felix.ipojo.metadata.Element;
 
 import fr.liglab.adele.cilia.Data;
+import fr.liglab.adele.cilia.framework.monitor.IMonitor;
+import fr.liglab.adele.cilia.framework.monitor.INotifier;
+import fr.liglab.adele.cilia.framework.monitor.IProcessorMonitor;
+import fr.liglab.adele.cilia.framework.monitor.IServiceMonitor;
 
 public class MonitorHandler extends PrimitiveHandler implements IProcessorMonitor,
 IServiceMonitor {

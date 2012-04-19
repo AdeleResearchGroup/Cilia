@@ -36,16 +36,16 @@
 		name="dispatcher-tracker" namespace="fr.liglab.adele.cilia">
 	</handler>
 
-	<handler classname="fr.liglab.adele.cilia.framework.DispatcherHandler"
+	<handler classname="fr.liglab.adele.cilia.runtime.DispatcherHandler"
 		name="dispatcher" namespace="fr.liglab.adele.cilia" architecture="false">
 		<requires field="m_applicationQueue"
-			specification="fr.liglab.adele.cilia.framework.utils.WorkQueue"
+			specification="fr.liglab.adele.cilia.runtime.WorkQueue"
 			filter="(cilia.pool.scope=application)" />
 		<callback transition="validate" method="validate" />
 		<callback transition="invalidate" method="unvalidate" />
 	</handler>
 
-	<handler classname="fr.liglab.adele.cilia.framework.monitor.MonitorHandler"
+	<handler classname="fr.liglab.adele.cilia.runtime.MonitorHandler"
 		name="monitor-handler" level="2" namespace="fr.liglab.adele.cilia"
 		architecture="false">
 	</handler>
@@ -58,16 +58,16 @@
 			<property name="mediator.service" value="monitor" type="String" />
 		</provides>
 		<requires field="m_systemQueue"
-			specification="fr.liglab.adele.cilia.framework.utils.WorkQueue"
+			specification="fr.liglab.adele.cilia.runtime.WorkQueue"
 			filter="(cilia.pool.scope=application)" />
 		<callback transition="validate" method="validate" />
 		<callback transition="invalidate" method="unvalidate" />
 	</handler>
 
-	<handler classname="fr.liglab.adele.cilia.framework.SchedulerHandler"
+	<handler classname="fr.liglab.adele.cilia.runtime.SchedulerHandler"
 		name="scheduler" namespace="fr.liglab.adele.cilia">
 		<requires field="m_systemQueue"
-			specification="fr.liglab.adele.cilia.framework.utils.WorkQueue"
+			specification="fr.liglab.adele.cilia.runtime.WorkQueue"
 			filter="(cilia.pool.scope=system)" />
 		<callback transition="validate" method="validate" />
 		<callback transition="invalidate" method="unvalidate" />
@@ -106,13 +106,13 @@
 
 
 	<!-- Composant System Thread Pool -->
-	<component classname="fr.liglab.adele.cilia.framework.utils.impl.WorkQueueImpl"
+	<component classname="fr.liglab.adele.cilia.runtime.impl.WorkQueueImpl"
 		name="WorkQueue" immediate="true">
 		<properties>
 			<property name="system.thread.pool.size" field="m_size" />
 			<property name="thread.pool.name" field="m_name" />
 		</properties>
-		<provides specification="fr.liglab.adele.cilia.framework.utils.WorkQueue">
+		<provides specification="fr.liglab.adele.cilia.runtime.WorkQueue">
 			<property name="cilia.pool.scope" type="String" />
 		</provides>
 		<callback transition="validate" method="start" />
@@ -134,9 +134,9 @@
 	</instance>
 
 	<!-- Component Admin Data 'Global data storage per chain -->
-	<component classname="fr.liglab.adele.cilia.framework.utils.impl.AdminDataImpl"
+	<component classname="fr.liglab.adele.cilia.runtime.impl.AdminDataImpl"
 		name="AdminData" immediate="true">
-		<provides specification="fr.liglab.adele.cilia.framework.utils.AdminData">
+		<provides specification="fr.liglab.adele.cilia.runtime.AdminData">
 			<property name="chain.name" type="String" />
 		</provides>
 		<callback transition="validate" method="start" />
@@ -182,7 +182,7 @@
 	<instance component="Cilia-Chain-Parser" name="Cilia-Chain-Parser" />
 	<instance component="Cilia-File-Manager" name="Cilia-File-Manager" />
 
-<handler classname="fr.liglab.adele.cilia.handler.dependency.DependencyHandler"
+<handler classname="fr.liglab.adele.cilia.runtime.dependency.DependencyHandler"
 		namespace="fr.liglab.adele.cilia" name="dependency" level="0"
 		architecture="false">
 	</handler>
@@ -317,7 +317,7 @@
 
 	<!-- Monitors -->
 	<monitor name="error-handler"
-		classname="fr.liglab.adele.cilia.monitor.error.ProcessingErrorHandler"
+		classname="fr.liglab.adele.cilia.framework.monitor.ProcessingErrorHandler"
 		namespace="fr.liglab.adele.cilia">
 		<properties>
 			<property name="rules" field="rules"/>

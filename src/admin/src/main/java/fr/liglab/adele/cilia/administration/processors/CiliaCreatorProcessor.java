@@ -24,12 +24,11 @@ import fr.liglab.adele.cilia.Data;
 import fr.liglab.adele.cilia.Mediator;
 import fr.liglab.adele.cilia.MediatorComponent;
 import fr.liglab.adele.cilia.administration.util.ParserUtils;
-import fr.liglab.adele.cilia.framework.utils.Const;
 import fr.liglab.adele.cilia.model.AdapterImpl;
 import fr.liglab.adele.cilia.model.ChainImpl;
-import fr.liglab.adele.cilia.model.MediatorComponentImpl;
 import fr.liglab.adele.cilia.model.MediatorImpl;
 import fr.liglab.adele.cilia.model.PatternType;
+import fr.liglab.adele.cilia.runtime.Const;
 
 /**
  * CiliaCreatorProcessor: The processor class. Creates cilia chain instances,
