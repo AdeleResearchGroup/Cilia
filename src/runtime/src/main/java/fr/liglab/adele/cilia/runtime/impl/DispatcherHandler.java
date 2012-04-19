@@ -38,12 +38,12 @@ import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import fr.liglab.adele.cilia.exceptions.CiliaException;
+import fr.liglab.adele.cilia.Component;
 import fr.liglab.adele.cilia.Data;
-import fr.liglab.adele.cilia.framework.CiliaDispatcher;
+import fr.liglab.adele.cilia.exceptions.CiliaException;
+import fr.liglab.adele.cilia.framework.AbstractDispatcher;
 import fr.liglab.adele.cilia.framework.IDispatcher;
 import fr.liglab.adele.cilia.framework.ISender;
-import fr.liglab.adele.cilia.Component;
 import fr.liglab.adele.cilia.model.Dispatcher;
 import fr.liglab.adele.cilia.runtime.CiliaInstance;
 import fr.liglab.adele.cilia.runtime.CiliaInstanceManager;
@@ -63,7 +63,7 @@ import fr.liglab.adele.cilia.util.concurrent.WriterPreferenceReadWriteLock;
  */
 @SuppressWarnings({"unchecked","rawtypes"})
 public class DispatcherHandler extends PrimitiveHandler implements InstanceStateListener,
-		Observer, IDispatcherHandler {
+Observer, IDispatcherHandler {
 	/**
 	 * Reference to the dispatcher logic component.
 	 */
@@ -297,25 +297,32 @@ public class DispatcherHandler extends PrimitiveHandler implements InstanceState
 
 		if (method.getName().compareTo(m_methodProcessMetadata.getMethodName()) == 0) {
 			List list = null;
+			Data ndata = null;
+			boolean isList = false;
 			if (returnedObj == null) {
 				logger.warn("Dispatching empty dataset");
 				list = null;
 			} else if (returnedObj instanceof List) {
 				list = new ArrayList((List) returnedObj);
+				isList = true;
 			} else if (returnedObj instanceof Data) {
 				list = new ArrayList();
-				Data ndata = (Data) returnedObj;
+				ndata = (Data) returnedObj;
 				list.add(ndata);
+				isList = false;
 			} else {
 				msg = new StringBuffer().append("Unable to identify returned data type ")
 						.append(returnedObj);
 				logger.error(msg.toString());
-				new CiliaException(msg.toString());
 			}
 			final List rList = list;
 			notifyOnProcessExit(list);
 			try {
-				dispatch(rList);
+				if (isList) {
+					dispatch(rList);
+				} else {
+					dispatch(ndata);
+				}
 			} catch (CiliaException e) {
 				logger.error("Error while dispatching :"+e.getMessage());
 				throw new RuntimeException(e.getMessage());
@@ -470,7 +477,7 @@ public class DispatcherHandler extends PrimitiveHandler implements InstanceState
 			monitor.notifyOnProcessEntry(data);
 		}
 	}
-	
+
 	protected void notifyOnDispatch(List data) {
 		StringBuffer msg = new StringBuffer().append("dispatch ");
 		if (logger.isDebugEnabled()) {
@@ -484,7 +491,7 @@ public class DispatcherHandler extends PrimitiveHandler implements InstanceState
 			monitor.notifyOnDispatch(data);
 		}	
 	}
-	
+
 
 	public void fireEvent(Map info) {
 		StringBuffer msg = new StringBuffer().append("fire event");
@@ -573,18 +580,30 @@ public class DispatcherHandler extends PrimitiveHandler implements InstanceState
 			return;
 		}
 		logger.debug("Dispatcher is now valid, updating reference");
-		CiliaDispatcher im = (CiliaDispatcher) ref; // all dispatchers must be
-		// extend CiliaDispatcher
+		AbstractDispatcher im = (AbstractDispatcher) ref; // all dispatchers must be
+		// extend AbstractDispatcher
 		im.setDispatcher(this);
 	}
 
-	public void dispatch(List dataset) throws CiliaException {
+	public void dispatch(Data dataset) throws CiliaException {
 		IDispatcher dispatcher = (IDispatcher) dispatcherComponent.getObject();
 		if (dispatcher == null) {
 			logger.warn("Dispatcher is not valid when dispatching, waiting to be valid");
 			return;
 		}
 		dispatcher.dispatch(dataset);
+	}
+
+	private void dispatch(List dataset) throws CiliaException {
+		IDispatcher dispatcher = (IDispatcher) dispatcherComponent.getObject();
+		if (dispatcher == null) {
+			logger.warn("Dispatcher is not valid when dispatching, waiting to be valid");
+			return;
+		}
+		for (int i = 0; i < dataset.size(); i ++) {
+			Data data = (Data)dataset.get(i);
+			dispatch(data);
+		}
 	}
 
 	public void start() {

@@ -43,11 +43,11 @@ import org.osgi.framework.ServiceReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import fr.liglab.adele.cilia.Component;
 import fr.liglab.adele.cilia.Data;
-import fr.liglab.adele.cilia.framework.CiliaScheduler;
+import fr.liglab.adele.cilia.framework.AbstractScheduler;
 import fr.liglab.adele.cilia.framework.ICollector;
 import fr.liglab.adele.cilia.framework.IScheduler;
-import fr.liglab.adele.cilia.Component;
 import fr.liglab.adele.cilia.model.ConstModel;
 import fr.liglab.adele.cilia.model.Scheduler;
 import fr.liglab.adele.cilia.runtime.AdminData;
@@ -608,7 +608,7 @@ InstanceStateListener, Observer, Runnable {
 			return;
 		}
 		logger.debug("Scheduler is now valid, updating references");
-		CiliaScheduler im = (CiliaScheduler) ref; // all scheduleres must be
+		AbstractScheduler im = (AbstractScheduler) ref; // all scheduleres must be
 		// extend CiliaScheduler
 		im.setConnectedScheduler(this);
 	}

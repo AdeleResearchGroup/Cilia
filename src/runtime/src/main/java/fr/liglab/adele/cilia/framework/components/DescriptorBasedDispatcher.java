@@ -4,14 +4,13 @@
 package fr.liglab.adele.cilia.framework.components;
 
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 
 import org.osgi.framework.BundleContext;
 
 import fr.liglab.adele.cilia.exceptions.CiliaException;
 import fr.liglab.adele.cilia.Data;
-import fr.liglab.adele.cilia.framework.CiliaDispatcher;
+import fr.liglab.adele.cilia.framework.AbstractDispatcher;
 /**
  * DescriptorBasedDispatcher
  * This Dispatcher will analize Data in order to 
@@ -19,7 +18,7 @@ import fr.liglab.adele.cilia.framework.CiliaDispatcher;
  * @author dbqw4458
  *
  */
-public class DescriptorBasedDispatcherImpl extends CiliaDispatcher {
+public class DescriptorBasedDispatcher extends AbstractDispatcher {
 
 	/**
 	 * List destinations.
@@ -32,7 +31,7 @@ public class DescriptorBasedDispatcherImpl extends CiliaDispatcher {
 	 */
 	protected String property;
 
-	public DescriptorBasedDispatcherImpl(BundleContext context){
+	public DescriptorBasedDispatcher(BundleContext context){
 		super(context);
 	}
 
@@ -49,33 +48,24 @@ public class DescriptorBasedDispatcherImpl extends CiliaDispatcher {
 	 * and used to send data to destinations.
 	 * @throws CiliaException 
 	 */
-	public void dispatch(List dataSet) throws CiliaException {
+	public void dispatch(Data data) throws CiliaException {
 
-		int dataCount = 0;
 
 		if (routeConditions == null) {
 			throw new CiliaException("There is any configuration to dispatch");
 		}
 
-		if (dataSet != null ) {
-			dataCount = dataSet.size();
-		}
-		for (int i = 0; i < dataCount ; i++) {
+		synchronized (routeConditions) {
+			Iterator it = routeConditions.keySet().iterator();
 
-			Data data = (Data) dataSet.get(i);
-			synchronized (routeConditions) {
-				Iterator it = routeConditions.keySet().iterator();
-
-				while (it.hasNext()) {
-					String condition = (String) it.next();
-					if(((String)data.getProperty(property)).equalsIgnoreCase(condition)) {
-						String senderName = (String)routeConditions.get(condition);
-						send(senderName, data);
-					}
+			while (it.hasNext()) {
+				String condition = (String) it.next();
+				if(((String)data.getProperty(property)).equalsIgnoreCase(condition)) {
+					String senderName = (String)routeConditions.get(condition);
+					send(senderName, data);
 				}
 			}
-
 		}
-	}
 
+	}
 }

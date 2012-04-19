@@ -75,12 +75,12 @@
 
 
 	<!-- Declaring Immediate Scheduler -->
-	<scheduler classname="fr.liglab.adele.cilia.framework.CiliaScheduler"
+	<scheduler classname="fr.liglab.adele.cilia.framework.components.ImmediateScheduler"
 		name="immediate-scheduler" namespace="fr.liglab.adele.cilia"
 		architecture="false">
 	</scheduler>
 	<!-- Declaring Multicast Dispatcher -->
-	<dispatcher classname="fr.liglab.adele.cilia.framework.CiliaDispatcher"
+	<dispatcher classname="fr.liglab.adele.cilia.framework.components.MulticastDispatcher"
 		name="multicast-dispatcher" namespace="fr.liglab.adele.cilia"
 		architecture="false">
 	</dispatcher>
@@ -189,7 +189,7 @@
 
 	<!-- SCHEDULERS DEFINITIONS WITH CILIA DEFINITION LANGUAGE -->
 	<scheduler name="periodic-scheduler"
-		classname="fr.liglab.adele.cilia.framework.components.PeriodicSchedulerImpl"
+		classname="fr.liglab.adele.cilia.framework.components.PeriodicScheduler"
 		namespace="fr.liglab.adele.cilia">
 		<properties>
 			<property name="delay" field="delay" value="3000" />
@@ -200,7 +200,7 @@
 	</scheduler>
 
 	<scheduler name="correlation-scheduler"
-		classname="fr.liglab.adele.cilia.framework.components.CorrelationSchedulerImpl"
+		classname="fr.liglab.adele.cilia.framework.components.CorrelationScheduler"
 		namespace="fr.liglab.adele.cilia">
 		<properties>
 			<property name="correlation" method="setCorrelation" type="String"
@@ -209,7 +209,7 @@
 	</scheduler>
 
 	<scheduler name="counter-scheduler"
-		classname="fr.liglab.adele.cilia.framework.components.CounterSchedulerImpl"
+		classname="fr.liglab.adele.cilia.framework.components.CounterScheduler"
 		namespace="fr.liglab.adele.cilia">
 		<properties>
 			<property name="correlation" method="setCorrelation" type="String"
@@ -221,7 +221,7 @@
 
 	<!-- DISPATCHER DEFINITIONS WITH CILIA DEFINITION LANGUAGE -->
 	<dispatcher name="content-based-dispatcher"
-		classname="fr.liglab.adele.cilia.framework.components.ContentBasedDispatcherImpl"
+		classname="fr.liglab.adele.cilia.framework.components.ContentBasedDispatcher"
 		namespace="fr.liglab.adele.cilia">
 		<properties>
 			<property name="conditions" method="setRouteConditions"
@@ -232,29 +232,13 @@
 	</dispatcher>
 
 	<dispatcher name="descriptor-based-dispatcher"
-		classname="fr.liglab.adele.cilia.framework.components.DescriptorBasedDispatcherImpl"
+		classname="fr.liglab.adele.cilia.framework.components.DescriptorBasedDispatcher"
 		namespace="fr.liglab.adele.cilia">
 		<properties>
 			<property name="conditions" method="setRouteConditions"
 				type="java.util.Map" />
 			<property name="property" method="setProperty" type="java.lang.String" />
 		</properties>
-	</dispatcher>
-
-	<dispatcher name="content-based-dispatcher-with-correlation"
-		classname="fr.liglab.adele.cilia.framework.components.CorrelationContentBasedDispatcherImpl"
-		namespace="fr.liglab.adele.cilia">
-		<properties>
-			<property name="conditions" method="setRouteConditions"
-				type="java.util.Map" />
-			<property name="language" method="setLanguage" value="ldap"
-				type="String" />
-		</properties>
-	</dispatcher>
-
-	<dispatcher name="multicast-dispatcher-with-correlation"
-		classname="fr.liglab.adele.cilia.framework.components.CorrelationMulticastDispatcherImpl"
-		namespace="fr.liglab.adele.cilia">
 	</dispatcher>
 
 	<!--BINDING SERVICES -->

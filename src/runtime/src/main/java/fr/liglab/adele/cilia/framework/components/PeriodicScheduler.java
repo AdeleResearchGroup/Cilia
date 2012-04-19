@@ -2,7 +2,6 @@ package fr.liglab.adele.cilia.framework.components;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
@@ -10,9 +9,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import fr.liglab.adele.cilia.Data;
-import fr.liglab.adele.cilia.framework.CiliaScheduler;
+import fr.liglab.adele.cilia.framework.AbstractScheduler;
 
-public class PeriodicSchedulerImpl extends CiliaScheduler implements Runnable {
+public class PeriodicScheduler extends AbstractScheduler implements Runnable {
 
 	/**
 	 * delay time to start processing.

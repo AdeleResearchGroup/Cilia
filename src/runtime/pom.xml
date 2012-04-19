@@ -92,9 +92,7 @@
 							sender:fr.liglab.adele.cilia.internals.factories.SenderFactory,
 							adapter:fr.liglab.adele.cilia.internals.factories.AdapterFactory,
 							io-adapter:fr.liglab.adele.cilia.internals.factories.IOAdapterFactory,
-							binding:fr.liglab.adele.cilia.internals.factories.BindingFactory,
 							monitor:fr.liglab.adele.cilia.internals.factories.MonitorHandlerFactory,
-							protocol:fr.liglab.adele.cilia.internals.factories.BindingFactory,
 							linker:fr.liglab.adele.cilia.internals.factories.BindingFactory
 						</IPOJO-Extension>
 					</instructions>

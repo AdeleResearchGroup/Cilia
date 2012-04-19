@@ -1,3 +1,17 @@
+/*
+ * Copyright Adele Team LIG
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package fr.liglab.adele.cilia.framework;
 
 import java.util.Dictionary;
@@ -11,8 +25,13 @@ import org.slf4j.LoggerFactory;
 
 import fr.liglab.adele.cilia.Data;
 import fr.liglab.adele.cilia.exceptions.CiliaException;
-
-public class CiliaDispatcher implements IDispatcher {
+/**
+ * 
+ *
+ * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project Team</a>
+ *
+ */
+public abstract class AbstractDispatcher implements IDispatcher{
 
 	IDispatcher dispatcher;
 
@@ -20,7 +39,7 @@ public class CiliaDispatcher implements IDispatcher {
 
 	protected static Logger log= LoggerFactory.getLogger("cilia.ipojo.runtime");
 
-	public CiliaDispatcher(BundleContext context) {
+	public AbstractDispatcher(BundleContext context) {
 		bcontext = context;
 	}
 
@@ -35,29 +54,7 @@ public class CiliaDispatcher implements IDispatcher {
 		dispatcher.addSender(senderName, senderId, props);
 	}
 
-	public void dispatch(List dataSet) throws CiliaException {
-		int dataCount = 0;
-
-		if (dataSet != null) {
-			dataCount = dataSet.size();
-		}
-
-		for (int i = 0; i < dataCount; i++) {
-			Data data = (Data) dataSet.get(i);
-			List sendersNames = getSendersIds();
-			int senderListSize = sendersNames.size();
-			for (int j = 0; j < senderListSize; j++) {
-				String senderName = (String) sendersNames.get(j);
-				try {
-					send(senderName, data);
-				} catch (CiliaException ex) {
-					log.error("send exception " + ex.getStackTrace().toString());
-					throw new CiliaException(ex.getMessage());
-				}
-			}
-		}
-
-	}
+	public abstract void dispatch(Data data) throws CiliaException  ;
 
 	public List getSendersIds() {
 		return dispatcher.getSendersIds();
@@ -86,5 +83,5 @@ public class CiliaDispatcher implements IDispatcher {
 		if (dispatcher != null)
 			dispatcher.fireEvent(info);
 	}
-
+	
 }

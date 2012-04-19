@@ -12,7 +12,7 @@ import fr.liglab.adele.cilia.exceptions.CiliaException;
 import fr.liglab.adele.cilia.framework.data.DataCount;
 import fr.liglab.adele.cilia.Data;
 
-public class CounterSchedulerImpl extends AbstractCorrelationScheduler{
+public class CounterScheduler extends AbstractCorrelationScheduler{
 	/**
 	 * Number of message needed to start processing.
 	 */
@@ -27,7 +27,7 @@ public class CounterSchedulerImpl extends AbstractCorrelationScheduler{
 
 	private DataCount datacount = null;
 
-	public CounterSchedulerImpl(BundleContext bcontext) {
+	public CounterScheduler(BundleContext bcontext) {
 		super(bcontext);
 		datacount = new DataCount(bcontext);
 	}

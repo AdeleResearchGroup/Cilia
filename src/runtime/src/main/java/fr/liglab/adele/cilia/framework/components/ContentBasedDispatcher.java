@@ -6,9 +6,9 @@ import java.util.Map;
 
 import org.osgi.framework.BundleContext;
 
-import fr.liglab.adele.cilia.exceptions.CiliaException;
 import fr.liglab.adele.cilia.Data;
-import fr.liglab.adele.cilia.framework.CiliaDispatcher;
+import fr.liglab.adele.cilia.exceptions.CiliaException;
+import fr.liglab.adele.cilia.framework.AbstractDispatcher;
 import fr.liglab.adele.cilia.framework.data.CiliaExpression;
 import fr.liglab.adele.cilia.framework.data.ExpressionFactory;
 /**
@@ -18,7 +18,7 @@ import fr.liglab.adele.cilia.framework.data.ExpressionFactory;
  * @author torito
  *
  */
-public class ContentBasedDispatcherImpl extends CiliaDispatcher {
+public class ContentBasedDispatcher extends AbstractDispatcher {
 
 	/**
 	 * List destinations.
@@ -32,7 +32,7 @@ public class ContentBasedDispatcherImpl extends CiliaDispatcher {
 	private CiliaExpression expre = null;
 
 
-	public ContentBasedDispatcherImpl(BundleContext context){
+	public ContentBasedDispatcher(BundleContext context){
 		super(context);
 	}
 
@@ -55,9 +55,7 @@ public class ContentBasedDispatcherImpl extends CiliaDispatcher {
 	 * and used to send data to destinations.
 	 * @throws CiliaException 
 	 */
-	public void dispatch(List dataSet) throws CiliaException {
-
-		int dataCount = 0;
+	public void dispatch(Data data) throws CiliaException {
 
 		if (routeConditions == null) {
 			throw new CiliaException("There is any configuration to dispatch");
@@ -67,26 +65,18 @@ public class ContentBasedDispatcherImpl extends CiliaDispatcher {
 			throw new CiliaException("Expression parser is null, set language first.");
 		}
 
-		if (dataSet != null ) {
-			dataCount = dataSet.size();
-		}
-		for (int i = 0; i < dataCount ; i++) {
-
-			Data data = (Data) dataSet.get(i);
-			synchronized (routeConditions) {
-				Iterator it = routeConditions.keySet().iterator();
-
-				while (it.hasNext()) {
-					String condition = (String) it.next();
-					boolean temp = expre.evaluateBooleanExpression(condition,data);
-					if(temp) {
-						String senderName = (String)routeConditions.get(condition);
-						send(senderName, data);
-					}
+		synchronized (routeConditions) {
+			Iterator it = routeConditions.keySet().iterator();
+			while (it.hasNext()) {
+				String condition = (String) it.next();
+				boolean temp = expre.evaluateBooleanExpression(condition,data);
+				if(temp) {
+					String senderName = (String)routeConditions.get(condition);
+					send(senderName, data);
 				}
 			}
-
 		}
+
 	}
 
 }

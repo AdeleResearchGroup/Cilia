@@ -7,19 +7,12 @@ import org.osgi.framework.BundleContext;
 import fr.liglab.adele.cilia.Data;
 import fr.liglab.adele.cilia.framework.data.DataEnrichment;
 
-public class CorrelationSchedulerImpl extends AbstractCorrelationScheduler {
+public class CorrelationScheduler extends AbstractCorrelationScheduler {
 
-	public CorrelationSchedulerImpl(BundleContext bcontext) {
+	public CorrelationScheduler(BundleContext bcontext) {
 		super(bcontext);
 	}
 
-	/**
-	 * List of dataSets.
-	 */
-	//private Map/* <String, DataSet> */mapListData = new HashMap/*
-	//															 * <String,
-	//															 * List<Data>>
-	//															 */();
 
 	public boolean checkCompletness(List dataset) {
 		logger.debug("will check completness");
