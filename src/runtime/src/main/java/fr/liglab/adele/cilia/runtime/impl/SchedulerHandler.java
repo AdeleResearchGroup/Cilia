@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-package fr.liglab.adele.cilia.runtime;
+package fr.liglab.adele.cilia.runtime.impl;
 
 import java.util.ArrayList;
 import java.util.Dictionary;
@@ -47,16 +47,26 @@ import fr.liglab.adele.cilia.Data;
 import fr.liglab.adele.cilia.framework.CiliaScheduler;
 import fr.liglab.adele.cilia.framework.ICollector;
 import fr.liglab.adele.cilia.framework.IScheduler;
-import fr.liglab.adele.cilia.framework.ISchedulerHandler;
-import fr.liglab.adele.cilia.framework.monitor.IMonitor;
-import fr.liglab.adele.cilia.framework.monitor.IProcessorMonitor;
 import fr.liglab.adele.cilia.Component;
 import fr.liglab.adele.cilia.model.ConstModel;
 import fr.liglab.adele.cilia.model.Scheduler;
-import fr.liglab.adele.cilia.runtime.impl.CiliaInstanceManagerSet;
+import fr.liglab.adele.cilia.runtime.AdminData;
+import fr.liglab.adele.cilia.runtime.CiliaInstance;
+import fr.liglab.adele.cilia.runtime.CiliaInstanceManager;
+import fr.liglab.adele.cilia.runtime.CiliaInstanceWrapper;
+import fr.liglab.adele.cilia.runtime.Const;
+import fr.liglab.adele.cilia.runtime.ISchedulerHandler;
+import fr.liglab.adele.cilia.runtime.ProcessorMetadata;
+import fr.liglab.adele.cilia.runtime.WorkQueue;
 import fr.liglab.adele.cilia.util.concurrent.ReadWriteLock;
 import fr.liglab.adele.cilia.util.concurrent.WriterPreferenceReadWriteLock;
-
+/**
+ * 
+ *
+ * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project Team</a>
+ *
+ */
+@SuppressWarnings({"rawtypes", "unchecked"})
 public class SchedulerHandler extends PrimitiveHandler implements ISchedulerHandler,
 InstanceStateListener, Observer, Runnable {
 
@@ -103,7 +113,7 @@ InstanceStateListener, Observer, Runnable {
 	 *             when there is an error configuring handler with the iPOJO.
 	 */
 	public void initializeComponentFactory(ComponentTypeDescription cd, Element metadata)
-	throws ConfigurationException {
+			throws ConfigurationException {
 
 		Element[] schedulerHanlerMetadata = metadata.getElements(HANDLER_NAME,
 				Const.CILIA_NAMESPACE);
@@ -134,11 +144,11 @@ InstanceStateListener, Observer, Runnable {
 			}
 			// Add properties to component.
 			PropertyDescription[] phd1 = getHandlerManager().getFactory()
-			.getComponentDescription().getProperties();
+					.getComponentDescription().getProperties();
 			for (int i = 0; phd1 != null && i < phd1.length; i++) {
 				if (!phd1[i].isImmutable()) {
 					cd.addProperty(new PropertyDescription(phd1[i].getName(), phd1[i]
-					                                                               .getType(), phd1[i].getValue()));
+							.getType(), phd1[i].getValue()));
 				}
 			}
 
@@ -157,7 +167,7 @@ InstanceStateListener, Observer, Runnable {
 	 * Method called by iPOJO when creating an instance.
 	 */
 	public void configure(Element metadata, Dictionary dictionary)
-	throws ConfigurationException {
+			throws ConfigurationException {
 
 		initializeProperties(dictionary);
 		Element schedulerMetadata = metadata.getElements(HANDLER_NAME,
@@ -189,7 +199,7 @@ InstanceStateListener, Observer, Runnable {
 		ProcessorMetadata sm = new ProcessorMetadata(procesorMetadata);
 		PojoMetadata pojometadata = getPojoMetadata();
 		methodMetadata = pojometadata
-		.getMethod(sm.getMethod(), sm.getParameterDataType());
+				.getMethod(sm.getMethod(), sm.getParameterDataType());
 
 		// Moved to start addCollector(subscribers, (Map) dictionary);
 
@@ -250,7 +260,7 @@ InstanceStateListener, Observer, Runnable {
 	 *            Dictionary where collector is defined.
 	 */
 	public void addCollector(String collectorType, String portname, Dictionary dictionary) {
-		AbstractCiliaInstance ciliaCollector = null;
+		CiliaInstanceWrapper ciliaCollector = null;
 		String identifier = null;
 		if (dictionary == null) {
 			dictionary = new Properties();
@@ -278,7 +288,7 @@ InstanceStateListener, Observer, Runnable {
 			logger.debug("Creating collector in mediator " + portname);
 			synchronized (lockObject) {
 
-				ciliaCollector = new AbstractCiliaInstance(getInstanceManager()
+				ciliaCollector = new CiliaInstanceWrapper(getInstanceManager()
 						.getContext(), identifier, filter, dictionary, collectorsManager);
 				collectorsManager.addInstance(portname, ciliaCollector);
 			}
@@ -289,7 +299,7 @@ InstanceStateListener, Observer, Runnable {
 			Handler dependency = null;
 			if(im != null) {
 				dependency = (Handler) (im)
-				.getHandler(Const.ciliaQualifiedName("dependency"));
+						.getHandler(Const.ciliaQualifiedName("dependency"));
 			}
 
 			if (dependency != null) {
@@ -512,7 +522,7 @@ InstanceStateListener, Observer, Runnable {
 	}
 
 	private void createSchedulerDescription(Element scheduler, Dictionary dictionary)
-	throws ConfigurationException {
+			throws ConfigurationException {
 		String schedulerName = null;
 		String schedulerNS = null;
 
@@ -547,7 +557,7 @@ InstanceStateListener, Observer, Runnable {
 		BundleContext context = getInstanceManager().getContext();
 		String schedulerName = "scheduler";
 		String schedulerFilter = createFilter();
-		schedulerComponent = new AbstractCiliaInstance(context, schedulerName,
+		schedulerComponent = new CiliaInstanceWrapper(context, schedulerName,
 				schedulerFilter, getSchedulerProperties(dictionary), this);
 		schedulerComponent.start();
 		updateSchedulerReference();
@@ -716,17 +726,6 @@ InstanceStateListener, Observer, Runnable {
 		return data;
 	}
 
-	private void clearData() {
-		AdminData dataContainer;
-		Map data;
-		if (m_refData == null)
-			retreiveAdminService();
-		dataContainer = (AdminData) getInstanceManager().getContext().getService(
-				m_refData);
-		dataContainer.clearData((String) m_dictionary
-				.get(ConstModel.PROPERTY_COMPONENT_ID));
-		getInstanceManager().getContext().ungetService(m_refData);
-	}
 
 	public Map getData() {
 		/* Return the buffer */

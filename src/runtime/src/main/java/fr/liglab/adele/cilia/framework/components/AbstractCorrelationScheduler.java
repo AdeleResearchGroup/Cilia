@@ -11,7 +11,7 @@ import fr.liglab.adele.cilia.framework.CiliaScheduler;
 import fr.liglab.adele.cilia.framework.data.CiliaExpression;
 import fr.liglab.adele.cilia.framework.data.ExpressionFactory;
 
-public abstract class AbstractCorrelationSchedulerImpl extends CiliaScheduler {
+public abstract class AbstractCorrelationScheduler extends CiliaScheduler {
 
 	/**
 	 * Correlation expression to says which incoming messages belongs together.
@@ -24,18 +24,11 @@ public abstract class AbstractCorrelationSchedulerImpl extends CiliaScheduler {
 	protected static final String CORRELATION_DEFAULT = "";
 
 	/**
-	 * List of dataSets.
+	 * 
 	 */
-	//protected Map/* <String, DataSet> */mapListData = new HashMap/*
-	//															 * <String,
-	//															 * List<Data>>
-	//															 */();
-
-	
-	
 	protected CiliaExpression expreParser;
 
-	public AbstractCorrelationSchedulerImpl(BundleContext bcontext) {
+	public AbstractCorrelationScheduler(BundleContext bcontext) {
 		ExpressionFactory ef = new ExpressionFactory(bcontext);
 		try {
 			expreParser = ef.getExpressionParser("ldap");
@@ -62,13 +55,13 @@ public abstract class AbstractCorrelationSchedulerImpl extends CiliaScheduler {
 		logger.debug(msg);
 
 		String corre = getCorrelationKey(data);
-		List dataset = null;
+		List<Data> dataset = null;
 		boolean complet = false;
 		if (getData() == null) {
 			logger.warn("data received map is null");
 		}
 		synchronized (getData()) {
-			dataset = (List) getData().get(corre);
+			dataset = (List<Data>) getData().get(corre);
 			if (logger.isDebugEnabled())
 				logger.debug("data received in synchronized block" + corre);
 			if (dataset == null) {

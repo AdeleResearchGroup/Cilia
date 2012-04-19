@@ -4,7 +4,12 @@ import java.util.List;
 
 import org.apache.felix.ipojo.ConfigurationException;
 import org.apache.felix.ipojo.metadata.Element;
-
+/**
+ * 
+ *
+ * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project Team</a>
+ *
+ */
 public class ProcessorMetadata {
     /**
      *method attribute to configure handler. 

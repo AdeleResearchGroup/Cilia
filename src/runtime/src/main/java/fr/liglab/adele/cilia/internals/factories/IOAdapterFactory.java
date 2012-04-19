@@ -13,13 +13,13 @@ import org.apache.felix.ipojo.metadata.Element;
 import org.osgi.framework.BundleContext;
 
 import fr.liglab.adele.cilia.Data;
-import fr.liglab.adele.cilia.framework.CiliaAdapter;
+import fr.liglab.adele.cilia.framework.IOAdapter;
 import fr.liglab.adele.cilia.framework.monitor.IMonitor;
 import fr.liglab.adele.cilia.runtime.Const;
-import fr.liglab.adele.cilia.runtime.DispatcherHandler;
 import fr.liglab.adele.cilia.runtime.MediatorHandler;
-import fr.liglab.adele.cilia.runtime.MonitorHandler;
-import fr.liglab.adele.cilia.runtime.SchedulerHandler;
+import fr.liglab.adele.cilia.runtime.impl.DispatcherHandler;
+import fr.liglab.adele.cilia.runtime.impl.MonitorHandler;
+import fr.liglab.adele.cilia.runtime.impl.SchedulerHandler;
 
 public class IOAdapterFactory extends ProcessorFactory {
 
@@ -53,7 +53,7 @@ public class IOAdapterFactory extends ProcessorFactory {
 		}
 
 		//Check if the manipulated class herite from CiliaAdapter
-		if (CiliaAdapter.class.isAssignableFrom(clazz)) {
+		if (IOAdapter.class.isAssignableFrom(clazz)) {
 			dispatcher.addAttribute(new Attribute("method", "dispatchData"));
 			dispatcher.addAttribute(new Attribute("data.type", Data.class.getName()));
 

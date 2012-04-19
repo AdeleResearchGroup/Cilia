@@ -16,7 +16,13 @@
 package fr.liglab.adele.cilia.runtime;
 
 import java.util.Map;
-
+/**
+ * 
+ *
+ * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project Team</a>
+ *
+ */
+@SuppressWarnings("rawtypes")
 public interface AdminData {
 
 	/**
@@ -45,8 +51,5 @@ public interface AdminData {
 	 */
 	public void copyData(String mediatorFrom_Id, String mediatorTo_Id) ;
 	
-	public void start();
-
-	public void stop();
 
 }

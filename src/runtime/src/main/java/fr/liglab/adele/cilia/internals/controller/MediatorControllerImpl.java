@@ -33,18 +33,18 @@ import fr.liglab.adele.cilia.Mediator;
 import fr.liglab.adele.cilia.MediatorComponent;
 import fr.liglab.adele.cilia.framework.IDispatcher;
 import fr.liglab.adele.cilia.framework.IScheduler;
+import fr.liglab.adele.cilia.internals.factories.MediatorManager;
 import fr.liglab.adele.cilia.model.ConstModel;
 import fr.liglab.adele.cilia.model.Dispatcher;
 import fr.liglab.adele.cilia.model.MediatorComponentImpl;
 import fr.liglab.adele.cilia.model.Scheduler;
 import fr.liglab.adele.cilia.model.UpdateActions;
 import fr.liglab.adele.cilia.model.UpdateEvent;
-import fr.liglab.adele.cilia.runtime.AbstractCiliaInstance;
+import fr.liglab.adele.cilia.runtime.CiliaInstanceWrapper;
 import fr.liglab.adele.cilia.runtime.Const;
-import fr.liglab.adele.cilia.runtime.DispatcherHandler;
-import fr.liglab.adele.cilia.runtime.SchedulerHandler;
 import fr.liglab.adele.cilia.runtime.impl.CiliaFrameworkEventPublisher;
-import fr.liglab.adele.cilia.runtime.impl.MediatorManager;
+import fr.liglab.adele.cilia.runtime.impl.DispatcherHandler;
+import fr.liglab.adele.cilia.runtime.impl.SchedulerHandler;
 
 /**
  * This class will observe the mediator model and will act as an itermediator
@@ -67,7 +67,7 @@ public class MediatorControllerImpl implements Observer {
 	/**
 	 * iPOJO Cilia instance wrapper, to wrap the mediator iPOJO instance.
 	 */
-	protected AbstractCiliaInstance mediatorInstance;
+	protected CiliaInstanceWrapper mediatorInstance;
 
 	protected Hashtable addedCollectors = new Hashtable();
 
@@ -117,7 +117,7 @@ public class MediatorControllerImpl implements Observer {
 				mediatorInstance.stop();
 				mediatorInstance = null;
 			}
-			mediatorInstance = new AbstractCiliaInstance(bcontext, mediatorModel.getId(),
+			mediatorInstance = new CiliaInstanceWrapper(bcontext, mediatorModel.getId(),
 					filter, mediatorModel.getProperties(), this);
 		}
 		mediatorInstance.start();
@@ -575,7 +575,7 @@ public class MediatorControllerImpl implements Observer {
 					// break;
 				}
 			}
-		} else if (mediator instanceof AbstractCiliaInstance) {
+		} else if (mediator instanceof CiliaInstanceWrapper) {
 			int state = getState();
 			switch (state) {
 			case ComponentInstance.VALID: {

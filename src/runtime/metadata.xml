@@ -36,7 +36,7 @@
 		name="dispatcher-tracker" namespace="fr.liglab.adele.cilia">
 	</handler>
 
-	<handler classname="fr.liglab.adele.cilia.runtime.DispatcherHandler"
+	<handler classname="fr.liglab.adele.cilia.runtime.impl.DispatcherHandler"
 		name="dispatcher" namespace="fr.liglab.adele.cilia" architecture="false">
 		<requires field="m_applicationQueue"
 			specification="fr.liglab.adele.cilia.runtime.WorkQueue"
@@ -45,7 +45,7 @@
 		<callback transition="invalidate" method="unvalidate" />
 	</handler>
 
-	<handler classname="fr.liglab.adele.cilia.runtime.MonitorHandler"
+	<handler classname="fr.liglab.adele.cilia.runtime.impl.MonitorHandler"
 		name="monitor-handler" level="2" namespace="fr.liglab.adele.cilia"
 		architecture="false">
 	</handler>
@@ -64,7 +64,7 @@
 		<callback transition="invalidate" method="unvalidate" />
 	</handler>
 
-	<handler classname="fr.liglab.adele.cilia.runtime.SchedulerHandler"
+	<handler classname="fr.liglab.adele.cilia.runtime.impl.SchedulerHandler"
 		name="scheduler" namespace="fr.liglab.adele.cilia">
 		<requires field="m_systemQueue"
 			specification="fr.liglab.adele.cilia.runtime.WorkQueue"

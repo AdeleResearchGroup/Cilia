@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package fr.liglab.adele.cilia.runtime;
+package fr.liglab.adele.cilia.runtime.impl;
 
 import java.util.ArrayList;
 import java.util.Dictionary;
@@ -28,12 +28,19 @@ import fr.liglab.adele.cilia.framework.monitor.IMonitor;
 import fr.liglab.adele.cilia.framework.monitor.INotifier;
 import fr.liglab.adele.cilia.framework.monitor.IProcessorMonitor;
 import fr.liglab.adele.cilia.framework.monitor.IServiceMonitor;
+/**
+ * 
+ *
+ * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project Team</a>
+ *
+ */
 
 public class MonitorHandler extends PrimitiveHandler implements IProcessorMonitor,
 IServiceMonitor {
 
-	List listeners = new ArrayList();
+	List<IMonitor> listeners = new ArrayList<IMonitor>();
 
+	@SuppressWarnings("rawtypes")
 	public void configure(Element metadata, Dictionary configuration)
 	throws ConfigurationException {
 	}
@@ -50,7 +57,7 @@ IServiceMonitor {
 			return;
 		}
 		synchronized (listeners) {
-			listeners.removeAll(new ArrayList(listeners));
+			listeners.clear();
 		}
 	}
 
@@ -69,73 +76,74 @@ IServiceMonitor {
 		}
 	}
 
-	public void notifyOnProcessEntry(List data) {
+	public void notifyOnProcessEntry(List<Data> data) {
 		if(isEmpty()){
 			return;
 		}
-		List copyListeners = null;
+		List<IMonitor> copyListeners = null;
 		synchronized (listeners) {
-			copyListeners = new ArrayList(listeners);
+			copyListeners = new ArrayList<IMonitor>(listeners);
 		}
 		for (int i = 0; i < copyListeners.size(); i++) {
-			IMonitor listener = (IMonitor) copyListeners.get(i);
+			IMonitor listener = copyListeners.get(i);
 			listener.onProcessEntry(data);
 		}
 	}
 
-	public void notifyOnProcessExit(List data) {
+	public void notifyOnProcessExit(List<Data> data) {
 		if(isEmpty()){
 			return;
 		}
-		List copyListeners = null;
+		List<IMonitor> copyListeners = null;
 		synchronized (listeners) {
-			copyListeners = new ArrayList(listeners);
+			copyListeners = new ArrayList<IMonitor>(listeners);
 		}
 		for (int i = 0; i < copyListeners.size(); i++) {
-			IMonitor listener = (IMonitor) copyListeners.get(i);
+			IMonitor listener = copyListeners.get(i);
 			listener.onProcessExit(data);
 		}
 	}
 
-	public void notifyOnDispatch(List data) {
+	public void notifyOnDispatch(List<Data> data) {
 		if(isEmpty()){
 			return;
 		}
-		List copyListeners = null;
+		List<IMonitor> copyListeners = null;
 		synchronized (listeners) {
-			copyListeners = new ArrayList(listeners);
+			copyListeners = new ArrayList<IMonitor>(listeners);
 		}
 		for (int i = 0; i < copyListeners.size(); i++) {
-			IMonitor listener = (IMonitor) copyListeners.get(i);
+			IMonitor listener = copyListeners.get(i);
 			listener.onDispatch(data);
 		}
 	}
 
 
-	public void notifyOnProcessError(List data, Exception ex) {
+	public void notifyOnProcessError(List<Data> data, Exception ex) {
 		if(isEmpty()){
 			return;
 		}
-		List copyListeners = null;
+		List<IMonitor> copyListeners = null;
 		synchronized (listeners) {
-			copyListeners = new ArrayList(listeners);
+			copyListeners = new ArrayList<IMonitor>(listeners);
 		}
 		for (int i = 0; i < copyListeners.size(); i++) {
-			IMonitor listener = (IMonitor) copyListeners.get(i);
+			IMonitor listener = copyListeners.get(i);
 			listener.onProcessError(data, ex);
 		}
 	}
 
+	@SuppressWarnings("rawtypes")
 	public void fireEvent(Map info) {
 		if(isEmpty()){
 			return;
 		}
-		List copyListeners = null;
+		List<IMonitor> copyListeners = null;
 		synchronized (listeners) {
-			copyListeners = new ArrayList(listeners);
+			copyListeners = new ArrayList<IMonitor>(listeners);
 		}
 		for (int i = 0; i < copyListeners.size(); i++) {
-			IMonitor listener = (IMonitor) copyListeners.get(i);
+			IMonitor listener = copyListeners.get(i);
 			listener.fireEvent(info);
 		}
 	}
@@ -144,12 +152,12 @@ IServiceMonitor {
 		if(isEmpty()){
 			return;
 		}
-		List copyListeners = null;
+		List<IMonitor> copyListeners = null;
 		synchronized (listeners) {
-			copyListeners = new ArrayList(listeners);
+			copyListeners = new ArrayList<IMonitor>(listeners);
 		}
 		for (int i = 0; i < copyListeners.size(); i++) {
-			IMonitor listener = (IMonitor) copyListeners.get(i);
+			IMonitor listener = copyListeners.get(i);
 			listener.onCollect(data);
 		}
 	}
@@ -161,30 +169,32 @@ IServiceMonitor {
 		}
 	}
 
+	@SuppressWarnings("rawtypes")
 	public void onServiceArrival(Map info) {
 		if(isEmpty()){
 			return;
 		}
-		List copyListeners = null;
+		List<IMonitor> copyListeners = null;
 		synchronized (listeners) {
-			copyListeners = new ArrayList(listeners);
+			copyListeners = new ArrayList<IMonitor>(listeners);
 		}
 		for (int i = 0; i < copyListeners.size(); i++) {
-			IMonitor listener = (IMonitor) copyListeners.get(i);
+			IMonitor listener = copyListeners.get(i);
 			listener.onServiceArrival(info);
 		}
 	}
 
+	@SuppressWarnings("rawtypes")
 	public void onServiceDeparture(Map info) {
 		if(isEmpty()){
 			return;
 		}
-		List copyListeners = null;
+		List<IMonitor> copyListeners = null;
 		synchronized (listeners) {
-			copyListeners = new ArrayList(listeners);
+			copyListeners = new ArrayList<IMonitor>(listeners);
 		}
 		for (int i = 0; i < copyListeners.size(); i++) {
-			IMonitor listener = (IMonitor) copyListeners.get(i);
+			IMonitor listener = copyListeners.get(i);
 			listener.onServiceDeparture(info);
 		}
 	}

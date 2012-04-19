@@ -17,7 +17,12 @@ package fr.liglab.adele.cilia.runtime.impl;
 
 import fr.liglab.adele.cilia.model.ChainRuntime;
 import fr.liglab.adele.cilia.util.UUID;
-
+/**
+ * 
+ *
+ * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project Team</a>
+ *
+ */
 public class ChainRuntimeImpl implements ChainRuntime {
 	public int state;
 	private String uuid;

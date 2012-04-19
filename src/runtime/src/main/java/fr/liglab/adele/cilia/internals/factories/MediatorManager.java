@@ -1,4 +1,4 @@
-package fr.liglab.adele.cilia.runtime.impl;
+package fr.liglab.adele.cilia.internals.factories;
 
 import java.util.ArrayList;
 import java.util.Dictionary;
@@ -20,13 +20,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import fr.liglab.adele.cilia.framework.monitor.IMonitor;
-import fr.liglab.adele.cilia.internals.factories.MediatorComponentFactory;
-import fr.liglab.adele.cilia.internals.factories.ProcessorFactory;
 import fr.liglab.adele.cilia.runtime.Const;
-import fr.liglab.adele.cilia.runtime.DispatcherHandler;
 import fr.liglab.adele.cilia.runtime.MediatorHandler;
-import fr.liglab.adele.cilia.runtime.MonitorHandler;
-import fr.liglab.adele.cilia.runtime.SchedulerHandler;
+import fr.liglab.adele.cilia.runtime.impl.DispatcherHandler;
+import fr.liglab.adele.cilia.runtime.impl.MonitorHandler;
+import fr.liglab.adele.cilia.runtime.impl.SchedulerHandler;
 
 public class MediatorManager extends InstanceManager implements ComponentInstance, InstanceStateListener {
 

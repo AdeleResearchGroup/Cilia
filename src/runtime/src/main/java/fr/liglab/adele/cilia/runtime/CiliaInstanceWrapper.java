@@ -42,7 +42,8 @@ import org.slf4j.LoggerFactory;
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project
  *         Team</a>
  */
-public class AbstractCiliaInstance extends Observable implements CiliaInstance,
+@SuppressWarnings({"unchecked","rawtypes"})
+public class CiliaInstanceWrapper extends Observable implements CiliaInstance,
 		TrackerCustomizer, InstanceStateListener {
 
 	private Map properties = new Hashtable();
@@ -75,7 +76,7 @@ public class AbstractCiliaInstance extends Observable implements CiliaInstance,
 	 * @param obs
 	 *            The observer reference.
 	 */
-	public AbstractCiliaInstance(BundleContext context, String instanceName,
+	public CiliaInstanceWrapper(BundleContext context, String instanceName,
 			String filter, Dictionary props, Observer obs) {
 		m_context = context;
 		m_instanceName = instanceName;

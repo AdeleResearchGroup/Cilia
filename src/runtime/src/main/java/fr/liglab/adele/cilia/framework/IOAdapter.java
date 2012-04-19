@@ -10,7 +10,7 @@ import org.slf4j.LoggerFactory;
 
 import fr.liglab.adele.cilia.Data;
 
-public abstract class CiliaAdapter {
+public abstract class IOAdapter {
 	/**
 	 * OSGi Bundle Context.
 	 */
@@ -29,7 +29,7 @@ public abstract class CiliaAdapter {
 	protected static Logger logger = LoggerFactory
 			.getLogger("cilia.ipojo.runtime");
 
-	public CiliaAdapter(BundleContext context) {
+	public IOAdapter(BundleContext context) {
 		bcontext = context;
 	}
 

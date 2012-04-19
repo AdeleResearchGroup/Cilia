@@ -20,7 +20,13 @@ import java.util.Observer;
 import java.util.Set;
 
 
-
+/**
+ * 
+ *
+ * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project Team</a>
+ *
+ */
+@SuppressWarnings("rawtypes")
 public interface CiliaInstanceManager extends Observer {
     /**
      * Obtain the pojo reference contained in a CiliaInstance
@@ -29,7 +35,7 @@ public interface CiliaInstanceManager extends Observer {
      */
     Object getPojo(String key);
     
-    Set getKeys();
+	Set getKeys();
     /**
      * Add a CiliaInstance 
      * @param key 

@@ -7,7 +7,7 @@ import org.osgi.framework.BundleContext;
 import fr.liglab.adele.cilia.Data;
 import fr.liglab.adele.cilia.framework.data.DataEnrichment;
 
-public class CorrelationSchedulerImpl extends AbstractCorrelationSchedulerImpl {
+public class CorrelationSchedulerImpl extends AbstractCorrelationScheduler {
 
 	public CorrelationSchedulerImpl(BundleContext bcontext) {
 		super(bcontext);

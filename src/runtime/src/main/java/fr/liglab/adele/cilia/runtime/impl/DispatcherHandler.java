@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package fr.liglab.adele.cilia.runtime;
+package fr.liglab.adele.cilia.runtime.impl;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -42,19 +42,35 @@ import fr.liglab.adele.cilia.exceptions.CiliaException;
 import fr.liglab.adele.cilia.Data;
 import fr.liglab.adele.cilia.framework.CiliaDispatcher;
 import fr.liglab.adele.cilia.framework.IDispatcher;
-import fr.liglab.adele.cilia.framework.IDispatcherHandler;
 import fr.liglab.adele.cilia.framework.ISender;
 import fr.liglab.adele.cilia.Component;
 import fr.liglab.adele.cilia.model.Dispatcher;
-import fr.liglab.adele.cilia.runtime.impl.CiliaInstanceManagerSet;
+import fr.liglab.adele.cilia.runtime.CiliaInstance;
+import fr.liglab.adele.cilia.runtime.CiliaInstanceManager;
+import fr.liglab.adele.cilia.runtime.CiliaInstanceWrapper;
+import fr.liglab.adele.cilia.runtime.Const;
+import fr.liglab.adele.cilia.runtime.IDispatcherHandler;
+import fr.liglab.adele.cilia.runtime.ProcessorMetadata;
+import fr.liglab.adele.cilia.runtime.WorkQueue;
 import fr.liglab.adele.cilia.util.concurrent.ReadWriteLock;
 import fr.liglab.adele.cilia.util.concurrent.WriterPreferenceReadWriteLock;
-
+/**
+ * This class is in charge of acting as a bridge between the dispatcher logic, and the
+ * sender instances.
+ *
+ * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project Team</a>
+ *
+ */
+@SuppressWarnings({"unchecked","rawtypes"})
 public class DispatcherHandler extends PrimitiveHandler implements InstanceStateListener,
 		Observer, IDispatcherHandler {
-
+	/**
+	 * Reference to the dispatcher logic component.
+	 */
 	CiliaInstance dispatcherComponent;
-
+	/**
+	 * Meta information of the dispatcher.
+	 */
 	Component dispatcherDescription;
 
 	private ThreadLocal thLProcessor = new ThreadLocal();
@@ -63,7 +79,7 @@ public class DispatcherHandler extends PrimitiveHandler implements InstanceState
 	 */
 	private CiliaInstanceManager senderManager = new CiliaInstanceManagerSet();
 	/**
-	 * Method process Metadata. To intercept.
+	 * Method process Meta-data. To intercept.
 	 */
 	private MethodMetadata m_methodProcessMetadata;
 
@@ -76,11 +92,6 @@ public class DispatcherHandler extends PrimitiveHandler implements InstanceState
 	 */
 
 	private final static String CILIA_DISPATCHER_HANDLERNAME = "dispatcher";
-
-	/**
-	 * Flag to see if dispatcher is started or not.
-	 */
-	private boolean isStarted = false;
 
 	protected MonitorHandler monitor = null;
 
@@ -158,8 +169,6 @@ public class DispatcherHandler extends PrimitiveHandler implements InstanceState
 
 		extentedConfiguration();
 		initiainitializeProperties(properties);
-		Element dispatcherMetadata = metadata.getElements(CILIA_DISPATCHER_HANDLERNAME,
-				Const.CILIA_NAMESPACE)[0];
 		// it will obtain dispatcher description from dictionary.
 
 		initiainitializeProperties(properties);
@@ -192,7 +201,7 @@ public class DispatcherHandler extends PrimitiveHandler implements InstanceState
 	 *            Dictionary where sender is defined.
 	 */
 	public void addSender(String senderType, String portname, Dictionary dictionary) {
-		AbstractCiliaInstance ciliaSender = null;
+		CiliaInstanceWrapper ciliaSender = null;
 		String identifier = null;
 		if (dictionary == null) {
 			dictionary = new Properties();
@@ -209,7 +218,7 @@ public class DispatcherHandler extends PrimitiveHandler implements InstanceState
 			}
 
 			String filter = createSenderFilter(senderType);
-			ciliaSender = new AbstractCiliaInstance(getInstanceManager().getContext(),
+			ciliaSender = new CiliaInstanceWrapper(getInstanceManager().getContext(),
 					identifier, filter, dictionary, senderManager);
 			ciliaSender.start();
 			senderManager.addInstance(portname, ciliaSender);
@@ -515,7 +524,7 @@ public class DispatcherHandler extends PrimitiveHandler implements InstanceState
 		String schedulerName = "dispatcher";
 		String schedulerFilter = createFilter();
 		Dictionary dispProperties = getDispatcherProperties(dictionary);
-		dispatcherComponent = new AbstractCiliaInstance(context, schedulerName,
+		dispatcherComponent = new CiliaInstanceWrapper(context, schedulerName,
 				schedulerFilter, dispProperties, this);
 	}
 
@@ -586,7 +595,6 @@ public class DispatcherHandler extends PrimitiveHandler implements InstanceState
 
 	public void unvalidate() {
 		logger.debug("stop dispatcher");
-		isStarted = false;
 		senderManager.removeAllInstances();
 		if (dispatcherComponent != null) {
 			synchronized (dispatcherComponent) {
@@ -598,7 +606,6 @@ public class DispatcherHandler extends PrimitiveHandler implements InstanceState
 
 	public void validate() {
 		logger.debug("start dispatcher");
-		isStarted = true;
 		if (dispatcherComponent != null) {
 			synchronized (dispatcherComponent) {
 				dispatcherComponent.start();

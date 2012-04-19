@@ -21,9 +21,8 @@ import org.slf4j.LoggerFactory;
 
 import fr.liglab.adele.cilia.model.PatternType;
 import fr.liglab.adele.cilia.runtime.Const;
-import fr.liglab.adele.cilia.runtime.DispatcherHandler;
-import fr.liglab.adele.cilia.runtime.SchedulerHandler;
-import fr.liglab.adele.cilia.runtime.impl.MediatorManager;
+import fr.liglab.adele.cilia.runtime.impl.DispatcherHandler;
+import fr.liglab.adele.cilia.runtime.impl.SchedulerHandler;
 
 public class AdapterFactory extends MediatorComponentFactory {
 

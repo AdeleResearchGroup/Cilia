@@ -22,7 +22,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import fr.liglab.adele.cilia.runtime.WorkQueue;
-
+/**
+ * 
+ *
+ * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project Team</a>
+ *
+ */
+@SuppressWarnings({"rawtypes", "unchecked"})
 public class WorkQueueImpl implements WorkQueue {
 	private ArrayList threads;
 	private LinkedList queue;

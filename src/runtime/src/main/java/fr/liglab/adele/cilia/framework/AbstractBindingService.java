@@ -29,7 +29,12 @@ import fr.liglab.adele.cilia.model.CollectorImpl;
 import fr.liglab.adele.cilia.model.SenderImpl;
 import fr.liglab.adele.cilia.runtime.Const;
 
-
+/**
+ * 
+ *
+ * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project Team</a>
+ *
+ */
 public abstract class AbstractBindingService implements CiliaBindingService {
 
     String collectorType ;

@@ -21,7 +21,6 @@ import org.slf4j.LoggerFactory;
 
 import fr.liglab.adele.cilia.Component;
 import fr.liglab.adele.cilia.model.ComponentImpl;
-import fr.liglab.adele.cilia.runtime.impl.MediatorManager;
 
 public class MediatorComponentFactory extends CiliaComponentFactory implements
 		TrackerCustomizer {

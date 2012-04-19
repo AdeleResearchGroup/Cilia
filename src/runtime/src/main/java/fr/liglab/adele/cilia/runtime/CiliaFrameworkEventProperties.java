@@ -14,7 +14,12 @@
  */
 
 package fr.liglab.adele.cilia.runtime;
-
+/**
+ * 
+ *
+ * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project Team</a>
+ *
+ */
 public interface CiliaFrameworkEventProperties {
 	/* 
 	 * a topic defined as follow : ROOT_TOPIC/chainID/mediatorID 

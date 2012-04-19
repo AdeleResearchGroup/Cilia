@@ -13,7 +13,9 @@
  * limitations under the License.
  */
 
-package fr.liglab.adele.cilia.framework;
+package fr.liglab.adele.cilia.runtime;
+
+import fr.liglab.adele.cilia.framework.IDispatcher;
 
 public interface IDispatcherHandler extends IDispatcher {
 

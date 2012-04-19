@@ -30,7 +30,13 @@ import fr.liglab.adele.cilia.MediatorComponent;
 import fr.liglab.adele.cilia.event.CiliaEvent;
 import fr.liglab.adele.cilia.runtime.CiliaFrameworkEventProperties;
 import fr.liglab.adele.cilia.util.concurrent.Mutex;
-
+/**
+ * 
+ *
+ * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project Team</a>
+ *
+ */
+@SuppressWarnings({"rawtypes", "unchecked"})
 public class CiliaFrameworkEventPublisher implements CiliaEvent,
 		CiliaFrameworkEventProperties {
 
