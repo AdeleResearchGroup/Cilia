@@ -23,6 +23,7 @@ import fr.liglab.adele.cilia.Mediator;
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project Team</a>
  *
  */
+//@SuppressWarnings({"rawtypes","unchecked"})
 public class ErrorHandler {
 	
 	private final static String RULES = "rules";

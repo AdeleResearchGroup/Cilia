@@ -16,11 +16,11 @@ package fr.liglab.adele.cilia.internals;
 
 import org.w3c.dom.Node;
 
-import fr.liglab.adele.cilia.CiliaExtenderParser;
 import fr.liglab.adele.cilia.Component;
 import fr.liglab.adele.cilia.Mediator;
 import fr.liglab.adele.cilia.exceptions.CiliaParserException;
 import fr.liglab.adele.cilia.ext.ContentBasedRouting;
+import fr.liglab.adele.cilia.util.CiliaExtenderParser;
 
 /**
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project Team</a>

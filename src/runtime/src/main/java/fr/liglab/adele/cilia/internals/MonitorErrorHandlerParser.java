@@ -19,9 +19,9 @@ import org.w3c.dom.Node;
 import fr.liglab.adele.cilia.exceptions.CiliaParserException;
 import fr.liglab.adele.cilia.ext.ContentBasedRouting;
 import fr.liglab.adele.cilia.ext.ErrorHandler;
+import fr.liglab.adele.cilia.util.CiliaExtenderParser;
 import fr.liglab.adele.cilia.Component;
 import fr.liglab.adele.cilia.Mediator;
-import fr.liglab.adele.cilia.CiliaExtenderParser;
 
 /**
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project Team</a>

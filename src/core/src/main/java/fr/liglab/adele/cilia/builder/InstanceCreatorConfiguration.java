@@ -12,22 +12,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package fr.liglab.adele.cilia.builder;
 
-package fr.liglab.adele.cilia;
-
-import java.util.Set;
-
-
-public interface CiliaContextReadOnly {
-
-	String getCiliaVersion();
+/**
+ *
+ * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project Team</a>
+ *
+ */
+public interface InstanceCreatorConfiguration {
 	
-	Chain getChain(String chainId) ;
+	ConfiguratorReturner id(String Id);
 	
-	Set getAllChains() ;
+	InstanceCreatorConfiguration namespace(String ns);
 	
-	void addChainListener(String chainId, ChainListener listener);
+	InstanceCreatorConfiguration category(String cate);
 	
-	void removeChainListener(String chainId, ChainListener listener);
-
+	InstanceCreatorConfiguration version(String version);
+	
 }

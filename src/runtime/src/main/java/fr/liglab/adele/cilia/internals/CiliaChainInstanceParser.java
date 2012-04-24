@@ -22,8 +22,6 @@ import org.w3c.dom.NodeList;
 import fr.liglab.adele.cilia.Adapter;
 import fr.liglab.adele.cilia.Binding;
 import fr.liglab.adele.cilia.Chain;
-import fr.liglab.adele.cilia.ChainParser;
-import fr.liglab.adele.cilia.CiliaExtenderParser;
 import fr.liglab.adele.cilia.Component;
 import fr.liglab.adele.cilia.Mediator;
 import fr.liglab.adele.cilia.MediatorComponent;
@@ -36,6 +34,8 @@ import fr.liglab.adele.cilia.model.BindingImpl;
 import fr.liglab.adele.cilia.model.ChainImpl;
 import fr.liglab.adele.cilia.model.MediatorImpl;
 import fr.liglab.adele.cilia.model.PatternType;
+import fr.liglab.adele.cilia.util.ChainParser;
+import fr.liglab.adele.cilia.util.CiliaExtenderParser;
 
 public class CiliaChainInstanceParser implements ChainParser {
 
@@ -454,7 +454,7 @@ public class CiliaChainInstanceParser implements ChainParser {
 			mediatorId = mediatorType + mediatorNumbers;
 		}
 
-		mediator = new MediatorImpl(mediatorId, mediatorType, mediatorProperties);
+		mediator = new MediatorImpl(mediatorId, mediatorType, null,null, mediatorProperties, null);
 		mediator = (Mediator)extendersParsers(nmediator, mediator);
 
 		return mediator;
@@ -484,7 +484,7 @@ public class CiliaChainInstanceParser implements ChainParser {
 		}
 
 		// String pattern = getAttributeValue(nmediator, pattern)
-		adapter = new AdapterImpl(adapterId, adapterType, null, adapterProperties, pt);
+		adapter = new AdapterImpl(adapterId, adapterType, null, adapterProperties, null, pt);
 		adapter = (Adapter)extendersParsers(nadapter, adapter);
 		return adapter;
 	}

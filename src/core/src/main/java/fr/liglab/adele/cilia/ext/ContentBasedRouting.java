@@ -15,17 +15,18 @@
 package fr.liglab.adele.cilia.ext;
 
 import java.util.HashMap;
-import java.util.HashSet;
+import java.util.Hashtable;
 import java.util.Map;
-import java.util.Set;
 
 import fr.liglab.adele.cilia.Mediator;
+import fr.liglab.adele.cilia.builder.CustomBuilderConfigurator;
 
 /**
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project Team</a>
  *
  */
-public class ContentBasedRouting  {
+//@SuppressWarnings({"rawtypes","unchecked"})
+public class ContentBasedRouting  implements CustomBuilderConfigurator{
 
 	private final static String ROUTE = "conditions";
 
@@ -36,6 +37,9 @@ public class ContentBasedRouting  {
 	private final Object lockObject = new Object();
 
 	private RouteConfigurationImpl currentConfiguration;
+	
+	private Hashtable configurations;
+	
 	/**
 	 * @param id
 	 * @param type
@@ -126,61 +130,17 @@ public class ContentBasedRouting  {
 	}
 
 
-	public class RouteConfigurationImpl {
-
-		private String condition;
-
-		private String ports;
-
-		/* (non-Javadoc)
-		 * @see fr.liglab.adele.cilia.component.dispatcher.evaluator.RouteConfiguration#condition(java.lang.String)
-		 */
-		public void condition(String cond) {
-			condition = cond;
-		}
-
-		/* (non-Javadoc)
-		 * @see fr.liglab.adele.cilia.component.dispatcher.evaluator.RouteConfiguration#port(java.lang.String[])
-		 */
-		public void port(String port) {
-			ports = port;
-		}
-
-		/* (non-Javadoc)
-		 * @see fr.liglab.adele.cilia.component.dispatcher.evaluator.RouteConfiguration#getCondition()
-		 */
-		public String getCondition() {
-			return condition;
-		}
-
-		/* (non-Javadoc)
-		 * @see fr.liglab.adele.cilia.component.dispatcher.evaluator.RouteConfiguration#getPort()
-		 */
-		public String getPort() {
-			return ports;
-		}
-
-		public boolean equals(Object obj) {
-			if (this == obj) return true;
-			if (!(obj instanceof RouteConfigurationImpl)) return false;
-			RouteConfigurationImpl e = (RouteConfigurationImpl) obj;
-			if (condition == null && e.getCondition() == null) {
-				return true;
-			}
-			if (condition != null && e.getCondition() == null) {
-				return false;
-			}
-			return (condition.compareTo(e.getCondition()) == 0);
-		}
-
-		public int hashcode(){
-			if (condition == null) {
-				return super.hashCode();
-			}
-			return condition.hashCode();
-		}
-
+	/* (non-Javadoc)
+	 * @see fr.liglab.adele.cilia.builder.CustomBuilderConfigurator#getProperties()
+	 */
+	@Override
+	public Hashtable getProperties() {
+		// TODO Auto-generated method stub
+		return null;
 	}
+
+
+	
 
 
 }

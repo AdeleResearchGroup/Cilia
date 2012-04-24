@@ -20,7 +20,7 @@ public abstract class AbstractMediatorSpecification implements MediatorSpecifica
 	private static final String DEFAULT_NS = "fr.liglab.adele.cilia";
 	
 	public AbstractMediatorSpecification(String name, String namespace, String category){
-		mediatorSpec = new MediatorImpl(name, name, namespace, category, null, null);
+		mediatorSpec = new MediatorImpl(name, name, namespace, category, null, null, null);
 	}
 	
 	/**

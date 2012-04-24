@@ -13,11 +13,12 @@
  * limitations under the License.
  */
 
-package fr.liglab.adele.cilia;
+package fr.liglab.adele.cilia.util;
 
 import java.io.FileNotFoundException;
 import java.net.URL;
 
+import fr.liglab.adele.cilia.Chain;
 import fr.liglab.adele.cilia.exceptions.CiliaException;
 
 

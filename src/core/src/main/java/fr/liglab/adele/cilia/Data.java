@@ -32,6 +32,7 @@ import fr.liglab.adele.cilia.util.concurrent.ReentrantWriterPreferenceReadWriteL
  * @author <a href="mailto:chameleon-dev@ow2.org">Chameleon Project Team</a>
  */
 
+//@SuppressWarnings({"rawtypes", "unchecked"})
 public class Data {
 
 	/**

@@ -28,6 +28,7 @@ import fr.liglab.adele.cilia.util.concurrent.ReadWriteLock;
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project
  *         Team</a>
  */
+//@SuppressWarnings("rawtypes")
 public interface CiliaContext {
 
 	static final String CILIA_VERSION = "1.0.0";

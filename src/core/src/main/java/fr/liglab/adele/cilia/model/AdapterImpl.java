@@ -35,96 +35,16 @@ public class AdapterImpl  extends MediatorComponentImpl implements Adapter{
 	 * @param adapterId
 	 * @param adapterType
 	 * @param adapterProperties
-	 * @param unassigned
+	 * @param pattern
 	 */
-	public AdapterImpl(String adapterId, String adapterType, String adapterNamespace,
-			Dictionary adapterProperties, PatternType unassigned) {
-		super(adapterId, adapterType, adapterNamespace,adapterProperties);
-		adapterPattern = unassigned;
+	public AdapterImpl(String adapterId, String adapterType, String adapterNamespace, String version,
+			Dictionary adapterProperties, Chain chain, PatternType pattern) {
+		super(adapterId, adapterType, adapterNamespace,"adapter",version, adapterProperties, chain);
+		adapterPattern = pattern;
 	}
 	
-	public AdapterImpl(String id, String type, String nspace,
-			Dictionary properties, Chain chain) {
-		super(id, type, nspace, null, properties, chain);
-		
-	}
-
-	/**
-	 * Creates a new mediator representation model.
-	 * 
-	 * @param id
-	 *            identificator of the new mediator.
-	 * @param type
-	 *            type of the mediator representation model.
-	 * @param classname
-	 *            classname of the mediator representation model.
-	 * @param properties
-	 *            new properties to add to the mediator representation model.
-	 */
-	public AdapterImpl(String id, String type, String namespace, Dictionary properties) {
-		super(id, type, namespace, null, properties, null);
-	}
-
-	/**
-	 * 
-	 * Creates a new mediator representation model.
-	 * 
-	 * @param id
-	 *            identificator of the new mediator.
-	 * @param type
-	 *            type of the mediator representation model.
-	 * @param properties
-	 *            new properties to add to the mediator representation model.
-	 */
-	public AdapterImpl(String id, String type, Dictionary properties) {
-		super(id, type, null, null, properties, null);
-	}
-
-	/**
-	 * 
-	 * Creates a new mediator representation model.
-	 * 
-	 * @param id
-	 *            identificator of the new mediator.
-	 * @param type
-	 *            type of the mediator representation model.
-	 * @param properties
-	 *            new properties to add to the mediator representation model.
-	 * @param chain
-	 *            ChainImpl where this mediator will be.
-	 */
-	public AdapterImpl(String id, String type, Dictionary properties, Chain chain) {
-		super(id, type, null, null, properties, chain);
-	}
-
-	/**
-	 * 
-	 * Creates a new mediator representation model.
-	 * 
-	 * @param id
-	 *            identificator of the new mediator.
-	 * @param type
-	 *            type of the mediator representation model.
-	 * @param properties
-	 *            new properties to add to the mediator representation model.
-	 * @param chain
-	 *            ChainImpl where this mediator will be.
-	 */
-	public AdapterImpl(String id, String type, Chain chain) {
-		super(id, type, new Hashtable(), chain);
-	}
-
-	/**
-	 * 
-	 * Creates a new mediator representation model.
-	 * 
-	 * @param id
-	 *            identificator of the new mediator.
-	 * @param type
-	 *            type of the mediator representation model.
-	 */
-	public AdapterImpl(String id, String type) {
-		super(id, type, new Hashtable(), null);
+	public AdapterImpl(String adapterId, String adapterType) {
+		this(adapterId, adapterType, null,null, null, null, PatternType.UNASSIGNED);
 	}
 	
 	/**

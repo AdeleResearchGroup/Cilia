@@ -12,24 +12,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package fr.liglab.adele.cilia;
+package fr.liglab.adele.cilia.builder;
 
-import java.io.File;
+import fr.liglab.adele.cilia.exceptions.BuilderException;
+
 
 /**
+ *
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project Team</a>
  *
  */
-public interface CiliaFileManager {
-	/**
-	 * Start a mediation chain.
-	 * @param chains The chain identifier to start.
-	 */
-	public void loadChain(File chains);
+public interface Architecture {
+	
+	final static int MEDIATOR = 0;
+	
+	final static int ADAPTER = 1;
+	
+	final static int BINDING = 2;
+	
+	Binder bind ()throws BuilderException;
+	
+	Binder unbind ()throws BuilderException;
+	
+	Creator create ()throws BuilderException;
+	
+	Remover remove ()throws BuilderException;
+	
+	Modifier configure() throws BuilderException;
 
-	/**
-	 * Start a mediation chain.
-	 * @param chainId The chain identifier to start.
-	 */
-	public void unloadChain(File chains);
+	
 }

@@ -20,8 +20,8 @@ import java.util.HashMap;
 import org.w3c.dom.Node;
 
 import fr.liglab.adele.cilia.exceptions.CiliaParserException;
+import fr.liglab.adele.cilia.util.CiliaExtenderParser;
 import fr.liglab.adele.cilia.Component;
-import fr.liglab.adele.cilia.CiliaExtenderParser;
 
 public class MonitoringParser extends DomExtenderParser implements CiliaExtenderParser {
 	private static final String TAG_MONITORING = "monitoring";

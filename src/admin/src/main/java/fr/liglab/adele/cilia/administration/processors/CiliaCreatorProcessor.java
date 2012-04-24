@@ -123,8 +123,8 @@ public class CiliaCreatorProcessor {
 		} else {
 			type = mediatorType;
 		}
-		med = new MediatorImpl(mediatorId, type, namespace, null);
-		ch.add(med);
+		med = new MediatorImpl(mediatorId, type, namespace, null, null, null, ch);
+		
 		logger.info ("Command 'create mediator ' [{}]",med.getQualifiedId());
 	}
 
@@ -163,8 +163,8 @@ public class CiliaCreatorProcessor {
 		} else {
 			type = adapterType;
 		}
-		adapter = new AdapterImpl(adapterId, type, namespace, null, PatternType.UNASSIGNED);
-		chain.add(adapter);
+		adapter = new AdapterImpl(adapterId, type, namespace,null, null,chain, PatternType.UNASSIGNED);
+		
 		logger.info ("Command 'create mediator ' [{}]",adapter.getQualifiedId());
 	}
 

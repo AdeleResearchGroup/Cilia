@@ -16,7 +16,13 @@
 package fr.liglab.adele.cilia;
 
 import java.util.Set;
-
+/**
+ * 
+ *
+ * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project Team</a>
+ *
+ */
+//@SuppressWarnings("rawtypes")
 public interface Chain extends Component{
 	/**
 	 * Obtain the mediator model which has the given identificator.

@@ -20,13 +20,14 @@ import java.util.Dictionary;
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project Team</a>
  *
  */
+//@SuppressWarnings("rawtypes")
 public interface Component {
 
 	/**
 	 * Set new properties as String separated as Strings.
 	 * @param propertiesAsString
 	 */
-	void setProperties(String propertiesAsString) ;
+	//void setProperties(String propertiesAsString) ;
 	/**
 	 *Get a copy of the properties.
 	 *@return properties. 
@@ -64,7 +65,7 @@ public interface Component {
 	 * @param key property key.
 	 * @param value property value.
 	 */
-	void setProperty(Object key, Object value) ;
+	void setProperty(Object key, Object value);
 	/**
 	 * This method returns the identificator of the model representation.
 	 * @return the model representation identificator. 

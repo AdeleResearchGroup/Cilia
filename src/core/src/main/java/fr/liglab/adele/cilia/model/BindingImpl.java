@@ -50,7 +50,7 @@ public class BindingImpl extends ComponentImpl implements Binding{
      * Constructor.
      */
     public BindingImpl() {
-        super(new Long(bindingIds++).toString(), null, null, null);
+        this(null, null);
     }
     /**
      * 
@@ -59,9 +59,9 @@ public class BindingImpl extends ComponentImpl implements Binding{
      * @param classname //Not used. 
      * @param properties Properties that will be mapped to sender/collector properties.
      */
-    public BindingImpl(String id, String type, String classname,
+    public BindingImpl(String type,
             Dictionary properties) {
-        super(new Long(bindingIds++).toString(), type, classname, properties);
+        super(new Long(bindingIds++).toString(), type, null, properties);
     }
     /**
      * Get the parent chain.

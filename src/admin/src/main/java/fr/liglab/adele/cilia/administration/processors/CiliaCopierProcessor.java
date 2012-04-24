@@ -33,9 +33,9 @@ import fr.liglab.adele.cilia.model.ConstModel;
 import fr.liglab.adele.cilia.model.MediatorImpl;
 import fr.liglab.adele.cilia.runtime.Const;
 
-
 public class CiliaCopierProcessor {
-	private static final Logger logger = LoggerFactory.getLogger(Const.LOGGER_ADAPTATION);
+	private static final Logger logger = LoggerFactory
+			.getLogger(Const.LOGGER_ADAPTATION);
 	/**
 	 * The Cilia context.
 	 */
@@ -61,8 +61,8 @@ public class CiliaCopierProcessor {
 		} catch (InterruptedException e) {
 		}
 		try {
-			if ("mediator"
-					.compareToIgnoreCase(String.valueOf(data.getProperty("element"))) == 0) {
+			if ("mediator".compareToIgnoreCase(String.valueOf(data
+					.getProperty("element"))) == 0) {
 				copyMediator(data);
 
 			} else if ("adapter".compareToIgnoreCase(String.valueOf(data
@@ -88,18 +88,20 @@ public class CiliaCopierProcessor {
 			logger.error("ChainImpl [{}] not found" + chainId);
 			return;
 		}
-		mediatorSource = ccontext.getChain(chainId).getMediator(mediatorIdSource);
+		mediatorSource = ccontext.getChain(chainId).getMediator(
+				mediatorIdSource);
 		if (mediatorSource == null) {
-			logger.error("ComponentImpl [{}] not found in chain [{}]",mediatorSource,chainId);
+			logger.error("ComponentImpl [{}] not found in chain [{}]",
+					mediatorSource, chainId);
 			return;
 		}
 		mediatorDest = ccontext.getChain(chainId).getMediator(mediatorIdDest);
 
 		if (mediatorDest != null) {
-			logger.error("ComponentImpl [{}] in chain [{}]is already existing",mediatorSource,chainId);		
+			logger.error("ComponentImpl [{}] in chain [{}]is already existing",
+					mediatorSource, chainId);
 			return;
 		}
-
 
 		Dictionary properties = mediatorSource.getProperties();
 		if (properties != null) {
@@ -107,15 +109,13 @@ public class CiliaCopierProcessor {
 			properties.remove(ConstModel.PROPERTY_CHAIN_ID);
 			properties.remove(ConstModel.PROPERTY_LOCK_UNLOCK);
 		}
-		mediatorDest = new MediatorImpl(mediatorIdDest, mediatorSource.getType(),
-				mediatorSource.getNamespace(), properties);
-		
-		if (mediatorDest != null) {
-			chain.add(mediatorDest);
-			logger.info("Command 'copy mediator' [{}] to [{}] ",mediatorSource.getQualifiedId(),mediatorDest.getQualifiedId());
+		mediatorDest = new MediatorImpl(mediatorIdDest,
+				mediatorSource.getType(), mediatorSource.getNamespace(), null,null,
+				properties, chain);
 
-		} else
-			logger.error("ComponentImpl [{}] not created",mediatorDest );
+		logger.info("Command 'copy mediator' [{}] to [{}] ",
+				mediatorSource.getQualifiedId(), mediatorDest.getQualifiedId());
+
 	}
 
 	private void copyAdapter(Data data) {
@@ -133,13 +133,15 @@ public class CiliaCopierProcessor {
 		}
 		adapterSource = ccontext.getChain(chainId).getAdapter(adapterIdSource);
 		if (adapterSource == null) {
-			logger.error("ComponentImpl [{}] not found in chain [{}]",adapterIdSource,chainId);
+			logger.error("ComponentImpl [{}] not found in chain [{}]",
+					adapterIdSource, chainId);
 			return;
 		}
 		adapterDest = ccontext.getChain(chainId).getAdapter(adapterIdDest);
 
 		if (adapterDest != null) {
-			logger.error("ComponentImpl [{}] in chain [{}]is already existing",adapterDest,chainId);	
+			logger.error("ComponentImpl [{}] in chain [{}]is already existing",
+					adapterDest, chainId);
 			return;
 		}
 
@@ -155,17 +157,15 @@ public class CiliaCopierProcessor {
 			while (e.hasMoreElements()) {
 				Object key = (String) e.nextElement();
 				Object value = dico.get(key);
-				properties.put(key,value);
+				properties.put(key, value);
 			}
 		}
 		adapterDest = new AdapterImpl(adapterIdDest, adapterSource.getType(),
-				adapterSource.getNamespace(), properties, adapterSource.getPattern());
-		
-		if (adapterDest != null) {
-			chain.add(adapterDest);
-			logger.info("Command 'copy adapter' [{}] to [{}] ",adapterSource.getQualifiedId(),adapterDest.getQualifiedId());
+				adapterSource.getNamespace(), null, properties, chain,
+				adapterSource.getPattern());
 
-		} else
-			logger.error("ComponentImpl [{}] not created",adapterDest );
+		logger.info("Command 'copy adapter' [{}] to [{}] ",
+				adapterSource.getQualifiedId(), adapterDest.getQualifiedId());
+
 	}
 }

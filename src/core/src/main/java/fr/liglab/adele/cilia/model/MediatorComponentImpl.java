@@ -44,7 +44,7 @@ public abstract class MediatorComponentImpl extends ComponentImpl implements Med
 	/**
 	 * ComponentImpl category.
 	 */
-	private volatile String category;
+	private volatile String category = null;
 	/**
 	 * Scheduler representation model contained in the mediator.
 	 */
@@ -70,6 +70,8 @@ public abstract class MediatorComponentImpl extends ComponentImpl implements Med
 	protected final Object lockObject = new Object();
 
 	private String qualifiedId ;
+	
+	private String version = null;
 
 	/**
 	 * 
@@ -87,90 +89,13 @@ public abstract class MediatorComponentImpl extends ComponentImpl implements Med
 	 *            ChainImpl where this mediator will be.
 	 */
 
-	public MediatorComponentImpl(String id, String type, String nspace, String catego,
+	public MediatorComponentImpl(String id, String type, String nspace, String catego, String version,
 			Dictionary properties, Chain chain) {
 		super(id, type, nspace, properties);
 		this.category = catego;
+		this.version = version;
 		setChain(chain);
 		createInitialOutPorts();
-	}
-
-	/**
-	 * Creates a new mediator representation model.
-	 * 
-	 * @param id
-	 *            identificator of the new mediator.
-	 * @param type
-	 *            type of the mediator representation model.
-	 * @param classname
-	 *            classname of the mediator representation model.
-	 * @param properties
-	 *            new properties to add to the mediator representation model.
-	 */
-	public MediatorComponentImpl(String id, String type, String namespace, Dictionary properties) {
-		this(id, type, namespace, null, properties, null);
-	}
-
-	/**
-	 * 
-	 * Creates a new mediator representation model.
-	 * 
-	 * @param id
-	 *            identificator of the new mediator.
-	 * @param type
-	 *            type of the mediator representation model.
-	 * @param properties
-	 *            new properties to add to the mediator representation model.
-	 */
-	public MediatorComponentImpl(String id, String type, Dictionary properties) {
-		this(id, type, null, null, properties, null);
-	}
-
-	/**
-	 * 
-	 * Creates a new mediator representation model.
-	 * 
-	 * @param id
-	 *            identificator of the new mediator.
-	 * @param type
-	 *            type of the mediator representation model.
-	 * @param properties
-	 *            new properties to add to the mediator representation model.
-	 * @param chain
-	 *            ChainImpl where this mediator will be.
-	 */
-	public MediatorComponentImpl(String id, String type, Dictionary properties, Chain chain) {
-		this(id, type, null, null, properties, chain);
-	}
-
-	/**
-	 * 
-	 * Creates a new mediator representation model.
-	 * 
-	 * @param id
-	 *            identificator of the new mediator.
-	 * @param type
-	 *            type of the mediator representation model.
-	 * @param properties
-	 *            new properties to add to the mediator representation model.
-	 * @param chain
-	 *            ChainImpl where this mediator will be.
-	 */
-	public MediatorComponentImpl(String id, String type, Chain chain) {
-		this(id, type, new Hashtable(), chain);
-	}
-
-	/**
-	 * 
-	 * Creates a new mediator representation model.
-	 * 
-	 * @param id
-	 *            identificator of the new mediator.
-	 * @param type
-	 *            type of the mediator representation model.
-	 */
-	public MediatorComponentImpl(String id, String type) {
-		this(id, type, new Hashtable(), null);
 	}
 
 	/**
@@ -488,6 +413,20 @@ public abstract class MediatorComponentImpl extends ComponentImpl implements Med
 		
 		this.qualifiedId = null;
 		
+	}
+
+	/**
+	 * @return the version
+	 */
+	public String getVersion() {
+		return version;
+	}
+
+	/**
+	 * @param version the version to set
+	 */
+	public void setVersion(String version) {
+		this.version = version;
 	}
 	
 }

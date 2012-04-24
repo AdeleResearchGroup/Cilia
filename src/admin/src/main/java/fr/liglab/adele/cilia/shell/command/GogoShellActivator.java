@@ -81,11 +81,11 @@ public class GogoShellActivator implements ChainListener {
     public void onAddingChain(Chain chain) {
         // Now bound to the Cilia-Admin chain
         mchain = chain;
-        Properties config = new Properties();
+       
         // Create the Felix Gogo shell adapter and add it in the chain
         adapter = new AdapterImpl("gogo-command-adapter", "felix-admin-gogo-shell",
-                "fr.liglab.adele.cilia", config, PatternType.IN_ONLY);
-        mchain.add(adapter);
+                "fr.liglab.adele.cilia", null,null, mchain, PatternType.IN_ONLY);
+        
         Mediator mep = mchain.getMediator("admin-entry-mediator");
         if (mep != null) {
             mchain.bind(adapter.getOutPort("std"), mep.getInPort("std"));

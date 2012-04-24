@@ -19,8 +19,8 @@ import java.util.Properties;
 import org.w3c.dom.Node;
 
 import fr.liglab.adele.cilia.exceptions.CiliaParserException;
+import fr.liglab.adele.cilia.util.CiliaExtenderParser;
 import fr.liglab.adele.cilia.Component;
-import fr.liglab.adele.cilia.CiliaExtenderParser;
 
 import static fr.liglab.adele.cilia.runtime.dependency.DependencyHandler.DEFAULT_FILTER_NAME;
 

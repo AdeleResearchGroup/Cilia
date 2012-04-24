@@ -12,28 +12,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package fr.liglab.adele.cilia;
+package fr.liglab.adele.cilia.builder;
 
-import fr.liglab.adele.cilia.exceptions.CiliaParserException;
+import fr.liglab.adele.cilia.exceptions.BuilderException;
 
 /**
+ *
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project Team</a>
  *
  */
-public interface CiliaExtenderParser {
-	/**
-	 * Creates or modifies a ComponentImpl based on the component description.
-	 * @param componentDescription
-	 * @return
-	 */
-	Component getComponent(Object componentDescription, Component currentComponent) throws CiliaParserException; 
-
-	/**
-	 * See if the parser could handle the component description
-	 * @return
-	 */
-	boolean canHandle(Object mediatorDescription);
+public interface Creator {
 	
+	InstanceCreator mediator();
+	
+	InstanceCreator adapter();
 	
 }
-
