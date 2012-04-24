@@ -239,7 +239,7 @@ public class CiliaChainInstanceParser implements ChainParser {
 			}
 		}
 		Properties bindingProperties = getProperties(bindingNode);
-		bindingModel = new BindingImpl(bindingId, bindingType, null, bindingProperties);
+		bindingModel = new BindingImpl(bindingType, bindingProperties);
 		//
 		String colport = getAttributeValue(bindingNode, BINDING_to);
 		String sendport = getAttributeValue(bindingNode, BINDING_from);
@@ -454,7 +454,7 @@ public class CiliaChainInstanceParser implements ChainParser {
 			mediatorId = mediatorType + mediatorNumbers;
 		}
 
-		mediator = new MediatorImpl(mediatorId, mediatorType, null,null, mediatorProperties, null);
+		mediator = new MediatorImpl(mediatorId, mediatorType, null,null,null, mediatorProperties, null);
 		mediator = (Mediator)extendersParsers(nmediator, mediator);
 
 		return mediator;
@@ -484,7 +484,7 @@ public class CiliaChainInstanceParser implements ChainParser {
 		}
 
 		// String pattern = getAttributeValue(nmediator, pattern)
-		adapter = new AdapterImpl(adapterId, adapterType, null, adapterProperties, null, pt);
+		adapter = new AdapterImpl(adapterId, adapterType, null,null, adapterProperties, null, pt);
 		adapter = (Adapter)extendersParsers(nadapter, adapter);
 		return adapter;
 	}

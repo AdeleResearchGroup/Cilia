@@ -33,7 +33,9 @@ import org.osgi.framework.BundleContext;
 
 import fr.liglab.adele.cilia.builder.Architecture;
 import fr.liglab.adele.cilia.builder.Builder;
+import fr.liglab.adele.cilia.exceptions.BuilderConfigurationException;
 import fr.liglab.adele.cilia.exceptions.BuilderException;
+import fr.liglab.adele.cilia.exceptions.BuilderPerformerException;
 import fr.liglab.adele.cilia.ext.ContentBasedRouting;
 
 /**
@@ -85,7 +87,7 @@ public class BuilderTest {
 		return r;
 	}
 
-	@Test
+	//@Test
 	public void test()  {
 		Builder builder = getBuilder();
 		try {
@@ -113,7 +115,13 @@ public class BuilderTest {
 			builder.done();
 		} catch (BuilderException be) {
 			
-		}
+		} catch (BuilderConfigurationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (BuilderPerformerException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
 	}
 
 	Builder getBuilder() {

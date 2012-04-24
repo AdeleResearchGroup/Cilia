@@ -155,7 +155,7 @@ public class BuilderPerformer {
 			MediatorComponent from = getMediatorComponent(bi.getFromMediator());
 			MediatorComponent to = getMediatorComponent(bi.getToMediator());
 			String using = bi.getUsing();
-			Binding binding = new BindingImpl(bi.getUsing(), bi.getConfiguration);
+			Binding binding = new BindingImpl(bi.getUsing(), bi.getConfiguration());
 			
 			
 			//chain.bind(outPort, inPort, bindingModel)
