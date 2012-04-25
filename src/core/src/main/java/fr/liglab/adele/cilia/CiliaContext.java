@@ -17,7 +17,7 @@ package fr.liglab.adele.cilia;
 
 import java.util.Set;
 
-import fr.liglab.adele.cilia.Chain;
+import fr.liglab.adele.cilia.builder.Builder;
 import fr.liglab.adele.cilia.model.ChainRuntime;
 import fr.liglab.adele.cilia.specification.MediatorSpecification;
 import fr.liglab.adele.cilia.util.concurrent.ReadWriteLock;
@@ -52,6 +52,7 @@ public interface CiliaContext {
 	
 	void removeChainListener(String chainId, ChainListener listener);
 	
+	Builder getBuilder();
 	
 	void start();
 	

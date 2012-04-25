@@ -30,6 +30,11 @@ public class BuilderImpl implements Builder {
 	CiliaContext ccontext;
 	
 	Architecture architecture = null;
+	
+	public BuilderImpl(CiliaContext context) {
+		this.ccontext = context;
+	}
+	
 	/* (non-Javadoc)
 	 * @see fr.liglab.adele.cilia.builder.Builder#create(java.lang.String)
 	 */
