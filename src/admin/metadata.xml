@@ -186,6 +186,9 @@
 		<callback transition="validate" method="start" />
 		<callback transition="invalidate" method="stop" />
 	</component>
-	<instance component="GogoShellActivator" />
+	
+	 <!-- <instance component="felix-admin-gogo-shell-collector" />  -->
+	
+	<instance component="GogoShellActivator" />  
 
 </cilia>

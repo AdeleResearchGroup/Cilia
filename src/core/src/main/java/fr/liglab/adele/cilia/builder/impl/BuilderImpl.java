@@ -65,6 +65,9 @@ public class BuilderImpl implements Builder {
 		if (ccontext.getChain(chainId) == null && architecture == null) {
 			throw new BuilderException("There is any Chain with id :" + chainId);
 		}
+		if (architecture != null && !((ArchitectureImpl)architecture).getChainId().equalsIgnoreCase(chainId) ) {
+			throw new BuilderException("There is a Builder Configuration for a Chain with id :" + ((ArchitectureImpl)architecture).getChainId());
+		}
 		if (architecture == null) {
 			architecture =  new ArchitectureImpl(ccontext, this, chainId, false);
 		}
@@ -72,6 +75,9 @@ public class BuilderImpl implements Builder {
 	}
 	
 	public Builder done() throws BuilderException, BuilderPerformerException{
+		if (architecture == null) {
+			throw new BuilderException("Unable to build an invalid architecture chain: Architecture is null");
+		}
 		((ArchitectureImpl)architecture).done();
 		return this;
 	}

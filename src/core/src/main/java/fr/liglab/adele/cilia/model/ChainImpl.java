@@ -275,11 +275,11 @@ public class ChainImpl extends ComponentImpl implements Chain{
 		boolean result = false;
 		//if binding has associated others ports, it could'nt be created.
 		if (null != binding.getSourcePort() || null != binding.getTargetPort()) {
-			//System.err.println("BindingImpl is assigned to other components");
+			System.err.println("BindingImpl is assigned to other components");
 			return null;
 		}
 		if (sourcePort.getMediator().getChain() != this || targetPort.getMediator().getChain() != this) {
-			//System.err.println("Mediators in bind doesn't belong to the same chain " + this + " " + sourcePort.getMediator().getChain());
+			System.err.println("Mediators in bind doesn't belong to the same chain " + this + " " + sourcePort.getMediator().getChain());
 			return null;
 		}
 		if (!sourcePort.getType().equals(PortType.OUTPUT)) { 

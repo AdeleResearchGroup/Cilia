@@ -39,7 +39,7 @@ public class AdapterImpl  extends MediatorComponentImpl implements Adapter{
 	 */
 	public AdapterImpl(String adapterId, String adapterType, String adapterNamespace, String version,
 			Dictionary adapterProperties, Chain chain, PatternType pattern) {
-		super(adapterId, adapterType, adapterNamespace,"adapter",version, adapterProperties, chain);
+		super(adapterId, adapterType, adapterNamespace,null,version, adapterProperties, chain);
 		adapterPattern = pattern;
 	}
 	

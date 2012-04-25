@@ -67,17 +67,9 @@ public class BuilderPerformer {
 	private Chain getChain() throws BuilderPerformerException {
 		Chain chain = null;
 		if (architecture.isCreatingChain()) {
-			if (ccontext.getChain(architecture.getChainId()) != null) {
-				throw new BuilderPerformerException(
-						"Chain with the same ID already exist: "
-								+ architecture.getChainId());
-			}
 			chain = new ChainImpl(architecture.getChainId(), null, null, null);
+			ccontext.addChain(chain);
 		} else {
-			if (ccontext.getChain(architecture.getChainId()) == null) {
-				throw new BuilderPerformerException("Chain does not exist: "
-						+ architecture.getChainId());
-			}
 			chain = ccontext.getChain(architecture.getChainId());
 		}
 		return chain;
@@ -142,7 +134,8 @@ public class BuilderPerformer {
 				break;
 			}
 			if (comp == null) {
-				throw new BuilderPerformerException("Unable to modify inexistent component:" + id);
+				throw new BuilderPerformerException(
+						"Unable to modify inexistent component:" + id);
 			}
 			comp.setProperties(toModify.getConfiguration());
 		}
@@ -154,27 +147,38 @@ public class BuilderPerformer {
 			BinderImpl bi = (BinderImpl) it.next();
 			MediatorComponent from = getMediatorComponent(bi.getFromMediator());
 			MediatorComponent to = getMediatorComponent(bi.getToMediator());
-			String using = bi.getUsing();
-			Binding binding = new BindingImpl(bi.getUsing(), bi.getConfiguration());
-			
-			
-			//chain.bind(outPort, inPort, bindingModel)
+			Binding binding = new BindingImpl(bi.getUsing(),
+					bi.getConfiguration());
+			chain.bind(from.getOutPort(bi.getFromPort()),
+					to.getInPort(bi.getToPort()), binding);
 		}
 	}
 
-	private MediatorComponent getMediatorComponent(String id) throws BuilderPerformerException {
+	private void doUnbind() throws BuilderPerformerException {
+		Iterator it = architecture.getUnbindings().iterator();
+		while (it.hasNext()) {
+			BinderImpl bi = (BinderImpl) it.next();
+			MediatorComponent from = getMediatorComponent(bi.getFromMediator());
+			MediatorComponent to = getMediatorComponent(bi.getToMediator());
+			Binding[] bindings = chain.getBindings(from, to);
+			if (bindings != null) {
+				for (int i = 0; i < bindings.length; i++)
+					chain.unbind(bindings[i]);
+			}
+		}
+	}
+
+	private MediatorComponent getMediatorComponent(String id)
+			throws BuilderPerformerException {
 		MediatorComponent medComponent = chain.getMediator(id);
 		if (medComponent == null) {
 			medComponent = chain.getAdapter(id);
 		}
-		if(medComponent == null) {
-			throw new BuilderPerformerException("Unable to retrieve to perform bin; ID: " + id);
+		if (medComponent == null) {
+			throw new BuilderPerformerException(
+					"Unable to retrieve to perform bin; ID: " + id);
 		}
 		return medComponent;
-	}
-	
-	private void doUnbind() throws BuilderPerformerException {
-
 	}
 
 	private void verifyOperations() throws BuilderPerformerException {
@@ -185,6 +189,21 @@ public class BuilderPerformer {
 		verifyUnbindings();
 	}
 
+	private void verifyChain()  throws BuilderPerformerException {
+		if (architecture.isCreatingChain()) {
+			if (ccontext.getChain(architecture.getChainId()) != null) {
+				throw new BuilderPerformerException(
+						"Chain with the same ID already exist: "
+								+ architecture.getChainId());
+			}
+		} else {
+			if (ccontext.getChain(architecture.getChainId()) == null) {
+				throw new BuilderPerformerException("Chain does not exist: "
+						+ architecture.getChainId());
+			}
+		}
+	}
+	
 	private void verifyNewInstances() throws BuilderPerformerException {
 		List created = architecture.getCreated();
 		Iterator it = created.iterator();
@@ -235,7 +254,7 @@ public class BuilderPerformer {
 	}
 
 	private void verifyConfiguration() throws BuilderPerformerException {
-		Iterator it =  architecture.getModified().iterator();
+		Iterator it = architecture.getModified().iterator();
 		while (it.hasNext()) {
 			InstanceModifierImpl toModify = (InstanceModifierImpl) it.next();
 			String id = toModify.getId();
