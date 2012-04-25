@@ -25,18 +25,23 @@ import org.apache.felix.ipojo.test.helpers.OSGiHelper;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.ops4j.pax.exam.Inject;
 import org.ops4j.pax.exam.Option;
 import org.ops4j.pax.exam.OptionUtils;
 import org.ops4j.pax.exam.junit.Configuration;
+import org.ops4j.pax.exam.junit.JUnit4TestRunner;
+import org.ops4j.pax.exam.junit.JUnitOptions;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.InvalidSyntaxException;
+import org.osgi.framework.ServiceReference;
 
+import fr.liglab.adele.cilia.CiliaContext;
 import fr.liglab.adele.cilia.builder.Architecture;
 import fr.liglab.adele.cilia.builder.Builder;
 import fr.liglab.adele.cilia.exceptions.BuilderConfigurationException;
 import fr.liglab.adele.cilia.exceptions.BuilderException;
 import fr.liglab.adele.cilia.exceptions.BuilderPerformerException;
-import fr.liglab.adele.cilia.ext.ContentBasedRouting;
 
 /**
  * 
@@ -44,6 +49,7 @@ import fr.liglab.adele.cilia.ext.ContentBasedRouting;
  *         Team</a>
  * 
  */
+@RunWith(JUnit4TestRunner.class)
 public class BuilderTest {
 
 	@Inject
@@ -86,8 +92,17 @@ public class BuilderTest {
 		Option[] r = OptionUtils.combine(platform, bundles);
 		return r;
 	}
+	
+	/**
+	 * Mockito bundle
+	 * @return
+	 */
+	@Configuration
+	public static Option[] mockitoBundle() {
+		return options(JUnitOptions.mockitoBundles());
+	}
 
-	//@Test
+	@Test
 	public void test()  {
 		Builder builder = getBuilder();
 		try {
@@ -125,7 +140,19 @@ public class BuilderTest {
 	}
 
 	Builder getBuilder() {
-		return null;
+		waitToInitialize();
+
+		CiliaContext ccontext  = (CiliaContext)osgi.getServiceObject(CiliaContext.class.getName(), null);
+		
+		return ccontext.getBuilder();
 	}
 
+	
+	private void waitToInitialize() {
+		try {
+			Thread.sleep(2000);//wait to be registered
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+	}
 }

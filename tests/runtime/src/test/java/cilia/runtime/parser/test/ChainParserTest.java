@@ -14,7 +14,7 @@
  */
 package cilia.runtime.parser.test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
 import static org.ops4j.pax.exam.CoreOptions.felix;
 import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
 import static org.ops4j.pax.exam.CoreOptions.options;
@@ -32,11 +32,10 @@ import org.ops4j.pax.exam.junit.Configuration;
 import org.ops4j.pax.exam.junit.JUnit4TestRunner;
 import org.ops4j.pax.exam.junit.JUnitOptions;
 import org.osgi.framework.BundleContext;
-import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
 
-import fr.liglab.adele.cilia.ChainParser;
 import fr.liglab.adele.cilia.core.tests.tools.CiliaTools;
+import fr.liglab.adele.cilia.util.ChainParser;
 
 
 /**

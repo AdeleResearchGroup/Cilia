@@ -18,9 +18,9 @@
 
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>fr.liglab.adele.cilia</groupId>
-	<artifactId>cilia-test-core</artifactId>
+	<artifactId>cilia-core-tests</artifactId>
 	<packaging>jar</packaging>
-	<name>Cilia Test Core</name>
+	<name>Cilia Core Tests</name>
 	<version>1.2.2-SNAPSHOT</version>
 
 	<!--Project Test Repository -->

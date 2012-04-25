@@ -20,9 +20,8 @@ import org.ops4j.pax.exam.junit.JUnitOptions;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 
-import fr.liglab.adele.cilia.ChainParser;
-import fr.liglab.adele.cilia.CiliaFileManager;
 import fr.liglab.adele.cilia.core.tests.tools.CiliaTools;
+import fr.liglab.adele.cilia.util.CiliaFileManager;
 
 @RunWith(JUnit4TestRunner.class)
 public class CiliaFileManagerTester {
