@@ -167,9 +167,9 @@
 	<instance component="AdminChainActivator" />
 
 	<collector
-		classname="fr.liglab.adele.cilia.shell.command.CiliaAdminGogoCommandAdapter"
+		classname="fr.liglab.adele.cilia.administration.command.CiliaAdminGogoCommandAdapter"
 		namespace="fr.liglab.adele.cilia" name="felix-admin-gogo-shell-collector" immediate="true" architecture="true">
-		<provides specifications="{fr.liglab.adele.cilia.shell.command.CiliaAdminGogoCommandAdapter}">
+		<provides specifications="{fr.liglab.adele.cilia.administration.command.CiliaAdminGogoCommandAdapter}">
           <property name="osgi.command.scope" type="String" value="cilia"/>
           <property name="osgi.command.function" type="String[]" value="{create,modify,remove,start,stop,show,load,help}"/>
         </provides>
@@ -181,7 +181,7 @@
 	</adapter>
 
 	<component name="GogoShellActivator"
-		classname="fr.liglab.adele.cilia.shell.command.GogoShellActivator">
+		classname="fr.liglab.adele.cilia.administration.command.GogoShellActivator">
 		<requires field="ccontext" />
 		<callback transition="validate" method="start" />
 		<callback transition="invalidate" method="stop" />
@@ -190,5 +190,20 @@
 	 <!-- <instance component="felix-admin-gogo-shell-collector" />  -->
 	
 	<instance component="GogoShellActivator" />  
+
+	<component classname="fr.liglab.adele.cilia.administration.fileinstall.CiliaFileInstall"
+		name="Cilia-Deployer" architecture="true">
+		<provides />
+		<requires field="manager" />
+		<callback transition="validate" method="start" />
+		<callback transition="invalidate" method="stop" />
+
+	</component>
+
+	<!-- INSTANCES -->
+
+	<instance component="Cilia-Deployer" name="Cilia-Deployer" />
+
+
 
 </cilia>
