@@ -19,9 +19,10 @@ import java.util.HashMap;
 
 import org.w3c.dom.Node;
 
-import fr.liglab.adele.cilia.exceptions.CiliaParserException;
-import fr.liglab.adele.cilia.util.CiliaExtenderParser;
 import fr.liglab.adele.cilia.Component;
+import fr.liglab.adele.cilia.exceptions.CiliaParserException;
+import fr.liglab.adele.cilia.model.ComponentImpl;
+import fr.liglab.adele.cilia.util.CiliaExtenderParser;
 
 public class MonitoringParser extends DomExtenderParser implements CiliaExtenderParser {
 	private static final String TAG_MONITORING = "monitoring";
@@ -48,8 +49,9 @@ public class MonitoringParser extends DomExtenderParser implements CiliaExtender
 	}
 
 	public Component getComponent(Object componentDescription,
-			Component currentComponent) throws CiliaParserException {
+			Component current) throws CiliaParserException {
 		HashMap stateVarList = null;
+		ComponentImpl currentComponent = (ComponentImpl)current;
 		Node child = getElement(TAG_MONITORING,(Node) componentDescription);
 		if (child != null) {
 			String enable = getAttributeValue(child, ATTR_ENABLE);

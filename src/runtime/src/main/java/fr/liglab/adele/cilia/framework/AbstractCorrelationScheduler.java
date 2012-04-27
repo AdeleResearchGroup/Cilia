@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package fr.liglab.adele.cilia.framework.components;
+package fr.liglab.adele.cilia.framework;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,7 +21,6 @@ import org.osgi.framework.BundleContext;
 
 import fr.liglab.adele.cilia.Data;
 import fr.liglab.adele.cilia.exceptions.CiliaException;
-import fr.liglab.adele.cilia.framework.AbstractScheduler;
 import fr.liglab.adele.cilia.framework.data.CiliaExpression;
 import fr.liglab.adele.cilia.framework.data.ExpressionFactory;
 /**

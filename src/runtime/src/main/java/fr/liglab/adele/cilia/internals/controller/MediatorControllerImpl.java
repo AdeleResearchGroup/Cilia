@@ -34,6 +34,7 @@ import fr.liglab.adele.cilia.MediatorComponent;
 import fr.liglab.adele.cilia.framework.IDispatcher;
 import fr.liglab.adele.cilia.framework.IScheduler;
 import fr.liglab.adele.cilia.internals.factories.MediatorManager;
+import fr.liglab.adele.cilia.model.BindingImpl;
 import fr.liglab.adele.cilia.model.ConstModel;
 import fr.liglab.adele.cilia.model.Dispatcher;
 import fr.liglab.adele.cilia.model.MediatorComponentImpl;
@@ -214,7 +215,7 @@ public class MediatorControllerImpl implements Observer {
 	 * Create collector instances from the model.
 	 */
 	private void createCollectorInstances() {
-		Binding[] bs = mediatorModel.getInBindings();
+		BindingImpl[] bs = (BindingImpl[])mediatorModel.getInBindings();
 		for (int i = 0; i < bs.length; i++) {
 			Component collector = bs[i].getCollector();
 			if (collector != null) {
@@ -228,7 +229,7 @@ public class MediatorControllerImpl implements Observer {
 	 * Create sender instances from the model.
 	 */
 	private void createSenderInstances() {
-		Binding[] bs = mediatorModel.getOutBindings();
+		BindingImpl[] bs = (BindingImpl[])mediatorModel.getOutBindings();
 		for (int i = 0; i < bs.length; i++) {
 			Component sender = bs[i].getSender();
 			if (sender != null) {

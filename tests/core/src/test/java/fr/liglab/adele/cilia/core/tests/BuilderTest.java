@@ -21,6 +21,7 @@ import static org.ops4j.pax.exam.CoreOptions.provision;
 
 import java.util.Hashtable;
 
+import org.apache.felix.ipojo.test.helpers.OSGiHelper;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -56,16 +57,16 @@ public class BuilderTest {
 	@Inject
 	private BundleContext context;
 
-	//private OSGiHelper osgi;
+	private OSGiHelper osgi;
 
 	@Before
 	public void setUp() {
-		//osgi = new OSGiHelper(context);
+		osgi = new OSGiHelper(context);
 	}
 
 	@After
 	public void tearDown() {
-		//osgi.dispose();
+		osgi.dispose();
 	}
 
 	@Configuration
@@ -81,7 +82,7 @@ public class BuilderTest {
 						mavenBundle().groupId("org.slf4j").artifactId("slf4j-simple").version("1.6.1"),
 						mavenBundle().groupId("fr.liglab.adele.cilia").artifactId("cilia-runtime").versionAsInProject(),
 						mavenBundle().groupId("fr.liglab.adele.cilia").artifactId("cilia-core").versionAsInProject()
-				)); // The target
+						)); // The target
 		Option[] r = OptionUtils.combine(platform, bundles);
 		return r;
 	}
@@ -206,7 +207,7 @@ public class BuilderTest {
 			arch.create();
 			Assert.fail("Must throw an BuilderException because an invalid builder");
 		} catch (BuilderException e) {}
-		
+
 		try {
 			arch.remove();
 			Assert.fail("Must throw an BuilderException because an invalid builder");
@@ -217,8 +218,85 @@ public class BuilderTest {
 		} catch (BuilderException e) {}
 	}
 
-	
-	public void createNewChain(String id)  throws BuilderException, BuilderPerformerException{
+	@Test
+	public void cannotCreateMediatorWithoutId() {
+		waitToInitialize();
+		Builder builder = getBuilder();
+
+		Architecture arch;
+		try {
+			arch = builder.create("chain-1");
+			arch.create().mediator().type("toto");
+			builder.done();
+			Assert.fail("Must throw BuilderPerformerException");
+		} catch (CiliaException e) {
+		}
+	}
+
+	@Test
+	public void cannotCreateComponentWithExistantId() {
+		waitToInitialize();
+		Builder builder = getBuilder();
+		try{
+			Architecture arch = builder.create("chain-1");
+			arch.create().mediator().type("toto").id("id1");
+			arch.create().mediator().type("toto").id("id1");
+			builder.done();
+			Assert.fail("Must throw BuilderPerformerException");
+		}catch(Exception ex) {}
+	}
+	@Test
+	public void cannotCreateComponentWithExistantId2() {
+		waitToInitialize();
+		Builder builder = getBuilder();
+		try{
+			Architecture arch = builder.create("chain-1");
+			arch.create().mediator().type("toto").id("id1");
+			arch.create().adapter().type("toto").id("id1");
+			builder.done();
+			Assert.fail("Must throw BuilderPerformerException");
+		}catch(Exception ex) {}
+	}
+	@Test
+	public void cannotCreateComponentWithExistantId3() {
+		waitToInitialize();
+		Builder builder = getBuilder();
+		try{
+			Architecture arch = builder.create("chain-1");
+			arch.create().adapter().type("toto").id("id1");
+			arch.create().adapter().type("toto").id("id1");
+			builder.done();
+			Assert.fail("Must throw BuilderPerformerException");
+		}catch (CiliaException ex) {}
+	}
+	@Test
+	public void cannotCreateComponentWithExistantId4() {
+		waitToInitialize();
+		Builder builder = getBuilder();
+		try  {
+			Architecture arch = builder.create("chain-1");
+			arch.create().adapter().type("toto").id("id1");
+			arch.create().mediator().type("toto").id("id1");
+			builder.done();
+			Assert.fail("Must throw BuilderPerformerException");
+		}catch (CiliaException ex) {}	}
+
+	@Test
+	public void cannotBindInexistantComponents() {
+		waitToInitialize();
+		Builder builder = getBuilder();
+		try{
+			Architecture arch = builder.create("chain-1");
+			arch.create().adapter().type("toto").id("id1");
+			arch.create().mediator().type("toto").id("id1");
+			//arch.bind().
+			builder.done();
+			Assert.fail("Must throw BuilderPerformerException");
+		}catch (CiliaException ex) {}
+	}
+
+
+	public void createNewChain(String id) throws BuilderException, BuilderPerformerException  {
 		Builder builder = getBuilder();
 		builder.create(id);
 		builder.done();
@@ -229,6 +307,10 @@ public class BuilderTest {
 		Builder builder = getBuilder();
 		try {
 			Architecture arch = builder.create("MyChain");
+			Architecture arch2 = builder.get("cjainds");
+
+			arch.create().adapter().type("fd").id("").configure().key("toto").value("tata");
+
 			arch.create().mediator().type("toto").namespace("nspace")
 			.id("tata");
 			arch.create().mediator().type("toto").id("tata").configure()
@@ -236,7 +318,9 @@ public class BuilderTest {
 			arch.create().mediator().type("toto").id("dsds").configure();
 			arch.create().mediator().type("rere").id("dsds");
 			arch.create().mediator().type("dsds").namespace("dsds").id("dsds");
-			arch.bind().using("ea").from("mediator1:titi").to("mediator2:tito");
+
+			arch.bind().using("ea").from("mediator1:titi").to("mediator2:tito").configure(new Hashtable());
+
 			arch.bind().from("mediator:toto").to("mediator2:end");
 			arch.configure().mediator().id("toto").key("tata").value("value")
 			.key("isi").value("rere").key("tata").value("value")
@@ -262,15 +346,8 @@ public class BuilderTest {
 	}
 
 	public Builder getBuilder() {
-		ServiceReference sr[] = null;
-		try {
-			sr = context.getServiceReferences (CiliaContext.class.getName(), null);
-		} catch (InvalidSyntaxException e) {
-			e.printStackTrace();
-		}
-		Assert.assertNotNull(sr);
-		CiliaContext ccontext = (CiliaContext) context.getService(sr[0]);
-		
+		osgi.getServiceObject(CiliaContext.class.getName(), null);
+		CiliaContext ccontext = (CiliaContext)osgi.getServiceObject(CiliaContext.class.getName(), null);
 		return ccontext.getBuilder();
 	}
 

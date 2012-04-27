@@ -16,9 +16,10 @@ package fr.liglab.adele.cilia.internals;
 
 import org.w3c.dom.Node;
 
-import fr.liglab.adele.cilia.exceptions.CiliaParserException;
-import fr.liglab.adele.cilia.util.CiliaExtenderParser;
 import fr.liglab.adele.cilia.Component;
+import fr.liglab.adele.cilia.exceptions.CiliaParserException;
+import fr.liglab.adele.cilia.model.ComponentImpl;
+import fr.liglab.adele.cilia.util.CiliaExtenderParser;
 
 /**
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project Team</a>
@@ -35,10 +36,10 @@ CiliaExtenderParser {
 	 * @see fr.liglab.adele.cilia.model.parser.CiliaExtenderParser#getComponent(java.lang.Object, fr.liglab.adele.cilia.model.IComponent)
 	 */
 	public Component getComponent(Object componentDescription,
-			Component currentComponent) throws CiliaParserException {
+			Component component) throws CiliaParserException {
 		String period = null;
 		String delay = null;
-
+		ComponentImpl currentComponent = (ComponentImpl)component;
 		Node periodicN = getNode("scheduler",componentDescription);
 
 		period  = getAttributeValue(periodicN, "period");

@@ -147,7 +147,7 @@ public class CiliaChainInstanceParser implements ChainParser {
 	 */
 	public Chain parseChain(Object chain) throws CiliaException {
 		Node nchain = checkObject(chain);
-		Chain newChain = null;
+		ChainImpl newChain = null;
 		Mediator[] mediators = null;
 		Adapter[] adapters = null;
 		Binding[] bindings = null;
@@ -205,7 +205,7 @@ public class CiliaChainInstanceParser implements ChainParser {
 	 * @param chain
 	 * @param node
 	 */
-	protected void setBindings(Chain chain, Node node) {
+	protected void setBindings(ChainImpl chain, Node node) {
 		Node binding = node.getFirstChild();
 		do {
 			if (binding.getNodeName().compareToIgnoreCase(BINDING) == 0) {
@@ -220,7 +220,7 @@ public class CiliaChainInstanceParser implements ChainParser {
 	 * @param chain
 	 * @param bindingNode
 	 */
-	protected void computeBinding(Chain chain, Node bindingNode) {
+	protected void computeBinding(ChainImpl chain, Node bindingNode) {
 		Binding bindingModel = null;
 		MediatorComponent sourceMediator;
 		MediatorComponent targetMediator;
@@ -292,7 +292,7 @@ public class CiliaChainInstanceParser implements ChainParser {
 		}
 	}
 
-	protected void computeHalfBinding(Chain chain, Node bindingNode, Binding bindingModel) {
+	protected void computeHalfBinding(ChainImpl chain, Node bindingNode, Binding bindingModel) {
 		String mediatorId = null;
 		String mediatorPort = null;
 		Port port = null;

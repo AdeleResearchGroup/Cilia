@@ -14,15 +14,16 @@
  */
 package fr.liglab.adele.cilia.internals;
 
+import static fr.liglab.adele.cilia.runtime.dependency.DependencyHandler.DEFAULT_FILTER_NAME;
+
 import java.util.Properties;
 
 import org.w3c.dom.Node;
 
-import fr.liglab.adele.cilia.exceptions.CiliaParserException;
-import fr.liglab.adele.cilia.util.CiliaExtenderParser;
 import fr.liglab.adele.cilia.Component;
-
-import static fr.liglab.adele.cilia.runtime.dependency.DependencyHandler.DEFAULT_FILTER_NAME;
+import fr.liglab.adele.cilia.exceptions.CiliaParserException;
+import fr.liglab.adele.cilia.model.ComponentImpl;
+import fr.liglab.adele.cilia.util.CiliaExtenderParser;
 
 /**
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project
@@ -55,8 +56,8 @@ public class DependencyParser extends DomExtenderParser implements CiliaExtender
 	}
 
 	public Component getComponent(Object componentDescription,
-			Component currentComponent) throws CiliaParserException {
-
+			Component component) throws CiliaParserException {
+		ComponentImpl currentComponent = (ComponentImpl)component ;
 		if ((componentDescription != null) && (componentDescription instanceof Node)) {
 			Node node = getElement(TAG_DEPENDENCY, ((Node) (componentDescription)));
 			if (node != null) {

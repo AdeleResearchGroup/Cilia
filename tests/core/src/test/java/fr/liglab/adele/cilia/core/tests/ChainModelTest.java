@@ -140,7 +140,7 @@ public class ChainModelTest {
             e.printStackTrace();
         }
 		String chainId = "chainId";
-		Chain chain = new ChainImpl(chainId, "type", "", null);
+		ChainImpl chain = new ChainImpl(chainId, "type", "", null);
 		
 		Mediator m1 = new MediatorImpl("id1","type");
 		Mediator m2 = new MediatorImpl("id2","type");
@@ -177,7 +177,7 @@ public class ChainModelTest {
             e.printStackTrace();
         }
 		String chainId = "chainId";
-		Chain chain = new ChainImpl(chainId, "type", "", null);
+		ChainImpl chain = new ChainImpl(chainId, "type", "", null);
 		
 		Mediator m1 = new MediatorImpl("id1","type");
 		Mediator m2 = new MediatorImpl("id2","type");

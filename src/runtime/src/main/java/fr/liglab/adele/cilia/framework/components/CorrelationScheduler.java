@@ -5,6 +5,7 @@ import java.util.List;
 import org.osgi.framework.BundleContext;
 
 import fr.liglab.adele.cilia.Data;
+import fr.liglab.adele.cilia.framework.AbstractCorrelationScheduler;
 import fr.liglab.adele.cilia.framework.data.DataEnrichment;
 
 public class CorrelationScheduler extends AbstractCorrelationScheduler {
@@ -28,10 +29,8 @@ public class CorrelationScheduler extends AbstractCorrelationScheduler {
 		if (splitTotal == count) {
 			completness = true;
 		}
-		if (logger.isDebugEnabled()) {
-			logger.debug("count = " + count);
-			logger.debug("split Total = " + splitTotal);
-		}
+		logger.debug("count = " + count);
+		logger.debug("split Total = " + splitTotal);
 		return completness;
 	}
 }

@@ -17,50 +17,42 @@ package fr.liglab.adele.cilia.internals;
 import org.w3c.dom.Node;
 
 import fr.liglab.adele.cilia.Component;
+import fr.liglab.adele.cilia.Mediator;
 import fr.liglab.adele.cilia.exceptions.CiliaParserException;
-import fr.liglab.adele.cilia.ext.ContentBasedRouting;
-import fr.liglab.adele.cilia.model.MediatorComponentImpl;
+import fr.liglab.adele.cilia.ext.SimpleEnricher;
 import fr.liglab.adele.cilia.util.CiliaExtenderParser;
 
 /**
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project Team</a>
  *
  */
-public class ContentBasedParser extends DomExtenderParser implements CiliaExtenderParser{
+public class EnricherParser extends DomExtenderParser implements CiliaExtenderParser{
 
-	private static final String CONDITION = "condition";
-	private static final String CONFIGURATION = "when";
-	private static final String TO = "sendTo";
-	private static final String LANGUAGE = "language";
-
+	private static final String CONTENT = "name";
+	private static final String VALUE = "value";
 	/* (non-Javadoc)
 	 * @see fr.liglab.adele.cilia.model.parser.CiliaExtenderParser#getComponent(java.lang.Object, fr.liglab.adele.cilia.model.IComponent)
 	 */
-	public ContentBasedParser(){
-		NAMESPACE = "fr.imag.adele.cilia.dispatcher";
-		NAME = "content-based";
+	public EnricherParser() {
+		NAMESPACE = "fr.imag.adele.cilia.processor.enricher";
+		NAME = "enricher";
 	}
 	public Component getComponent(Object componentDescription,
 			Component currentComponent) throws CiliaParserException {
-		Node child = getNode("dispatcher",componentDescription);
-		if (child != null) {
-			ContentBasedRouting cbr = new ContentBasedRouting((MediatorComponentImpl)currentComponent);
-			String language = getAttributeValue(child, LANGUAGE);
-			if (language != null) {
-				cbr.evaluator(language);
+		SimpleEnricher enricher = new SimpleEnricher((Mediator)currentComponent);
+		Node child = getNode("processor",componentDescription);
+		try{
+		while (child != null) {
+			if (child.getLocalName() != null && child.getLocalName().equalsIgnoreCase(NAME)) {
+				String content = getAttributeValue(child,CONTENT );
+				String value = getAttributeValue(child, VALUE);
+				enricher.key(content).value(value);
 			}
-			Node conf = child.getFirstChild();
-			while (conf != null) {
-				if (conf.getLocalName() != null && conf.getLocalName().equalsIgnoreCase(CONFIGURATION)) {
-					String condition = getAttributeValue(conf, CONDITION);
-					String sendTo = getAttributeValue(conf, TO);
-					if (condition != null && sendTo != null) {
-						cbr.condition(condition).to(sendTo);
-					}
-				}
-				conf = conf.getNextSibling();
-			}
+			child = child.getNextSibling();
 		}
+	}catch (Throwable ex) {
+		ex.printStackTrace();
+	}
 		return currentComponent;
 	}
 
@@ -68,10 +60,11 @@ public class ContentBasedParser extends DomExtenderParser implements CiliaExtend
 	 * @see fr.liglab.adele.cilia.model.parser.CiliaExtenderParser#canHandle(java.lang.Object)
 	 */
 	public boolean canHandle(Object mediatorDescription) {
-		Node disp = getNode("dispatcher",mediatorDescription);
+		Node disp = getNode("processor",mediatorDescription);
 		if(disp == null) {
 			return false;
 		}
-		return true;
+		return true;	
 	}
+
 }

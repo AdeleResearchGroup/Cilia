@@ -9,6 +9,7 @@ import java.util.Properties;
 import org.osgi.framework.BundleContext;
 
 import fr.liglab.adele.cilia.exceptions.CiliaException;
+import fr.liglab.adele.cilia.framework.AbstractCorrelationScheduler;
 import fr.liglab.adele.cilia.framework.data.DataCount;
 import fr.liglab.adele.cilia.Data;
 

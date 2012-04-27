@@ -12,14 +12,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package fr.liglab.adele.cilia.framework.components;
+package fr.liglab.adele.cilia.framework;
 
 import java.io.IOException;
 import java.util.List;
 
 import fr.liglab.adele.cilia.exceptions.CiliaException;
 import fr.liglab.adele.cilia.Data;
-import fr.liglab.adele.cilia.framework.AbstractCollector;
 
 /**
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project Team</a>
