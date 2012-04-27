@@ -1,0 +1,20 @@
+<ipojo>
+
+	<io-adapter classname="fr.liglab.adele.cilia.demo.endpoint.DemoEndpointImpl"
+		name="SplitAggregateEndpoint" pattern="in-out">
+		<provides />
+		<properties propagation="true" />
+	</io-adapter>
+
+	<component
+		classname="fr.liglab.adele.cilia.demo.endpoint.export.EndpointExporter"
+		name="EndpointExporter">
+		<requires field="realService" />
+		<requires field="factory" />
+		<callback transition="validate" method="start" />
+		<callback transition="invalidate" method="stop" />
+	</component>
+
+	<instance name="EndpointExporter" component="EndpointExporter" />
+
+</ipojo> 

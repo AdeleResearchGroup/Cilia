@@ -1,0 +1,52 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<parent>
+		<groupId>fr.liglab.adele.cilia</groupId>
+		<artifactId>cilia-si-parent</artifactId>
+		<version>1.0.0-SNAPSHOT</version>
+		<relativePath></relativePath>
+	</parent>
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>cilia.demo.split-aggregate</groupId>
+	<artifactId>demo-endpoint</artifactId>
+	<packaging>bundle</packaging>
+	<version>${demo.version}</version>
+	<name>Split/Aggregate Demo - Demo Endpoint</name>
+	<dependencies>
+		<dependency>
+			<groupId>fr.liglab.adele.cilia</groupId>
+			<artifactId>cilia-core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>fr.liglab.adele.cilia</groupId>
+			<artifactId>cilia-runtime</artifactId>
+		</dependency>
+	</dependencies>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>maven-bundle-plugin</artifactId>
+				<extensions>true</extensions>
+				<configuration>
+					<instructions>
+						<Bundle-Name>${pom.name}</Bundle-Name>
+						<Bundle-SymbolicName>${pom.artifactId}</Bundle-SymbolicName>
+						<Private-Package>fr.liglab.adele.cilia.demo.endpoint</Private-Package>
+					</instructions>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>maven-ipojo-plugin</artifactId>
+				<executions>
+					<execution>
+						<goals>
+							<goal>ipojo-bundle</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+</project>

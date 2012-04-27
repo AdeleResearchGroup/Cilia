@@ -1,0 +1,61 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<parent>
+		<groupId>fr.liglab.adele.cilia</groupId>
+		<artifactId>cilia-si-parent</artifactId>
+		<version>1.0.0-SNAPSHOT</version>
+		<relativePath></relativePath>
+	</parent>
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>cilia.demo.split-aggregate</groupId>
+	<artifactId>demo-servlet</artifactId>
+	<packaging>bundle</packaging>
+	<name>Split/Aggregate Demo - Demo Servlet</name>
+	<version>${demo.version}</version>
+	<dependencies>
+		<dependency>
+			<groupId>fr.liglab.adele.cilia</groupId>
+			<artifactId>cilia-core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>fr.liglab.adele.cilia</groupId>
+			<artifactId>cilia-runtime</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>servlet-api</artifactId>
+			<version>2.5</version>
+		</dependency>
+
+	</dependencies>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>maven-bundle-plugin</artifactId>
+				<extensions>true</extensions>
+				<configuration>
+					<instructions>
+						<Bundle-Name>${pom.name}</Bundle-Name>
+						<Import-Package>javax.servlet, javax.servlet.http,
+							org.osgi.service.http</Import-Package>
+						<Bundle-SymbolicName>${pom.artifactId}</Bundle-SymbolicName>
+						<Private-Package>fr.liglab.adele.cilia.demo.servlet</Private-Package>
+
+					</instructions>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>maven-ipojo-plugin</artifactId>
+				<executions>
+					<execution>
+						<goals>
+							<goal>ipojo-bundle</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+</project>

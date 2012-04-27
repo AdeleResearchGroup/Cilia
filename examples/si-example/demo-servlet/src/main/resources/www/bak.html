@@ -1,0 +1,251 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+		"http://www.w3.org/TR/html4/strict.dtd">
+<html>
+	<head>
+		<title>Client Consommation</title>
+		<link href="http://demos.dojotoolkit.org/demos/form/demo.css" type="text/css" rel="stylesheet">
+		<script type="text/javascript" src="http://localhost:8080/dojotoolkit/dojo/dojo.js" charset="utf-8" djConfig="parseOnLoad: true"></script>
+		<script type="text/javascript" src="src.js" charset="utf-8"> </script>
+		<script type="text/javascript" src="xmlrpc.js" charset="utf-8"> </script>
+		
+		
+		  <script type="text/javascript">
+      dojo.require("dojo._base.html");
+      dojo.require("dojox.cometd");
+      dojo.require("dojox.cometd.callbackPollTransport");
+      dojo.require("dojox.rpc.Service");
+	  dojo.require("dojox.rpc.JsonRPC");
+      
+      function updateUI(data){
+      	reponse = getFormatedReponse(data);
+	document.getElementById('reponse').innerHTML = reponse;
+      }
+
+      function getFormatedReponse(data) {
+	if (window.DOMParser)
+	  {
+	  parser=new DOMParser();
+	  xmlDoc=parser.parseFromString(data,"text/xml");
+	  }
+	else // Internet Explorer
+	  {
+	  xmlDoc=new ActiveXObject("Microsoft.XMLDOM");
+	  xmlDoc.async="false";
+	  xmlDoc.loadXML(data); 
+	  }
+	//get Reponses values.
+	var fixe = xmlDoc.getElementsByTagName("fixe")[0].childNodes[0].nodeValue;
+	var mobile = xmlDoc.getElementsByTagName("mobile")[0].childNodes[0].nodeValue;
+	var internet = xmlDoc.getElementsByTagName("internet")[0].childNodes[0].nodeValue;
+	var total = xmlDoc.getElementsByTagName("total")[0].childNodes[0].nodeValue;
+	
+	var reponse = "<div class=\"formQuestion\"><span>TOTAL</span></div>";
+	reponse = reponse + "<div class=\"formAnswer\">";
+	reponse = reponse + "<table>";
+	reponse = reponse + "<tr><td>Fixe</td><td>" + fixe + "</td>";
+	reponse = reponse + "<tr><td>Mobile</td><td>" + mobile + "</td>";
+	reponse = reponse + "<tr><td>Internet</td><td>" + internet + "</td>";
+	reponse = reponse + "<tr><td><b>Total</b></td><td>" + total + "</td>";
+	reponse = reponse + "</table>";
+	reponse = reponse + "</div>";
+
+	return reponse;
+	}
+      
+         
+		function getConso() {
+		   var name = dojo.byId("name").value;
+                
+        var address = dojo.byId("address").value;
+
+        var city = dojo.byId("city").value;
+
+        var state = dojo.byId("state").value;
+
+        var zip = dojo.byId("zip").value;
+
+        var dob = dojo.byId("dob").value;
+
+		  var consommation_services = "";
+		  if (dojo.byId("cbfix").checked	) {
+		  	consommation_services = consommation_services + "fixe,";
+		  }
+		  if (dojo.byId("cbinternet").checked) {
+		  	consommation_services = consommation_services + "internet,";
+		  }
+		  if (dojo.byId("cbmobile").checked) {
+		  	consommation_services = consommation_services + "mobile,";
+		  }
+		  
+		  if (consommation_services.charAt(consommation_services.length - 1) == ",") {
+		  	consommation_services = consommation_services.substring(0,consommation_services.length -1)
+		  }
+		  
+		  var debut = dojo.byId("debut").value;
+		  var fin = dojo.byId("fin").value;
+		  
+		  //var requete = "<suiviconso-requete xmlns=\"http://www.example.org/SuiviConso/\">";
+		  var requete = "<suiviconso-requete>";
+ 				requete = requete + "<idclient>00114</idclient>";
+				requete = requete + "<debut>"+ debut +"</debut><fin>"+ fin +"</fin>";
+				requete = requete + "<produit>" + consommation_services + "</produit>";
+		    	requete = requete + "</suiviconso-requete>";
+        if (consommation_services == "") {
+		alert("Aucun service a été choisi");
+	} else {
+        	//callXmlRPCService(requete);
+	        callJsonService(requete);
+	}        
+        return true;
+		}          
+		function callJsonService(requete) {
+			var services = new dojox.rpc.Service({
+	        target:"http://localhost:8080/jsonrpc",
+	        transport:"POST",
+	        envelope:"JSON-RPC-2.0",
+	        contentType:"application/json",
+	        services:{
+	                "toto.getPrice":{ // this is the method that we created in jabsorb
+	                        returns:{"type":"string"},
+	                        parameters:[{"type":"string"}]
+	                }
+	        }
+		});
+			
+			
+        var deferred = services.toto.getPrice(requete);
+        deferred.addCallback(
+        		function(result) {
+                updateUI(result);
+                //alert(result);
+        });
+        }
+         
+         function callXmlRPCService(requete) {
+		 	xmlrpc("http://localhost:8080/xmlrpc", "toto.getPrice", [ requete ], function(ret) {
+    			//alert("loaded, got " + ret);
+    			updateUI(ret);		
+			}, function(err) {		
+    			alert("error occurred: " + err);
+			}, function() {
+    			//alert("finished");
+			});
+
+			//alert("loading");
+        }
+          
+  </script>
+		
+	</head>
+
+	<body class="tundra">
+		<div dojoType="dojo.data.ItemFileReadStore" jsId="stateStore"
+			url="states.json"></div>
+
+		<h2 class="pageSubContentTitle">Suivi de consommation client : Orange</h2>
+<!--		 <form dojoType="dijit.form.Form" id="myForm" > -->
+			
+			<div class="formQuestion">
+				<span>Informations Client</span>
+			</div>
+			<div class="formAnswer">
+				<label class="firstLabel" for="name">Nom *</label>
+				<input type="text" id="name" name="name" class="medium"
+					dojoType="dijit.form.ValidationTextBox"
+					required="true" 
+					ucfirst="true" invalidMessage=""/>
+				<br>
+
+				<label class="firstLabel" for="address">Addresse *</label>
+				<input type="text" id="address" name="address" class="long"
+					dojoType="dijit.form.ValidationTextBox"
+					required="true"
+					ucfirst="true" />
+				<br>
+
+				<label class="firstLabel" for="city">Ville *</label>
+			 	<select dojoType="dijit.form.ComboBox"
+			 			value=""
+						autocomplete="true"
+						hasDownArrow="false"
+						name="city"
+						id="city"
+				>
+					<option></option>
+					<option>Grenoble</option>
+					<option>Lyon</option>
+					<option>Paris</option>
+					<option>Marseille</option>
+					<option>Nice</option>
+				</select>
+
+				<label class="secondLabel" for="state">Département</label>
+			 	<select dojoType="dijit.form.ComboBox"
+			 			value=""
+						autocomplete="true"
+						hasDownArrow="false"
+						name="state"
+						id="state"
+				>
+					<option></option>
+					<option>Isère</option>
+					<option>Vienne</option>
+					<option>Paris</option>
+					<option>Guadeloupe</option>
+					<option>Guyane</option>
+				</select>
+				<label class="secondLabel" for="zip">Code Postal *</label>
+				<input type="text" id="zip" name="zip" class="short"
+					dojoType="dijit.form.ValidationTextBox"
+					trim="true" 
+					required="true"
+					regExp="[0-9][0-9][0-9][0-9][0-9]"
+					invalidMessage="5 digit zipcode (ex: 38100)"/>
+				<br>
+
+				<label class="firstLabel" for="dob">Date de naissance *</label>
+				<input id="dob" name="dateOfBirth" dojoType="dijit.form.DateTextBox" required=true/>
+				
+			</div>
+<div class="formQuestion">
+				<span>Consommation Client</span>
+			</div>
+			<div class="formAnswer">
+
+			
+				<input dojoType="dijit.form.CheckBox"
+			 			value="Fix"
+						id="cbfix"
+						name="cbfix"
+				>
+				<label for="cbfix">Fixe</label>
+				<br>
+				<input dojoType="dijit.form.CheckBox"
+			 			value="Internet"
+						id="cbinternet"
+						name="cbinternet"
+				>
+				<label for="cbinternet">Internet</label>
+				<br>
+				<input dojoType="dijit.form.CheckBox"
+			 			value="Mobile"
+						id="cbmobile"
+						name="cbmobile"
+				>
+				<label for="cbmobile">Mobile</label>	
+				<br>
+				<label class="firstLabel" for="debut">Debut *</label>
+				<input id="debut" name="debut" dojoType="dijit.form.DateTextBox" required=true/>
+				<br>
+				<label class="firstLabel" for="debut">Fin *</label>
+				<input id="fin" name="fin" dojoType="dijit.form.DateTextBox" required=true/>			
+			</div>
+		  	<center> 
+			  <input id="test" class="qbutton" value="Confirmer" onclick="getConso();" type="submit"/>
+			</center>
+ 
+		 <div id="reponse" name="reponse"> </div>
+ 
+	</body>
+</html>
+

@@ -1,0 +1,96 @@
+	<cilia>
+		<chain type="split-aggregate" id="DemoSplitAggregate">
+			<mediators>
+				<mediator-instance type="XsltTransformer" id="xslt-transformer-1" >
+					<processor>
+						<property name="xslt-file" value="conf/trans.xslt" />
+					</processor>
+				</mediator-instance>
+			
+				<mediator-instance type="XmlSplitter" id="xml-splitter-1">
+					<processor>
+						<property name="separator" value="//suiviconso-requete" />
+					</processor>
+					<dispatcher>
+					<property name="language" value="xpath" />
+					<property name="conditions">
+						<item key="//suiviconso-requete[@produit='fixe']"
+							value="fixe" />
+						<item key="//suiviconso-requete[@produit='mobile']"
+							value="mobile" />
+						<item key="//suiviconso-requete[@produit='internet']"
+							value="internet" />
+					</property>
+					</dispatcher>
+				</mediator-instance>
+				<mediator-instance type="Translator" id="translator-1" >
+					<processor>
+						<property name="dictionary">
+							<item key="CLIENT-ID" value="CLIENT-IDENT"/>
+							<item key="SuiviConso" value="SuiviConsoInternet"/>
+						</property>
+					</processor>
+				</mediator-instance>
+				<mediator-instance type="Translator" id="translator-2" >
+					<processor>
+						<property name="dictionary">
+							<item key="SuiviConso" value="SuiviConsoFixe"/>
+						</property>
+					</processor>
+				</mediator-instance>
+
+
+
+				<mediator-instance type="Translator" id="translator-3" >
+					<processor>
+						<property name="dictionary">
+							<item key="SuiviConso" value="SuiviConsoMobile"/>
+						</property>
+					</processor>
+				</mediator-instance>
+				<mediator-instance type="XsltTransformer" id="xslt-transformer-2" >
+					<processor>
+						<property name="xslt-file" value="conf/delproduitinternet.xslt" />
+					</processor>
+				</mediator-instance>
+				<mediator-instance type="XsltTransformer" id="xslt-transformer-3" >
+					<processor>
+						<property name="xslt-file" value="conf/delproduitfixe.xslt" />
+					</processor>
+				</mediator-instance>
+				<mediator-instance type="XsltTransformer" id="xslt-transformer-4" >
+					<processor>
+						<property name="xslt-file" value="conf/delproduitmobile.xslt" />
+					</processor>
+				</mediator-instance>
+				<mediator-instance type="FacturationMobile" id="facturation-mobile-1" />
+				<mediator-instance type="FacturationInternet" id="facturation-internet-1" />
+				<mediator-instance type="FacturationFixe" id="facturation-fixe-1" />
+				<mediator-instance type="UC1Aggregator" id="uc1-aggregator-1" />
+			</mediators>
+			<adapters>
+				<adapter-instance type="SplitAggregateEndpoint" id="adapter">
+		          <property name="endpoint.id" type="String" value="toto"/>
+				</adapter-instance>
+			</adapters>
+			<bindings>
+				<binding from="adapter" to="xslt-transformer-1" />
+				<binding from="xslt-transformer-1:to-splitter" to="xml-splitter-1:from-transformer" />
+				<binding from="xml-splitter-1:mobile" to="translator-3" />
+				<binding from="xml-splitter-1:internet" to="translator-1" />
+				<binding from="xml-splitter-1:fixe" to="translator-2" />
+				<binding from="translator-1" to="xslt-transformer-2" />
+				<binding from="translator-2" to="xslt-transformer-3" />
+				<binding from="translator-3" to="xslt-transformer-4" />
+				<binding from="xslt-transformer-2" to="facturation-internet-1" />
+				<binding from="xslt-transformer-3" to="facturation-fixe-1" />
+				<binding from="xslt-transformer-4" to="facturation-mobile-1" />
+				<binding from="facturation-mobile-1" to="uc1-aggregator-1" />
+				<binding from="facturation-internet-1" to="uc1-aggregator-1" />
+				<binding from="facturation-fixe-1" to="uc1-aggregator-1" />
+				<binding from="uc1-aggregator-1" to="adapter" />
+			</bindings>
+		</chain>
+	</cilia>
+
+

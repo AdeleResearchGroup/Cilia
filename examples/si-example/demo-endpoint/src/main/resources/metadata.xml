@@ -1,0 +1,10 @@
+<ipojo>
+
+	<io-adapter classname="fr.liglab.adele.cilia.demo.endpoint.DemoEndpointImpl"
+		name="SplitAggregateEndpoint" pattern="in-out">
+		<provides />
+		<properties propagation="true" />
+	</io-adapter>
+
+	
+</ipojo> 
