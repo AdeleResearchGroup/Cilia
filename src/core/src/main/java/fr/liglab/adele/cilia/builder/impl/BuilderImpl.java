@@ -74,7 +74,7 @@ public class BuilderImpl implements Builder {
 		return architecture;
 	}
 	
-	public Builder done() throws BuilderException, BuilderPerformerException{
+	public Builder done() throws BuilderException, BuilderPerformerException {
 		if (architecture == null) {
 			throw new BuilderException("Unable to build an invalid architecture chain: Architecture is null");
 		}

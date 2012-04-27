@@ -74,6 +74,6 @@ public interface Component {
 	/**
 	 * @param namespace the namespace to set
 	 */
-	void setNamespace(String namespace) ;
+	//void setNamespace(String namespace) ;
 
 }

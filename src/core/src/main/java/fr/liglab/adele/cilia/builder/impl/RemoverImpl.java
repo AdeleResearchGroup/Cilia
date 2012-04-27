@@ -31,7 +31,7 @@ public class RemoverImpl implements Remover, InstanceRemover {
 	
 	Architecture architecture;
 	
-	public RemoverImpl(Architecture arch) {
+	protected RemoverImpl(Architecture arch) {
 		architecture = arch;
 	}
 	

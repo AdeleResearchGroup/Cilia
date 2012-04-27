@@ -27,6 +27,11 @@ import fr.liglab.adele.cilia.util.concurrent.ReadWriteLock;
  * 
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project
  *         Team</a>
+ *         
+ * CiliaContext - static
+ * getBuilder(); //start/stop
+ * getApplication(); 
+ * getRuntime();
  */
 //@SuppressWarnings("rawtypes")
 public interface CiliaContext {
@@ -52,7 +57,6 @@ public interface CiliaContext {
 	
 	void removeChainListener(String chainId, ChainListener listener);
 	
-	Builder getBuilder();
 	
 	void start();
 	
@@ -62,6 +66,9 @@ public interface CiliaContext {
 	
 	/* Mutual exclusion access on ciliaContext  */
 	ReadWriteLock getMutex();
+
+	
+	Builder getBuilder();
 	
 	/*  Runtime informations , level chain */ 
 	public ChainRuntime getChainRuntime(String chainId) ;

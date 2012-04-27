@@ -75,10 +75,10 @@ public class BindingImpl extends ComponentImpl implements Binding{
      * @param source the mediator model.
      */
     public void setSourcePort(Port source) {
-    	MediatorComponent med;
+    	MediatorComponentImpl med;
     	synchronized (lockObject) {
     		this.sourcePort = source;
-    		med = this.sourcePort.getMediator(); 
+    		med = (MediatorComponentImpl)this.sourcePort.getMediator(); 
 		}
     	med.addOutBinding(this);
     }
@@ -98,10 +98,10 @@ public class BindingImpl extends ComponentImpl implements Binding{
      * @param target
      */
     public void setTargetPort(Port target) {
-    	MediatorComponent med;
+    	MediatorComponentImpl med;
     	synchronized (lockObject) {
     		this.targetPort = target;
-    		med = this.targetPort.getMediator();
+    		med = (MediatorComponentImpl)this.targetPort.getMediator();
 		}
     	med.addInBinding(this);
     }

@@ -26,7 +26,7 @@ public class UnBinderImpl extends BinderImpl{
 	/**
 	 * @param arch
 	 */
-	public UnBinderImpl(Architecture arch) {
+	protected UnBinderImpl(Architecture arch) {
 		super(arch);
 	}
 

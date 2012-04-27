@@ -23,6 +23,6 @@ import fr.liglab.adele.cilia.exceptions.BuilderConfigurationException;
  */
 public interface BinderToSetter {
 	
-	Binder to (String to) throws BuilderConfigurationException;
+	BinderConfigurator to (String to) throws BuilderConfigurationException;
 	
 }

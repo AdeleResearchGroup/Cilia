@@ -17,6 +17,4 @@ package fr.liglab.adele.cilia;
 
 public interface Mediator extends MediatorComponent{ 
 
-
-
 }

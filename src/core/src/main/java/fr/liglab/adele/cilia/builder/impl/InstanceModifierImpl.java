@@ -27,7 +27,7 @@ import fr.liglab.adele.cilia.builder.Modifier;
 public class InstanceModifierImpl extends MediatorConfiguratorImpl implements InstanceModifier, Modifier {
 	String id;
 	int type;
-	public InstanceModifierImpl() {
+	protected InstanceModifierImpl() {
 	}
 	/* (non-Javadoc)
 	 * @see fr.liglab.adele.cilia.builder.InstanceModifier#id(java.lang.String)

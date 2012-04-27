@@ -15,6 +15,8 @@
 package fr.liglab.adele.cilia.builder.impl;
 
 import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.List;
 
 import fr.liglab.adele.cilia.builder.Architecture;
 import fr.liglab.adele.cilia.builder.MediatorConfigurator;
@@ -22,42 +24,50 @@ import fr.liglab.adele.cilia.builder.ConfiguratorReturner;
 import fr.liglab.adele.cilia.builder.Creator;
 import fr.liglab.adele.cilia.builder.InstanceCreator;
 import fr.liglab.adele.cilia.builder.InstanceCreatorConfiguration;
+import fr.liglab.adele.cilia.exceptions.BuilderConfigurationException;
 
 /**
- *
- * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project Team</a>
- *
+ * 
+ * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project
+ *         Team</a>
+ * 
  */
-public class CreatorImpl extends MediatorConfiguratorImpl implements Creator, InstanceCreator, InstanceCreatorConfiguration, ConfiguratorReturner {
-	
+public class CreatorImpl extends MediatorConfiguratorImpl implements Creator,
+		InstanceCreator, InstanceCreatorConfiguration, ConfiguratorReturner {
+
 	private String type = null;
-	
+
 	private String category = null;
-	
+
 	private String namespace = null;
-	
+
 	private String id = null;
-	
-	private int instanceType ;
+
+	private int instanceType;
 
 	private String version;
-	
+
+	ArchitectureImpl architecture;
+
+	protected CreatorImpl(ArchitectureImpl arch) {
+		architecture = arch;
+	}
 
 	/**
 	 * @see fr.liglab.adele.cilia.builder.Creator#mediator()
 	 */
 	@Override
 	public InstanceCreator mediator() {
-		setInstanceType(Architecture.MEDIATOR);
+		instanceType = Architecture.MEDIATOR;
 		return this;
 	}
 
-	/** 
+	/**
 	 * @see fr.liglab.adele.cilia.builder.Creator#adapter()
 	 */
 	@Override
 	public InstanceCreator adapter() {
-		setInstanceType(Architecture.ADAPTER);
+		instanceType = Architecture.ADAPTER;
 		return this;
 	}
 
@@ -66,17 +76,19 @@ public class CreatorImpl extends MediatorConfiguratorImpl implements Creator, In
 	 */
 	@Override
 	public InstanceCreatorConfiguration type(String type) {
-		this.setType(type);
+		this.type = type;
 		return this;
 	}
-	/** 
+
+	/**
 	 * @see fr.liglab.adele.cilia.builder.InstanceCreatorConfiguration#namespace(java.lang.String)
 	 */
 	@Override
 	public InstanceCreatorConfiguration namespace(String nspace) {
-		this.setNamespace(nspace);
+		this.namespace = nspace;
 		return this;
 	}
+
 	/**
 	 * @see fr.liglab.adele.cilia.builder.InstanceCreatorConfiguration#category(java.lang.String)
 	 */
@@ -84,6 +96,7 @@ public class CreatorImpl extends MediatorConfiguratorImpl implements Creator, In
 		this.category = cate;
 		return this;
 	}
+
 	/**
 	 * @see fr.liglab.adele.cilia.builder.InstanceCreatorConfiguration#version(java.lang.String)
 	 */
@@ -91,17 +104,22 @@ public class CreatorImpl extends MediatorConfiguratorImpl implements Creator, In
 		this.version = ver;
 		return this;
 	}
-	/** 
+
+	/**
 	 * @see fr.liglab.adele.cilia.builder.InstanceCreatorConfiguration#id(java.lang.String)
 	 */
 	@Override
-	public ConfiguratorReturner id(String id) {
-		this.setId(id);
+	public ConfiguratorReturner id(String id)
+			throws BuilderConfigurationException {
+		if (alreadyInList(id)) {
+			throw new BuilderConfigurationException(
+					"There exist the same ID in the Builder Configuration");
+		}
+		this.id = id;
 		return this;
 	}
 
-	
-	/** 
+	/**
 	 * @see fr.liglab.adele.cilia.builder.ConfiguratorReturner#configure()
 	 */
 	@Override
@@ -117,24 +135,10 @@ public class CreatorImpl extends MediatorConfiguratorImpl implements Creator, In
 	}
 
 	/**
-	 * @param instanceType the instanceType to set
-	 */
-	protected void setInstanceType(int instanceType) {
-		this.instanceType = instanceType;
-	}
-
-	/**
 	 * @return the id
 	 */
 	protected String getId() {
 		return id;
-	}
-
-	/**
-	 * @param id the id to set
-	 */
-	protected void setId(String id) {
-		this.id = id;
 	}
 
 	/**
@@ -145,24 +149,10 @@ public class CreatorImpl extends MediatorConfiguratorImpl implements Creator, In
 	}
 
 	/**
-	 * @param namespace the namespace to set
-	 */
-	protected void setNamespace(String namespace) {
-		this.namespace = namespace;
-	}
-
-	/**
 	 * @return the type
 	 */
 	protected String getType() {
 		return type;
-	}
-
-	/**
-	 * @param type the type to set
-	 */
-	protected void setType(String type) {
-		this.type = type;
 	}
 
 	/**
@@ -189,6 +179,18 @@ public class CreatorImpl extends MediatorConfiguratorImpl implements Creator, In
 	 */
 	protected String getVersion() {
 		return version;
+	}
+
+	private boolean alreadyInList(String id) {
+		Iterator it = architecture.getCreated().iterator();
+		while (it.hasNext()) {
+			CreatorImpl toCreate = (CreatorImpl) it.next();
+			String mid = toCreate.getId();
+			if (id.equalsIgnoreCase(mid) && !toCreate.equals(this)) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 }

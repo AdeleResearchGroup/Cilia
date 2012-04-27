@@ -54,7 +54,7 @@ public class ArchitectureImpl implements Architecture {
 	 * @param chainid
 	 * @param creating
 	 */
-	public ArchitectureImpl(CiliaContext cc, Builder builder, String chainid,
+	protected ArchitectureImpl(CiliaContext cc, Builder builder, String chainid,
 			boolean creating) {
 		ccontext = cc;
 		setChainId(chainid);
@@ -97,7 +97,7 @@ public class ArchitectureImpl implements Architecture {
 	@Override
 	public Creator create() throws BuilderException {
 		checkValidation();
-		CreatorImpl creator = new CreatorImpl();
+		CreatorImpl creator = new CreatorImpl(this);
 		created.add(creator);
 		return creator;
 	}

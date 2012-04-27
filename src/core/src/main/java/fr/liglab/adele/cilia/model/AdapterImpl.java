@@ -41,6 +41,7 @@ public class AdapterImpl  extends MediatorComponentImpl implements Adapter{
 			Dictionary adapterProperties, Chain chain, PatternType pattern) {
 		super(adapterId, adapterType, adapterNamespace,null,version, adapterProperties, chain);
 		adapterPattern = pattern;
+		setChain(chain);
 	}
 	
 	public AdapterImpl(String adapterId, String adapterType) {

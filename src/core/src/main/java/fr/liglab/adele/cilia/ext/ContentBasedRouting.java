@@ -18,8 +18,8 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
 
-import fr.liglab.adele.cilia.Mediator;
 import fr.liglab.adele.cilia.builder.CustomBuilderConfigurator;
+import fr.liglab.adele.cilia.model.MediatorComponentImpl;
 
 /**
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project Team</a>
@@ -32,7 +32,7 @@ public class ContentBasedRouting  implements CustomBuilderConfigurator{
 
 	private final static String LANGUAGE = "language";
 
-	private Mediator mediator;
+	private MediatorComponentImpl mediator;
 
 	private final Object lockObject = new Object();
 
@@ -48,7 +48,7 @@ public class ContentBasedRouting  implements CustomBuilderConfigurator{
 	 * @param properties
 	 * @param chain
 	 */
-	public ContentBasedRouting(Mediator mediator) {
+	public ContentBasedRouting(MediatorComponentImpl mediator) {
 		this.mediator = mediator;
 	}
 

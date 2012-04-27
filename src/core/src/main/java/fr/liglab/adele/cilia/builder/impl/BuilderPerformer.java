@@ -27,6 +27,7 @@ import fr.liglab.adele.cilia.exceptions.BuilderPerformerException;
 import fr.liglab.adele.cilia.model.AdapterImpl;
 import fr.liglab.adele.cilia.model.BindingImpl;
 import fr.liglab.adele.cilia.model.ChainImpl;
+import fr.liglab.adele.cilia.model.MediatorComponentImpl;
 import fr.liglab.adele.cilia.model.MediatorImpl;
 import fr.liglab.adele.cilia.model.PatternType;
 
@@ -40,12 +41,12 @@ public class BuilderPerformer {
 
 	private CiliaContext ccontext;
 	private ArchitectureImpl architecture;
-	private Chain chain;
+	private ChainImpl chain;
 
 	/**
 	 * @param architectureImpl
 	 */
-	public BuilderPerformer(ArchitectureImpl arch, CiliaContext context) {
+	protected BuilderPerformer(ArchitectureImpl arch, CiliaContext context) {
 		ccontext = context;
 		architecture = arch;
 	}
@@ -62,18 +63,31 @@ public class BuilderPerformer {
 		doModify();
 		doBind();
 		doUnbind();
+		if (architecture.isCreatingChain()) {
+			ccontext.addChain(chain);
+		}
 	}
 
-	private Chain getChain() throws BuilderPerformerException {
-		Chain chain = null;
+	private ChainImpl getChain() throws BuilderPerformerException {
+		ChainImpl chain = null;
 		if (architecture.isCreatingChain()) {
+			if (ccontext.getChain(architecture.getChainId()) != null) {
+				throw new BuilderPerformerException(
+						"Chain with the same ID already exist: "
+								+ architecture.getChainId());
+			}
 			chain = new ChainImpl(architecture.getChainId(), null, null, null);
-			ccontext.addChain(chain);
 		} else {
-			chain = ccontext.getChain(architecture.getChainId());
+			if (ccontext.getChain(architecture.getChainId()) == null) {
+				throw new BuilderPerformerException("Chain does not exist: "
+						+ architecture.getChainId());
+			}
+			chain = (ChainImpl)ccontext.getChain(architecture.getChainId());
 		}
 		return chain;
 	}
+
+	
 
 	private void doCreate() throws BuilderPerformerException {
 		List created = architecture.getCreated();
@@ -124,13 +138,13 @@ public class BuilderPerformer {
 		while (it.hasNext()) {
 			InstanceModifierImpl toModify = (InstanceModifierImpl) it.next();
 			String id = toModify.getId();
-			MediatorComponent comp = null;
+			MediatorComponentImpl comp = null;
 			switch (toModify.getType()) {
 			case Architecture.ADAPTER:
-				comp = chain.getAdapter(id);
+				comp = (MediatorComponentImpl)chain.getAdapter(id);
 				break;
 			case Architecture.MEDIATOR:
-				comp = chain.getMediator(id);
+				comp = (MediatorComponentImpl)chain.getMediator(id);
 				break;
 			}
 			if (comp == null) {
@@ -189,20 +203,6 @@ public class BuilderPerformer {
 		verifyUnbindings();
 	}
 
-	private void verifyChain()  throws BuilderPerformerException {
-		if (architecture.isCreatingChain()) {
-			if (ccontext.getChain(architecture.getChainId()) != null) {
-				throw new BuilderPerformerException(
-						"Chain with the same ID already exist: "
-								+ architecture.getChainId());
-			}
-		} else {
-			if (ccontext.getChain(architecture.getChainId()) == null) {
-				throw new BuilderPerformerException("Chain does not exist: "
-						+ architecture.getChainId());
-			}
-		}
-	}
 	
 	private void verifyNewInstances() throws BuilderPerformerException {
 		List created = architecture.getCreated();
@@ -210,6 +210,10 @@ public class BuilderPerformer {
 		while (it.hasNext()) {
 			CreatorImpl creat = (CreatorImpl) it.next();
 			String id = creat.getId();
+			if (id == null) {
+				throw new BuilderPerformerException(
+						"Impossible to create a component without ID");
+			}
 			if ((chain.getMediator(id) != null) || chain.getAdapter(id) != null) { //
 				switch (creat.getInstanceType()) {
 				case Architecture.ADAPTER:

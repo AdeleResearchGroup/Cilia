@@ -14,6 +14,8 @@
  */
 package fr.liglab.adele.cilia.builder;
 
+import fr.liglab.adele.cilia.exceptions.BuilderConfigurationException;
+
 /**
  *
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project Team</a>
@@ -21,7 +23,7 @@ package fr.liglab.adele.cilia.builder;
  */
 public interface InstanceCreatorConfiguration {
 	
-	ConfiguratorReturner id(String Id);
+	ConfiguratorReturner id(String Id) throws BuilderConfigurationException;
 	
 	InstanceCreatorConfiguration namespace(String ns);
 	

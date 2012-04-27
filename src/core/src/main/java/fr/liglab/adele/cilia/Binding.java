@@ -51,32 +51,32 @@ public interface Binding extends Component {
 	/**
 	 * @param sourcePort
 	 */
-	void setSourcePort(Port sourcePort);
+	//void setSourcePort(Port sourcePort);
 
 	/**
 	 * @param targetPort
 	 */
-	void setTargetPort(Port targetPort);
+	//void setTargetPort(Port targetPort);
 
 	/**
 	 * @return
 	 */
-	Component getCollector();
+	//Component getCollector();
 	
 	/**
 	 * @return
 	 */
-	Component getSender();
+	//Component getSender();
 
 	/**
 	 * @param senderm
 	 */
-	boolean addSender(Component senderm);
+	//boolean addSender(Component senderm);
 	
 	/**
 	 * @param collectorm
 	 */
-	boolean addCollector(Component collectorm);
+	//boolean addCollector(Component collectorm);
 	
 
 }

@@ -19,6 +19,7 @@ import java.util.StringTokenizer;
 
 import fr.liglab.adele.cilia.builder.Architecture;
 import fr.liglab.adele.cilia.builder.Binder;
+import fr.liglab.adele.cilia.builder.BinderConfigurator;
 import fr.liglab.adele.cilia.builder.BinderToSetter;
 import fr.liglab.adele.cilia.exceptions.BuilderConfigurationException;
 
@@ -45,14 +46,14 @@ public class BinderImpl implements Binder {
 
 	
 
-	public BinderImpl(Architecture arch) {
+	protected BinderImpl(Architecture arch) {
 		architecture = arch;
 	}
 	/* (non-Javadoc)
 	 * @see fr.liglab.adele.cilia.builder.From#to(java.lang.String)
 	 */
 	@Override
-	public Binder to(String to) throws  BuilderConfigurationException {
+	public BinderConfigurator to(String to) throws  BuilderConfigurationException {
 		if (to == null) {
 			throw new BuilderConfigurationException ("to parameter must not be null");
 		}

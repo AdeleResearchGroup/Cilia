@@ -48,7 +48,7 @@ public class MediatorImpl extends MediatorComponentImpl implements Mediator {
 	public MediatorImpl(String id, String type, String nspace, String catego, String version,
 			Dictionary properties, Chain chain) {
 		super(id, type, nspace, catego, version, properties, chain);
-
+		setChain(chain);
 	}
 
 	/**

@@ -23,11 +23,10 @@ import fr.liglab.adele.cilia.exceptions.BuilderConfigurationException;
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project Team</a>
  *
  */
-public interface Binder extends BinderToSetter{
+public interface Binder extends BinderToSetter, BinderConfigurator{
 	
 	Binder using (String using) throws BuilderConfigurationException;
 	
 	BinderToSetter from (String from) throws BuilderConfigurationException;
 	
-	Architecture configure(Hashtable config);
 }

@@ -17,7 +17,7 @@ package fr.liglab.adele.cilia.ext;
 import java.util.HashMap;
 import java.util.Map;
 
-import fr.liglab.adele.cilia.Mediator;
+import fr.liglab.adele.cilia.model.MediatorComponentImpl;
 
 /**
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project Team</a>
@@ -29,13 +29,13 @@ public class ErrorHandler {
 	private final static String RULES = "rules";
 
 
-	private Mediator mediator;
+	private MediatorComponentImpl mediator;
 
 	private final Object lockObject = new Object();
 
 	private RouteConfigurationImpl currentConfiguration;
 
-	public ErrorHandler(Mediator mediator) {
+	public ErrorHandler(MediatorComponentImpl mediator) {
 		this.mediator = mediator;
 	}
 
