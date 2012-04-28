@@ -30,7 +30,14 @@ import org.slf4j.LoggerFactory;
 import fr.liglab.adele.cilia.event.CiliaEvent;
 import fr.liglab.adele.cilia.event.CiliaFrameworkEvent;
 import fr.liglab.adele.cilia.event.CiliaFrameworkListener;
-
+import fr.liglab.adele.cilia.runtime.CiliaFrameworkEventProperties;
+/**
+ * 
+ *
+ * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project Team</a>
+ *
+ */
+@SuppressWarnings({"rawtypes", "unchecked"})
 public class CiliaFrameworkEventListenerImpl implements CiliaFrameworkListener,
 		CiliaEvent, CiliaFrameworkEventProperties {
 
@@ -42,14 +49,6 @@ public class CiliaFrameworkEventListenerImpl implements CiliaFrameworkListener,
 	public CiliaFrameworkEventListenerImpl(BundleContext bc) {
 		this.m_bundleContext = bc;
 		this.m_listeners = new ArrayList();
-	}
-
-	private void checkParam(Object c) {
-		if (c == null) {
-			String str = "Parameter must not be null";
-			logger.error(str);
-			throw new IllegalArgumentException(str);
-		}
 	}
 
 	public String buildTopic(String chain, String mediator) {

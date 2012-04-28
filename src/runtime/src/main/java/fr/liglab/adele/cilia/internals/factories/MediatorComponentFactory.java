@@ -19,8 +19,8 @@ import org.osgi.framework.ServiceReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import fr.liglab.adele.cilia.framework.CiliaComponentDescription;
-import fr.liglab.adele.cilia.runtime.impl.MediatorManager;
+import fr.liglab.adele.cilia.Component;
+import fr.liglab.adele.cilia.model.ComponentImpl;
 
 public class MediatorComponentFactory extends CiliaComponentFactory implements
 		TrackerCustomizer {
@@ -32,11 +32,11 @@ public class MediatorComponentFactory extends CiliaComponentFactory implements
 
 	private Tracker constituantTracker = null;
 
-	CiliaComponentDescription processorDescription;
+	Component processorDescription;
 
-	CiliaComponentDescription schedulerDescription;
+	Component schedulerDescription;
 
-	CiliaComponentDescription dispatcherDescription;
+	Component dispatcherDescription;
 	
 
 	private final static String COMPONENT_TYPE = "mediator";
@@ -122,18 +122,18 @@ public class MediatorComponentFactory extends CiliaComponentFactory implements
 			throw new ConfigurationException(msg);
 		}
 		// obtain the scheduler configuration. from the mediator description
-		if (schedulerDescription.getName() != null
+		if (schedulerDescription.getId() != null
 				&& config.get(CILIA_SCHEDULER_NAME) == null) {
-			config.put(CILIA_SCHEDULER_NAME, schedulerDescription.getName());
+			config.put(CILIA_SCHEDULER_NAME, schedulerDescription.getId());
 		}
 		if (schedulerDescription.getNamespace() != null
 				&& config.get(CILIA_SCHEDULER_NAMESPACE) == null) {
 			config.put(CILIA_SCHEDULER_NAMESPACE, schedulerDescription.getNamespace());
 		}
 		// obtain the dispatcher configuration. from the mediator description
-		if (dispatcherDescription.getName() != null
+		if (dispatcherDescription.getId() != null
 				&& config.get(CILIA_DISPATCHER_NAME) == null) {
-			config.put(CILIA_DISPATCHER_NAME, dispatcherDescription.getName());
+			config.put(CILIA_DISPATCHER_NAME, dispatcherDescription.getId());
 		}
 		if (dispatcherDescription.getNamespace() != null
 				&& config.get(CILIA_DISPATCHER_NAMESPACE) == null) {
@@ -304,13 +304,11 @@ public class MediatorComponentFactory extends CiliaComponentFactory implements
 		dispatcherDescription = computeDescription("dispatcher");
 	}
 
-	protected CiliaComponentDescription computeDescription(String constituantType)
+	protected Component computeDescription(String constituantType)
 			throws ConfigurationException {
 		String msg ;
 		String name = null;
 		String namespace = null;
-		String category = null;
-
 		Element elem[] = m_componentMetadata.getElements(constituantType,
 				DEFAULT_NAMESPACE); // cilia namespace
 		if (elem == null) {
@@ -339,26 +337,19 @@ public class MediatorComponentFactory extends CiliaComponentFactory implements
 			logger.error(msg);
 			throw new ConfigurationException(msg);
 		}
-		// obtain processor category. optional
-		if (procElement.containsAttribute("category")) {
-			category = procElement.getAttribute("category");
-		}
+
 		// obtain processor namespace. optional
 		if (procElement.containsAttribute("namespace")) {
 			namespace = procElement.getAttribute("namespace");
 		}
-		return new CiliaComponentDescription(constituantType, name, namespace, category);
+		return new ComponentImpl(name, constituantType, namespace, null);
 	}
 
-	protected String createConstituantFilter(CiliaComponentDescription constituant) {
+	protected String createConstituantFilter(Component constituant) {
 
 		StringBuffer filterBuffer = new StringBuffer();
 		filterBuffer.append("(&(" + constituant.getType() + CONSTITUANT_NAME + "="
-				+ constituant.getName() + ")");
-		if (constituant.getCategory() != null) {
-			filterBuffer.append("(" + constituant.getType() + CONSTITUANT_CATEGORY + "="
-					+ constituant.getCategory() + ")");
-		}
+				+ constituant.getId() + ")");
 		if (constituant.getNamespace() != null) {
 			filterBuffer.append("(" + constituant.getType() + CONSTITUANT_NAMESPACE + "="
 					+ constituant.getNamespace() + ")");
@@ -381,11 +372,11 @@ public class MediatorComponentFactory extends CiliaComponentFactory implements
 
 	private class RequiredServiceHandler extends RequiredHandler {
 
-		CiliaComponentDescription constituantToTrack;
+		Component constituantToTrack;
 		String filter;
 
 		public RequiredServiceHandler(String name, String namespace,
-				CiliaComponentDescription constituant) {
+				Component constituant) {
 			super(name, namespace);
 			this.constituantToTrack = constituant;
 			filter = createConstituantFilter(constituantToTrack);

@@ -32,7 +32,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import fr.liglab.adele.cilia.event.CiliaEvent;
-import fr.liglab.adele.cilia.framework.utils.AdminData;
 import fr.liglab.adele.cilia.Adapter;
 import fr.liglab.adele.cilia.Binding;
 import fr.liglab.adele.cilia.Chain;
@@ -41,7 +40,8 @@ import fr.liglab.adele.cilia.MediatorComponent;
 import fr.liglab.adele.cilia.model.ChainImpl;
 import fr.liglab.adele.cilia.model.UpdateActions;
 import fr.liglab.adele.cilia.model.UpdateEvent;
-import fr.liglab.adele.cilia.runtime.AbstractCiliaInstance;
+import fr.liglab.adele.cilia.runtime.CiliaInstanceWrapper;
+import fr.liglab.adele.cilia.runtime.AdminData;
 import fr.liglab.adele.cilia.runtime.CiliaInstance;
 import fr.liglab.adele.cilia.runtime.impl.CiliaFrameworkEventPublisher;
 
@@ -533,7 +533,7 @@ public class ChainControllerImpl implements Observer {
 			String filter = createDataContainerFilter();
 			Dictionary props = new Hashtable();
 			props.put("chain.name", modelChain.getId());
-			dataContainer = new AbstractCiliaInstance(bcontext, "AdminData-"
+			dataContainer = new CiliaInstanceWrapper(bcontext, "AdminData-"
 					+ modelChain.getId(), createDataContainerFilter(), props, null);
 			dataContainer.start();
 		}

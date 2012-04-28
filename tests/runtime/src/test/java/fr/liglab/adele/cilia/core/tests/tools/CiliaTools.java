@@ -44,5 +44,13 @@ public final class CiliaTools {
 	public static double bytesToKilobytes(long bytes) {
 		return bytes / KILOBYTE;
 	}
+	
+	public static void waitToInitialize() {
+		try {
+            Thread.sleep(2000);//wait to be registered
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+	}
 
 }

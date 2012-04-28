@@ -83,7 +83,7 @@ public class ChainImpl extends ComponentImpl implements Chain{
 			}
 		}
 		if (inserted) {
-			mediator.setChain(this);
+			((MediatorComponentImpl)mediator).setChain(this);
 			setChanged();
 			notifyObservers(new UpdateEvent(UpdateActions.ADD_MEDIATOR, mediator));
 		}
@@ -110,7 +110,7 @@ public class ChainImpl extends ComponentImpl implements Chain{
 	 */
 	public boolean removeMediator(String mediatorId) {
 		//get MediatorImpl and bindings.
-		Mediator mediatorToRemove = null;
+		MediatorImpl mediatorToRemove = null;
 		Binding[] inbindings = null;
 		Binding[] outbindings = null;
 		boolean result = false;
@@ -167,7 +167,7 @@ public class ChainImpl extends ComponentImpl implements Chain{
 			}
 		}
 		if (inserted) {
-			adapter.setChain(this);
+			((AdapterImpl)adapter).setChain(this);
 			setChanged();
 			notifyObservers(new UpdateEvent(UpdateActions.ADD_ADAPTER, adapter));
 		}
@@ -215,7 +215,7 @@ public class ChainImpl extends ComponentImpl implements Chain{
 	 */
 	public boolean removeAdapter(String adapterId) {
 		//get AdapterImpl and bindings.
-		Adapter adapterToRemove = null;
+		AdapterImpl adapterToRemove = null;
 		Binding[] inbindings = null;
 		Binding[] outbindings = null;
 		boolean result = false;
@@ -275,11 +275,11 @@ public class ChainImpl extends ComponentImpl implements Chain{
 		boolean result = false;
 		//if binding has associated others ports, it could'nt be created.
 		if (null != binding.getSourcePort() || null != binding.getTargetPort()) {
-			//System.err.println("BindingImpl is assigned to other components");
+			System.err.println("BindingImpl is assigned to other components");
 			return null;
 		}
 		if (sourcePort.getMediator().getChain() != this || targetPort.getMediator().getChain() != this) {
-			//System.err.println("Mediators in bind doesn't belong to the same chain " + this + " " + sourcePort.getMediator().getChain());
+			System.err.println("Mediators in bind doesn't belong to the same chain " + this + " " + sourcePort.getMediator().getChain());
 			return null;
 		}
 		if (!sourcePort.getType().equals(PortType.OUTPUT)) { 
@@ -289,8 +289,8 @@ public class ChainImpl extends ComponentImpl implements Chain{
 			throw new RuntimeException("PortImpl type not compatible, it must be PortType.INPUT");
 		}
 		//set the ports.
-		binding.setSourcePort(sourcePort);
-		binding.setTargetPort(targetPort);
+		((BindingImpl)binding).setSourcePort(sourcePort);
+		((BindingImpl)binding).setTargetPort(targetPort);
 
 		synchronized (lockObject) {
 			result = bindings.add(binding);
@@ -316,7 +316,7 @@ public class ChainImpl extends ComponentImpl implements Chain{
 		if (!inPort.getType().equals(PortType.INPUT)) { 
 			throw new RuntimeException("PortImpl type not compatible, it must be PortType.INPUT");
 		}
-		binding.setTargetPort(inPort);
+		((BindingImpl)binding).setTargetPort(inPort);
 		synchronized (lockObject) {
 			result = bindings.add(binding);
 		}
@@ -333,7 +333,7 @@ public class ChainImpl extends ComponentImpl implements Chain{
 			throw new RuntimeException("PortImpl type not compatible, it must be PortType.OUTPUT");
 		}
 
-		binding.setSourcePort(outPort);
+		((BindingImpl)binding).setSourcePort(outPort);
 		synchronized (lockObject) {
 			result = bindings.add(binding);
 		}
@@ -401,8 +401,8 @@ public class ChainImpl extends ComponentImpl implements Chain{
 			synchronized (lockObject) {
 				bindings.remove(binding);
 			}
-			MediatorComponent outM = binding.getSourceMediator();
-			MediatorComponent inM = binding.getTargetMediator();
+			MediatorComponentImpl outM = (MediatorComponentImpl)binding.getSourceMediator();
+			MediatorComponentImpl inM = (MediatorComponentImpl)binding.getTargetMediator();
 			inM.removeInBinding(binding);
 			outM.removeOutBinding(binding);
 			setChanged();

@@ -17,7 +17,13 @@ package fr.liglab.adele.cilia.runtime;
 
 import java.util.Dictionary;
 
-
+/**
+ * 
+ *
+ * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project Team</a>
+ *
+ */
+@SuppressWarnings("rawtypes")
 public interface CiliaInstance {
 
 

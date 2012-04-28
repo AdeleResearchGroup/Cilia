@@ -22,20 +22,20 @@ import org.w3c.dom.NodeList;
 import fr.liglab.adele.cilia.Adapter;
 import fr.liglab.adele.cilia.Binding;
 import fr.liglab.adele.cilia.Chain;
-import fr.liglab.adele.cilia.ChainParser;
-import fr.liglab.adele.cilia.CiliaExtenderParser;
 import fr.liglab.adele.cilia.Component;
 import fr.liglab.adele.cilia.Mediator;
 import fr.liglab.adele.cilia.MediatorComponent;
 import fr.liglab.adele.cilia.Port;
 import fr.liglab.adele.cilia.exceptions.CiliaException;
 import fr.liglab.adele.cilia.exceptions.CiliaParserException;
-import fr.liglab.adele.cilia.framework.utils.impl.XMLTools;
+import fr.liglab.adele.cilia.framework.data.XmlTools;
 import fr.liglab.adele.cilia.model.AdapterImpl;
 import fr.liglab.adele.cilia.model.BindingImpl;
 import fr.liglab.adele.cilia.model.ChainImpl;
 import fr.liglab.adele.cilia.model.MediatorImpl;
 import fr.liglab.adele.cilia.model.PatternType;
+import fr.liglab.adele.cilia.util.ChainParser;
+import fr.liglab.adele.cilia.util.CiliaExtenderParser;
 
 public class CiliaChainInstanceParser implements ChainParser {
 
@@ -111,7 +111,7 @@ public class CiliaChainInstanceParser implements ChainParser {
 					+ " File.");
 		}
 		// First child is the root node.
-		Node node = XMLTools.streamToNode(fis).getFirstChild();
+		Node node = XmlTools.streamToNode(fis).getFirstChild();
 		String rootName = node.getNodeName();
 		if (rootName.compareTo(ROOT_FILE) != 0) {
 			throw new CiliaException(xmlFile.getPath() + " Root element must be <"
@@ -147,7 +147,7 @@ public class CiliaChainInstanceParser implements ChainParser {
 	 */
 	public Chain parseChain(Object chain) throws CiliaException {
 		Node nchain = checkObject(chain);
-		Chain newChain = null;
+		ChainImpl newChain = null;
 		Mediator[] mediators = null;
 		Adapter[] adapters = null;
 		Binding[] bindings = null;
@@ -205,7 +205,7 @@ public class CiliaChainInstanceParser implements ChainParser {
 	 * @param chain
 	 * @param node
 	 */
-	protected void setBindings(Chain chain, Node node) {
+	protected void setBindings(ChainImpl chain, Node node) {
 		Node binding = node.getFirstChild();
 		do {
 			if (binding.getNodeName().compareToIgnoreCase(BINDING) == 0) {
@@ -220,7 +220,7 @@ public class CiliaChainInstanceParser implements ChainParser {
 	 * @param chain
 	 * @param bindingNode
 	 */
-	protected void computeBinding(Chain chain, Node bindingNode) {
+	protected void computeBinding(ChainImpl chain, Node bindingNode) {
 		Binding bindingModel = null;
 		MediatorComponent sourceMediator;
 		MediatorComponent targetMediator;
@@ -239,7 +239,7 @@ public class CiliaChainInstanceParser implements ChainParser {
 			}
 		}
 		Properties bindingProperties = getProperties(bindingNode);
-		bindingModel = new BindingImpl(bindingId, bindingType, null, bindingProperties);
+		bindingModel = new BindingImpl(bindingType, bindingProperties);
 		//
 		String colport = getAttributeValue(bindingNode, BINDING_to);
 		String sendport = getAttributeValue(bindingNode, BINDING_from);
@@ -292,7 +292,7 @@ public class CiliaChainInstanceParser implements ChainParser {
 		}
 	}
 
-	protected void computeHalfBinding(Chain chain, Node bindingNode, Binding bindingModel) {
+	protected void computeHalfBinding(ChainImpl chain, Node bindingNode, Binding bindingModel) {
 		String mediatorId = null;
 		String mediatorPort = null;
 		Port port = null;
@@ -454,7 +454,7 @@ public class CiliaChainInstanceParser implements ChainParser {
 			mediatorId = mediatorType + mediatorNumbers;
 		}
 
-		mediator = new MediatorImpl(mediatorId, mediatorType, mediatorProperties);
+		mediator = new MediatorImpl(mediatorId, mediatorType, null,null,null, mediatorProperties, null);
 		mediator = (Mediator)extendersParsers(nmediator, mediator);
 
 		return mediator;
@@ -484,7 +484,7 @@ public class CiliaChainInstanceParser implements ChainParser {
 		}
 
 		// String pattern = getAttributeValue(nmediator, pattern)
-		adapter = new AdapterImpl(adapterId, adapterType, null, adapterProperties, pt);
+		adapter = new AdapterImpl(adapterId, adapterType, null,null, adapterProperties, null, pt);
 		adapter = (Adapter)extendersParsers(nadapter, adapter);
 		return adapter;
 	}

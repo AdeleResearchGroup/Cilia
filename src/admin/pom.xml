@@ -43,7 +43,11 @@
 			<artifactId>org.apache.felix.gogo.runtime</artifactId>
 			<version>0.6.1</version>
 		</dependency>
-
+		<dependency>
+			<groupId>org.apache.felix</groupId>
+			<artifactId>org.apache.felix.fileinstall</artifactId>
+			<version>3.2.0</version>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -60,9 +64,10 @@
 							fr.liglab.adele.cilia.administration.util
 						</Export-Package>
 						<Private-Package>
-							fr.liglab.adele.cilia.shell.command,
+							fr.liglab.adele.cilia.administration.command,
 							fr.liglab.adele.cilia.administration.activator,
-							fr.liglab.adele.cilia.administration.processors, 
+							fr.liglab.adele.cilia.administration.processors,
+							fr.liglab.adele.cilia.administration.fileinstall, 
 							fr.liglab.adele.cilia.administration.adapter
 						</Private-Package>
 						<Include-Resource>

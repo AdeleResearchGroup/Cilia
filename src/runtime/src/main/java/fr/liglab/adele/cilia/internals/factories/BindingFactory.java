@@ -18,9 +18,9 @@ import org.apache.felix.ipojo.metadata.Attribute;
 import org.apache.felix.ipojo.metadata.Element;
 import org.osgi.framework.BundleContext;
 
+import fr.liglab.adele.cilia.framework.AbstractBindingService;
+import fr.liglab.adele.cilia.framework.CiliaBindingService;
 import fr.liglab.adele.cilia.framework.GenericBindingService;
-import fr.liglab.adele.cilia.runtime.CiliaBindingService;
-import fr.liglab.adele.cilia.runtime.CiliaBindingServiceImpl;
 /**
  * This class defines the binding factory.
  * @author torito
@@ -288,7 +288,7 @@ public class BindingFactory extends CiliaComponentFactory implements FactoryStat
         if (isGeneric) {
             Element manip = new Element("manipulation", null);
             //Add parent class.
-            manip.addAttribute(new Attribute("super", CiliaBindingServiceImpl.class.getName()));
+            manip.addAttribute(new Attribute("super", AbstractBindingService.class.getName()));
             //Add init method added to by ipojo manipulation.
             Element methodInit = new Element("method", null);
             methodInit.addAttribute(new Attribute("name", "init"));
@@ -296,7 +296,7 @@ public class BindingFactory extends CiliaComponentFactory implements FactoryStat
             //Add getProperties method.
             Element methodGetProperties = new Element("method", null);
             methodGetProperties.addAttribute(new Attribute("name", "getProperties"));
-            methodGetProperties.addAttribute(new Attribute("arguments", "java.util.Dictionary,java.util.Dictionary,fr.liglab.adele.cilia.model.Binding"));
+            methodGetProperties.addAttribute(new Attribute("arguments", "java.util.Dictionary,java.util.Dictionary,fr.liglab.adele.cilia.Binding"));
             methodGetProperties.addAttribute(new Attribute("return", "java.util.Dictionary"));
             manip.addElement(methodGetProperties);
             //Add interface info.
@@ -311,9 +311,9 @@ public class BindingFactory extends CiliaComponentFactory implements FactoryStat
     private void addProvidedSpecification() {
         //Add provides element.
         Element provides = null;
-        Element[] providess = m_componentMetadata.getElements("Provides");
-        if (providess != null) {
-            provides = providess[0];
+        Element[] providesArray = m_componentMetadata.getElements("Provides");
+        if (providesArray != null) {
+            provides = providesArray[0];
         } else {
             provides = new Element("Provides", null);
         }
@@ -330,7 +330,7 @@ public class BindingFactory extends CiliaComponentFactory implements FactoryStat
         protocolName.addAttribute(new Attribute("value", getComponentName()));
         provides.addElement(protocolName);
         
-        if (providess == null) {
+        if (providesArray == null) {
             m_componentMetadata.addElement(provides);
         }
 

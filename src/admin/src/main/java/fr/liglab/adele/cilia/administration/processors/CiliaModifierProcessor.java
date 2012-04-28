@@ -28,10 +28,8 @@ import fr.liglab.adele.cilia.Mediator;
 import fr.liglab.adele.cilia.MediatorComponent;
 import fr.liglab.adele.cilia.Port;
 import fr.liglab.adele.cilia.administration.util.ParserUtils;
-import fr.liglab.adele.cilia.framework.utils.Const;
-import fr.liglab.adele.cilia.model.BindingImpl;
 import fr.liglab.adele.cilia.model.ChainImpl;
-import fr.liglab.adele.cilia.model.MediatorComponentImpl;
+import fr.liglab.adele.cilia.runtime.Const;
 
 /**
  * CiliaRemoverProcessor: The processor class. Remove cilia chain instances,
@@ -180,14 +178,14 @@ public class CiliaModifierProcessor {
 	 *            from, to). The property "element" in data must be binding.
 	 */
 	private void modifyBinding(Data data) {
-		Chain chain = null;
+		ChainImpl chain = null;
 		MediatorComponent mediatorTo = null;
 		MediatorComponent mediatorFrom = null;
 		String to = String.valueOf(data.getProperty("to"));
 		String from = String.valueOf(data.getProperty("from"));
 		String chainId = String.valueOf(data.getProperty("chain"));
 		Hashtable props = getProperties(data);
-		chain = ccontext.getChain(chainId);
+		chain = (ChainImpl)ccontext.getChain(chainId);
 		if (chain == null) {
 			logger.error("ChainImpl [{}] not found" + chainId);
 			return;

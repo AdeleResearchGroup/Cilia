@@ -25,7 +25,7 @@
 		<module>parent</module>
 		<module>src</module>
 		<module>distributions</module>
-		<module>examples</module>
+		<!--<module>examples</module> -->
 		<module>tests</module>
 
 	</modules>

@@ -20,11 +20,9 @@ import java.util.Properties;
 
 import fr.liglab.adele.cilia.exceptions.CiliaException;
 import fr.liglab.adele.cilia.Binding;
-import fr.liglab.adele.cilia.runtime.CiliaBindingService;
-import fr.liglab.adele.cilia.runtime.CiliaBindingServiceImpl;
 
 
-public class GenericBindingService extends CiliaBindingServiceImpl implements
+public class GenericBindingService extends AbstractBindingService implements
 CiliaBindingService{
 
     public Dictionary getProperties(Dictionary collectorProperties,

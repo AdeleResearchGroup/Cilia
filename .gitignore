@@ -3,3 +3,4 @@
 .project
 target/
 distributions/cilia-distribution/bundle/
+distributions/cilia-distribution/felix-cache/

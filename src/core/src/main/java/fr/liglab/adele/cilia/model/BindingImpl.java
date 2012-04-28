@@ -50,7 +50,7 @@ public class BindingImpl extends ComponentImpl implements Binding{
      * Constructor.
      */
     public BindingImpl() {
-        super(new Long(bindingIds++).toString(), null, null, null);
+        this(null, null);
     }
     /**
      * 
@@ -59,9 +59,9 @@ public class BindingImpl extends ComponentImpl implements Binding{
      * @param classname //Not used. 
      * @param properties Properties that will be mapped to sender/collector properties.
      */
-    public BindingImpl(String id, String type, String classname,
+    public BindingImpl(String type,
             Dictionary properties) {
-        super(new Long(bindingIds++).toString(), type, classname, properties);
+        super(new Long(bindingIds++).toString(), type, null, properties);
     }
     /**
      * Get the parent chain.
@@ -75,10 +75,10 @@ public class BindingImpl extends ComponentImpl implements Binding{
      * @param source the mediator model.
      */
     public void setSourcePort(Port source) {
-    	MediatorComponent med;
+    	MediatorComponentImpl med;
     	synchronized (lockObject) {
     		this.sourcePort = source;
-    		med = this.sourcePort.getMediator(); 
+    		med = (MediatorComponentImpl)this.sourcePort.getMediator(); 
 		}
     	med.addOutBinding(this);
     }
@@ -98,10 +98,10 @@ public class BindingImpl extends ComponentImpl implements Binding{
      * @param target
      */
     public void setTargetPort(Port target) {
-    	MediatorComponent med;
+    	MediatorComponentImpl med;
     	synchronized (lockObject) {
     		this.targetPort = target;
-    		med = this.targetPort.getMediator();
+    		med = (MediatorComponentImpl)this.targetPort.getMediator();
 		}
     	med.addInBinding(this);
     }

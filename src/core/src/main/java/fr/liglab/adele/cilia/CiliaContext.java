@@ -17,7 +17,7 @@ package fr.liglab.adele.cilia;
 
 import java.util.Set;
 
-import fr.liglab.adele.cilia.Chain;
+import fr.liglab.adele.cilia.builder.Builder;
 import fr.liglab.adele.cilia.model.ChainRuntime;
 import fr.liglab.adele.cilia.specification.MediatorSpecification;
 import fr.liglab.adele.cilia.util.concurrent.ReadWriteLock;
@@ -27,7 +27,13 @@ import fr.liglab.adele.cilia.util.concurrent.ReadWriteLock;
  * 
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project
  *         Team</a>
+ *         
+ * CiliaContext - static
+ * getBuilder(); //start/stop
+ * getApplication(); 
+ * getRuntime();
  */
+//@SuppressWarnings("rawtypes")
 public interface CiliaContext {
 
 	static final String CILIA_VERSION = "1.0.0";
@@ -60,6 +66,9 @@ public interface CiliaContext {
 	
 	/* Mutual exclusion access on ciliaContext  */
 	ReadWriteLock getMutex();
+
+	
+	Builder getBuilder();
 	
 	/*  Runtime informations , level chain */ 
 	public ChainRuntime getChainRuntime(String chainId) ;

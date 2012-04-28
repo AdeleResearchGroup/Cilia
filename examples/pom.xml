@@ -22,9 +22,7 @@
 	<version>1.0.0</version>
 
 	<modules>
-		<!--
-		<module>examples</module>
-		-->
+		<module>si-example</module>
 	</modules>
 
 </project>

@@ -25,16 +25,17 @@ import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import fr.liglab.adele.cilia.Chain;
 import fr.liglab.adele.cilia.ChainListener;
 import fr.liglab.adele.cilia.CiliaContext;
+import fr.liglab.adele.cilia.builder.Builder;
+import fr.liglab.adele.cilia.builder.impl.BuilderImpl;
 import fr.liglab.adele.cilia.event.CiliaEvent;
-import fr.liglab.adele.cilia.framework.utils.Const;
 import fr.liglab.adele.cilia.internals.controller.ChainControllerImpl;
 import fr.liglab.adele.cilia.internals.controller.CreatorThread;
-import fr.liglab.adele.cilia.Chain;
 import fr.liglab.adele.cilia.model.ChainImpl;
 import fr.liglab.adele.cilia.model.ChainRuntime;
-
+import fr.liglab.adele.cilia.runtime.Const;
 import fr.liglab.adele.cilia.runtime.impl.ChainRuntimeImpl;
 import fr.liglab.adele.cilia.runtime.impl.CiliaFrameworkEventPublisher;
 import fr.liglab.adele.cilia.runtime.impl.MediatorRuntimeSpecification;
@@ -437,4 +438,7 @@ public class CiliaContextImpl implements CiliaContext {
 		return chain ;
 	}
 
+	public Builder getBuilder(){
+		return new BuilderImpl(this);
+	}
 }

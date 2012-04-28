@@ -26,15 +26,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import fr.liglab.adele.cilia.Binding;
-import fr.liglab.adele.cilia.exceptions.CiliaException;
 import fr.liglab.adele.cilia.Component;
 import fr.liglab.adele.cilia.MediatorComponent;
 import fr.liglab.adele.cilia.Port;
-
-
+import fr.liglab.adele.cilia.exceptions.CiliaException;
+import fr.liglab.adele.cilia.framework.CiliaBindingService;
+import fr.liglab.adele.cilia.model.BindingImpl;
 import fr.liglab.adele.cilia.model.CollectorImpl;
 import fr.liglab.adele.cilia.model.SenderImpl;
-import fr.liglab.adele.cilia.runtime.CiliaBindingService;
 
 /**
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project
@@ -45,7 +44,7 @@ public class BindingControllerImpl implements TrackerCustomizer {
 	/**
 	 * Binding model to handle.
 	 */
-	private Binding modelBinding;
+	private BindingImpl modelBinding;
 
 	private MediatorControllerImpl sourceController;
 
@@ -77,7 +76,7 @@ public class BindingControllerImpl implements TrackerCustomizer {
 	private static String DEFAULT_TYPE = "direct";
 
 	public BindingControllerImpl(BundleContext context, Binding binding) {
-		modelBinding = binding;
+		modelBinding = (BindingImpl)binding;
 		bcontext = context;
 		settingUp();
 		// start();

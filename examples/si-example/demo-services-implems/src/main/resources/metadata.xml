@@ -1,0 +1,60 @@
+<ipojo>
+
+	<component name="MobileService"
+		classname="fr.liglab.adele.cilia.demo.application.impl.ApplicationMobile">
+		<provides />
+		<properties propagation="true" />
+	</component>
+
+	<component name="InternetService"
+		classname="fr.liglab.adele.cilia.demo.application.impl.ApplicationInternet">
+		<provides />
+		<properties propagation="true" />
+	</component>
+
+	<component name="FixService"
+		classname="fr.liglab.adele.cilia.demo.application.impl.ApplicationFix">
+		<provides />
+		<properties propagation="true" />
+	</component>
+
+	<!--  S E R V I C E S    I N S T A N C E S   
+	With properties to be exported as web services by CXF-Distributed-OSGi v1.1-->
+	<instance component="FixService">
+	<!--
+		<property name="service.exported.interfaces" value="*" />
+		<property name="service.exported.configs " value="org.apache.cxf.ws" />
+		<property name="org.apache.cxf.ws.address" value="http://localhost:9090/FixService" />
+		-->
+		<property name="osgi.remote.interfaces" value="*" />
+		<property name="osgi.remote.configuration.type" value="pojo" />
+		<property name="osgi.remote.configuration.pojo.address"
+			value="http://localhost:9090/FixService" />
+	</instance>
+	<instance component="InternetService">
+	<!-- 
+		<property name="service.exported.interfaces" value="*" />
+		<property name="service.exported.configs " value="org.apache.cxf.ws" />
+		<property name="org.apache.cxf.ws.address" value="http://localhost:9090/InternetService" />
+		 -->
+		<property name="osgi.remote.interfaces" value="*" />
+		<property name="osgi.remote.configuration.type" value="pojo" />
+		<property name="osgi.remote.configuration.pojo.address"
+			value="http://localhost:9090/InternetService" />
+	</instance>
+	<instance component="MobileService">
+	<!-- 
+		<property name="service.exported.interfaces" value="*" />
+		<property name="service.exported.configs " value="org.apache.cxf.ws" />
+		<property name="org.apache.cxf.ws.address" value="http://localhost:9090/MobileService" />
+		 -->
+		<property name="osgi.remote.interfaces" value="*" />
+		<property name="osgi.remote.configuration.type" value="pojo" />
+		<property name="osgi.remote.configuration.pojo.address"
+			value="http://localhost:9090/MobileService" />
+	</instance>
+
+
+</ipojo>
+
+

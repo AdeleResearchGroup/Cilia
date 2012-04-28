@@ -24,12 +24,9 @@ import fr.liglab.adele.cilia.Data;
 import fr.liglab.adele.cilia.MediatorComponent;
 import fr.liglab.adele.cilia.Port;
 import fr.liglab.adele.cilia.administration.util.ParserUtils;
-import fr.liglab.adele.cilia.framework.utils.Const;
-import fr.liglab.adele.cilia.model.BindingImpl;
 import fr.liglab.adele.cilia.model.ChainImpl;
 import fr.liglab.adele.cilia.model.ComponentImpl;
-import fr.liglab.adele.cilia.model.MediatorComponentImpl;
-import fr.liglab.adele.cilia.model.PortImpl;
+import fr.liglab.adele.cilia.runtime.Const;
 
 /**
  * CiliaRemoverProcessor: The processor class. Remove cilia chain instances,
@@ -103,10 +100,10 @@ public class CiliaRemoverProcessor {
 	 *            chain). The property "element" in data must be mediator.
 	 */
 	private void removeMediator(Data data) {
-		Chain ch = null;
+		ChainImpl ch = null;
 		String mediatorId = String.valueOf(data.getProperty("id"));
 		String chainId = String.valueOf(data.getProperty("chain"));
-		ch = ccontext.getChain(chainId);
+		ch = (ChainImpl)ccontext.getChain(chainId);
 		if (ch == null) {
 			logger.error("ChainImpl [{}] not found.", chainId);
 			return;
@@ -132,10 +129,10 @@ public class CiliaRemoverProcessor {
 	 *            chain). The property "element" in data must be mediator.
 	 */
 	private void removeAdapter(Data data) {
-		Chain ch = null;
+		ChainImpl ch = null;
 		String mediatorId = String.valueOf(data.getProperty("id"));
 		String chainId = String.valueOf(data.getProperty("chain"));
-		ch = ccontext.getChain(chainId);
+		ch = (ChainImpl)ccontext.getChain(chainId);
 		if (ch == null) {
 			logger.error("ChainImpl [{}] not found.", chainId);
 			return;
@@ -161,13 +158,13 @@ public class CiliaRemoverProcessor {
 	 *            from, to). The property "element" in data must be binding.
 	 */
 	private void removeBinding(Data data) {
-		Chain chain = null;
+		ChainImpl chain = null;
 		MediatorComponent mediatorTo = null;
 		MediatorComponent mediatorFrom = null;
 		String to = String.valueOf(data.getProperty("to"));
 		String from = String.valueOf(data.getProperty("from"));
 		String chainId = String.valueOf(data.getProperty("chain"));
-		chain = ccontext.getChain(chainId);
+		chain = (ChainImpl)ccontext.getChain(chainId);
 		if (chain == null) {
 			logger.error("ChainImpl [{}] not found.", chainId);
 			return;

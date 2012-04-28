@@ -18,9 +18,8 @@
 
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>fr.liglab.adele.cilia</groupId>
-	<artifactId>cilia-test-core</artifactId>
-	<packaging>jar</packaging>
-	<name>Cilia Test Core</name>
+	<artifactId>cilia-core-tests</artifactId>
+	<name>Cilia Core Tests</name>
 	<version>1.2.2-SNAPSHOT</version>
 
 	<!--Project Test Repository -->
@@ -63,7 +62,7 @@
 		</dependency>
 		<dependency>
 			<groupId>fr.liglab.adele.cilia</groupId>
-			<artifactId>cilia-ipojo-runtime</artifactId>
+			<artifactId>cilia-runtime</artifactId>
 			<version>1.2.2-SNAPSHOT</version>
 		</dependency>
 		<dependency>
@@ -84,11 +83,6 @@
 			<artifactId>org.apache.felix.ipojo.test.helpers</artifactId>
 			<version>1.5.0-SNAPSHOT</version>
 			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.felix</groupId>
-			<artifactId>org.apache.felix.ipojo.api</artifactId>
-			<version>1.6.0</version>
 		</dependency>
 		<!-- Pax Exam API: -->
 		<dependency>

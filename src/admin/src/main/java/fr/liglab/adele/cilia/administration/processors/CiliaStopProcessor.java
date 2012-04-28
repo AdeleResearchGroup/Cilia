@@ -20,7 +20,7 @@ import org.slf4j.LoggerFactory;
 import fr.liglab.adele.cilia.Chain;
 import fr.liglab.adele.cilia.CiliaContext;
 import fr.liglab.adele.cilia.Data;
-import fr.liglab.adele.cilia.framework.utils.Const;
+import fr.liglab.adele.cilia.runtime.Const;
 /**
  * CiliaStarterProcessor: The processor class. Start cilia chain instances. 
  * 

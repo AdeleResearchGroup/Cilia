@@ -18,7 +18,7 @@ package fr.liglab.adele.cilia;
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project Team</a>
  *
  */
-public interface MediatorComponent extends Component{ 
+public interface MediatorComponent extends Component { 
 	
 	/**
 	 * get the qualified id 'chainId/mediatorId'
@@ -58,28 +58,28 @@ public interface MediatorComponent extends Component{
 	/**
 	 * @param bindingImpl
 	 */
-	void addOutBinding(Binding binding);
+	//void addOutBinding(Binding binding);
 
 	/**
 	 * @param bindingImpl
 	 */
-	void addInBinding(Binding bindingImpl); 
+	//void addInBinding(Binding bindingImpl); 
 	/**
 	 * 
 	 * @param chain
 	 */
-	void setChain(Chain chain);
+	//void setChain(Chain chain);
 
 	/**
 	 * @param binding
 	 * @return 
 	 */
-	boolean removeInBinding(Binding binding);
+	//boolean removeInBinding(Binding binding);
 
 	/**
 	 * @param binding
 	 */
-	boolean removeOutBinding(Binding binding);
+	//boolean removeOutBinding(Binding binding);
 
 	/**
 	 * @param outPort

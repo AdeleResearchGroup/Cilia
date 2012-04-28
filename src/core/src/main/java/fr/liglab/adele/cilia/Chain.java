@@ -16,7 +16,13 @@
 package fr.liglab.adele.cilia;
 
 import java.util.Set;
-
+/**
+ * 
+ *
+ * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project Team</a>
+ *
+ */
+//@SuppressWarnings("rawtypes")
 public interface Chain extends Component{
 	/**
 	 * Obtain the mediator model which has the given identificator.
@@ -61,48 +67,48 @@ public interface Chain extends Component{
 	/**
 	 * @param a1
 	 */
-	boolean add(Adapter a1);
+	//boolean add(Adapter a1);
 
 	/**
 	 * @param m2
 	 */
-	boolean add(Mediator m2);
+	//boolean add(Mediator m2);
 
 	/**
 	 * @param outPort
 	 * @param inPort
 	 * @return
 	 */
-	Binding bind(Port outPort, Port inPort);
+	//Binding bind(Port outPort, Port inPort);
 
 	/**
 	 * @param outPort
 	 * @param inPort
 	 * @param bindingModel
 	 */
-	Binding bind(Port outPort, Port inPort, Binding bindingModel);
+	//Binding bind(Port outPort, Port inPort, Binding bindingModel);
 
 	/**
 	 * @param port
 	 * @param bindingModel
 	 * @return 
 	 */
-	Binding bind(Port port, Binding bindingModel);
+	//Binding bind(Port port, Binding bindingModel);
 
 	/**
 	 * @param binding
 	 */
-	boolean unbind(Binding binding);
+	//boolean unbind(Binding binding);
 
 	/**
 	 * @param id
 	 */
-	boolean removeAdapter(String id);
+	//boolean removeAdapter(String id);
 
 	/**
 	 * @param mediatorId
 	 * @return
 	 */
-	boolean removeMediator(String mediatorId);
+	//boolean removeMediator(String mediatorId);
 
 }

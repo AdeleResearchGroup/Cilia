@@ -27,21 +27,20 @@ import java.util.Observable;
 import java.util.Set;
 
 import org.apache.felix.ipojo.ComponentInstance;
-import org.apache.felix.ipojo.InstanceManager;
-import org.slf4j.Logger;
 
-import fr.liglab.adele.cilia.runtime.AbstractCiliaInstance;
+
+import fr.liglab.adele.cilia.runtime.CiliaInstanceWrapper;
 import fr.liglab.adele.cilia.runtime.CiliaInstance;
 import fr.liglab.adele.cilia.runtime.CiliaInstanceManager;
 
 
 /**
- * This class is the entry point to Cilia, CiliaContextImpl is in charge
- * de handle the life cycle of a set of chains.
+ * This class is in charge to handle several CiliaInstance. It is used to 
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project Team</a>
- * NA:ST
+ * 
  *
  */
+@SuppressWarnings({"rawtypes", "unchecked"})
 public class CiliaInstanceManagerSet extends Observable implements CiliaInstanceManager{
 
 
@@ -52,13 +51,12 @@ public class CiliaInstanceManagerSet extends Observable implements CiliaInstance
 	private final Object lockObject = new Object();
 
 	public CiliaInstanceManagerSet(){
-
 		instances = Collections.synchronizedMap(new HashMap()) ;
 	}
 
 	public void addInstance(String key, Object _obj) {
 		List instancesList = null;
-		synchronized (instances) {
+		synchronized (lockObject) {
 			if(instances.containsKey(key)) {
 				instancesList = (List)instances.get(key);
 			}
@@ -66,7 +64,7 @@ public class CiliaInstanceManagerSet extends Observable implements CiliaInstance
 				instancesList = new ArrayList();
 				instances.put(key, instancesList);
 			}
-			AbstractCiliaInstance aci = (AbstractCiliaInstance) _obj;
+			CiliaInstanceWrapper aci = (CiliaInstanceWrapper) _obj;
 			aci.addObserver(this);
 			instancesList.add(aci);
 		}
@@ -75,7 +73,7 @@ public class CiliaInstanceManagerSet extends Observable implements CiliaInstance
 	public boolean checkAvailability() {
 		boolean valid = true;
 		CiliaInstance component = null;
-		synchronized (instances) {
+		synchronized (lockObject) {
 			Iterator it = instances.keySet().iterator();
 			while (it.hasNext()) {
 				List instanceList = (List) instances.get(it.next());
@@ -97,7 +95,7 @@ public class CiliaInstanceManagerSet extends Observable implements CiliaInstance
 
 	public Set getKeys() {
 		Set keys = null;
-		synchronized (instances) {
+		synchronized (lockObject) {
 			keys = new HashSet(instances.keySet());   
 		}
 		return keys;
@@ -105,14 +103,14 @@ public class CiliaInstanceManagerSet extends Observable implements CiliaInstance
 
 	public Object getPojo(String key) {
 		List _ciliaInstance = null;
-		synchronized (instances) {
+		synchronized (lockObject) {
 			_ciliaInstance = (List)instances.get(key);
 		}
 		return _ciliaInstance;
 	}
 
 	public void reconfigurePOJOS(Dictionary props) {
-		synchronized (instances) {
+		synchronized (lockObject) {
 			Iterator it = instances.keySet().iterator();
 			while (it.hasNext()) {
 				List instanceList = (List) instances.get(it.next());
@@ -128,7 +126,7 @@ public class CiliaInstanceManagerSet extends Observable implements CiliaInstance
 	}
 
 	public void removeAllInstances() {
-		synchronized (instances) {
+		synchronized (lockObject) {
 			Iterator it = instances.keySet().iterator();
 			while (it.hasNext()) {
 				List instanceList = (List) instances.get(it.next());
@@ -145,7 +143,7 @@ public class CiliaInstanceManagerSet extends Observable implements CiliaInstance
 
 	public void removeInstance(String portname, String instanceName) {
 		List instanceList = null ;
-		synchronized (instances) {
+		synchronized (lockObject) {
 			if (portname != null) {
 				instanceList = (List) instances.get(portname);
 			}
@@ -165,7 +163,7 @@ public class CiliaInstanceManagerSet extends Observable implements CiliaInstance
 
 
 	public void startInstances() {
-		synchronized (instances) {
+		synchronized (lockObject) {
 			Iterator it = instances.keySet().iterator();
 			while (it.hasNext()) {
 				List instanceList = (List) instances.get(it.next());
@@ -178,6 +176,7 @@ public class CiliaInstanceManagerSet extends Observable implements CiliaInstance
 		}
 	}
 
+		
 	public void update(Observable o, Object arg) {
 		checkAvailability();
 	}

@@ -36,9 +36,9 @@ import org.slf4j.LoggerFactory;
 
 import fr.liglab.adele.cilia.Data;
 import fr.liglab.adele.cilia.framework.monitor.AbstractMonitor;
-import fr.liglab.adele.cilia.framework.utils.Const;
 import fr.liglab.adele.cilia.model.ComponentImpl;
 import fr.liglab.adele.cilia.model.ConstModel;
+import fr.liglab.adele.cilia.runtime.Const;
 import fr.liglab.adele.cilia.util.UUID;
 import fr.liglab.adele.cilia.util.Watch;
 import fr.liglab.adele.cilia.util.concurrent.ReadWriteLock;

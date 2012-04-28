@@ -1,5 +1,6 @@
 package cilia.runtime.context.test;
 
+import static org.junit.Assert.assertNotNull;
 import static org.ops4j.pax.exam.CoreOptions.felix;
 import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
 import static org.ops4j.pax.exam.CoreOptions.options;
@@ -18,7 +19,6 @@ import org.ops4j.pax.exam.junit.Configuration;
 import org.ops4j.pax.exam.junit.JUnit4TestRunner;
 import org.ops4j.pax.exam.junit.JUnitOptions;
 import org.osgi.framework.BundleContext;
-import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
 
 import fr.liglab.adele.cilia.Adapter;
@@ -28,12 +28,9 @@ import fr.liglab.adele.cilia.CiliaContext;
 import fr.liglab.adele.cilia.Mediator;
 import fr.liglab.adele.cilia.core.tests.tools.CiliaTools;
 import fr.liglab.adele.cilia.model.AdapterImpl;
-import fr.liglab.adele.cilia.model.BindingImpl;
 import fr.liglab.adele.cilia.model.ChainImpl;
 import fr.liglab.adele.cilia.model.ComponentImpl;
 import fr.liglab.adele.cilia.model.MediatorImpl;
-import fr.liglab.adele.cilia.model.PortImpl;
-import fr.liglab.adele.cilia.model.PortType;
 
 
 @RunWith(JUnit4TestRunner.class)
@@ -42,8 +39,6 @@ public class CiliaContextTester {
 
 	@Inject
 	private BundleContext context;
-
-	private CiliaContext ccontext;
 
 	private OSGiHelper osgi;
 
@@ -69,8 +64,8 @@ public class CiliaContextTester {
 						mavenBundle().groupId("org.slf4j").artifactId("slf4j-api").versionAsInProject(),
 						mavenBundle().groupId("org.slf4j").artifactId("slf4j-simple").version("1.6.1"),
 						mavenBundle().groupId("fr.liglab.adele.cilia").artifactId("cilia-core").versionAsInProject(),
-						mavenBundle().groupId("fr.liglab.adele.cilia").artifactId("cilia-ipojo-runtime").versionAsInProject()
-				)); // The target
+						mavenBundle().groupId("fr.liglab.adele.cilia").artifactId("cilia-runtime").versionAsInProject()
+						)); // The target
 		Option[] r = OptionUtils.combine(platform, bundles);
 		return r;
 	}
@@ -84,14 +79,23 @@ public class CiliaContextTester {
 		return options(JUnitOptions.mockitoBundles());
 	}
 
-	public void initializeServices() {
+	@Test
+	public void validateService() {
+		CiliaTools.waitToInitialize();
 		ServiceReference sr[] = null;
-		try {
-			sr = context.getServiceReferences (CiliaContext.class.getName(), null);
-		} catch (InvalidSyntaxException e) {
-			e.printStackTrace();
-		}
-		ccontext = (CiliaContext) context.getService(sr[0]);
+		sr = osgi.getServiceReferences (CiliaContext.class.getName(), null);
+		assertNotNull(sr[0]);
+		CiliaContext ccontext = (CiliaContext) context.getService(sr[0]);
+		assertNotNull(ccontext);
+	}
+
+	public CiliaContext getCiliaContextService() {
+		ServiceReference sr[] = null;
+		sr = osgi.getServiceReferences (CiliaContext.class.getName(), null);
+		assertNotNull(sr[0]);
+		CiliaContext ccontext = (CiliaContext) context.getService(sr[0]);
+		assertNotNull(ccontext);
+		return ccontext;
 	}
 
 
@@ -109,45 +113,39 @@ public class CiliaContextTester {
 		System.out.println("final " + CiliaTools.bytesToKilobytes(finalmemory));
 		Assert.assertTrue(CiliaTools.bytesToKilobytes(initialmemory) >= CiliaTools.bytesToKilobytes(finalmemory));
 	}
-	
+
 	@Test
 	public void chainCreation() {
-		try {
-            Thread.sleep(2000);//wait to be registered
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+		CiliaTools.waitToInitialize();
 		String chainId = "chainId";
-		initializeServices();
-		ChainImpl chain = new ChainImpl(chainId, "type", "", null);
+		CiliaContext ccontext = getCiliaContextService();
+		Chain chain = new ChainImpl(chainId, "type", "", null);
 
 		ccontext.addChain(chain);
 		ccontext.startChain(chain);
-		
+
 		Chain c = ccontext.getChain(chainId);
-		
+
 		Assert.assertEquals(c, chain);
 	}
 
-	@Test
+
+
 	public void testComponents() {
-        try {
-            Thread.sleep(2000);//wait to be registered
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+		CiliaTools.waitToInitialize();
+
 		String chainId = "chainId";
 		ChainImpl chain = new ChainImpl(chainId, "type", "", null);
-		
+
 		MediatorImpl m1 = new MediatorImpl("id1","type");
 		MediatorImpl m2 = new MediatorImpl("id2","type");
-		
+
 		AdapterImpl a1 = new AdapterImpl("id1","type");
 		AdapterImpl a2 = new AdapterImpl("aid2","type");
-		
+
 		chain.add(m1);
 		chain.add(m2);
-		
+
 		try {
 			chain.add(a1);
 			Assert.fail("It must throw : Id already exists");
@@ -160,36 +158,33 @@ public class CiliaContextTester {
 		//check ports in mediators
 		Assert.assertNotNull(m1.getInPort("toto"));
 		Assert.assertNotNull(m1.getOutPort("toto"));
-	
+
 		//check ports in adapters
 		Assert.assertNotNull(a1.getInPort("toto"));
 		Assert.assertNotNull(a1.getOutPort("toto"));
-				
+
 	}
 	@Test
 	public void testBindings(){
-        try {
-            Thread.sleep(2000);//wait to be registered
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+		CiliaTools.waitToInitialize();
+
 		String chainId = "chainId";
-		Chain chain = new ChainImpl(chainId, "type", "", null);
-		
+		ChainImpl chain = new ChainImpl(chainId, "type", "", null);
+
 		Mediator m1 = new MediatorImpl("id1","type");
 		Mediator m2 = new MediatorImpl("id2","type");
-		
+
 		Adapter a1 = new AdapterImpl("aid1","type");
 		Adapter a2 = new AdapterImpl("aid2","type");
 		chain.add(m1);
 		chain.add(m2);
 		chain.add(a1);
 		chain.add(a2);
-		
+
 		Assert.assertNotNull(chain.bind(m1.getOutPort("op"), m2.getInPort("in"))); //mediator to mediator
-	
+
 		Assert.assertNotNull(chain.bind(a1.getOutPort("op"), a2.getInPort("in"))); //adapter to adapter
-		
+
 		Assert.assertNotNull(chain.bind(m1.getOutPort("op"), a1.getInPort("in"))); //mediator to adapter
 		Assert.assertNotNull(chain.bind(a1.getOutPort("op"), m2.getInPort("in"))); //adapter to mediator
 
@@ -200,5 +195,5 @@ public class CiliaContextTester {
 		}catch(RuntimeException ex) {
 		}
 	}
-	
+
 }

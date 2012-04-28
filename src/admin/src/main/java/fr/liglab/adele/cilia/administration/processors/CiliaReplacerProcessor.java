@@ -27,10 +27,11 @@ import fr.liglab.adele.cilia.Chain;
 import fr.liglab.adele.cilia.CiliaContext;
 import fr.liglab.adele.cilia.Data;
 import fr.liglab.adele.cilia.Mediator;
-import fr.liglab.adele.cilia.framework.utils.AdminData;
-import fr.liglab.adele.cilia.framework.utils.Const;
 import fr.liglab.adele.cilia.model.AdapterImpl;
+import fr.liglab.adele.cilia.model.ChainImpl;
 import fr.liglab.adele.cilia.model.MediatorImpl;
+import fr.liglab.adele.cilia.runtime.AdminData;
+import fr.liglab.adele.cilia.runtime.Const;
 
 public class CiliaReplacerProcessor {
 	private static final Logger logger = LoggerFactory.getLogger(Const.LOGGER_ADAPTATION);
@@ -106,7 +107,7 @@ public class CiliaReplacerProcessor {
 	}
 
 	private void replaceMediator(Data data) {
-		Chain chain;
+		ChainImpl chain;
 		Binding[] bindings;
 		Mediator mediatorSource, mediatorDest;
 		String chainId = String.valueOf(data.getProperty("chain"));
@@ -116,7 +117,7 @@ public class CiliaReplacerProcessor {
 			logger.error("Missing parameter(s)");
 			return;
 		}
-		chain = ccontext.getChain(chainId);
+		chain = (ChainImpl)ccontext.getChain(chainId);
 		if (chain == null) {
 			logger.error("ChainImpl [{}] not found." + chainId);
 			return;
@@ -162,7 +163,7 @@ public class CiliaReplacerProcessor {
 	}
 
 	private void replaceAdapter(Data data) {
-		Chain chain;
+		ChainImpl chain;
 		Binding[] bindings;
 		Adapter adapter, adapterNew;
 		String chainId = String.valueOf(data.getProperty("chain"));
@@ -172,7 +173,7 @@ public class CiliaReplacerProcessor {
 			logger.error("Missing parameter(s)");
 			return;
 		}
-		chain = ccontext.getChain(chainId);
+		chain = (ChainImpl)ccontext.getChain(chainId);
 		if (chain == null) {
 			logger.error("ChainImpl [{}] not found." + chainId);
 			return;

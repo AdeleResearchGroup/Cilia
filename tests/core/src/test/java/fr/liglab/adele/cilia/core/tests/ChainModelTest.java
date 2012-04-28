@@ -72,7 +72,7 @@ public class ChainModelTest {
 						mavenBundle().groupId("org.slf4j").artifactId("slf4j-api").versionAsInProject(),
 						mavenBundle().groupId("org.slf4j").artifactId("slf4j-simple").version("1.6.1"),
 						mavenBundle().groupId("fr.liglab.adele.cilia").artifactId("cilia-core").versionAsInProject(),
-						mavenBundle().groupId("fr.liglab.adele.cilia").artifactId("cilia-ipojo-runtime").versionAsInProject()
+						mavenBundle().groupId("fr.liglab.adele.cilia").artifactId("cilia-runtime").versionAsInProject()
 				)); // The target
 		Option[] r = OptionUtils.combine(platform, bundles);
 		return r;
@@ -140,7 +140,7 @@ public class ChainModelTest {
             e.printStackTrace();
         }
 		String chainId = "chainId";
-		Chain chain = new ChainImpl(chainId, "type", "", null);
+		ChainImpl chain = new ChainImpl(chainId, "type", "", null);
 		
 		Mediator m1 = new MediatorImpl("id1","type");
 		Mediator m2 = new MediatorImpl("id2","type");
@@ -177,7 +177,7 @@ public class ChainModelTest {
             e.printStackTrace();
         }
 		String chainId = "chainId";
-		Chain chain = new ChainImpl(chainId, "type", "", null);
+		ChainImpl chain = new ChainImpl(chainId, "type", "", null);
 		
 		Mediator m1 = new MediatorImpl("id1","type");
 		Mediator m2 = new MediatorImpl("id2","type");

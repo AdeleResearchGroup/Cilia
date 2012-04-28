@@ -25,13 +25,14 @@ import fr.liglab.adele.cilia.exceptions.CiliaException;
 
 
 /**
- * Dispatcher Interface
- * @author torito
+ * Dispatcher interface.
+ *
+ * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project Team</a>
  *
  */
 public interface IDispatcher {
 	
-	void dispatch(List/*<Data>*/ dataSet) throws CiliaException;
+	void dispatch(Data dataSet) throws CiliaException;
 	//ISender getSender(String name);
 	void addSender(String senderName, String senderId, Dictionary props);
 	List getSendersIds();
