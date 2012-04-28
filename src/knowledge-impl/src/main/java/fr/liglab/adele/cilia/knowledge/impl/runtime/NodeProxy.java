@@ -20,6 +20,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 
+import fr.liglab.adele.cilia.exceptions.CiliaIllegalStateException;
 import fr.liglab.adele.cilia.knowledge.registry.RuntimeRegistry;
 
 /**
@@ -55,7 +56,7 @@ public class NodeProxy {
 			Object resource = resourceRef.get();
 			if ((resource == null) || (registry.findByUuid(uuid) == null)) {
 				/* disappears */
-				throw new IllegalStateException(uuid +" no longer exists");
+				throw new CiliaIllegalStateException(uuid +" no longer exists");
 			} else {
 				try { 
 					return method.invoke(resource, args);
