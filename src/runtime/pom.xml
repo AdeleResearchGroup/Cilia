@@ -65,6 +65,7 @@
 						<Bundle-SymbolicName>${pom.artifactId}</Bundle-SymbolicName>
 						<Export-Package>
 							fr.liglab.adele.cilia.framework,
+							fr.liglab.adele.cilia.framework.utils,
 							fr.liglab.adele.cilia.framework.data,
 							fr.liglab.adele.cilia.framework.monitor,
 							fr.liglab.adele.cilia.framework.components,
