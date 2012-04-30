@@ -46,6 +46,7 @@ import fr.liglab.adele.cilia.runtime.Const;
 import fr.liglab.adele.cilia.runtime.impl.CiliaFrameworkEventPublisher;
 import fr.liglab.adele.cilia.runtime.impl.DispatcherHandler;
 import fr.liglab.adele.cilia.runtime.impl.SchedulerHandler;
+import fr.liglab.adele.cilia.util.UUID;
 
 /**
  * This class will observe the mediator model and will act as an itermediator
@@ -108,6 +109,7 @@ public class MediatorControllerImpl implements Observer {
 				.setProperty(ConstModel.PROPERTY_COMPONENT_ID, mediatorModel.getId());
 		mediatorModel.setProperty(ConstModel.PROPERTY_CHAIN_ID, mediatorModel.getChain()
 				.getId());
+		mediatorModel.setProperty(ConstModel.PROPERTY_UUID, UUID.generate().toString());
 	}
 
 	private void createMediatorInstance() {

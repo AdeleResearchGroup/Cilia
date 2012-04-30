@@ -64,12 +64,13 @@ public abstract class AbstractStateVariable extends AbstractMonitor implements
 	 */
 	public void configure(Element metadata, Dictionary configuration)
 			throws ConfigurationException {
-		String chainId, componentId;
+		String chainId, componentId,uuid;
 		chainId = (String) configuration.get(ConstModel.PROPERTY_CHAIN_ID);
 		componentId = (String) configuration.get(ConstModel.PROPERTY_COMPONENT_ID);
+		uuid =(String)configuration.get(ConstModel.PROPERTY_UUID);		
 		m_properties.put(MONITOR_CHAIN_ID, chainId);
 		m_properties.put(MONITOR_NODE_ID, componentId);
-		m_properties.put(MONITOR_UUID, UUID.generate().toString());
+		m_properties.put(MONITOR_UUID, uuid);
 		topic = TOPIC_HEADER + chainId;
 		m_qualifiedId = ComponentImpl.buildQualifiedId(chainId, componentId);
 	}

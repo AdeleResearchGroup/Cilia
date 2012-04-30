@@ -5,6 +5,7 @@ import org.osgi.framework.BundleContext;
 import fr.liglab.adele.cilia.Adapter;
 import fr.liglab.adele.cilia.MediatorComponent;
 import fr.liglab.adele.cilia.model.ConstModel;
+import fr.liglab.adele.cilia.util.UUID;
 
 public class AdapterControllerImpl extends MediatorControllerImpl {
 
@@ -15,6 +16,7 @@ public class AdapterControllerImpl extends MediatorControllerImpl {
 	protected void updateProperties(){
 		mediatorModel.setProperty(ConstModel.PROPERTY_COMPONENT_ID, mediatorModel.getId());
 		mediatorModel.setProperty(ConstModel.PROPERTY_CHAIN_ID, mediatorModel.getChain().getId());
+		mediatorModel.setProperty(ConstModel.PROPERTY_UUID, UUID.generate().toString());
 	}
 
 	protected String createComponentFilter (MediatorComponent mediator) {
