@@ -60,15 +60,17 @@ import fr.liglab.adele.cilia.runtime.ProcessorMetadata;
 import fr.liglab.adele.cilia.runtime.WorkQueue;
 import fr.liglab.adele.cilia.util.concurrent.ReadWriteLock;
 import fr.liglab.adele.cilia.util.concurrent.WriterPreferenceReadWriteLock;
+
 /**
  * 
- *
- * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project Team</a>
- *
+ * 
+ * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project
+ *         Team</a>
+ * 
  */
-@SuppressWarnings({"rawtypes", "unchecked"})
+@SuppressWarnings({ "rawtypes", "unchecked" })
 public class SchedulerHandler extends PrimitiveHandler implements ISchedulerHandler,
-InstanceStateListener, Observer, Runnable {
+		InstanceStateListener, Observer, Runnable {
 
 	protected Logger logger;
 
@@ -253,6 +255,20 @@ InstanceStateListener, Observer, Runnable {
 		}
 	}
 
+	private void configureHandler(InstanceManager im, String handlerName) {
+		Handler handler = null;
+		if (im != null) {
+			handler = (Handler) (im).getHandler(Const.ciliaQualifiedName(handlerName));
+		}
+
+		if (handler != null) {
+			Properties props = new Properties();
+			props.put("cilia.monitor.handler", getMonitor());
+			/* Set monitor handler reference to the handler */
+			handler.reconfigure(props);
+		}
+	}
+
 	/**
 	 * Add collector Instance.
 	 * 
@@ -293,21 +309,11 @@ InstanceStateListener, Observer, Runnable {
 				collectorsManager.addInstance(portname, ciliaCollector);
 			}
 			ciliaCollector.start();
-			/* Retreive the dependency handler */
-			//TODO: TO FIX BUG IF IM IS NULL
-			InstanceManager im = (InstanceManager) ciliaCollector.getInstanceManager();
-			Handler dependency = null;
-			if(im != null) {
-				dependency = (Handler) (im)
-						.getHandler(Const.ciliaQualifiedName("dependency"));
-			}
-
-			if (dependency != null) {
-				Properties props = new Properties();
-				props.put("cilia.monitor.handler", getMonitor());
-				/* Set monitor handler reference to the dependency handler */
-				dependency.reconfigure(props);
-			}
+			/* FIX ME if InstancManager is null */
+			configureHandler((InstanceManager) ciliaCollector.getInstanceManager(),
+					"dependency");
+			configureHandler((InstanceManager) ciliaCollector.getInstanceManager(),
+			"audit");
 
 			ICollector col = (ICollector) ciliaCollector.getObject();
 			if (col != null) {
@@ -591,6 +597,7 @@ InstanceStateListener, Observer, Runnable {
 			updateSchedulerReference();
 			/* --> Teste l'etat du Scheduler --- */
 			getHandlerManager().setState(ComponentInstance.VALID);
+
 			addSchedulerToCollectors();
 		} else {
 			// getHandlerManager().setState(ComponentInstance.INVALID);
@@ -608,7 +615,8 @@ InstanceStateListener, Observer, Runnable {
 			return;
 		}
 		logger.debug("Scheduler is now valid, updating references");
-		AbstractScheduler im = (AbstractScheduler) ref; // all scheduleres must be
+		AbstractScheduler im = (AbstractScheduler) ref; // all scheduleres must
+														// be
 		// extend CiliaScheduler
 		im.setConnectedScheduler(this);
 	}
@@ -725,7 +733,6 @@ InstanceStateListener, Observer, Runnable {
 		getInstanceManager().getContext().ungetService(m_refData);
 		return data;
 	}
-
 
 	public Map getData() {
 		/* Return the buffer */

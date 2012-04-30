@@ -18,7 +18,7 @@ import java.util.List;
 
 import fr.liglab.adele.cilia.Data;
 
-public interface IMonitor extends IProcessorMonitor, IServiceMonitor {
+public interface IMonitor extends IProcessorMonitor, IServiceMonitor, IFieldMonitor {
 
 	public void onCollect(Data data);
 

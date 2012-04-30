@@ -15,7 +15,6 @@
 
 package fr.liglab.adele.cilia.knowledge;
 
-
 /**
  * A Node is the model@runtime for a mediator/adapter
  * 

@@ -29,6 +29,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Dictionary;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -1331,6 +1332,11 @@ public class Dependency extends DependencyModel implements FieldInterceptor,
 		// TODO Auto-generated method stub
 	}
 
+	
+    public synchronized void reconfigure(Dictionary dict) {
+    	
+    }
+    
 	/**
 	 * Added for Cilia framework monitoring the monitor catch events from the
 	 * framework

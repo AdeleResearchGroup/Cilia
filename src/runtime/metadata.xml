@@ -50,6 +50,11 @@
 	</handler>
 
 	<handler
+		classname="fr.liglab.adele.cilia.framework.monitor.AuditHandler"
+		name="audit" namespace="fr.liglab.adele.cilia" architecture="true">
+	</handler>
+	
+	<handler
 		classname="fr.liglab.adele.cilia.framework.monitor.statevariable.MonitorHandlerStateVar"
 		name="monitor-statevar-handler" namespace="fr.liglab.adele.cilia"
 		architecture="true">

@@ -49,4 +49,10 @@ public abstract class AbstractMonitor extends MediatorHandler implements IMonito
 	public void onServiceDeparture(Map info) {
 	}
 
+	public void onFieldGet(String field, Object o) {
+	}
+
+	public void onFieldSet(String field, Object o) {
+	}
+
 }

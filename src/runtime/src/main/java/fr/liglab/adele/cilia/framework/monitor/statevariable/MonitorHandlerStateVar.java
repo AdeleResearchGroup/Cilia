@@ -15,6 +15,7 @@
 
 package fr.liglab.adele.cilia.framework.monitor.statevariable;
 
+import java.util.Collections;
 import java.util.Dictionary;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -39,7 +40,8 @@ public class MonitorHandlerStateVar extends AbstractStateVariable {
 	private static final String PROPERTY_MSG_HISTORY = "cilia.message.history";
 	private static final String PROPERTY_BINDING_TIME = "cilia.message.time.bind";
 	/* Liste of state var */
-	private static final Set setStateVar, setDependencyCall, setEventing, setSystemCall;
+	private static final Set setStateVar, setDependencyCall, setEventing, setSystemCall,
+			setFunctionnalCall;
 
 	static {
 		/* State var Event fired by dependency Manager */
@@ -78,10 +80,15 @@ public class MonitorHandlerStateVar extends AbstractStateVariable {
 		/* time between dispatch and collect */
 		setSystemCall.add("transmission.delay");
 
+		setFunctionnalCall = new HashSet();
+		setFunctionnalCall.add("field.set");
+		setFunctionnalCall.add("field.get");
+
 		/* All state variables */
 		setStateVar = new HashSet(setSystemCall);
 		setStateVar.addAll(setDependencyCall);
 		setStateVar.addAll(setEventing);
+		setStateVar.addAll(setFunctionnalCall);
 
 	}
 
@@ -97,32 +104,11 @@ public class MonitorHandlerStateVar extends AbstractStateVariable {
 	public void configure(Element metadata, Dictionary configuration)
 			throws ConfigurationException {
 		super.configure(metadata, configuration);
-		Iterator it;
-		/* Configure by default only state var in the dsl */
-		Map stateVarList = (Map) configuration.get("state.variable.configuration");
-		if (stateVarList != null) {
-			it = stateVarList.keySet().iterator();
-			while (it.hasNext()) {
-				String id = (String) it.next();
-				if ((id != null) && setStateVar.contains(id)) {
-					addStateVarId(id, (String) configuration.get(id));
-				}
-			}
-		} else {
-			/* No configuration , configure all system state-variables */
-			it = setStateVar.iterator();
-			while (it.hasNext()) {
-				String id = (String) it.next();
-				addStateVarId(id, null);
-			}
+		Iterator it = setStateVar.iterator();
+		while (it.hasNext()) {
+			String id = (String) it.next();
+			addStateVarId(id, null);
 		}
-		/* set enabled status, default = enabled */
-		//String enabled = (String) configuration.get("state.variable.status");
-		//if (enabled != null) {
-		//	isStateVarEnable = enabled.equalsIgnoreCase("true");
-		//} else {
-		//	isStateVarEnable = false;
-		//}
 	}
 
 	public void validate() {
@@ -220,7 +206,7 @@ public class MonitorHandlerStateVar extends AbstractStateVariable {
 
 		if (m_listStateVarEnable.isEmpty())
 			return;
-		
+
 		snapShotHistory();
 
 		processTime = new Watch();
@@ -245,7 +231,7 @@ public class MonitorHandlerStateVar extends AbstractStateVariable {
 
 		if (m_listStateVarEnable.isEmpty())
 			return;
-		
+
 		if (isEnabled("message.history") || isEnabled("transmission.delay"))
 			injectTags(data);
 
@@ -347,8 +333,28 @@ public class MonitorHandlerStateVar extends AbstractStateVariable {
 		}
 	}
 
+	public void onFieldGet(String field, Object o) {
+		if (m_listStateVarEnable.isEmpty())
+			return;
+		if (isEnabled("field.get")) {
+			m_systemQueue.equals(new AsynchronousExec("field.get", Collections
+					.singletonMap(field, o)));
+		}
+
+	}
+
+	public void onFieldSet(String field, Object o) {
+		if (m_listStateVarEnable.isEmpty())
+			return;
+		if (isEnabled("field.set")) {
+			m_systemQueue.equals(new AsynchronousExec("field.set", Collections
+					.singletonMap(field, o)));
+		}
+	}
+
 	public String[] getCategories() {
-		String[] array = { "SystemCall", "DependencyCall", "EventingCall" };
+		String[] array = { "SystemCall", "DependencyCall", "EventingCall",
+				"FunctionnalCall" };
 		return array;
 	}
 
@@ -362,6 +368,8 @@ public class MonitorHandlerStateVar extends AbstractStateVariable {
 					.size()]);
 		} else if (category.equalsIgnoreCase("EventingCall")) {
 			array = (String[]) setEventing.toArray(new String[setEventing.size()]);
+		} else if (category.equalsIgnoreCase("FunctionnalCall")) {
+			array = (String[]) setEventing.toArray(new String[setFunctionnalCall.size()]);
 		} else
 			array = new String[0];
 

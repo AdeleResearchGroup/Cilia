@@ -12,12 +12,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package fr.liglab.adele.cilia.framework.monitor;
 
-import java.util.Map;
+public interface IFieldMonitor {
 
-public interface INotifier {
-	
-	public void fireEvent(Map info);
-	
+	void onFieldGet(String field, Object o);
+
+	void onFieldSet(String field, Object o);
 }
