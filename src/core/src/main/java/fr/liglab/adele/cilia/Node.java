@@ -22,6 +22,7 @@ package fr.liglab.adele.cilia;
  * 
  */
 public interface Node {
+
 	/**
 	 * @return chain id hosting the node
 	 */

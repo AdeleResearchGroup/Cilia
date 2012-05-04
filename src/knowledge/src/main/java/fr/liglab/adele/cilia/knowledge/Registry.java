@@ -17,6 +17,7 @@ package fr.liglab.adele.cilia.knowledge;
 
 import org.osgi.framework.InvalidSyntaxException;
 
+import fr.liglab.adele.cilia.Node;
 import fr.liglab.adele.cilia.exceptions.CiliaIllegalParameterException;
 
 /**

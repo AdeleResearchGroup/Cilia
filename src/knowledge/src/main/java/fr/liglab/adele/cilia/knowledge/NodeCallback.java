@@ -15,6 +15,8 @@
 
 package fr.liglab.adele.cilia.knowledge;
 
+import fr.liglab.adele.cilia.Node;
+
 /**
  * Callback , events [ node arrival / node departure ]
  * 

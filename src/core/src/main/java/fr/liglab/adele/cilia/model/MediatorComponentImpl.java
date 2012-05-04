@@ -27,7 +27,7 @@ import fr.liglab.adele.cilia.Binding;
 import fr.liglab.adele.cilia.Chain;
 import fr.liglab.adele.cilia.MediatorComponent;
 import fr.liglab.adele.cilia.Port;
-import fr.liglab.adele.cilia.util.UUID;
+import fr.liglab.adele.cilia.util.Uuid;
 
 /**
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project Team</a>
@@ -72,7 +72,7 @@ public abstract class MediatorComponentImpl extends ComponentImpl implements Med
 	
 	private String version = null;
 	
-	private final String uuid = UUID.generate().toString();
+	private final String uuid = Uuid.generate().toString();
 
 	/**
 	 * 

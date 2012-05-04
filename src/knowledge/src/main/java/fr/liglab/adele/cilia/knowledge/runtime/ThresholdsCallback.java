@@ -15,7 +15,7 @@
 
 package fr.liglab.adele.cilia.knowledge.runtime;
 
-import fr.liglab.adele.cilia.knowledge.Node;
+import fr.liglab.adele.cilia.Node;
 
 /**
  * Callback variable out of viability area veryLow < Low < value < High <

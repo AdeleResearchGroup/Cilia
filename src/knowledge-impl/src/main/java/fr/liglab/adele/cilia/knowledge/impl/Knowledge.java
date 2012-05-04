@@ -27,8 +27,8 @@ import org.osgi.framework.Filter;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.InvalidSyntaxException;
 
+import fr.liglab.adele.cilia.Node;
 import fr.liglab.adele.cilia.exceptions.CiliaIllegalParameterException;
-import fr.liglab.adele.cilia.knowledge.Node;
 
 /**
  * Privates constants and static methods
@@ -39,6 +39,19 @@ import fr.liglab.adele.cilia.knowledge.Node;
  */
 public final class Knowledge {
 	/**
+	 * Unique ID identifier
+	 */
+	public static final String UUID = "uuid";
+	/**
+	 * chain
+	 */
+	public static final String CHAIN_ID = "chain";
+	/**
+	 * Cilia components (adapters, mediators)
+	 */
+	public static final String NODE_ID = "node";
+
+	/**
 	 * by default the cache service is running
 	 */
 	public static final boolean CACHED_AUTORUN = true;
@@ -46,7 +59,7 @@ public final class Knowledge {
 	 * logger name
 	 */
 	public static final String LOG_NAME = "cilia.knowledge";
-	
+
 	/*
 	 * #items stored per state variables
 	 */
@@ -72,14 +85,14 @@ public final class Knowledge {
 	public static final Set ldapKeys;
 	static {
 		Set set = new HashSet();
-		set.add(Node.UUID);
-		set.add(Node.CHAIN_ID);
-		set.add(Node.NODE_ID);
+		set.add(UUID);
+		set.add(CHAIN_ID);
+		set.add(NODE_ID);
 		ldapKeys = Collections.unmodifiableSet(set);
 	}
 
 	public synchronized static final Filter createFilter(String filter)
-			throws CiliaIllegalParameterException,InvalidSyntaxException {
+			throws CiliaIllegalParameterException, InvalidSyntaxException {
 		if (filter == null)
 			throw new CiliaIllegalParameterException("filter is null !");
 		boolean found = false;
@@ -97,12 +110,12 @@ public final class Knowledge {
 					+ ldapKeys.toString() + "!" + filter);
 		return FrameworkUtil.createFilter(filter);
 	}
-	
-	public static final boolean isNodeMatching(Filter filter,Node node) {
+
+	public static final boolean isNodeMatching(Filter filter, Node node) {
 		Dictionary dico = new Hashtable(3);
-		dico.put(Node.UUID,node.uuid() );
-		dico.put(Node.CHAIN_ID, node.chainId());
-		dico.put(Node.NODE_ID, node.nodeId()) ; 
-		return filter.match(dico) ;
+		dico.put(UUID, node.uuid());
+		dico.put(CHAIN_ID, node.chainId());
+		dico.put(NODE_ID, node.nodeId());
+		return filter.match(dico);
 	}
 }

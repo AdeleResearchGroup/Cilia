@@ -15,9 +15,9 @@
 
 package fr.liglab.adele.cilia.knowledge.runtime;
 
+import fr.liglab.adele.cilia.Node;
 import fr.liglab.adele.cilia.exceptions.CiliaIllegalParameterException;
 import fr.liglab.adele.cilia.exceptions.CiliaRuntimeException;
-import fr.liglab.adele.cilia.knowledge.Node;
 
 /**
  * Management of dynamic data values 

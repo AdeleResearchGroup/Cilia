@@ -22,12 +22,9 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Set;
 
-import org.apache.felix.ipojo.util.Tracker;
-import org.apache.felix.ipojo.util.TrackerCustomizer;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Filter;
 import org.osgi.framework.InvalidSyntaxException;
-import org.osgi.framework.ServiceReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,24 +33,22 @@ import fr.liglab.adele.cilia.Binding;
 import fr.liglab.adele.cilia.Chain;
 import fr.liglab.adele.cilia.CiliaContext;
 import fr.liglab.adele.cilia.MediatorComponent;
+import fr.liglab.adele.cilia.Node;
 import fr.liglab.adele.cilia.event.CiliaEvent;
 import fr.liglab.adele.cilia.event.CiliaFrameworkEvent;
 import fr.liglab.adele.cilia.event.CiliaFrameworkListener;
 import fr.liglab.adele.cilia.exceptions.CiliaIllegalParameterException;
 import fr.liglab.adele.cilia.exceptions.CiliaIllegalStateException;
-import fr.liglab.adele.cilia.knowledge.Node;
-import fr.liglab.adele.cilia.knowledge.NodeCallback;
 import fr.liglab.adele.cilia.knowledge.eventbus.EventProperties;
 import fr.liglab.adele.cilia.knowledge.impl.Knowledge;
 import fr.liglab.adele.cilia.knowledge.impl.eventbus.Publisher;
 import fr.liglab.adele.cilia.knowledge.specification.Application;
-import fr.liglab.adele.cilia.knowledge.specification.ChainCallback;
 import fr.liglab.adele.cilia.model.PatternType;
 import fr.liglab.adele.cilia.util.UnModifiableDictionary;
 import fr.liglab.adele.cilia.util.Watch;
 
 /**
- * Specification
+ * Application implementation 
  * 
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project
  *         Team</a>
@@ -75,16 +70,15 @@ public class SpecificationImpl extends SpecificationListenerSupport implements
 
 	public void start() {
 		logger.info("ModelS@RunTime 'Specification components' - started");
-		listenerFramework.register(this, ALL_EVENTS);
 		super.start();
+		listenerFramework.register(this, ALL_EVENTS);
 	}
 
 	public void stop() {
 		logger.info("ModelS@RunTime 'Specification component' - stopped");
+		super.stop();		
 		listenerFramework.unregister(this);
-		super.stop();
 	}
-
 
 	/**
 	 * retreives all chain ID 
@@ -156,18 +150,18 @@ public class SpecificationImpl extends SpecificationListenerSupport implements
 		String chainId[] = getChains();
 		for (int i = 0; i < chainId.length; i++) {
 			/* retreive all adapters per all chain */
-			dico.put(Node.CHAIN_ID, chainId[i]);
+			dico.put(Knowledge.CHAIN_ID, chainId[i]);
 			/* Iterate over all adapters per chain */
 			Iterator it = getAdaptersSet(chainId[i]).iterator();
 			while (it.hasNext()) {
 				adapter = (Adapter) it.next();
-				dico.put(Node.NODE_ID, adapter.getId());
+				dico.put(Knowledge.NODE_ID, adapter.getId());
 				if (filter.match(dico)) {
 					/* verify the pattern */
 					PatternType pattern = adapter.getPattern();
 					if ((pattern.equals(type) || (pattern.equals(PatternType.UNASSIGNED)) || (pattern
 							.equals(PatternType.IN_OUT)))) {
-						adapterResult.add(new NodeImpl(chainId[i], adapter.getId()));
+						adapterResult.add(adapter);
 					}
 				}
 			}
@@ -196,8 +190,7 @@ public class SpecificationImpl extends SpecificationListenerSupport implements
 
 			if (bindings != null) {
 				for (int i = 0; i < bindings.length; i++) {
-					nodeSet.add(new NodeImpl(node.chainId(), bindings[i]
-							.getTargetMediator().getId()));
+					nodeSet.add( bindings[i].getTargetMediator());
 				}
 			}
 		} catch (CiliaIllegalParameterException e) {
@@ -344,27 +337,51 @@ public class SpecificationImpl extends SpecificationListenerSupport implements
 
 		for (int i = 0; i < chainId.length; i++) {
 			/* retreive all adapters per all chain */
-			dico.put(Node.CHAIN_ID, chainId[i]);
+			dico.put(Knowledge.CHAIN_ID, chainId[i]);
 			/* Iterate over all adapters */
 			Iterator it = getAdaptersSet(chainId[i]).iterator();
 			while (it.hasNext()) {
 				component = (MediatorComponent) it.next();
-				dico.put(Node.NODE_ID, component.getId());
+				dico.put(Knowledge.NODE_ID, component.getId());
 				if (filter.match(dico)) {
-					componentSet.add(new NodeImpl(chainId[i], component.getId()));
+					componentSet.add(component.getId());
 				}
 			}
 			/* Iterate over all mediators */
 			it = getMediatorSet(chainId[i]).iterator();
 			while (it.hasNext()) {
 				component = (MediatorComponent) it.next();
-				dico.put(Node.NODE_ID, component.getId());
+				dico.put(Knowledge.NODE_ID, component.getId());
 				if (filter.match(dico)) {
-					componentSet.add(new NodeImpl(chainId[i], component.getId()));
+					componentSet.add(component.getId());
 				}
 			}
 		}
 		return (Node[]) componentSet.toArray(new Node[componentSet.size()]);
 	}
 
+	private class NodeImpl implements Node {
+
+		private final String chain;
+		private final String node;
+
+		public NodeImpl(String chain, String node) {
+			this.chain = chain;
+			this.node = node;
+		}
+
+		public String chainId() {
+			return chain;
+		}
+
+		public String nodeId() {
+			return node;
+		}
+
+		public String uuid() {
+			//throw new UnsupportedOperationException(
+			//"uuid is not relevant for the specification");
+			return null;
+		}
+	}
 }

@@ -21,8 +21,8 @@ import java.util.Map;
 
 import fr.liglab.adele.cilia.MediatorComponent;
 import fr.liglab.adele.cilia.framework.monitor.statevariable.ComponentStateVarService;
-import fr.liglab.adele.cilia.knowledge.Node;
 import fr.liglab.adele.cilia.knowledge.impl.DataNode;
+import fr.liglab.adele.cilia.knowledge.impl.Knowledge;
 import fr.liglab.adele.cilia.knowledge.registry.RegistryItem;
 
 /**
@@ -43,12 +43,12 @@ public class RegistryItemImpl implements RegistryItem {
 		} else
 			this.props = new HashMap(6);
 
-		props.put(Node.UUID, uuid);
+		props.put(Knowledge.UUID, uuid);
 
 		if (appid != null)
-			props.put(Node.CHAIN_ID, appid);
+			props.put(Knowledge.CHAIN_ID, appid);
 		if (componentId != null)
-			props.put(Node.NODE_ID, componentId);
+			props.put(Knowledge.NODE_ID, componentId);
 
 	}
 	
@@ -57,15 +57,15 @@ public class RegistryItemImpl implements RegistryItem {
 	}
 	
 	public String uuid() {
-		return (String) props.get(Node.UUID);
+		return (String) props.get(Knowledge.UUID);
 	}
 
 	public String chainId() {
-		return (String) props.get(Node.CHAIN_ID);
+		return (String) props.get(Knowledge.CHAIN_ID);
 	}
 
 	public String nodeId() {
-		return (String) props.get(Node.NODE_ID);
+		return (String) props.get(Knowledge.NODE_ID);
 	}
 
 	public ComponentStateVarService runtimeReference() {

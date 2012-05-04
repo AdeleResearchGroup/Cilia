@@ -16,17 +16,14 @@
 package fr.liglab.adele.cilia.knowledge.impl.eventbus;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Dictionary;
 import java.util.Hashtable;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.osgi.framework.BundleContext;
-import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.event.Event;
 import org.osgi.service.event.EventConstants;
@@ -34,8 +31,6 @@ import org.osgi.service.event.EventHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import fr.liglab.adele.cilia.knowledge.Node;
-import fr.liglab.adele.cilia.knowledge.Registry;
 import fr.liglab.adele.cilia.knowledge.eventbus.Cache;
 import fr.liglab.adele.cilia.knowledge.eventbus.CachedEvent;
 import fr.liglab.adele.cilia.knowledge.eventbus.EventProperties;

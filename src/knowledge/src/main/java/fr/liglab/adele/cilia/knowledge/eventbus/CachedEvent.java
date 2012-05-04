@@ -15,7 +15,7 @@
 
 package fr.liglab.adele.cilia.knowledge.eventbus;
 
-import fr.liglab.adele.cilia.knowledge.Node;
+import fr.liglab.adele.cilia.Node;
 
 /**
  * Event stored in the Event bus

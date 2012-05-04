@@ -31,9 +31,9 @@ import fr.liglab.adele.cilia.Chain;
 import fr.liglab.adele.cilia.CiliaContext;
 import fr.liglab.adele.cilia.Mediator;
 import fr.liglab.adele.cilia.MediatorComponent;
+import fr.liglab.adele.cilia.Node;
 import fr.liglab.adele.cilia.exceptions.CiliaIllegalParameterException;
 import fr.liglab.adele.cilia.exceptions.CiliaIllegalStateException;
-import fr.liglab.adele.cilia.knowledge.Node;
 import fr.liglab.adele.cilia.knowledge.NodeCallback;
 import fr.liglab.adele.cilia.knowledge.impl.Knowledge;
 import fr.liglab.adele.cilia.knowledge.impl.eventbus.Publisher;
@@ -306,8 +306,8 @@ public class DynamicPropertiesImpl extends NodeListenerSupport implements
 	 */
 	private static String makefilter(String chain, String node) {
 		StringBuffer sb = new StringBuffer("(&(");
-		sb.append(Node.CHAIN_ID).append("=").append(chain);
-		sb.append(")(").append(Node.NODE_ID).append("=").append(node);
+		sb.append(Knowledge.CHAIN_ID).append("=").append(chain);
+		sb.append(")(").append(Knowledge.NODE_ID).append("=").append(node);
 		sb.append("))");
 		return sb.toString();
 	}

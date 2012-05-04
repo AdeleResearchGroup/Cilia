@@ -17,7 +17,7 @@ package fr.liglab.adele.cilia.knowledge.impl.eventbus;
 
 import java.util.Map;
 
-import fr.liglab.adele.cilia.knowledge.Node;
+import fr.liglab.adele.cilia.Node;
 
 /**
  * Publisher to the event bus

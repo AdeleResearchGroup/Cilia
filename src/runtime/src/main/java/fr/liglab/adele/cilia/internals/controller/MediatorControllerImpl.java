@@ -46,7 +46,7 @@ import fr.liglab.adele.cilia.runtime.Const;
 import fr.liglab.adele.cilia.runtime.impl.CiliaFrameworkEventPublisher;
 import fr.liglab.adele.cilia.runtime.impl.DispatcherHandler;
 import fr.liglab.adele.cilia.runtime.impl.SchedulerHandler;
-import fr.liglab.adele.cilia.util.UUID;
+import fr.liglab.adele.cilia.util.Uuid;
 
 /**
  * This class will observe the mediator model and will act as an itermediator

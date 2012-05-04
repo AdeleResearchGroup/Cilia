@@ -20,10 +20,10 @@ import java.util.Dictionary;
 import org.osgi.framework.InvalidSyntaxException;
 
 import fr.liglab.adele.cilia.MediatorComponent;
+import fr.liglab.adele.cilia.Node;
 import fr.liglab.adele.cilia.exceptions.CiliaIllegalParameterException;
 import fr.liglab.adele.cilia.exceptions.CiliaIllegalStateException;
 import fr.liglab.adele.cilia.exceptions.CiliaRuntimeException;
-import fr.liglab.adele.cilia.knowledge.Node;
 import fr.liglab.adele.cilia.knowledge.NodeRegistration;
 import fr.liglab.adele.cilia.knowledge.Topology;
 

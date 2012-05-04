@@ -15,8 +15,8 @@
 
 package fr.liglab.adele.cilia.knowledge.runtime;
 
+import fr.liglab.adele.cilia.Node;
 import fr.liglab.adele.cilia.exceptions.CiliaIllegalParameterException;
-import fr.liglab.adele.cilia.knowledge.Node;
 
 /**
  * thresolds on runtime data

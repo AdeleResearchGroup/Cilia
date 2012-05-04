@@ -5,7 +5,7 @@ import org.osgi.framework.BundleContext;
 import fr.liglab.adele.cilia.Adapter;
 import fr.liglab.adele.cilia.MediatorComponent;
 import fr.liglab.adele.cilia.model.ConstModel;
-import fr.liglab.adele.cilia.util.UUID;
+import fr.liglab.adele.cilia.util.Uuid;
 
 public class AdapterControllerImpl extends MediatorControllerImpl {
 

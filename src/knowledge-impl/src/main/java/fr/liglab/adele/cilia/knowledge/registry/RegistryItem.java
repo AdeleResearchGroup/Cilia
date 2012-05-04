@@ -18,8 +18,8 @@ package fr.liglab.adele.cilia.knowledge.registry;
 import java.util.Dictionary;
 
 import fr.liglab.adele.cilia.MediatorComponent;
+import fr.liglab.adele.cilia.Node;
 import fr.liglab.adele.cilia.framework.monitor.statevariable.ComponentStateVarService;
-import fr.liglab.adele.cilia.knowledge.Node;
 import fr.liglab.adele.cilia.knowledge.impl.DataNode;
 
 /**

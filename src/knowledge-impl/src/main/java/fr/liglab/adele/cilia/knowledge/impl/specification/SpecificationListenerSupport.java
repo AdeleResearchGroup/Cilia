@@ -31,8 +31,8 @@ import org.osgi.framework.ServiceReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import fr.liglab.adele.cilia.Node;
 import fr.liglab.adele.cilia.exceptions.CiliaIllegalParameterException;
-import fr.liglab.adele.cilia.knowledge.Node;
 import fr.liglab.adele.cilia.knowledge.NodeCallback;
 import fr.liglab.adele.cilia.knowledge.NodeRegistration;
 import fr.liglab.adele.cilia.knowledge.impl.Knowledge;
@@ -179,7 +179,6 @@ public class SpecificationListenerSupport implements TrackerCustomizer,
 			}
 			return null;
 		}
-
 	}
 
 	/**
@@ -210,7 +209,7 @@ public class SpecificationListenerSupport implements TrackerCustomizer,
 
 		public FirerChainEvent(int evt, String name) {
 			this.evt = evt;
-			dico.put(Node.CHAIN_ID, name);
+			dico.put(Knowledge.CHAIN_ID, name);
 		}
 
 		protected Object construct() throws Exception {
@@ -229,7 +228,7 @@ public class SpecificationListenerSupport implements TrackerCustomizer,
 				}
 
 				if (tofire) {
-					String chainId = (String) dico.get(Node.CHAIN_ID);
+					String chainId = (String) dico.get(Knowledge.CHAIN_ID);
 					switch (evt) {
 					case 0:
 						((ChainCallback) pairs.getKey()).arrival(chainId);
