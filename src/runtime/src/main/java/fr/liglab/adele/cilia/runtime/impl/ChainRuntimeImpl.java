@@ -28,7 +28,7 @@ import fr.liglab.adele.cilia.util.UUID;
 public class ChainRuntimeImpl implements ChainRuntime {
 	public int state;
 
-	private Date lastStart ;
+	private Date lastCommand ;
 
 	public ChainRuntimeImpl() {
 		state = STATE_IDLE;
@@ -44,12 +44,12 @@ public class ChainRuntimeImpl implements ChainRuntime {
 	}
 
 
-	public Date lastStart() {
-		return lastStart ;
+	public Date lastCommand() {
+		return lastCommand ;
 	}
 	
 	public void setLastDate() {
-		lastStart = new Date(System.currentTimeMillis());
+		lastCommand = new Date(System.currentTimeMillis());
 	}
 
 }

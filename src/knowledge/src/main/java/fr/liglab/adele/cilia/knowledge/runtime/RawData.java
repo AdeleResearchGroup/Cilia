@@ -15,9 +15,8 @@
 
 package fr.liglab.adele.cilia.knowledge.runtime;
 
-import java.util.List;
-
 import fr.liglab.adele.cilia.exceptions.CiliaIllegalParameterException;
+import fr.liglab.adele.cilia.exceptions.CiliaRuntimeException;
 import fr.liglab.adele.cilia.knowledge.Node;
 
 /**
@@ -31,8 +30,9 @@ public interface RawData extends Node {
 	/**
 	 * @param variableId
 	 * @return list of measures stored
+	 * @throws CiliaRuntimeException 
 	 */
-	public List measures(String variableId) throws CiliaIllegalParameterException;
+	public Measure[] measures(String variableId) throws CiliaIllegalParameterException;
 
 	/**
 	 * 

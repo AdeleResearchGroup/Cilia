@@ -15,6 +15,8 @@
 package fr.liglab.adele.cilia.model;
 
 import java.util.Dictionary;
+
+import fr.liglab.adele.cilia.exceptions.CiliaIllegalParameterException;
 /**
  * This class is the Element representation model.
  * 
@@ -32,7 +34,7 @@ public abstract class InternalComponent extends ComponentImpl {
 	private final Object lockObject = new Object(); 
 	
 	public InternalComponent(String id, String type, String nspace,
-			Dictionary properties) {
+			Dictionary properties)  {
 		super(id, type, nspace, properties);
 	}
 	/**

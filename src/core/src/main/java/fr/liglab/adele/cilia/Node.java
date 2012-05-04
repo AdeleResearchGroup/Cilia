@@ -13,34 +13,27 @@
  * limitations under the License.
  */
 
-package fr.liglab.adele.cilia.knowledge;
-
-import org.osgi.framework.InvalidSyntaxException;
-
-import fr.liglab.adele.cilia.exceptions.CiliaIllegalParameterException;
+package fr.liglab.adele.cilia;
 
 /**
- * Listener to events [node arrival / node departure] component
  * 
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project
  *         Team</a>
  * 
  */
-public interface NodeRegistration {
+public interface Node {
+	/**
+	 * @return chain id hosting the node
+	 */
+	String chainId();
 
 	/**
-	 * @param listener
-	 *            , listener to add
-	 * @throws InvalidSyntaxException
-	 * @throws CiliaIllegalParameterException
-	 * 
+	 * @return node name ( adapter or mediator )
 	 */
-	void addListener(String ldapFilter, NodeCallback listener)
-			throws CiliaIllegalParameterException, InvalidSyntaxException;
+	String nodeId();
 
 	/**
-	 * @param listener
-	 *            , listener to remove
+	 * @return unique Identifier
 	 */
-	void removeListener(NodeCallback listener) throws CiliaIllegalParameterException;
+	String uuid();
 }

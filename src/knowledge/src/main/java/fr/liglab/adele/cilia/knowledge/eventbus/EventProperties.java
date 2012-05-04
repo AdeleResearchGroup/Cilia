@@ -39,8 +39,8 @@ public interface EventProperties {
 	static final String TOPIC_DATA_UPDATE = "cilia/runtime/data/update";
 	
 	/* Events related to topic 'TOPIC_DYN_PROPERTIES */
-	static final int REGISTER = 1;
-	static final int UNREGISTER = 2 ;
+	static final int ARRIVAL = 1;
+	static final int DEPARTURE = 2 ;
 	/* Events related to topic 'TOPIC_DATA_UPDATE' */
 	static final int DATA_UPDATE = 3 ;
 	static final int DATA_VERY_LOW = 4 ;
@@ -60,8 +60,10 @@ public interface EventProperties {
 	static final int MODEL_ADAPTER_CREATE = 15 ;
 	static final int MODEL_ADAPTER_DELETE = 16 ;
 	
-	/* content of an event in the Event bus */
-	static final String EVENT_SOURCE_ID = "event.source.id" ;  /* String format */
+	/* content of an event stored in the Event Bus cache */
+	static final String EVENT_SOURCE_UUID = "event.source.uuid" ;  /* String format */
+	static final String EVENT_SOURCE_CHAIN_ID = "event.source.chain.id" ;
+	static final String EVENT_SOURCE_NODE_ID = "event.source.node.id" ;
 	static final String EVENT_TICK_NUMBER = "tick.number"; /* Long */
 	static final String EVENT_NUMBER ="event.number" ; /* Integer */
 	static final String EVENT_CACHED ="event.cached"; /* Boolean */

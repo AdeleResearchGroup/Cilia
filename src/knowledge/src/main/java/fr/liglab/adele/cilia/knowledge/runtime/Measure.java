@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright Adele Team LIG
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,26 +13,12 @@
  * limitations under the License.
  */
 
-package fr.liglab.adele.cilia.knowledge;
+package fr.liglab.adele.cilia.knowledge.runtime;
 
-/**
- * Constants for the knowledge at runtime
- * 
- * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project
- *         Team</a>
- * 
- */
-public interface Constants {
-	/**
-	 * Unique ID identifier
-	 */
-	static final String UUID = "uuid";
-	/**
-	 * chain 
-	 */
-	static final String CHAIN_ID = "chain";
-	/**
-	 * Cilia components (adapters, mediators)
-	 */
-	static final String NODE_ID = "node";
+public interface Measure  {
+
+	public Object value();
+
+	public long tickCounts();
+	
 }

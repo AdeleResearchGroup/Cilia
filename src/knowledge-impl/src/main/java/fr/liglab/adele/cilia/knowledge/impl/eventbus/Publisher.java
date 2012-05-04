@@ -17,6 +17,8 @@ package fr.liglab.adele.cilia.knowledge.impl.eventbus;
 
 import java.util.Map;
 
+import fr.liglab.adele.cilia.knowledge.Node;
+
 /**
  * Publisher to the event bus
  * 
@@ -47,7 +49,7 @@ public interface Publisher {
 	 * @param timestamp
 	 *            , number of ticks
 	 */
-	public void publish(String topic, int evt, String urn, long timestamp);
+	//public void publish(String topic, int evt, String urn, long timestamp);
 
 	/**
 	 * 
@@ -62,7 +64,9 @@ public interface Publisher {
 	 * @param isEventCached
 	 *            true event will be stored in the cache
 	 */
-	public void publish(String topic, int evt, String urn, long timestamp,
-			boolean isEventCached);
-
+	//public void publish(String topic, int evt, String urn, long timestamp,
+	//		boolean isEventCached);
+	
+	public void publish(String topic, Node node,int evt,long timestamp) ;
+	public void publish(String topic, Node node,int evt,long timestamp,boolean isEventCached) ;
 }

@@ -28,8 +28,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import fr.liglab.adele.cilia.exceptions.CiliaIllegalParameterException;
-import fr.liglab.adele.cilia.knowledge.Constants;
-import fr.liglab.adele.cilia.knowledge.UniformResourceName;
 import fr.liglab.adele.cilia.knowledge.impl.Knowledge;
 import fr.liglab.adele.cilia.knowledge.registry.RegistryItem;
 import fr.liglab.adele.cilia.knowledge.registry.RuntimeRegistry;
@@ -76,9 +74,11 @@ public class RegistryManager implements RuntimeRegistry {
 	 * (fr.liglab.adele.cilia.knowledge.core.registry.RegistryItem)
 	 */
 	public void register(RegistryItem obj) {
-		if (obj == null)
+		if ((obj == null) || (obj.uuid()==null)) {
+			logger.error("object or uuid is null , cannot be registered ");
 			return;
-		registry.put(obj.getProperties().get(Constants.UUID), obj);
+		}
+		registry.put(obj.uuid(), obj) ;
 		logger.debug("[{}] registered", obj.toString());
 	}
 
@@ -90,15 +90,17 @@ public class RegistryManager implements RuntimeRegistry {
 	 * (java.lang.String)
 	 */
 	public synchronized void unregister(String uuid) {
-		if ((uuid == null))
+		if ((uuid == null)) {
+			logger.error("uuid is null, cannot unregister object" );
 			return;
+		}
 		try {
 			Mutex mutex = (Mutex) locked_uuid.get(uuid);
 			if (mutex != null) {
 				/* avoid infinite wait */
 				if (mutex.attempt(10000) == false) {
 					unlock_uuid(uuid);
-					logger.error("uuid is locked since 10 seconds, automatic unlock done,"
+					logger.error("uuid is locked since 10 seconds, automatic unlock is done,"
 							+ "to avoid infinite lock");
 				}
 			}
@@ -124,17 +126,7 @@ public class RegistryManager implements RuntimeRegistry {
 	}
 
 	/*
-	 * public String dumpRegistry() { StringBuffer sb = new StringBuffer(); try
-	 * { registry.readerSync().acquire(); try { Iterator it =
-	 * registry.entrySet().iterator(); while (it.hasNext()) { Map.Entry pairs =
-	 * (Map.Entry) it.next(); RegistryItem item = (RegistryItem)
-	 * pairs.getValue(); sb.append(item.toString()).append("\n"); } return
-	 * sb.toString(); } finally { registry.readerSync().release(); } } catch
-	 * (Exception e) { Thread.currentThread().interrupt(); throw new
-	 * RuntimeException(e.getMessage()); } }
-	 */
-	/*
-	 * This uuid is locked temporaly (max 10 10seconds) from removal
+	 * This uuid is locked temporaly (max 10 seconds) from removal
 	 * (non-Javadoc)
 	 * 
 	 * @see
@@ -142,8 +134,10 @@ public class RegistryManager implements RuntimeRegistry {
 	 * (java.lang.String)
 	 */
 	public void lock_uuid(String uuid) {
-		if (uuid == null)
+		if (uuid == null) {
+			logger.error ("uuid is null , cannot lock uuid") ;
 			return;
+		}
 
 		if (!locked_uuid.containsKey(uuid)) {
 			try {
@@ -166,8 +160,10 @@ public class RegistryManager implements RuntimeRegistry {
 	 * (java.lang.String)
 	 */
 	public void unlock_uuid(String uuid) {
-		if (uuid == null)
+		if (uuid == null) {
+			logger.error ("uuid is null , cannot perform un_lock") ;
 			return;
+		}
 		Mutex mutex = (Mutex) locked_uuid.remove(uuid);
 		if (mutex != null)
 			mutex.release();
@@ -221,5 +217,4 @@ public class RegistryManager implements RuntimeRegistry {
 			item = (RegistryItem) registry.get(uuid);
 		return item;
 	}
-
 }

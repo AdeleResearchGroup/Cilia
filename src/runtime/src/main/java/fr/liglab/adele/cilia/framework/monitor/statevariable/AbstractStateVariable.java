@@ -30,16 +30,14 @@ import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.event.Event;
 import org.osgi.service.event.EventAdmin;
-import org.osgi.util.measurement.Measurement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import fr.liglab.adele.cilia.Data;
+import fr.liglab.adele.cilia.exceptions.CiliaRuntimeException;
 import fr.liglab.adele.cilia.framework.monitor.AbstractMonitor;
 import fr.liglab.adele.cilia.model.ComponentImpl;
 import fr.liglab.adele.cilia.model.ConstModel;
 import fr.liglab.adele.cilia.runtime.Const;
-import fr.liglab.adele.cilia.util.UUID;
 import fr.liglab.adele.cilia.util.Watch;
 import fr.liglab.adele.cilia.util.concurrent.ReadWriteLock;
 import fr.liglab.adele.cilia.util.concurrent.WriterPreferenceReadWriteLock;
@@ -64,10 +62,10 @@ public abstract class AbstractStateVariable extends AbstractMonitor implements
 	 */
 	public void configure(Element metadata, Dictionary configuration)
 			throws ConfigurationException {
-		String chainId, componentId,uuid;
+		String chainId, componentId, uuid;
 		chainId = (String) configuration.get(ConstModel.PROPERTY_CHAIN_ID);
 		componentId = (String) configuration.get(ConstModel.PROPERTY_COMPONENT_ID);
-		uuid =(String)configuration.get(ConstModel.PROPERTY_UUID);		
+		uuid = (String) configuration.get(ConstModel.PROPERTY_UUID);
 		m_properties.put(MONITOR_CHAIN_ID, chainId);
 		m_properties.put(MONITOR_NODE_ID, componentId);
 		m_properties.put(MONITOR_UUID, uuid);
@@ -134,82 +132,28 @@ public abstract class AbstractStateVariable extends AbstractMonitor implements
 		return refEventAdmin;
 	}
 
-	/*
-	 * 
-	 */
-	private Data dataToPublish(Object o, String stateVarId, String type) {
-		Data d = new Data(o, stateVarId, null);
-		d.setId((String) m_properties.get(MONITOR_UUID));
-		d.setType("measure");
-		return d;
-	}
-
-	private void firer(String stateVarId, long ticksCount, Data d) {
+	private void firer(String stateVarId, Object value, long ticksCount) {
 		EventAdmin m_eventAdmin;
 		ServiceReference refEventAdmin = retreiveEventAdmin();
 		if (refEventAdmin == null) {
 			logger.error("Unable to retrieve Event Admin");
 		} else {
+			/* gather data to be published */
+			Map data = new HashMap(4);
+			data.put(UUID, (String) m_properties.get(MONITOR_UUID));
+			data.put(SOURCE, stateVarId);
+			data.put(VALUE, value);
+			data.put(TIMESTAMP, new Long(ticksCount));
+
 			m_lastPublich.put(stateVarId, new Long(ticksCount));
 			m_eventAdmin = (EventAdmin) m_bundleContext.getService(refEventAdmin);
-			m_eventAdmin.postEvent(new Event(topic, d.getAllData()));
+			m_eventAdmin.postEvent(new Event(topic, data));
 			m_bundleContext.ungetService(refEventAdmin);
 			if (logger.isInfoEnabled()) {
 				logger.info("Component [" + m_qualifiedId + "] state-var [" + stateVarId
-						+ "] =" + d.getContent());
+						+ "] =" + data);
 			}
 		}
-	}
-
-	/**
-	 * Value is published in a asynchronous way only if the condition matches
-	 * 
-	 * @param stateVarId
-	 *            sate var unique Id
-	 * @param value
-	 *            double value to publish
-	 * @param ticksCount
-	 *            current ticks count ( timestamp at source level )
-	 */
-	protected void publish(String stateVarId, double value, long ticksCount) {
-		Condition cond;
-
-		long last_tickscount;
-		boolean fire;
-
-		if (stateVarId == null) {
-			throw new NullPointerException();
-		}
-
-		try {
-			m_lock.readLock().acquire();
-			try {
-				if (m_listStateVarEnable.contains(stateVarId)) {
-					cond = (Condition) m_listStateVariable.get(stateVarId);
-					Measurement m = new Measurement(value, 0, null, ticksCount);
-					Data d = dataToPublish(m, stateVarId, "measure");
-					if (cond != null) {
-						last_tickscount = ((Long) m_lastPublich.get(stateVarId))
-								.longValue();
-						fire = cond.match(
-								m,
-								Watch.fromTicksToMs(ticksCount)
-										- Watch.fromTicksToMs(last_tickscount));
-					} else {
-						fire = true;
-					}
-					if (fire) {
-						firer(stateVarId, ticksCount, d);
-					}
-				}
-			} finally {
-				m_lock.readLock().release();
-			}
-		} catch (InterruptedException e) {
-			Thread.currentThread().interrupt();
-			throw new RuntimeException(e.getMessage());
-		}
-
 	}
 
 	/**
@@ -221,36 +165,31 @@ public abstract class AbstractStateVariable extends AbstractMonitor implements
 	 *            object to publish
 	 * @param ticksCount
 	 *            current tick count ( timestamp at source level )
+	 * @throws CiliaRuntimeException
 	 */
 	protected void publish(String stateVarId, Object data, long ticksCount) {
 		long last_ticksCount;
 		Condition cond;
 		boolean fire;
 
-		if (stateVarId == null)
-			throw new NullPointerException();
-
 		try {
 			m_lock.readLock().acquire();
 			try {
-				if (m_listStateVarEnable.contains(stateVarId)) {
-					cond = (Condition) m_listStateVariable.get(stateVarId);
-					Data m = new Data(data);
-					Data d = dataToPublish(m, stateVarId, "data");
-
-					if (cond != null) {
-						last_ticksCount = ((Long) m_lastPublich.get(stateVarId))
-								.longValue();
-						fire = cond.match(ticksCount, Watch.fromTicksToMs(ticksCount)
-								- Watch.fromTicksToMs(last_ticksCount));
-					} else {
-						fire = true;
-						m_lastPublich.put(stateVarId, new Long(ticksCount));
-					}
-
-					if (fire)
-						firer(stateVarId, ticksCount, d);
+				cond = (Condition) m_listStateVariable.get(stateVarId);
+				if (cond != null) {
+					last_ticksCount = ((Long) m_lastPublich.get(stateVarId)).longValue();
+					fire = cond.match(
+							ticksCount,
+							Watch.fromTicksToMs(ticksCount)
+									- Watch.fromTicksToMs(last_ticksCount));
+				} else {
+					fire = true;
+					m_lastPublich.put(stateVarId, new Long(ticksCount));
 				}
+
+				if (fire)
+					firer(stateVarId, data, ticksCount);
+
 			} finally {
 				m_lock.readLock().release();
 			}
@@ -307,15 +246,6 @@ public abstract class AbstractStateVariable extends AbstractMonitor implements
 		}
 	}
 
-	/**
-	 * Insert a new state variable whithout condition
-	 * 
-	 * @param stateVarId
-	 *            unique state var identificator
-	 */
-	protected void addStateVarId(String stateVarId) {
-		addStateVarId(stateVarId, null);
-	}
 
 	/**
 	 * Insert a new state var
@@ -326,9 +256,6 @@ public abstract class AbstractStateVariable extends AbstractMonitor implements
 	 *            , ldap filter , condition to publish a new value
 	 */
 	protected void addStateVarId(String stateVarId, String ldapFilter) {
-		if (stateVarId == null)
-			throw new NullPointerException();
-		ComponentImpl.checkID(stateVarId);
 		try {
 			m_lock.writeLock().acquire();
 			try {

@@ -302,6 +302,7 @@ public class CiliaContextImpl implements CiliaContext {
 				ci.stop();
 				ChainRuntimeImpl chainRt = (ChainRuntimeImpl)chainRuntime.get(chainId);
 				chainRt.setState(ChainRuntime.STATE_STOPPED);
+				chainRt.setLastDate();
 				eventNotifier.publish(chainId, CiliaEvent.EVENT_CHAIN_STOPPED);
 				logger.info("Chain [{}] stopped",chainId);
 			} else {

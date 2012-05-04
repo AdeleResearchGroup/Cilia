@@ -17,7 +17,10 @@ package fr.liglab.adele.cilia.knowledge.registry;
 
 import java.util.Dictionary;
 
+import fr.liglab.adele.cilia.MediatorComponent;
+import fr.liglab.adele.cilia.framework.monitor.statevariable.ComponentStateVarService;
 import fr.liglab.adele.cilia.knowledge.Node;
+import fr.liglab.adele.cilia.knowledge.impl.DataNode;
 
 /**
  * Objects stored in the registry
@@ -53,14 +56,20 @@ public interface RegistryItem extends Node {
 
 	/**
 	 * 
-	 * @return object ( mediator handler , adapter handler ,etc... )
+	 * @return object reference to monitor mediator handler or monitor adapter
+	 *         handler
 	 */
-	Object objectRef();
+	ComponentStateVarService runtimeReference();
 
 	/**
 	 * 
-	 * @return node reference ( mediator , adapter at runtime )
+	 * @return reference to objects storing data received at runtime
 	 */
-	Object nodeReference();
+	DataNode dataRuntimeReference();
+
+	/**
+	 * @return Specification model 
+	 */
+	MediatorComponent specificationReference();
 
 }

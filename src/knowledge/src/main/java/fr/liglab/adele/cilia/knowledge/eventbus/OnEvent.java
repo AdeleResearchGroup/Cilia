@@ -30,11 +30,10 @@ public interface OnEvent {
 	 * @param eventNumber
 	 *            , event number
 	 * @param source resource identfication
-	 *            , = uuid or urn:uuid:state.var.name 
 	 * @param timeStamp
 	 *            , event timestamp (#ticks)
 	 * @param param
-	 *            , additional parameters (setted during publishing)
+	 *            , additional parameters (setted by publication)
 	 */
 	void onEvent(int eventNumber, String source, long timeStamp, Dictionary param) ;
 }

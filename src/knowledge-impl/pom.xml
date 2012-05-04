@@ -126,13 +126,11 @@
 							fr.liglab.adele.cilia.util.concurrent,
 							fr.liglab.adele.cilia.exceptions,
 							fr.liglab.adele.cilia.framework.monitor.statevariable,
-							fr.liglab.adele.cilia.framework.utils,
 							fr.liglab.adele.cilia.specification,
 
 							org.osgi.framework,
 							org.apache.felix.ipojo.util,
 							
-							org.osgi.util.measurement,
 							org.osgi.service.event,
 							org.slf4j
 						</Import-Package>
@@ -168,8 +166,8 @@
 				<artifactId>maven-compiler-plugin</artifactId>
 				<configuration>
 					<debug>false</debug>
-					<source>1.5</source>
-					<target>1.5</target>
+					<source>1.4</source>
+					<target>1.4</target>
 				</configuration>
 			</plugin>
 		</plugins>

@@ -15,11 +15,23 @@
 
 package fr.liglab.adele.cilia.knowledge.impl.specification;
 
+import java.util.ArrayList;
+import java.util.Dictionary;
+import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Iterator;
+import java.util.Map;
 
+import org.apache.felix.ipojo.util.Tracker;
+import org.apache.felix.ipojo.util.TrackerCustomizer;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.Filter;
+import org.osgi.framework.InvalidSyntaxException;
+import org.osgi.framework.ServiceReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import fr.liglab.adele.cilia.exceptions.CiliaIllegalParameterException;
 import fr.liglab.adele.cilia.knowledge.Node;
 import fr.liglab.adele.cilia.knowledge.NodeCallback;
 import fr.liglab.adele.cilia.knowledge.NodeRegistration;
@@ -27,60 +39,142 @@ import fr.liglab.adele.cilia.knowledge.impl.Knowledge;
 import fr.liglab.adele.cilia.knowledge.specification.ChainCallback;
 import fr.liglab.adele.cilia.knowledge.specification.ChainRegistration;
 import fr.liglab.adele.cilia.knowledge.util.SwingWorker;
-import fr.liglab.adele.cilia.util.concurrent.CopyOnWriteArrayList;
+import fr.liglab.adele.cilia.util.concurrent.ReentrantWriterPreferenceReadWriteLock;
+import fr.liglab.adele.cilia.util.concurrent.SyncMap;
 
 /**
  * 
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project
  *         Team</a>
- *
+ * 
  */
-public class SpecificationListenerSupport implements ChainRegistration, NodeRegistration {
+public class SpecificationListenerSupport implements TrackerCustomizer,
+		ChainRegistration, NodeRegistration {
 
 	private final Logger logger = LoggerFactory.getLogger(Knowledge.LOG_NAME);
-	private CopyOnWriteArrayList listenerNode = new CopyOnWriteArrayList();
-	private CopyOnWriteArrayList listenerChain = new CopyOnWriteArrayList();
 
-	public void removeAllListener() {
+	private static final String NODE_APPLICATION_LISTENER = "cilia.application.node";
+	private static final String CHAIN_APPLICATION_LISTENER = "cilia.application.chain";
+	private static final String FILTER = "(|(cilia.application.node=*)(cilia.application.chain=*))";
+
+	private SyncMap listenerNode;
+	private SyncMap listenerChain;
+	private BundleContext bundleContext;
+	private Tracker tracker;
+
+	public SpecificationListenerSupport(BundleContext bc) {
+		bundleContext = bc;
+		listenerNode = new SyncMap(new HashMap(),
+				new ReentrantWriterPreferenceReadWriteLock());
+		listenerChain = new SyncMap(new HashMap(),
+				new ReentrantWriterPreferenceReadWriteLock());
+	}
+
+	public void start() {
+		registerTracker();
+	}
+
+	public void stop() {
+		unRegisterTracker();
 		listenerNode.clear();
+		listenerChain.clear();
 	}
 
-	public void addListener(NodeCallback listener) {
-		if (listener != null)
-			this.listenerNode.addIfAbsent(listener);
+	/* register the listener tracker */
+	private void registerTracker() {
+		if (tracker == null) {
+			try {
+				tracker = new Tracker(bundleContext, bundleContext.createFilter(FILTER),
+						this);
+				tracker.open();
+			} catch (InvalidSyntaxException e) {
+				/* never happens */
+			}
+		}
+
 	}
 
-	public void removeListener(NodeCallback listener) {
-		if (listener != null)
-			this.listenerNode.remove(listener);
+	/* unregister the listener tracker */
+	private void unRegisterTracker() {
+		if (tracker != null) {
+			tracker.close();
+		}
+	}
+
+	/* insert a new listener ,associated to a ldap filter */
+	protected void addFilterListener(Map map, String filter, Object listener)
+			throws CiliaIllegalParameterException, InvalidSyntaxException {
+		if (listener == null)
+			throw new CiliaIllegalParameterException("listener is null");
+		if (!map.containsKey(listener)) {
+			map.put(listener, new ArrayList());
+		}
+		((ArrayList) map.get(listener)).add(Knowledge.createFilter(filter));
+	}
+
+	/* Remove a listener */
+	protected void removeFilterListener(Map map, Object listener)
+			throws CiliaIllegalParameterException {
+		if (listener == null)
+			throw new CiliaIllegalParameterException("listener is null");
+		map.remove(listener);
+	}
+
+	/**
+	 * Node listener
+	 * 
+	 * @throws InvalidSyntaxException
+	 * @throws CiliaIllegalParameterException
+	 */
+	public void addListener(String ldapFilter, NodeCallback listener)
+			throws CiliaIllegalParameterException, InvalidSyntaxException {
+		addFilterListener(listenerNode, ldapFilter, listener);
+	}
+
+	/**
+	 * remove a listener
+	 */
+	public void removeListener(NodeCallback listener)
+			throws CiliaIllegalParameterException {
+		removeFilterListener(listenerNode, listener);
 	}
 
 	public void fireEventNode(boolean arrival, Node component) {
 		if (!listenerNode.isEmpty())
-			new Firer(arrival, component).start();
+			new NodeFirer(arrival, component).start();
 	}
 
 	/* Run in a thread MIN_PRIORITY+1 */
-	private class Firer extends SwingWorker {
+	private class NodeFirer extends SwingWorker {
 		private boolean arrival;
-		private Node component;
+		private Node node;
 
-		public Firer(boolean arrival, Node component) {
+		public NodeFirer(boolean arrival, Node node) {
 			this.arrival = arrival;
-			this.component = component;
+			this.node = node;
 		}
 
 		protected Object construct() throws Exception {
-			Iterator it = listenerNode.listIterator();
+			/* iterates over listeners */
+			Iterator it = listenerNode.entrySet().iterator();
 			while (it.hasNext()) {
-				try {
-					NodeCallback subscriber = (NodeCallback) it.next();
+				/*
+				 * call one time listener matching filter
+				 */
+				Map.Entry pairs = (Map.Entry) it.next();
+				ArrayList filters = (ArrayList) pairs.getValue();
+				boolean tofire = false;
+				for (int i = 0; i < filters.size(); i++) {
+					if (Knowledge.isNodeMatching((Filter) filters.get(i), node)) {
+						tofire = true;
+						break;
+					}
+				}
+				if (tofire) {
 					if (arrival)
-						subscriber.arrival(component);
+						((NodeCallback) pairs.getKey()).arrival(node);
 					else
-						subscriber.departure(component);
-				} catch (Exception e) {
-					logger.error("error while dispatching 'fireEvent'");
+						((NodeCallback) pairs.getKey()).departure(node);
 				}
 			}
 			return null;
@@ -88,59 +182,129 @@ public class SpecificationListenerSupport implements ChainRegistration, NodeRegi
 
 	}
 
-	/* ----------- */
-
-	public void addListener(ChainCallback listener) {
-		if (listener != null)
-			this.listenerChain.addIfAbsent(listener);
+	/**
+	 * Add a listener chain
+	 */
+	public void addListener(String ldapFilter, ChainCallback listener)
+			throws CiliaIllegalParameterException, InvalidSyntaxException {
+		addFilterListener(listenerChain, ldapFilter, listener);
 	}
 
-	public void removeListener(ChainCallback listener) {
-		if (listener != null)
-			this.listenerChain.remove(listener);
+	/**
+	 * Remove a listener chain
+	 */
+	public void removeListener(ChainCallback listener)
+			throws CiliaIllegalParameterException {
+		removeFilterListener(listenerChain, listener);
 	}
 
 	public void fireEventChain(int evt, String name) {
-		if (!listenerNode.isEmpty())
+		if ((!listenerChain.isEmpty()) && name != null)
 			new FirerChainEvent(evt, name);
 	}
 
 	/* Run in a thread MIN_PRIORITY+1 */
 	private class FirerChainEvent extends SwingWorker {
 		private int evt;
-		private String chainId;
+		private Dictionary dico = new Hashtable(1);
 
 		public FirerChainEvent(int evt, String name) {
 			this.evt = evt;
-			this.chainId = name;
+			dico.put(Node.CHAIN_ID, name);
 		}
 
 		protected Object construct() throws Exception {
-			Iterator it = listenerNode.listIterator();
+			Iterator it = listenerNode.keySet().iterator();
+
 			while (it.hasNext()) {
-				try {
-					ChainCallback subscriber = (ChainCallback) it.next();
-					switch (evt) {
-					case 0:
-						subscriber.arrival(chainId);
-						break;
-					case 1:
-						subscriber.departure(chainId);
-						break;
-					case 2:
-						subscriber.started(chainId);
-						break;
-					case 3:
-						subscriber.stopped(chainId);
+				Map.Entry pairs = (Map.Entry) it.next();
+				ArrayList filters = (ArrayList) pairs.getValue();
+				boolean tofire = false;
+				for (int i = 0; i < filters.size(); i++) {
+
+					if (((Filter) filters.get(i)).match(dico)) {
+						tofire = true;
 						break;
 					}
-				} catch (Exception e) {
-					logger.error("error while dispatching 'fireEvent'");
 				}
+
+				if (tofire) {
+					String chainId = (String) dico.get(Node.CHAIN_ID);
+					switch (evt) {
+					case 0:
+						((ChainCallback) pairs.getKey()).arrival(chainId);
+						break;
+					case 1:
+						((ChainCallback) pairs.getKey()).departure(chainId);
+						break;
+					case 2:
+						((ChainCallback) pairs.getKey()).started(chainId);
+						break;
+					case 3:
+						((ChainCallback) pairs.getKey()).stopped(chainId);
+						break;
+					}
+				}
+
 			}
 			return null;
 		}
 
+	}
+
+	/* remove a listener tracked */
+	private void extractService(Object service) {
+		try {
+			removeFilterListener(listenerChain, service);
+			removeFilterListener(listenerNode, service);
+		} catch (CiliaIllegalParameterException e) {
+		}
+	}
+	
+	/* insert a new listener tracked */
+	private void insertService(ServiceReference reference) {
+		String ldapFilter;
+		Object service = bundleContext.getService(reference);
+
+		ldapFilter = (String) reference.getProperty(NODE_APPLICATION_LISTENER);
+		if (ldapFilter != null) {
+			/* checks if the interface is implemented */
+			try {
+				if (service instanceof NodeCallback) {
+					addFilterListener(listenerNode, ldapFilter, service);
+				}
+			} catch (Exception e) {
+				logger.error("Cannot add a listener ");
+			}
+		}
+		ldapFilter = (String) reference.getProperty(CHAIN_APPLICATION_LISTENER);
+		if (ldapFilter != null) {
+			/* checks if the interface is implemented */
+			try {
+				if (service instanceof ChainCallback) {
+					addFilterListener(listenerChain, ldapFilter, service);
+				}
+			} catch (Exception e) {
+				logger.error("Cannot add a listener ");
+			}
+		}
+	}
+	
+	public boolean addingService(ServiceReference reference) {
+		return true;
+	}
+
+	public void addedService(ServiceReference reference) {
+		insertService(reference);
+	}
+
+	public void modifiedService(ServiceReference reference, Object service) {
+		extractService(service);
+		insertService(reference);
+	}
+
+	public void removedService(ServiceReference reference, Object service) {
+		extractService(service);
 	}
 
 }

@@ -19,7 +19,10 @@ import org.osgi.framework.InvalidSyntaxException;
 
 import fr.liglab.adele.cilia.exceptions.CiliaIllegalParameterException;
 import fr.liglab.adele.cilia.framework.monitor.statevariable.ComponentStateVarService;
+import fr.liglab.adele.cilia.knowledge.Registry;
 import fr.liglab.adele.cilia.knowledge.impl.Knowledge;
+import fr.liglab.adele.cilia.knowledge.registry.RegistryItem;
+import fr.liglab.adele.cilia.knowledge.registry.RuntimeRegistry;
 
 /**
  * Node = [mediator,adapter] at execution time
@@ -28,20 +31,18 @@ import fr.liglab.adele.cilia.knowledge.impl.Knowledge;
  *         Team</a>
  * 
  */
-public class NodeImpl extends AbstractNode {
+public class DataNodeImpl extends AbstractDataNode {
 
 	private ComponentStateVarService mediatorHandler;
-
-	public NodeImpl(String uuid, String chain, String node) {
-		super(uuid, chain, node);
+	
+	public DataNodeImpl(String uuid, RuntimeRegistry registry) {
+		RegistryItem item = registry.findByUuid(uuid) ;
+		super.chainId = item.chainId();
+		super.nodeId = item.nodeId();
+		super.uuid = uuid ;
+		mediatorHandler = item.runtimeReference() ;
 	}
 
-	/*
-	 * Store the reference to the real object ( mediator / adapter handler )
-	 */
-	public void setReference(Object ref) {
-		mediatorHandler = (ComponentStateVarService) ref;
-	}
 
 	/* return the list of state variables 'category system call' */
 	public String[] systemVariable() {

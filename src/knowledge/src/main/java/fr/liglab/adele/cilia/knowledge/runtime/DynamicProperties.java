@@ -15,6 +15,8 @@
 
 package fr.liglab.adele.cilia.knowledge.runtime;
 
+import java.util.Date;
+
 import org.osgi.framework.InvalidSyntaxException;
 
 import fr.liglab.adele.cilia.exceptions.CiliaIllegalParameterException;
@@ -32,8 +34,32 @@ import fr.liglab.adele.cilia.knowledge.Topology;
  * 
  */
 public interface DynamicProperties extends Topology, NodeRegistration,
-		ThresholdsRegistration, Registry {
+		MeasuresRegistration, Registry {
+	/**
+	 * @return list of chain Id
+	 */
+	String[] getChains();
 
+	/**
+	 * 
+	 * @param chainId
+	 * @return 0=IDLE, 1 = STARTED , 2 = STOPPED
+	 * @throws CiliaIllegalParameterException,CiliaIllegalStateException
+	 */
+	int getChainState(String chainId) throws CiliaIllegalParameterException,
+			CiliaIllegalStateException;
+
+	/**
+	 * Return last Command start or stop level chain
+	 * 
+	 * @param chainId
+	 * @return
+	 * @throws CiliaIllegalParameterException
+	 * @throws CiliaIllegalStateException
+	 */
+	Date lastCommand(String chainId) throws CiliaIllegalParameterException,
+			CiliaIllegalStateException;
+	
 	/**
 	 * 
 	 * @param ldapFilter

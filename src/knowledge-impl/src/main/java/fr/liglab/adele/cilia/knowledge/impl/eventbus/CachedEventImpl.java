@@ -26,12 +26,18 @@ import fr.liglab.adele.cilia.knowledge.eventbus.CachedEvent;
 public class CachedEventImpl implements CachedEvent {
 	private final int  event ;
 	private final long timeStamp ;
-	private final String source ;
+	private final String uuid ;
+	private final String chainId;
+	private final String nodeId ;
 	
-	public CachedEventImpl(int event,long timestamp,String source) {
+
+	
+	public CachedEventImpl(int event,long timestamp,String uuid,String chainId, String nodeId) {
 		this.event=event ;
 		this.timeStamp=timestamp;
-		this.source=source;
+		this.uuid = uuid;
+		this.chainId=chainId;
+		this.nodeId = nodeId;
 	}
 	
 	public int eventNumber() {
@@ -42,16 +48,28 @@ public class CachedEventImpl implements CachedEvent {
 		return timeStamp ;
 	}
 	
-	public String source() {
-		return source;
+	public String chainId() {
+		return chainId;
 	}
+
+	public String nodeId() {
+		return nodeId ;
+	}
+
+	public String uuid() {
+		return uuid ;
+	}
+
 	
 	public String toString () {
 		StringBuffer sb = new StringBuffer();
 		sb.append("event #").append(event);
 		sb.append("tick number #").append(timeStamp);
-		sb.append("Source [").append(source).append("]");
+		sb.append("Node [ uuid").append(uuid);
+		sb.append(", qualified id ").append(chainId).append("/").append(nodeId);
+		sb.append("]");
 		return sb.toString();
 	}
+
 
 }

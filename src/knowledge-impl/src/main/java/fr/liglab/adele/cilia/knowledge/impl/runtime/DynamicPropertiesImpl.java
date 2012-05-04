@@ -14,7 +14,8 @@
 
 package fr.liglab.adele.cilia.knowledge.impl.runtime;
 
-import java.util.Dictionary;
+import java.util.Collections;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
@@ -29,13 +30,11 @@ import fr.liglab.adele.cilia.Binding;
 import fr.liglab.adele.cilia.Chain;
 import fr.liglab.adele.cilia.CiliaContext;
 import fr.liglab.adele.cilia.Mediator;
+import fr.liglab.adele.cilia.MediatorComponent;
 import fr.liglab.adele.cilia.exceptions.CiliaIllegalParameterException;
 import fr.liglab.adele.cilia.exceptions.CiliaIllegalStateException;
-import fr.liglab.adele.cilia.knowledge.Constants;
 import fr.liglab.adele.cilia.knowledge.Node;
-import fr.liglab.adele.cilia.knowledge.eventbus.EventProperties;
-import fr.liglab.adele.cilia.knowledge.eventbus.OnEvent;
-import fr.liglab.adele.cilia.knowledge.eventbus.SubscriberRegistration;
+import fr.liglab.adele.cilia.knowledge.NodeCallback;
 import fr.liglab.adele.cilia.knowledge.impl.Knowledge;
 import fr.liglab.adele.cilia.knowledge.impl.eventbus.Publisher;
 import fr.liglab.adele.cilia.knowledge.impl.registry.RegistryItemImpl;
@@ -45,8 +44,8 @@ import fr.liglab.adele.cilia.knowledge.runtime.DynamicProperties;
 import fr.liglab.adele.cilia.knowledge.runtime.RawData;
 import fr.liglab.adele.cilia.knowledge.runtime.SetUp;
 import fr.liglab.adele.cilia.knowledge.runtime.Thresholds;
+import fr.liglab.adele.cilia.model.ChainRuntime;
 import fr.liglab.adele.cilia.model.PatternType;
-import fr.liglab.adele.cilia.util.UUID;
 import fr.liglab.adele.cilia.util.concurrent.ReadWriteLock;
 import fr.liglab.adele.cilia.util.concurrent.WriterPreferenceReadWriteLock;
 
@@ -58,14 +57,12 @@ import fr.liglab.adele.cilia.util.concurrent.WriterPreferenceReadWriteLock;
  *         Team</a>
  */
 public class DynamicPropertiesImpl extends NodeListenerSupport implements
-		DynamicProperties, OnEvent {
+		DynamicProperties, NodeCallback {
 
 	private final Logger logger = LoggerFactory.getLogger(Knowledge.LOG_NAME);
 
 	/* injected by ipojo , registry access */
 	private RuntimeRegistry registry;
-	/* Bus event , to subscribe to event from discovery */
-	private SubscriberRegistration subscriber;
 	/* Bus Event , publisher */
 	private Publisher publisher;
 	/* Cilia components discovery (adapters, mediators) */
@@ -75,9 +72,12 @@ public class DynamicPropertiesImpl extends NodeListenerSupport implements
 	/* holds values fired by mediators/adapters */
 	private StateVariablesListener chainRt;
 	private ReadWriteLock mutex;
+	private BundleContext bundleContext ;
 
 	public DynamicPropertiesImpl(BundleContext bc) {
-		discovery = new NodeDiscoveryImpl(bc);
+		super(bc);
+		bundleContext = bc ;
+		discovery = new NodeDiscoveryImpl(bc, this);
 		chainRt = new StateVariablesListener(bc, this);
 		mutex = new WriterPreferenceReadWriteLock();
 	}
@@ -86,14 +86,11 @@ public class DynamicPropertiesImpl extends NodeListenerSupport implements
 	 * Start the service
 	 */
 	public void start() {
+		super.start() ;
 		discovery.setPublisher(publisher);
 		discovery.setRegistry(registry);
 		chainRt.setPublisher(publisher);
 		chainRt.setRegistry(registry);
-		/* Subscribes to Events published by the discovery */
-		subscriber.subscribe(EventProperties.TOPIC_DYN_PROPERTIES, this);
-		/* Register state variables from the Cilia's machine */
-		frameworkRegister();
 		/* Start listening state variables */
 		chainRt.start();
 		/* Start runtime discovery */
@@ -105,9 +102,9 @@ public class DynamicPropertiesImpl extends NodeListenerSupport implements
 	 * Stop the service
 	 */
 	public void stop() {
+		super.stop();
 		chainRt.stop();
 		discovery.stop();
-		subscriber.unSubscribe(this);
 		logger.info("ModelS@RunTime 'Dynamic properties' - stopped");
 	}
 
@@ -115,7 +112,12 @@ public class DynamicPropertiesImpl extends NodeListenerSupport implements
 		try {
 			mutex.writeLock().acquire();
 			try {
+				RegistryItem item = registry.findByUuid(uuid);
+				/* Store in the registry the specification reference */
+				((RegistryItemImpl)item).setSpecificationReference(getModel(item));
 				chainRt.addNode(uuid);
+			} catch (Exception e) {
+				logger.error("Internal error, cannot retrieve mediatorComponent reference");
 			} finally {
 				mutex.writeLock().release();
 			}
@@ -140,17 +142,12 @@ public class DynamicPropertiesImpl extends NodeListenerSupport implements
 		}
 	}
 
-	/* Event fired by the discovery */
-	public void onEvent(int evt, String uuid, long timeStamp, Dictionary param) {
-		switch (evt) {
-		case EventProperties.REGISTER:
-			addNode(uuid);
-			break;
-		case EventProperties.UNREGISTER:
-			removeNode(uuid);
-			break;
-		}
+	public void arrival(Node node) {
+		addNode(node.uuid());
+	}
 
+	public void departure(Node node) {
+		removeNode(node.uuid());
 	}
 
 	/*
@@ -255,18 +252,6 @@ public class DynamicPropertiesImpl extends NodeListenerSupport implements
 		}
 	}
 
-	/* register the framework */
-	private void frameworkRegister() {
-
-		String uuid = UUID.generate().toString();
-		RegistryItem item;
-
-		item = new RegistryItemImpl(uuid, "cilia.framework.engine", null, null);
-		/* insert in the registry the uuid and the object */
-		registry.register(item);
-
-	}
-
 	/* retreives adapters in or out */
 	private Node[] getEndpoints(String ldapFilter, PatternType type)
 			throws InvalidSyntaxException, CiliaIllegalParameterException {
@@ -321,8 +306,8 @@ public class DynamicPropertiesImpl extends NodeListenerSupport implements
 	 */
 	private static String makefilter(String chain, String node) {
 		StringBuffer sb = new StringBuffer("(&(");
-		sb.append(Constants.CHAIN_ID).append("=").append(chain);
-		sb.append(")(").append(Constants.NODE_ID).append("=").append(node);
+		sb.append(Node.CHAIN_ID).append("=").append(chain);
+		sb.append(")(").append(Node.NODE_ID).append("=").append(node);
 		sb.append("))");
 		return sb.toString();
 	}
@@ -357,7 +342,6 @@ public class DynamicPropertiesImpl extends NodeListenerSupport implements
 			} catch (CiliaIllegalParameterException e) {
 				logger.error("Internal parameter ! null");
 			}
-
 		}
 		return (Node[]) nodeSet.toArray(new Node[nodeSet.size()]);
 	}
@@ -410,7 +394,8 @@ public class DynamicPropertiesImpl extends NodeListenerSupport implements
 	 * (java.lang.String)
 	 */
 
-	public Node[] connectedTo(String ldapFilter) throws InvalidSyntaxException, CiliaIllegalParameterException {
+	public Node[] connectedTo(String ldapFilter) throws InvalidSyntaxException,
+			CiliaIllegalParameterException {
 		RegistryItem[] item = registry.findByFilter(ldapFilter);
 		Node[] nodes = new Node[0];
 
@@ -495,4 +480,77 @@ public class DynamicPropertiesImpl extends NodeListenerSupport implements
 			throw new CiliaIllegalParameterException("uuid is null !");
 		return registry.findByUuid(uuid);
 	}
+
+	private MediatorComponent getModel(Node node) throws CiliaIllegalParameterException,
+			CiliaIllegalStateException {
+		if (node == null)
+			throw new CiliaIllegalParameterException("node is null !");
+		Chain chain;
+		MediatorComponent mc;
+		try {
+			ciliaContext.getMutex().readLock().acquire();
+			try {
+				chain = ciliaContext.getChain(node.chainId());
+				if (chain == null) /* chain not found */
+					throw new IllegalStateException(node.chainId() + " not existing !");
+				mc = chain.getAdapter(node.nodeId());
+				/* checks Adapter or mediator */
+				if (mc == null)
+					mc = chain.getMediator(node.nodeId());
+				if (mc == null)
+					throw new IllegalStateException(node.chainId() + "/" + node.nodeId()
+							+ " not existing !");
+			} finally {
+				ciliaContext.getMutex().readLock().release();
+			}
+		} catch (InterruptedException e) {
+			Thread.currentThread().interrupt();
+			throw new RuntimeException(e.getMessage());
+		}
+		return mc;
+	}
+
+	public String[] getChains() {
+		Set chainSet;
+		try {
+			ciliaContext.getMutex().readLock().acquire();
+			chainSet = ciliaContext.getAllChains();
+		} catch (InterruptedException e) {
+			chainSet = Collections.EMPTY_SET;
+		} finally {
+			ciliaContext.getMutex().readLock().release();
+		}
+		Set setName = new HashSet();
+		if (chainSet == null) {
+			chainSet = Collections.EMPTY_SET;
+		}
+		Iterator it = chainSet.iterator();
+		while (it.hasNext()) {
+			Chain c = (Chain) it.next();
+			setName.add(c.getId());
+		}
+		return (String[]) setName.toArray(new String[setName.size()]);
+
+	}
+
+	public int getChainState(String chainId) throws CiliaIllegalParameterException,
+			CiliaIllegalStateException {
+		if (chainId == null)
+			throw new CiliaIllegalParameterException("chain id is null");
+		ChainRuntime chain = ciliaContext.getChainRuntime(chainId);
+		if (chain == null)
+			throw new CiliaIllegalStateException("'" + chainId + "' not found");
+		return chain.getState();
+	}
+
+	public Date lastCommand(String chainId) throws CiliaIllegalParameterException,
+			CiliaIllegalStateException {
+		if (chainId == null)
+			throw new CiliaIllegalParameterException("chain id is null");
+		ChainRuntime chain = ciliaContext.getChainRuntime(chainId);
+		if (chain == null)
+			throw new CiliaIllegalStateException("'" + chainId + "' not found");
+		return chain.lastCommand();
+	}
+
 }

@@ -14,9 +14,9 @@ public class AdapterControllerImpl extends MediatorControllerImpl {
 	}
 
 	protected void updateProperties(){
-		mediatorModel.setProperty(ConstModel.PROPERTY_COMPONENT_ID, mediatorModel.getId());
-		mediatorModel.setProperty(ConstModel.PROPERTY_CHAIN_ID, mediatorModel.getChain().getId());
-		mediatorModel.setProperty(ConstModel.PROPERTY_UUID, UUID.generate().toString());
+		mediatorModel.setProperty(ConstModel.PROPERTY_COMPONENT_ID, mediatorModel.nodeId());
+		mediatorModel.setProperty(ConstModel.PROPERTY_CHAIN_ID, mediatorModel.chainId());
+		mediatorModel.setProperty(ConstModel.PROPERTY_UUID,mediatorModel.uuid());
 	}
 
 	protected String createComponentFilter (MediatorComponent mediator) {

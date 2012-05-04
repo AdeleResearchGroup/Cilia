@@ -25,8 +25,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import fr.liglab.adele.cilia.exceptions.CiliaIllegalParameterException;
+import fr.liglab.adele.cilia.exceptions.CiliaRuntimeException;
 import fr.liglab.adele.cilia.knowledge.eventbus.EventProperties;
+import fr.liglab.adele.cilia.knowledge.impl.DataNode;
 import fr.liglab.adele.cilia.knowledge.impl.Knowledge;
+import fr.liglab.adele.cilia.knowledge.registry.RuntimeRegistry;
+import fr.liglab.adele.cilia.knowledge.runtime.Measure;
 import fr.liglab.adele.cilia.knowledge.runtime.RawData;
 import fr.liglab.adele.cilia.knowledge.runtime.SetUp;
 import fr.liglab.adele.cilia.knowledge.runtime.Thresholds;
@@ -41,36 +45,31 @@ import fr.liglab.adele.cilia.util.concurrent.SyncList;
  *         Team</a>
  * 
  */
-public abstract class AbstractNode implements SetUp, RawData, Thresholds {
+public abstract class AbstractDataNode implements DataNode {
 
 	protected final Logger logger = LoggerFactory.getLogger(Knowledge.LOG_NAME);
 
 	private static final int NB_THRESHOLD = 4;
 
 	/* unique identifier */
-	protected final String uuid;
-	protected final String chain;
-	protected final String node;
-
+	protected String uuid;
+	protected String chainId; 
+	protected String nodeId;
+	
 	/* list of variables managed by this component */
 	protected Map stateVariables = new ConcurrentReaderHashMap();
 
-	public AbstractNode(String uuid, String chain, String node) {
-		this.uuid = uuid;
-		this.chain = chain;
-		this.node = node;
-	}
 
 	public String uuid() {
 		return uuid;
 	}
 
 	public String chainId() {
-		return chain;
+		return chainId ;
 	}
 
 	public String nodeId() {
-		return node;
+		return nodeId;
 	}
 
 	public void setLow(String variableId, double low, double verylow) throws CiliaIllegalParameterException {
@@ -125,20 +124,20 @@ public abstract class AbstractNode implements SetUp, RawData, Thresholds {
 		return measures.getVeryHigh();
 	}
 
-	public List measures(String variableId)   {
-		List m;
+	public Measure[] measures(String variableId) throws CiliaIllegalParameterException   {
+		Measure[] m;
 		if (variableId == null)
-			throw new RuntimeException("Variable id must not be null !");
+			throw new CiliaIllegalParameterException("Variable id must not be null !");
 		/* retreive the component */
 		Observations measures = (Observations) stateVariables.get(variableId);
 		if (measures != null) {
 			m = measures.getMeasure();
 		} else
-			m = Collections.EMPTY_LIST;
+			m = new Measure[0];
 		return m;
 	}
 
-	public int addMeasure(String variableId, Object obj) {
+	public int addMeasure(String variableId, Measure obj) {
 		int evt = -1;
 		/* retreive the component */
 		Observations measures = (Observations) stateVariables.get(variableId);
@@ -167,7 +166,7 @@ public abstract class AbstractNode implements SetUp, RawData, Thresholds {
 			}
 		}
 
-		public int addMeasure(Object m) {
+		public int addMeasure(Measure m) {
 			try {
 				measures.writerSync().acquire();
 				try {
@@ -184,11 +183,13 @@ public abstract class AbstractNode implements SetUp, RawData, Thresholds {
 			}
 		}
 
-		public List getMeasure() {
+		public Measure[] getMeasure() {
 			try {
 				measures.readerSync().acquire();
 				try {
-					return new ArrayList(measures);
+					ArrayList m=new ArrayList(measures) ;
+					System.out.println(">>>>>>MEASURES"+m) ;
+					return (Measure[]) m.toArray(new Measure[m.size()]);
 				} finally {
 					measures.readerSync().release();
 				}
@@ -248,16 +249,16 @@ public abstract class AbstractNode implements SetUp, RawData, Thresholds {
 			return threshold[3];
 		}
 
-		public int viability(Object m) {
-			if ((m != null) && (m instanceof Measurement)) {
-				Measurement measure = (Measurement) m;
-				if ((threshold[0] != Double.NaN) && (measure.getValue() < threshold[0]))
+		public int viability(Measure m) {
+			if ((m != null) && (m.value() instanceof Long)) {
+				Long l=(Long)m.value() ;
+				if ((threshold[0] != Double.NaN) && (l.longValue() < threshold[0]))
 					return EventProperties.DATA_VERY_LOW;
-				if ((threshold[1] != Double.NaN) && (measure.getValue() < threshold[1]))
+				if ((threshold[1] != Double.NaN) && (l.longValue() < threshold[1]))
 					return EventProperties.DATA_LOW;
-				if ((threshold[3] != Double.NaN) && (measure.getValue() > threshold[3]))
+				if ((threshold[3] != Double.NaN) && (l.longValue() > threshold[3]))
 					return EventProperties.DATA_VERY_HIGH;
-				if ((threshold[2] != Double.NaN) && (measure.getValue() > threshold[2]))
+				if ((threshold[2] != Double.NaN) && (l.longValue() > threshold[2]))
 					return EventProperties.DATA_VERY_HIGH;
 			}
 			return EventProperties.DATA_UPDATE;

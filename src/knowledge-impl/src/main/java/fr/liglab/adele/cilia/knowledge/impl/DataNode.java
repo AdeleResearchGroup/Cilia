@@ -13,34 +13,19 @@
  * limitations under the License.
  */
 
-package fr.liglab.adele.cilia.knowledge;
+package fr.liglab.adele.cilia.knowledge.impl;
 
-import org.osgi.framework.InvalidSyntaxException;
-
-import fr.liglab.adele.cilia.exceptions.CiliaIllegalParameterException;
+import fr.liglab.adele.cilia.knowledge.runtime.RawData;
+import fr.liglab.adele.cilia.knowledge.runtime.SetUp;
+import fr.liglab.adele.cilia.knowledge.runtime.Thresholds;
 
 /**
- * Listener to events [node arrival / node departure] component
- * 
+ * A node at runtime implements all interfaces
+ *
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project
  *         Team</a>
  * 
  */
-public interface NodeRegistration {
+public interface DataNode extends SetUp, RawData, Thresholds  {
 
-	/**
-	 * @param listener
-	 *            , listener to add
-	 * @throws InvalidSyntaxException
-	 * @throws CiliaIllegalParameterException
-	 * 
-	 */
-	void addListener(String ldapFilter, NodeCallback listener)
-			throws CiliaIllegalParameterException, InvalidSyntaxException;
-
-	/**
-	 * @param listener
-	 *            , listener to remove
-	 */
-	void removeListener(NodeCallback listener) throws CiliaIllegalParameterException;
 }

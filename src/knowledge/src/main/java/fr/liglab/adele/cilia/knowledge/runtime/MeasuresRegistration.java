@@ -13,34 +13,55 @@
  * limitations under the License.
  */
 
-package fr.liglab.adele.cilia.knowledge;
+package fr.liglab.adele.cilia.knowledge.runtime;
 
 import org.osgi.framework.InvalidSyntaxException;
 
 import fr.liglab.adele.cilia.exceptions.CiliaIllegalParameterException;
 
 /**
- * Listener to events [node arrival / node departure] component
+ * Listener data received
  * 
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project
  *         Team</a>
  * 
  */
-public interface NodeRegistration {
+public interface MeasuresRegistration {
+
 
 	/**
-	 * @param listener
-	 *            , listener to add
-	 * @throws InvalidSyntaxException
+	 * inserts a listener
+	 * @param ldapfilter,  ( uuid,chainId, nodeId)
+	 * @param listener, 
 	 * @throws CiliaIllegalParameterException
-	 * 
+	 * @throws InvalidSyntaxException
 	 */
-	void addListener(String ldapFilter, NodeCallback listener)
+	void addListener(String ldapfilter, ThresholdsCallback listener)
 			throws CiliaIllegalParameterException, InvalidSyntaxException;
 
 	/**
+	 * 
+	 * @param ldapfilter
+	 *            ( uuid,chainId, nodeId)
+	 * @param listener
+	 * @throws CiliaIllegalParameterException
+	 * @throws InvalidSyntaxException
+	 */
+	void addListener(String ldapfilter, MeasureCallback listener)
+			throws CiliaIllegalParameterException, InvalidSyntaxException;
+
+	/**
+	 * Removes a threshold listener
+	 * 
 	 * @param listener
 	 *            , listener to remove
 	 */
-	void removeListener(NodeCallback listener) throws CiliaIllegalParameterException;
+	void removeListener(ThresholdsCallback listener) throws CiliaIllegalParameterException;
+
+	/**
+	 * Removes a Measure listener
+	 * 
+	 * @param listener
+	 */
+	void removeListener(MeasureCallback listener) throws CiliaIllegalParameterException;
 }

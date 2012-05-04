@@ -29,6 +29,6 @@ public interface ChainRuntime {
 	public int getState() ;
 	
 	/* date for the last run command  */
-	public Date lastStart() ;
+	public Date lastCommand() ;
 
 }

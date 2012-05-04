@@ -17,7 +17,9 @@ package fr.liglab.adele.cilia.knowledge.impl;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Dictionary;
 import java.util.HashSet;
+import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Set;
 
@@ -26,11 +28,10 @@ import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.InvalidSyntaxException;
 
 import fr.liglab.adele.cilia.exceptions.CiliaIllegalParameterException;
-import fr.liglab.adele.cilia.knowledge.Constants;
 import fr.liglab.adele.cilia.knowledge.Node;
 
 /**
- * Privates constants
+ * Privates constants and static methods
  * 
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project
  *         Team</a>
@@ -71,9 +72,9 @@ public final class Knowledge {
 	public static final Set ldapKeys;
 	static {
 		Set set = new HashSet();
-		set.add(Constants.UUID);
-		set.add(Constants.CHAIN_ID);
-		set.add(Constants.NODE_ID);
+		set.add(Node.UUID);
+		set.add(Node.CHAIN_ID);
+		set.add(Node.NODE_ID);
 		ldapKeys = Collections.unmodifiableSet(set);
 	}
 
@@ -95,5 +96,13 @@ public final class Knowledge {
 			throw new CiliaIllegalParameterException("missing ldap filter keyword "
 					+ ldapKeys.toString() + "!" + filter);
 		return FrameworkUtil.createFilter(filter);
+	}
+	
+	public static final boolean isNodeMatching(Filter filter,Node node) {
+		Dictionary dico = new Hashtable(3);
+		dico.put(Node.UUID,node.uuid() );
+		dico.put(Node.CHAIN_ID, node.chainId());
+		dico.put(Node.NODE_ID, node.nodeId()) ; 
+		return filter.match(dico) ;
 	}
 }

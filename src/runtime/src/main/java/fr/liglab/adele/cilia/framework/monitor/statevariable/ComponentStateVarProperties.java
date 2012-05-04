@@ -23,5 +23,11 @@ public interface ComponentStateVarProperties {
 	
 	public static final String SERVICE_TRACKED = "(mediator.service=monitor)";	
 	public static final String TOPIC_HEADER = "cilia/runtime/statevariable/";
+	
+	public static final String UUID ="uuid" ;
+	public static final String SOURCE ="source" ;
+	public static final String TYPE ="type" ;
+	public static final String VALUE ="value" ;
+	public static final String TIMESTAMP ="timestamp" ;
 
 }

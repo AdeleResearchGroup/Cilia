@@ -20,6 +20,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 
+import org.apache.felix.ipojo.util.Logger;
+
 import fr.liglab.adele.cilia.exceptions.CiliaIllegalStateException;
 import fr.liglab.adele.cilia.knowledge.registry.RuntimeRegistry;
 
@@ -32,9 +34,8 @@ import fr.liglab.adele.cilia.knowledge.registry.RuntimeRegistry;
  */
 public class NodeProxy {
 
-	public Object make(RuntimeRegistry r, String uuid, Object resource,
-			Class interfaceClass) {
-		Handler handler = new Handler(r, uuid, resource);
+	public Object make(RuntimeRegistry r, String uuid,Class interfaceClass) {
+		Handler handler = new Handler(r,uuid,r.findByUuid(uuid).dataRuntimeReference());
 		Object proxy = Proxy.newProxyInstance(interfaceClass.getClassLoader(),
 				new Class[] { interfaceClass }, handler);
 		return interfaceClass.cast(proxy);
@@ -45,9 +46,9 @@ public class NodeProxy {
 		private final RuntimeRegistry registry;
 		private final String uuid;
 
-		public Handler(RuntimeRegistry r, String uuid, Object resource) {
+		public Handler(RuntimeRegistry r, String uuid,Object resource) {
 			this.registry = r;
-			this.uuid = uuid;
+			this.uuid = uuid;	
 			this.resourceRef = new WeakReference(resource);
 		}
 

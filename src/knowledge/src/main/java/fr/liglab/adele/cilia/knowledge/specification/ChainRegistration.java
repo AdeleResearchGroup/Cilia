@@ -15,6 +15,10 @@
 
 package fr.liglab.adele.cilia.knowledge.specification;
 
+import org.osgi.framework.InvalidSyntaxException;
+
+import fr.liglab.adele.cilia.exceptions.CiliaIllegalParameterException;
+
 /**
  * Registration to events level chain
  * 
@@ -28,15 +32,18 @@ public interface ChainRegistration {
 	 * 
 	 * @param listener
 	 *            , listener to add
+	 * @throws InvalidSyntaxException
+	 * @throws CiliaIllegalParameterException
 	 * 
 	 */
-	void addListener(ChainCallback listener);
+	void addListener(String ldapFilter,ChainCallback listener) throws CiliaIllegalParameterException, InvalidSyntaxException;
 
 	/**
 	 * Removes a listener
 	 * 
 	 * @param listener
 	 *            , listener to remove
+	 * @throws CiliaIllegalParameterException 
 	 */
-	void removeListener(ChainCallback listener);
+	void removeListener(ChainCallback listener) throws CiliaIllegalParameterException;
 }

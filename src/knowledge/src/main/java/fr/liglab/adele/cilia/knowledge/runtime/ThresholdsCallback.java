@@ -15,6 +15,8 @@
 
 package fr.liglab.adele.cilia.knowledge.runtime;
 
+import fr.liglab.adele.cilia.knowledge.Node;
+
 /**
  * Callback variable out of viability area veryLow < Low < value < High <
  * VeryHigh
@@ -33,6 +35,6 @@ public interface ThresholdsCallback {
 	 * @param variable
 	 *            urn:uuid:state-variable
 	 */
-	void onThreshold(int thresholdType, String variable);
+	void onThreshold(Node node, String variable,int thresholdType);
 
 }

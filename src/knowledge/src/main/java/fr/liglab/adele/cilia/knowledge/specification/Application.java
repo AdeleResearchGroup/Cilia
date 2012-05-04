@@ -15,7 +15,6 @@
 
 package fr.liglab.adele.cilia.knowledge.specification;
 
-import java.util.Date;
 import java.util.Dictionary;
 
 import org.osgi.framework.InvalidSyntaxException;
@@ -40,27 +39,6 @@ public interface Application extends Topology, NodeRegistration, ChainRegistrati
 	 * @return list of chain Id
 	 */
 	String[] getChains();
-
-	/**
-	 * 
-	 * @param chainId
-	 * @return 0=IDLE, 1 = STARTED , 2 = STOPPED
-	 * @throws CiliaIllegalParameterException
-	 */
-	int getChainState(String chainId) throws CiliaIllegalParameterException,
-			CiliaIllegalStateException;
-
-	/**
-	 * Return last start
-	 * 
-	 * @param chainId
-	 * @return
-	 * @throws CiliaIllegalParameterException
-	 * @throws CiliaIllegalStateException
-	 */
-	Date lastStart(String chainId) throws CiliaIllegalParameterException,
-			CiliaIllegalStateException;
-
 	/**
 	 * 
 	 * @param ldapFilter

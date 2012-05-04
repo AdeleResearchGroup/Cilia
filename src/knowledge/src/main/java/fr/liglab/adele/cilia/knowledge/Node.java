@@ -24,12 +24,25 @@ package fr.liglab.adele.cilia.knowledge;
  */
 public interface Node {
 	/**
+	 * Unique ID identifier
+	 */
+	static final String UUID = "uuid";
+	/**
+	 * chain 
+	 */
+	static final String CHAIN_ID = "chain";
+	/**
+	 * Cilia components (adapters, mediators)
+	 */
+	static final String NODE_ID = "node";
+	
+	/**
 	 * @return chain id hosting the node
 	 */
 	String chainId();
 
 	/**
-	 * @return node name ( adaper or mediator )
+	 * @return node name ( adapter or mediator )
 	 */
 	String nodeId();
 

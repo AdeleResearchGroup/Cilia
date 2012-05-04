@@ -20,7 +20,6 @@
 		<provides
 			specification="fr.liglab.adele.cilia.knowledge.runtime.DynamicProperties" />
 		<requires field="registry" />
-		<requires field="subscriber" />
 		<requires field="publisher" />
 		<requires field="ciliaContext" />
 		<callback transition="validate" method="start" />

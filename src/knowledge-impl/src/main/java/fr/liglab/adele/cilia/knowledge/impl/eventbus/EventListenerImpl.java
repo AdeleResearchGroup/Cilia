@@ -185,9 +185,9 @@ public class EventListenerImpl extends CacheListenerSupport implements
 				}
 				try {
 					/* source.id and event.number are mandatories */
-					String uuid = (String) dico.get(EventProperties.EVENT_SOURCE_ID);
-					if (uuid == null)
-						return;
+					String uuid = (String) dico.get(EventProperties.EVENT_SOURCE_UUID);
+					String chainId = (String) dico.get(EventProperties.EVENT_SOURCE_CHAIN_ID) ;
+					String nodeId = (String) dico.get(EventProperties.EVENT_SOURCE_NODE_ID) ;				
 					int i = ((Integer) dico.get(EventProperties.EVENT_NUMBER)).intValue();
 					/* optional 'tick.number' */
 					Long timestamp = ((Long) dico.get(EventProperties.EVENT_TICK_NUMBER));
@@ -199,10 +199,10 @@ public class EventListenerImpl extends CacheListenerSupport implements
 
 					if (b == null) {
 						/* by default all events are cached */
-						addEventToCache(i,timestamp.longValue(),uuid);
+						addEventToCache(i,timestamp.longValue(),uuid,chainId,nodeId);
 					} else {
 						if (b.booleanValue())
-							addEventToCache(i,timestamp.longValue(),uuid);
+							addEventToCache(i,timestamp.longValue(),uuid,chainId,nodeId);
 					}
 					/* Event will be notified if there is no veto */
 					if (!isVetoable(topic, i, uuid, dico))
@@ -297,12 +297,12 @@ public class EventListenerImpl extends CacheListenerSupport implements
 	}
 
 	/* insert a new event in the cache */
-	private void addEventToCache(int event, long timestamp,String uuid) {
+	private void addEventToCache(int event, long timestamp,String uuid,String chainId,String nodeId) {
 		if (!enable) return ;
 		try {
 			try {
 				cachedEvent.writerSync().acquire();
-				cachedEvent.add(0, new CachedEventImpl(event, timestamp,uuid));
+				cachedEvent.add(0, new CachedEventImpl(event, timestamp,uuid,chainId,nodeId));
 				if (cachedEvent.size() > capacity) {
 					cachedEvent.remove(capacity - 1);
 					fireOverRun(Watch.getCurrentTicks());

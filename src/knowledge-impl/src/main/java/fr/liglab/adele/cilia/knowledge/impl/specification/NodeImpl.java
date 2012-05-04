@@ -42,8 +42,9 @@ public class NodeImpl implements Node {
 	}
 
 	public String uuid() {
-		throw new UnsupportedOperationException(
-				"uuid is not relevant for the specification");
+		//throw new UnsupportedOperationException(
+		//"uuid is not relevant for the specification");
+		return null;
 	}
 
 	public String toString() {
