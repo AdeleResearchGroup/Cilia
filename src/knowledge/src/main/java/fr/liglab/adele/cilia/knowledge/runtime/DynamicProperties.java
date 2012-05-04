@@ -22,6 +22,7 @@ import org.osgi.framework.InvalidSyntaxException;
 import fr.liglab.adele.cilia.Node;
 import fr.liglab.adele.cilia.exceptions.CiliaIllegalParameterException;
 import fr.liglab.adele.cilia.exceptions.CiliaIllegalStateException;
+import fr.liglab.adele.cilia.exceptions.CiliaInvalidSyntaxException;
 import fr.liglab.adele.cilia.knowledge.NodeRegistration;
 import fr.liglab.adele.cilia.knowledge.Registry;
 import fr.liglab.adele.cilia.knowledge.Topology;
@@ -61,17 +62,14 @@ public interface DynamicProperties extends Topology, NodeRegistration,
 			CiliaIllegalStateException;
 	
 	/**
+	 * @throws CiliaInvalidSyntaxException 
 	 * 
 	 * @param ldapFilter
 	 *            ldap filters, keywords {uuid,chain,node}
 	 * @return array of Setup , size is 0 if no node found matching the filter
-	 * @throws InvalidSyntaxException
-	 *             if syntax error for the filter
-	 * @throws
-	 * 
 	 */
 	SetUp[] nodeSetup(String ldapFilter) throws CiliaIllegalParameterException,
-			InvalidSyntaxException;
+			CiliaInvalidSyntaxException;
 
 	/**
 	 * fast access using the node reference
@@ -95,9 +93,10 @@ public interface DynamicProperties extends Topology, NodeRegistration,
 	 * @throws InvalidSyntaxException
 	 *             if ldap syntax is not valid
 	 * @throws CiliaIllegalParameterException
+	 * @throws CiliaInvalidSyntaxException 
 	 */
 	RawData[] nodeRawData(String ldapFilter) throws CiliaIllegalParameterException,
-			InvalidSyntaxException;
+		 CiliaInvalidSyntaxException;
 
 	/**
 	 * fast access using the node reference
@@ -121,9 +120,10 @@ public interface DynamicProperties extends Topology, NodeRegistration,
 	 * @throws InvalidSyntaxException
 	 *             if ldap syntax is not valid
 	 * @throws CiliaIllegalParameterException
+	 * @throws CiliaInvalidSyntaxException 
 	 */
 	Thresholds[] nodeMonitoring(String ldapFilter) throws CiliaIllegalParameterException,
-			InvalidSyntaxException;
+			CiliaInvalidSyntaxException;
 
 	/**
 	 * fast access using the node reference

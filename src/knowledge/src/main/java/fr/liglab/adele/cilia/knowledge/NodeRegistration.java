@@ -18,6 +18,7 @@ package fr.liglab.adele.cilia.knowledge;
 import org.osgi.framework.InvalidSyntaxException;
 
 import fr.liglab.adele.cilia.exceptions.CiliaIllegalParameterException;
+import fr.liglab.adele.cilia.exceptions.CiliaInvalidSyntaxException;
 
 /**
  * Listener to events [node arrival / node departure] component
@@ -31,12 +32,12 @@ public interface NodeRegistration {
 	/**
 	 * @param listener
 	 *            , listener to add
-	 * @throws InvalidSyntaxException
 	 * @throws CiliaIllegalParameterException
+	 * @throws CiliaInvalidSyntaxException 
 	 * 
 	 */
 	void addListener(String ldapFilter, NodeCallback listener)
-			throws CiliaIllegalParameterException, InvalidSyntaxException;
+			throws CiliaIllegalParameterException, CiliaInvalidSyntaxException;
 
 	/**
 	 * @param listener

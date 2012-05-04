@@ -33,6 +33,7 @@ import org.slf4j.LoggerFactory;
 
 import fr.liglab.adele.cilia.Node;
 import fr.liglab.adele.cilia.exceptions.CiliaIllegalParameterException;
+import fr.liglab.adele.cilia.exceptions.CiliaInvalidSyntaxException;
 import fr.liglab.adele.cilia.knowledge.NodeCallback;
 import fr.liglab.adele.cilia.knowledge.NodeRegistration;
 import fr.liglab.adele.cilia.knowledge.impl.Knowledge;
@@ -103,7 +104,7 @@ public class SpecificationListenerSupport implements TrackerCustomizer,
 
 	/* insert a new listener ,associated to a ldap filter */
 	protected void addFilterListener(Map map, String filter, Object listener)
-			throws CiliaIllegalParameterException, InvalidSyntaxException {
+			throws CiliaIllegalParameterException, CiliaInvalidSyntaxException {
 		if (listener == null)
 			throw new CiliaIllegalParameterException("listener is null");
 		if (!map.containsKey(listener)) {
@@ -127,7 +128,7 @@ public class SpecificationListenerSupport implements TrackerCustomizer,
 	 * @throws CiliaIllegalParameterException
 	 */
 	public void addListener(String ldapFilter, NodeCallback listener)
-			throws CiliaIllegalParameterException, InvalidSyntaxException {
+			throws CiliaIllegalParameterException, CiliaInvalidSyntaxException {
 		addFilterListener(listenerNode, ldapFilter, listener);
 	}
 
@@ -185,7 +186,7 @@ public class SpecificationListenerSupport implements TrackerCustomizer,
 	 * Add a listener chain
 	 */
 	public void addListener(String ldapFilter, ChainCallback listener)
-			throws CiliaIllegalParameterException, InvalidSyntaxException {
+			throws CiliaIllegalParameterException, CiliaInvalidSyntaxException {
 		addFilterListener(listenerChain, ldapFilter, listener);
 	}
 

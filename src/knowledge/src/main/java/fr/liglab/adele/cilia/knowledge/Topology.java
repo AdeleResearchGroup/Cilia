@@ -20,6 +20,7 @@ import org.osgi.framework.InvalidSyntaxException;
 import fr.liglab.adele.cilia.Node;
 import fr.liglab.adele.cilia.exceptions.CiliaIllegalParameterException;
 import fr.liglab.adele.cilia.exceptions.CiliaIllegalStateException;
+import fr.liglab.adele.cilia.exceptions.CiliaInvalidSyntaxException;
 
 /**
  * Node retreival of a node, topology access
@@ -35,22 +36,21 @@ public interface Topology {
 	 * @param ldapFilter
 	 *            ldap filters, 
 	 * @return list of adapter In
-	 * @throws InvalidSyntaxException
 	 *             if ldap syntax is not valid
+	 * @throws CiliaInvalidSyntaxException  if ldap syntax is not valid
 	 */
 	Node[] endpointIn(String ldapFilter) throws CiliaIllegalParameterException,
-			InvalidSyntaxException;
+			CiliaInvalidSyntaxException;
 
 	/**
 	 * 
 	 * @param ldapFilter
 	 *            ldap filters, keywords {uuid,chain,node}
 	 * @return list of adapter In
-	 * @throws InvalidSyntaxException
-	 *             if ldap syntax is not valid
+	 * @throws CiliaInvalidSyntaxException if ldap syntax is not valid
 	 */
 	Node[] endpointOut(String ldapFilter) throws CiliaIllegalParameterException,
-			InvalidSyntaxException;
+			CiliaInvalidSyntaxException;
 
 	/**
 	 * 
@@ -69,10 +69,9 @@ public interface Topology {
 	 *            define an unique node , ldap filters, keywords
 	 *            {uuid,chain,node}
 	 * @return array of successors, size=0 if no node matching the filter
-	 * @throws InvalidSyntaxException
-	 *             if syntax error ldapfilter
+	 * @throws CiliaInvalidSyntaxException if syntax error ldapfilter
 	 */
 	Node[] connectedTo(String ldapFilter) throws CiliaIllegalParameterException,
-			InvalidSyntaxException;
+			CiliaInvalidSyntaxException;
 
 }

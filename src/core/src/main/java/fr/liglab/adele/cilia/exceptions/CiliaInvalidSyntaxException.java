@@ -14,45 +14,34 @@
  */
 package fr.liglab.adele.cilia.exceptions;
 
+
 /**
+ * LDAP filter syntax error
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project Team</a>
  *
  */
-public class CiliaParserException extends CiliaException {
+public class CiliaInvalidSyntaxException extends CiliaException {
 
-
+	private static final long serialVersionUID = -8052313164264819869L;
 	/**
-	 * 
+	 * The invalid filter string.
 	 */
-	private static final long serialVersionUID = -298187608836425525L;
+	private final String	filter;
 
-	/**
-	 * 
-	 */
-	public CiliaParserException() {
-		super();
+	public CiliaInvalidSyntaxException(String msg, String filter) {
+		super(msg);
+		this.filter = filter;
 	}
 
-	/**
-	 * @param message
-	 * @param cause
-	 */
-	public CiliaParserException(String message, Throwable cause) {
-		super(message, cause);
+
+	public CiliaInvalidSyntaxException(String msg, String filter, Throwable cause) {
+		super(msg, cause);
+		this.filter = filter;
 	}
 
-	/**
-	 * @param message
-	 */
-	public CiliaParserException(String message) {
-		super(message);
+
+	public String getFilter() {
+		return filter;
 	}
 
-	/**
-	 * @param cause
-	 */
-	public CiliaParserException(Throwable cause) {
-		super(cause);
-	}
-	
 }

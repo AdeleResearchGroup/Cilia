@@ -18,6 +18,7 @@ package fr.liglab.adele.cilia.knowledge.runtime;
 import org.osgi.framework.InvalidSyntaxException;
 
 import fr.liglab.adele.cilia.exceptions.CiliaIllegalParameterException;
+import fr.liglab.adele.cilia.exceptions.CiliaInvalidSyntaxException;
 
 /**
  * Listener data received
@@ -35,9 +36,10 @@ public interface MeasuresRegistration {
 	 * @param listener, 
 	 * @throws CiliaIllegalParameterException
 	 * @throws InvalidSyntaxException
+	 * @throws CiliaInvalidSyntaxException 
 	 */
 	void addListener(String ldapfilter, ThresholdsCallback listener)
-			throws CiliaIllegalParameterException, InvalidSyntaxException;
+			throws CiliaIllegalParameterException, CiliaInvalidSyntaxException;
 
 	/**
 	 * 
@@ -46,9 +48,10 @@ public interface MeasuresRegistration {
 	 * @param listener
 	 * @throws CiliaIllegalParameterException
 	 * @throws InvalidSyntaxException
+	 * @throws CiliaInvalidSyntaxException 
 	 */
 	void addListener(String ldapfilter, MeasureCallback listener)
-			throws CiliaIllegalParameterException, InvalidSyntaxException;
+			throws CiliaIllegalParameterException,CiliaInvalidSyntaxException;
 
 	/**
 	 * Removes a threshold listener

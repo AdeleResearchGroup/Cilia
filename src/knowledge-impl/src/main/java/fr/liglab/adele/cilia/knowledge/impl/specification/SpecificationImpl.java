@@ -39,6 +39,7 @@ import fr.liglab.adele.cilia.event.CiliaFrameworkEvent;
 import fr.liglab.adele.cilia.event.CiliaFrameworkListener;
 import fr.liglab.adele.cilia.exceptions.CiliaIllegalParameterException;
 import fr.liglab.adele.cilia.exceptions.CiliaIllegalStateException;
+import fr.liglab.adele.cilia.exceptions.CiliaInvalidSyntaxException;
 import fr.liglab.adele.cilia.knowledge.eventbus.EventProperties;
 import fr.liglab.adele.cilia.knowledge.impl.Knowledge;
 import fr.liglab.adele.cilia.knowledge.impl.eventbus.Publisher;
@@ -140,7 +141,7 @@ public class SpecificationImpl extends SpecificationListenerSupport implements
 	 * @throws CiliaIllegalParameterException
 	 */
 	private Node[] getEndpoints(String ldapFilter, PatternType type)
-			throws InvalidSyntaxException, CiliaIllegalParameterException {
+			throws CiliaInvalidSyntaxException, CiliaIllegalParameterException {
 
 		Adapter adapter;
 		Set adapterResult = new HashSet();
@@ -169,12 +170,12 @@ public class SpecificationImpl extends SpecificationListenerSupport implements
 		return (Node[]) adapterResult.toArray(new Node[adapterResult.size()]);
 	}
 
-	public Node[] endpointIn(String ldapFilter) throws InvalidSyntaxException,
+	public Node[] endpointIn(String ldapFilter) throws CiliaInvalidSyntaxException,
 			CiliaIllegalParameterException {
 		return getEndpoints(ldapFilter, PatternType.IN_ONLY);
 	}
 
-	public Node[] endpointOut(String ldapFilter) throws InvalidSyntaxException,
+	public Node[] endpointOut(String ldapFilter) throws CiliaInvalidSyntaxException,
 			CiliaIllegalParameterException {
 		return getEndpoints(ldapFilter, PatternType.OUT_ONLY);
 	}
@@ -198,7 +199,7 @@ public class SpecificationImpl extends SpecificationListenerSupport implements
 		return (Node[]) nodeSet.toArray(new Node[nodeSet.size()]);
 	}
 
-	public Node[] connectedTo(String ldapFilter) throws InvalidSyntaxException,
+	public Node[] connectedTo(String ldapFilter) throws CiliaInvalidSyntaxException,
 			CiliaIllegalParameterException {
 
 		Node[] nodes = new Node[0];
@@ -324,7 +325,7 @@ public class SpecificationImpl extends SpecificationListenerSupport implements
 		return mc;
 	}
 
-	public Node[] findByFilter(String ldapFilter) throws InvalidSyntaxException,
+	public Node[] findByFilter(String ldapFilter) throws CiliaInvalidSyntaxException,
 			CiliaIllegalParameterException {
 
 		Filter filter = Knowledge.createFilter(ldapFilter);

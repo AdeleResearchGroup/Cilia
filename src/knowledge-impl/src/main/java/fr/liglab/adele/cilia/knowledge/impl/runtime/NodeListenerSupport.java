@@ -31,6 +31,7 @@ import org.slf4j.LoggerFactory;
 
 import fr.liglab.adele.cilia.Node;
 import fr.liglab.adele.cilia.exceptions.CiliaIllegalParameterException;
+import fr.liglab.adele.cilia.exceptions.CiliaInvalidSyntaxException;
 import fr.liglab.adele.cilia.knowledge.NodeCallback;
 import fr.liglab.adele.cilia.knowledge.NodeRegistration;
 import fr.liglab.adele.cilia.knowledge.impl.Knowledge;
@@ -75,7 +76,7 @@ public class NodeListenerSupport implements TrackerCustomizer, NodeRegistration,
 
 	/* insert a new listener ,associated to a ldap filter */
 	protected void addFilterListener(Map map, String filter, Object listener)
-			throws CiliaIllegalParameterException, InvalidSyntaxException {
+			throws CiliaIllegalParameterException, CiliaInvalidSyntaxException {
 		if (listener == null)
 			throw new CiliaIllegalParameterException("listener is null");
 		if (!map.containsKey(listener)) {
@@ -100,7 +101,7 @@ public class NodeListenerSupport implements TrackerCustomizer, NodeRegistration,
 	 * .String, fr.liglab.adele.cilia.knowledge.NodeCallback)
 	 */
 	public void addListener(String ldapfilter, NodeCallback listener)
-			throws CiliaIllegalParameterException, InvalidSyntaxException {
+			throws CiliaIllegalParameterException, CiliaInvalidSyntaxException {
 		addFilterListener(nodeListeners, ldapfilter, listener);
 	}
 
@@ -168,7 +169,7 @@ public class NodeListenerSupport implements TrackerCustomizer, NodeRegistration,
 	 * Measure listener, add a listener
 	 */
 	public void addListener(String ldapfilter, MeasureCallback listener)
-			throws CiliaIllegalParameterException, InvalidSyntaxException {
+			throws CiliaIllegalParameterException, CiliaInvalidSyntaxException {
 		addFilterListener(measureListeners, ldapfilter, listener);
 	}
 
@@ -232,7 +233,7 @@ public class NodeListenerSupport implements TrackerCustomizer, NodeRegistration,
 	 * fr.liglab.adele.cilia.knowledge.runtime.ThresholdsCallback)
 	 */
 	public void addListener(String ldapfilter, ThresholdsCallback listener)
-			throws CiliaIllegalParameterException, InvalidSyntaxException {
+			throws CiliaIllegalParameterException, CiliaInvalidSyntaxException {
 		addFilterListener(thresholdListeners, ldapfilter, listener);
 	}
 

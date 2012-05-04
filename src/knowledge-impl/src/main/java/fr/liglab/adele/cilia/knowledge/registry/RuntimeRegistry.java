@@ -18,6 +18,7 @@ package fr.liglab.adele.cilia.knowledge.registry;
 import org.osgi.framework.InvalidSyntaxException;
 
 import fr.liglab.adele.cilia.exceptions.CiliaIllegalParameterException;
+import fr.liglab.adele.cilia.exceptions.CiliaInvalidSyntaxException;
 
 /**
  * Access to Registry
@@ -51,16 +52,20 @@ public interface RuntimeRegistry {
 	/**
 	 * Return an array of entries matching the filter <br>
 	 * keywords = {uuid, chain, node} <br>
-	 * exmple
-	 * (findByFilter("&(application.id=chain1)(component.id=adapt*))");
+	 * exmple (findByFilter("&(application.id=chain1)(component.id=adapt*))");
 	 * 
 	 * @param ldapFilter
 	 *            , LDAP filter
-	 * @return entries matching the filter or an array size 0  if not item founded
-	 * @throws CiliaIllegalParameterException parameter is invalid
+	 * @return entries matching the filter or an array size 0 if not item
+	 *         founded
+	 * @throws CiliaIllegalParameterException
+	 *             parameter is invalid
+	 * @throws CiliaInvalidSyntaxException
+	 *             , LDAP syntax is invalid
 	 * @t
 	 */
-	RegistryItem[] findByFilter(String ldapFilter) throws CiliaIllegalParameterException,InvalidSyntaxException;
+	RegistryItem[] findByFilter(String ldapFilter) throws CiliaIllegalParameterException,
+			CiliaInvalidSyntaxException;
 
 	/**
 	 * Fast access
@@ -81,6 +86,5 @@ public interface RuntimeRegistry {
 	 * remove an entry
 	 */
 	void unregister(String uuid);
-
 
 }

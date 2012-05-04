@@ -29,6 +29,7 @@ import org.osgi.framework.InvalidSyntaxException;
 
 import fr.liglab.adele.cilia.Node;
 import fr.liglab.adele.cilia.exceptions.CiliaIllegalParameterException;
+import fr.liglab.adele.cilia.exceptions.CiliaInvalidSyntaxException;
 
 /**
  * Privates constants and static methods
@@ -92,7 +93,7 @@ public final class Knowledge {
 	}
 
 	public synchronized static final Filter createFilter(String filter)
-			throws CiliaIllegalParameterException, InvalidSyntaxException {
+			throws CiliaIllegalParameterException, CiliaInvalidSyntaxException {
 		if (filter == null)
 			throw new CiliaIllegalParameterException("filter is null !");
 		boolean found = false;
@@ -108,7 +109,11 @@ public final class Knowledge {
 		if (found == false)
 			throw new CiliaIllegalParameterException("missing ldap filter keyword "
 					+ ldapKeys.toString() + "!" + filter);
-		return FrameworkUtil.createFilter(filter);
+		try {
+			return FrameworkUtil.createFilter(filter);
+		}catch (InvalidSyntaxException e) {
+			throw new CiliaInvalidSyntaxException(e.getMessage(), e.getFilter());
+		}
 	}
 
 	public static final boolean isNodeMatching(Filter filter, Node node) {

@@ -23,6 +23,7 @@ import fr.liglab.adele.cilia.MediatorComponent;
 import fr.liglab.adele.cilia.Node;
 import fr.liglab.adele.cilia.exceptions.CiliaIllegalParameterException;
 import fr.liglab.adele.cilia.exceptions.CiliaIllegalStateException;
+import fr.liglab.adele.cilia.exceptions.CiliaInvalidSyntaxException;
 import fr.liglab.adele.cilia.exceptions.CiliaRuntimeException;
 import fr.liglab.adele.cilia.knowledge.NodeRegistration;
 import fr.liglab.adele.cilia.knowledge.Topology;
@@ -40,6 +41,7 @@ public interface Application extends Topology, NodeRegistration, ChainRegistrati
 	 */
 	String[] getChains();
 	/**
+	 * @throws CiliaInvalidSyntaxException 
 	 * 
 	 * @param ldapFilter
 	 *            define a node , ldap filters, keywords
@@ -48,7 +50,7 @@ public interface Application extends Topology, NodeRegistration, ChainRegistrati
 	 * @throws
 	 */
 	Node[] findByFilter(String ldapFilter) throws CiliaIllegalParameterException,
-			InvalidSyntaxException;
+			CiliaInvalidSyntaxException;
 
 	/**
 	 * 

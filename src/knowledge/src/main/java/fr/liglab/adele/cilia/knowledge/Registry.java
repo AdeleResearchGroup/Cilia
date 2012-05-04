@@ -19,6 +19,7 @@ import org.osgi.framework.InvalidSyntaxException;
 
 import fr.liglab.adele.cilia.Node;
 import fr.liglab.adele.cilia.exceptions.CiliaIllegalParameterException;
+import fr.liglab.adele.cilia.exceptions.CiliaInvalidSyntaxException;
 
 /**
  * Registry access , retreives the runtime object
@@ -38,9 +39,10 @@ public interface Registry {
 	 * @return entries matching the filter or an array size 0 if not item
 	 *         founded
 	 * @throws CiliaIllegalParameterException
+	 * @throws CiliaInvalidSyntaxException 
 	 */
 	Node[] findByFilter(String ldapFilter) throws CiliaIllegalParameterException,
-			InvalidSyntaxException;
+			CiliaInvalidSyntaxException;
 
 	/**
 	 * Fast access

@@ -28,6 +28,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import fr.liglab.adele.cilia.exceptions.CiliaIllegalParameterException;
+import fr.liglab.adele.cilia.exceptions.CiliaInvalidSyntaxException;
 import fr.liglab.adele.cilia.knowledge.impl.Knowledge;
 import fr.liglab.adele.cilia.knowledge.registry.RegistryItem;
 import fr.liglab.adele.cilia.knowledge.registry.RuntimeRegistry;
@@ -176,7 +177,7 @@ public class RegistryManager implements RuntimeRegistry {
 	 * fr.liglab.adele.cilia.knowledge.core.registry.RuntimeRegistry#findByFilter
 	 * (java.lang.String)
 	 */
-	public RegistryItem[] findByFilter(String ldap) throws InvalidSyntaxException,
+	public RegistryItem[] findByFilter(String ldap) throws CiliaInvalidSyntaxException,
 			CiliaIllegalParameterException {
 		Set itemfound = new HashSet();
 		Filter filter = Knowledge.createFilter(ldap);

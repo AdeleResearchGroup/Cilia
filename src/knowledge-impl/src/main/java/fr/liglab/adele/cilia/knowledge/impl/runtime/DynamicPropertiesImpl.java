@@ -34,6 +34,7 @@ import fr.liglab.adele.cilia.MediatorComponent;
 import fr.liglab.adele.cilia.Node;
 import fr.liglab.adele.cilia.exceptions.CiliaIllegalParameterException;
 import fr.liglab.adele.cilia.exceptions.CiliaIllegalStateException;
+import fr.liglab.adele.cilia.exceptions.CiliaInvalidSyntaxException;
 import fr.liglab.adele.cilia.knowledge.NodeCallback;
 import fr.liglab.adele.cilia.knowledge.impl.Knowledge;
 import fr.liglab.adele.cilia.knowledge.impl.eventbus.Publisher;
@@ -157,7 +158,7 @@ public class DynamicPropertiesImpl extends NodeListenerSupport implements
 	 * fr.liglab.adele.cilia.knowledge.core.dynproperties.DynamicProperties#
 	 * nodeSetup(java.lang.String)
 	 */
-	public SetUp[] nodeSetup(String ldapFilter) throws InvalidSyntaxException,
+	public SetUp[] nodeSetup(String ldapFilter) throws CiliaInvalidSyntaxException,
 			CiliaIllegalParameterException {
 		RegistryItem[] item = registry.findByFilter(ldapFilter);
 		Set set = new HashSet();
@@ -194,7 +195,7 @@ public class DynamicPropertiesImpl extends NodeListenerSupport implements
 	 * fr.liglab.adele.cilia.knowledge.core.dynproperties.DynamicProperties#
 	 * nodeMonitoring(java.lang.String)
 	 */
-	public RawData[] nodeRawData(String ldapFilter) throws InvalidSyntaxException,
+	public RawData[] nodeRawData(String ldapFilter) throws CiliaInvalidSyntaxException,
 			CiliaIllegalParameterException {
 		RegistryItem[] item = registry.findByFilter(ldapFilter);
 		Set set = new HashSet();
@@ -223,7 +224,7 @@ public class DynamicPropertiesImpl extends NodeListenerSupport implements
 		}
 	}
 
-	public Thresholds[] nodeMonitoring(String ldapFilter) throws InvalidSyntaxException,
+	public Thresholds[] nodeMonitoring(String ldapFilter) throws CiliaInvalidSyntaxException,
 			CiliaIllegalParameterException {
 		RegistryItem[] item = registry.findByFilter(ldapFilter);
 		Set set = new HashSet();
@@ -254,7 +255,7 @@ public class DynamicPropertiesImpl extends NodeListenerSupport implements
 
 	/* retreives adapters in or out */
 	private Node[] getEndpoints(String ldapFilter, PatternType type)
-			throws InvalidSyntaxException, CiliaIllegalParameterException {
+			throws CiliaInvalidSyntaxException, CiliaIllegalParameterException {
 		Chain chain;
 		Adapter adapter;
 		Set adapterSet = new HashSet();
@@ -283,7 +284,7 @@ public class DynamicPropertiesImpl extends NodeListenerSupport implements
 	 * fr.liglab.adele.cilia.knowledge.core.execution.DynamicProperties#endpointIn
 	 * (java.lang.String)
 	 */
-	public Node[] endpointIn(String ldapFilter) throws InvalidSyntaxException,
+	public Node[] endpointIn(String ldapFilter) throws CiliaInvalidSyntaxException,
 			CiliaIllegalParameterException {
 		return getEndpoints(ldapFilter, PatternType.IN_ONLY);
 	}
@@ -295,7 +296,7 @@ public class DynamicPropertiesImpl extends NodeListenerSupport implements
 	 * fr.liglab.adele.cilia.knowledge.core.execution.DynamicProperties#endpointOut
 	 * (java.lang.String)
 	 */
-	public Node[] endpointOut(String ldapFilter) throws InvalidSyntaxException,
+	public Node[] endpointOut(String ldapFilter) throws CiliaInvalidSyntaxException,
 			CiliaIllegalParameterException {
 		return getEndpoints(ldapFilter, PatternType.OUT_ONLY);
 
@@ -337,7 +338,7 @@ public class DynamicPropertiesImpl extends NodeListenerSupport implements
 				for (int i = 0; i < item.length; i++) {
 					nodeSet.add(item[i]);
 				}
-			} catch (InvalidSyntaxException e) {
+			} catch (CiliaInvalidSyntaxException e) {
 				logger.error("Internal ldap syntax error !, should never happens");
 			} catch (CiliaIllegalParameterException e) {
 				logger.error("Internal parameter ! null");
@@ -394,7 +395,7 @@ public class DynamicPropertiesImpl extends NodeListenerSupport implements
 	 * (java.lang.String)
 	 */
 
-	public Node[] connectedTo(String ldapFilter) throws InvalidSyntaxException,
+	public Node[] connectedTo(String ldapFilter) throws CiliaInvalidSyntaxException,
 			CiliaIllegalParameterException {
 		RegistryItem[] item = registry.findByFilter(ldapFilter);
 		Node[] nodes = new Node[0];
@@ -470,7 +471,7 @@ public class DynamicPropertiesImpl extends NodeListenerSupport implements
 		}
 	}
 
-	public Node[] findByFilter(String ldapFilter) throws InvalidSyntaxException,
+	public Node[] findByFilter(String ldapFilter) throws CiliaInvalidSyntaxException,
 			CiliaIllegalParameterException {
 		return registry.findByFilter(ldapFilter);
 	}
