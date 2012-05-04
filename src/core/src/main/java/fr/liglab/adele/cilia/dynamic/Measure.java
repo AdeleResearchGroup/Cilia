@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-package fr.liglab.adele.cilia.knowledge.runtime;
+package fr.liglab.adele.cilia.dynamic;
 
 public interface Measure  {
 

@@ -15,9 +15,9 @@
 
 package fr.liglab.adele.cilia.knowledge.impl;
 
-import fr.liglab.adele.cilia.knowledge.runtime.RawData;
-import fr.liglab.adele.cilia.knowledge.runtime.SetUp;
-import fr.liglab.adele.cilia.knowledge.runtime.Thresholds;
+import fr.liglab.adele.cilia.dynamic.RawData;
+import fr.liglab.adele.cilia.dynamic.SetUp;
+import fr.liglab.adele.cilia.dynamic.Thresholds;
 
 /**
  * A node at runtime implements all interfaces

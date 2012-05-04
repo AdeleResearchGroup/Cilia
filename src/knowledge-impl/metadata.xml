@@ -6,8 +6,6 @@
 		name="ModelRuntime_Core.Registry">
 		<provides
 			specification="fr.liglab.adele.cilia.knowledge.registry.RuntimeRegistry" />
-		<provides
-			specification="fr.liglab.adele.cilia.knowledge.registry.Registry" />
 		<callback transition="validate" method="start" />
 		<callback transition="invalidate" method="stop" />
 	</component>
@@ -18,7 +16,7 @@
 		classname="fr.liglab.adele.cilia.knowledge.impl.runtime.DynamicPropertiesImpl"
 		name="ModelRuntime_Core.NodesRuntime">
 		<provides
-			specification="fr.liglab.adele.cilia.knowledge.runtime.DynamicProperties" />
+			specification="fr.liglab.adele.cilia.runtime.DynamicProperties" />
 		<requires field="registry" />
 		<requires field="publisher" />
 		<requires field="ciliaContext" />

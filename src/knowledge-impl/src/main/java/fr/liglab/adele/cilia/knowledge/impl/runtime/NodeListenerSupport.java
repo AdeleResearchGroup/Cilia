@@ -30,14 +30,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import fr.liglab.adele.cilia.Node;
+import fr.liglab.adele.cilia.NodeCallback;
+import fr.liglab.adele.cilia.NodeRegistration;
+import fr.liglab.adele.cilia.dynamic.MeasureCallback;
+import fr.liglab.adele.cilia.dynamic.MeasuresRegistration;
+import fr.liglab.adele.cilia.dynamic.ThresholdsCallback;
 import fr.liglab.adele.cilia.exceptions.CiliaIllegalParameterException;
 import fr.liglab.adele.cilia.exceptions.CiliaInvalidSyntaxException;
-import fr.liglab.adele.cilia.knowledge.NodeCallback;
-import fr.liglab.adele.cilia.knowledge.NodeRegistration;
 import fr.liglab.adele.cilia.knowledge.impl.Knowledge;
-import fr.liglab.adele.cilia.knowledge.runtime.MeasureCallback;
-import fr.liglab.adele.cilia.knowledge.runtime.MeasuresRegistration;
-import fr.liglab.adele.cilia.knowledge.runtime.ThresholdsCallback;
 import fr.liglab.adele.cilia.knowledge.util.SwingWorker;
 import fr.liglab.adele.cilia.util.concurrent.ReentrantWriterPreferenceReadWriteLock;
 import fr.liglab.adele.cilia.util.concurrent.SyncMap;
@@ -175,10 +175,6 @@ public class NodeListenerSupport implements TrackerCustomizer, NodeRegistration,
 
 	/*
 	 * Measure listener, Remove a listener (non-Javadoc)
-	 * 
-	 * @see
-	 * fr.liglab.adele.cilia.knowledge.runtime.MeasuresRegistration#removeListener
-	 * (fr.liglab.adele.cilia.knowledge.runtime.MeasureCallback)
 	 */
 	public void removeListener(MeasureCallback listener)
 			throws CiliaIllegalParameterException {

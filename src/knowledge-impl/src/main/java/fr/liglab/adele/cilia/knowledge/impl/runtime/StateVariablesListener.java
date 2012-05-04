@@ -26,6 +26,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import fr.liglab.adele.cilia.Node;
+import fr.liglab.adele.cilia.dynamic.RawData;
+import fr.liglab.adele.cilia.dynamic.SetUp;
+import fr.liglab.adele.cilia.dynamic.Thresholds;
 import fr.liglab.adele.cilia.framework.monitor.statevariable.ComponentStateVarProperties;
 import fr.liglab.adele.cilia.knowledge.eventbus.EventProperties;
 import fr.liglab.adele.cilia.knowledge.impl.Knowledge;
@@ -33,9 +36,6 @@ import fr.liglab.adele.cilia.knowledge.impl.eventbus.Publisher;
 import fr.liglab.adele.cilia.knowledge.impl.registry.RegistryItemImpl;
 import fr.liglab.adele.cilia.knowledge.registry.RegistryItem;
 import fr.liglab.adele.cilia.knowledge.registry.RuntimeRegistry;
-import fr.liglab.adele.cilia.knowledge.runtime.RawData;
-import fr.liglab.adele.cilia.knowledge.runtime.SetUp;
-import fr.liglab.adele.cilia.knowledge.runtime.Thresholds;
 
 /**
  * This class is in charge to store data sent by <br>

@@ -13,43 +13,33 @@
  * limitations under the License.
  */
 
-package fr.liglab.adele.cilia.knowledge;
+package fr.liglab.adele.cilia;
 
-import org.osgi.framework.InvalidSyntaxException;
-
-import fr.liglab.adele.cilia.Node;
 import fr.liglab.adele.cilia.exceptions.CiliaIllegalParameterException;
 import fr.liglab.adele.cilia.exceptions.CiliaInvalidSyntaxException;
 
 /**
- * Registry access , retreives the runtime object
+ * Listener to events [node arrival / node departure] component
  * 
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project
  *         Team</a>
  * 
  */
-public interface Registry {
-	/**
-	 * Return an array of entries matching the filter <br>
-	 * keywords = {uuid, chain, node} <br>
-	 * example (findByFilter("&((application.id=chain1)(component.id=adapt*))");
-	 * 
-	 * @param ldapFilter
-	 *            , LDAP filter
-	 * @return entries matching the filter or an array size 0 if not item
-	 *         founded
-	 * @throws CiliaIllegalParameterException
-	 * @throws CiliaInvalidSyntaxException 
-	 */
-	Node[] findByFilter(String ldapFilter) throws CiliaIllegalParameterException,
-			CiliaInvalidSyntaxException;
+public interface NodeRegistration {
 
 	/**
-	 * Fast access
-	 * 
-	 * @param uuid
-	 * @return object stored in the registry, or null if not found
+	 * @param listener
+	 *            , listener to add
 	 * @throws CiliaIllegalParameterException
+	 * @throws CiliaInvalidSyntaxException
+	 * 
 	 */
-	Node findByUuid(String uuid) throws CiliaIllegalParameterException;
+	void addListener(String ldapFilter, NodeCallback listener)
+			throws CiliaIllegalParameterException, CiliaInvalidSyntaxException;
+
+	/**
+	 * @param listener
+	 *            , listener to remove
+	 */
+	void removeListener(NodeCallback listener) throws CiliaIllegalParameterException;
 }

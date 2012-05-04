@@ -13,29 +13,28 @@
  * limitations under the License.
  */
 
-package fr.liglab.adele.cilia.knowledge;
+package fr.liglab.adele.cilia.dynamic;
 
 import fr.liglab.adele.cilia.Node;
 
 /**
- * Callback , events [ node arrival / node departure ]
+ * Callback variable out of viability area veryLow < Low < value < High <
+ * VeryHigh
  * 
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project
  *         Team</a>
  * 
  */
-public interface NodeCallback {
-	/**
-	 * 
-	 * @param node
-	 *            , node arrival
-	 */
-	void arrival(Node node);
+public interface ThresholdsCallback {
 
 	/**
 	 * 
-	 * @param node
-	 *            , node departure
+	 * @param evt
+	 *            event threshold number
+	 *            {DATA_VERY_LOW,DATA_LOW,DATA_HIGH,DATA_VERY_HIGH}
+	 * @param variable
+	 *            urn:uuid:state-variable
 	 */
-	void departure(Node node);
+	void onThreshold(Node node, String variable,int thresholdType);
+
 }

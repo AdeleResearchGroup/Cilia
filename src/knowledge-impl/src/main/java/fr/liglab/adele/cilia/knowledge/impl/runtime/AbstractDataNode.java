@@ -16,24 +16,16 @@
 package fr.liglab.adele.cilia.knowledge.impl.runtime;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 import java.util.Map;
 
-import org.osgi.util.measurement.Measurement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import fr.liglab.adele.cilia.dynamic.Measure;
 import fr.liglab.adele.cilia.exceptions.CiliaIllegalParameterException;
-import fr.liglab.adele.cilia.exceptions.CiliaRuntimeException;
 import fr.liglab.adele.cilia.knowledge.eventbus.EventProperties;
 import fr.liglab.adele.cilia.knowledge.impl.DataNode;
 import fr.liglab.adele.cilia.knowledge.impl.Knowledge;
-import fr.liglab.adele.cilia.knowledge.registry.RuntimeRegistry;
-import fr.liglab.adele.cilia.knowledge.runtime.Measure;
-import fr.liglab.adele.cilia.knowledge.runtime.RawData;
-import fr.liglab.adele.cilia.knowledge.runtime.SetUp;
-import fr.liglab.adele.cilia.knowledge.runtime.Thresholds;
 import fr.liglab.adele.cilia.util.concurrent.ConcurrentReaderHashMap;
 import fr.liglab.adele.cilia.util.concurrent.ReentrantWriterPreferenceReadWriteLock;
 import fr.liglab.adele.cilia.util.concurrent.SyncList;

@@ -13,12 +13,12 @@
  * limitations under the License.
  */
 
-package fr.liglab.adele.cilia.knowledge.runtime;
+package fr.liglab.adele.cilia.dynamic;
 
-import org.osgi.framework.InvalidSyntaxException;
 
 import fr.liglab.adele.cilia.Node;
 import fr.liglab.adele.cilia.exceptions.CiliaIllegalParameterException;
+import fr.liglab.adele.cilia.exceptions.CiliaInvalidSyntaxException;
 
 /**
  * Monitoring Configuration
@@ -59,9 +59,10 @@ public interface SetUp extends Node {
 	 * @param enable
 	 *            , true values are published
 	 * @return true if action done , false otherwhise
+	 * @throws CiliaInvalidSyntaxException 
 	 */
 	public void setMonitoring(String variableId, int queueSize, String LdapFilter,
-			boolean enable) throws InvalidSyntaxException,CiliaIllegalParameterException;
+			boolean enable) throws CiliaIllegalParameterException, CiliaInvalidSyntaxException;
 
 	/**
 	 * Configure the monitoring on this object ( others parameters are not
@@ -84,9 +85,10 @@ public interface SetUp extends Node {
 	 * @param LdapFilter
 	 *            , data control flow management
 	 * @return true if action done , false otherwhise
+	 * @throws CiliaInvalidSyntaxException 
 	 */
 	public void setMonitoring(String variableId, String LdapFilter)
-			throws CiliaIllegalParameterException, InvalidSyntaxException;
+			throws CiliaIllegalParameterException,CiliaInvalidSyntaxException;
 
 	/**
 	 * Configure the monitoring on this object

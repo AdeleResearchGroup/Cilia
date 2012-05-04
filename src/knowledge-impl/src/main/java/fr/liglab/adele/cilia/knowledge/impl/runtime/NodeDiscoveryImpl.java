@@ -23,9 +23,9 @@ import org.osgi.framework.ServiceReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import fr.liglab.adele.cilia.NodeCallback;
 import fr.liglab.adele.cilia.framework.monitor.statevariable.ComponentStateVarProperties;
 import fr.liglab.adele.cilia.framework.monitor.statevariable.ComponentStateVarService;
-import fr.liglab.adele.cilia.knowledge.NodeCallback;
 import fr.liglab.adele.cilia.knowledge.eventbus.EventProperties;
 import fr.liglab.adele.cilia.knowledge.impl.Knowledge;
 import fr.liglab.adele.cilia.knowledge.impl.eventbus.Publisher;

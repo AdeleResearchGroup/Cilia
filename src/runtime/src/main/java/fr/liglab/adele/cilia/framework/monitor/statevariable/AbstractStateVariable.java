@@ -33,6 +33,7 @@ import org.osgi.service.event.EventAdmin;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import fr.liglab.adele.cilia.exceptions.CiliaInvalidSyntaxException;
 import fr.liglab.adele.cilia.exceptions.CiliaRuntimeException;
 import fr.liglab.adele.cilia.framework.monitor.AbstractMonitor;
 import fr.liglab.adele.cilia.model.ComponentImpl;
@@ -291,7 +292,7 @@ public abstract class AbstractStateVariable extends AbstractMonitor implements
 	 * Set a condition to the state variable the filter ldap may be null
 	 */
 	public void setCondition(String stateVarId, String ldapFilter)
-			throws InvalidSyntaxException {
+			throws CiliaInvalidSyntaxException {
 		if (stateVarId == null)
 			throw new NullPointerException();
 		try {

@@ -13,24 +13,25 @@
  * limitations under the License.
  */
 
-package fr.liglab.adele.cilia.knowledge.runtime;
+package fr.liglab.adele.cilia.dynamic;
 
 import fr.liglab.adele.cilia.Node;
 import fr.liglab.adele.cilia.exceptions.CiliaIllegalParameterException;
 import fr.liglab.adele.cilia.exceptions.CiliaRuntimeException;
 
 /**
- * Management of dynamic data values 
+ * Management of dynamic data values
+ * 
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project
  *         Team</a>
- *
+ * 
  */
 public interface RawData extends Node {
 
 	/**
 	 * @param variableId
 	 * @return list of measures stored
-	 * @throws CiliaRuntimeException 
+	 * @throws CiliaRuntimeException
 	 */
 	public Measure[] measures(String variableId) throws CiliaIllegalParameterException;
 

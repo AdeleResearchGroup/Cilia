@@ -13,35 +13,59 @@
  * limitations under the License.
  */
 
-package fr.liglab.adele.cilia.knowledge;
-
-import org.osgi.framework.InvalidSyntaxException;
+package fr.liglab.adele.cilia.dynamic;
 
 import fr.liglab.adele.cilia.exceptions.CiliaIllegalParameterException;
 import fr.liglab.adele.cilia.exceptions.CiliaInvalidSyntaxException;
 
 /**
- * Listener to events [node arrival / node departure] component
+ * Listener data received
  * 
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project
  *         Team</a>
  * 
  */
-public interface NodeRegistration {
+public interface MeasuresRegistration {
 
 	/**
-	 * @param listener
-	 *            , listener to add
-	 * @throws CiliaIllegalParameterException
-	 * @throws CiliaInvalidSyntaxException 
+	 * inserts a listener
 	 * 
+	 * @param ldapfilter
+	 *            , ( uuid,chainId, nodeId)
+	 * @param listener
+	 *            ,
+	 * @throws CiliaIllegalParameterException
+	 * @throws InvalidSyntaxException
+	 * @throws CiliaInvalidSyntaxException
 	 */
-	void addListener(String ldapFilter, NodeCallback listener)
+	void addListener(String ldapfilter, ThresholdsCallback listener)
 			throws CiliaIllegalParameterException, CiliaInvalidSyntaxException;
 
 	/**
+	 * 
+	 * @param ldapfilter
+	 *            ( uuid,chainId, nodeId)
+	 * @param listener
+	 * @throws CiliaIllegalParameterException
+	 * @throws InvalidSyntaxException
+	 * @throws CiliaInvalidSyntaxException
+	 */
+	void addListener(String ldapfilter, MeasureCallback listener)
+			throws CiliaIllegalParameterException, CiliaInvalidSyntaxException;
+
+	/**
+	 * Removes a threshold listener
+	 * 
 	 * @param listener
 	 *            , listener to remove
 	 */
-	void removeListener(NodeCallback listener) throws CiliaIllegalParameterException;
+	void removeListener(ThresholdsCallback listener)
+			throws CiliaIllegalParameterException;
+
+	/**
+	 * Removes a Measure listener
+	 * 
+	 * @param listener
+	 */
+	void removeListener(MeasureCallback listener) throws CiliaIllegalParameterException;
 }

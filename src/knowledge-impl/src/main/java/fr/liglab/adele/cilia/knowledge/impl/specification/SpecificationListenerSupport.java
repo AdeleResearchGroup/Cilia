@@ -31,14 +31,14 @@ import org.osgi.framework.ServiceReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import fr.liglab.adele.cilia.ChainCallback;
+import fr.liglab.adele.cilia.ChainRegistration;
 import fr.liglab.adele.cilia.Node;
+import fr.liglab.adele.cilia.NodeCallback;
+import fr.liglab.adele.cilia.NodeRegistration;
 import fr.liglab.adele.cilia.exceptions.CiliaIllegalParameterException;
 import fr.liglab.adele.cilia.exceptions.CiliaInvalidSyntaxException;
-import fr.liglab.adele.cilia.knowledge.NodeCallback;
-import fr.liglab.adele.cilia.knowledge.NodeRegistration;
 import fr.liglab.adele.cilia.knowledge.impl.Knowledge;
-import fr.liglab.adele.cilia.knowledge.specification.ChainCallback;
-import fr.liglab.adele.cilia.knowledge.specification.ChainRegistration;
 import fr.liglab.adele.cilia.knowledge.util.SwingWorker;
 import fr.liglab.adele.cilia.util.concurrent.ReentrantWriterPreferenceReadWriteLock;
 import fr.liglab.adele.cilia.util.concurrent.SyncMap;

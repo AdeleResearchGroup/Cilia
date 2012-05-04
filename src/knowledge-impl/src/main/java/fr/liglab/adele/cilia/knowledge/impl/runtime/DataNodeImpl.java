@@ -15,9 +15,9 @@
 
 package fr.liglab.adele.cilia.knowledge.impl.runtime;
 
-import org.osgi.framework.InvalidSyntaxException;
 
 import fr.liglab.adele.cilia.exceptions.CiliaIllegalParameterException;
+import fr.liglab.adele.cilia.exceptions.CiliaInvalidSyntaxException;
 import fr.liglab.adele.cilia.framework.monitor.statevariable.ComponentStateVarService;
 import fr.liglab.adele.cilia.knowledge.impl.Knowledge;
 import fr.liglab.adele.cilia.knowledge.registry.RegistryItem;
@@ -63,7 +63,7 @@ public class DataNodeImpl extends AbstractDataNode {
 	}
 
 	public void setMonitoring(String variableId, int queueSize, String ldapFilter,
-			boolean enable) throws CiliaIllegalParameterException, InvalidSyntaxException {
+			boolean enable) throws CiliaIllegalParameterException, CiliaInvalidSyntaxException {
 
 		if (variableId == null)
 			throw new CiliaIllegalParameterException("Variable id is null !");
@@ -98,7 +98,7 @@ public class DataNodeImpl extends AbstractDataNode {
 				stateVariables.put(variableId, new Observations(queueSize));
 				mediatorHandler.disableStateVar(variableId);
 				mediatorHandler.setCondition(variableId, Knowledge.DEFAULT_CONDITION);
-			} catch (InvalidSyntaxException e) {
+			} catch (CiliaInvalidSyntaxException e) {
 				/* never happens! */
 			}
 		} else {
@@ -109,7 +109,7 @@ public class DataNodeImpl extends AbstractDataNode {
 	}
 
 	public void setMonitoring(String variableId, String ldapFilter)
-			throws CiliaIllegalParameterException, InvalidSyntaxException {
+			throws CiliaIllegalParameterException, CiliaInvalidSyntaxException {
 
 		if (variableId == null)
 			throw new CiliaIllegalParameterException("Variable id is null !");
@@ -141,7 +141,7 @@ public class DataNodeImpl extends AbstractDataNode {
 					.put(variableId, new Observations(Knowledge.DEFAULT_QUEUE_SIZE));
 			try {
 				mediatorHandler.setCondition(variableId, Knowledge.DEFAULT_CONDITION);
-			} catch (InvalidSyntaxException e) {
+			} catch (CiliaInvalidSyntaxException e) {
 			}
 		}
 		if (enable)

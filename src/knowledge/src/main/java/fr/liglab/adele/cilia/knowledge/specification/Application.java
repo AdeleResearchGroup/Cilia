@@ -17,16 +17,15 @@ package fr.liglab.adele.cilia.knowledge.specification;
 
 import java.util.Dictionary;
 
-import org.osgi.framework.InvalidSyntaxException;
-
+import fr.liglab.adele.cilia.ChainRegistration;
 import fr.liglab.adele.cilia.MediatorComponent;
 import fr.liglab.adele.cilia.Node;
+import fr.liglab.adele.cilia.NodeRegistration;
+import fr.liglab.adele.cilia.Topology;
 import fr.liglab.adele.cilia.exceptions.CiliaIllegalParameterException;
 import fr.liglab.adele.cilia.exceptions.CiliaIllegalStateException;
 import fr.liglab.adele.cilia.exceptions.CiliaInvalidSyntaxException;
 import fr.liglab.adele.cilia.exceptions.CiliaRuntimeException;
-import fr.liglab.adele.cilia.knowledge.NodeRegistration;
-import fr.liglab.adele.cilia.knowledge.Topology;
 
 /**
  * 
@@ -40,8 +39,9 @@ public interface Application extends Topology, NodeRegistration, ChainRegistrati
 	 * @return list of chain Id
 	 */
 	String[] getChains();
+
 	/**
-	 * @throws CiliaInvalidSyntaxException 
+	 * @throws CiliaInvalidSyntaxException
 	 * 
 	 * @param ldapFilter
 	 *            define a node , ldap filters, keywords

@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-package fr.liglab.adele.cilia.knowledge.runtime;
+package fr.liglab.adele.cilia.dynamic;
 
 import fr.liglab.adele.cilia.Node;
 import fr.liglab.adele.cilia.exceptions.CiliaIllegalParameterException;

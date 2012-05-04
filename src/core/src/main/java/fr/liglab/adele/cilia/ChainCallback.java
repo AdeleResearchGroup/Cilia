@@ -1,4 +1,4 @@
-package fr.liglab.adele.cilia.knowledge.specification;
+package fr.liglab.adele.cilia;
 
 /**
  * callback  events level chain 
