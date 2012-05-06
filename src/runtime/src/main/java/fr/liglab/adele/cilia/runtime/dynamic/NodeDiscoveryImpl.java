@@ -27,7 +27,6 @@ import fr.liglab.adele.cilia.NodeCallback;
 import fr.liglab.adele.cilia.framework.monitor.statevariable.ComponentStateVarProperties;
 import fr.liglab.adele.cilia.framework.monitor.statevariable.ComponentStateVarService;
 import fr.liglab.adele.cilia.runtime.ConstRuntime;
-import fr.liglab.adele.cilia.util.Watch;
 
 /**
  * Track mediator/adapter at runtime

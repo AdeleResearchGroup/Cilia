@@ -59,5 +59,9 @@ public class UnModifiableDictionary extends Dictionary {
 	public int size() {
 		return dico.size();
 	}
+	
+	public String toString() {
+		return dico.toString();
+	}
 		
 }

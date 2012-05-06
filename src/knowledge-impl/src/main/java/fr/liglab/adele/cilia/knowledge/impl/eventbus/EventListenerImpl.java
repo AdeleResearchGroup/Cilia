@@ -71,7 +71,7 @@ public class EventListenerImpl extends CacheListenerSupport implements
 		this.cachedEvent = new SyncList(new ArrayList(),
 				new ReentrantWriterPreferenceReadWriteLock());
 		this.vetoByTopic = new ConcurrentHashMap();
-		this.enable=ConstRuntime.CACHED_AUTORUN ;
+		this.enable=true ;
 	}
 
 	/*

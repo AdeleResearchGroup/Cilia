@@ -41,7 +41,6 @@ public class MeasureImpl implements Measure {
 		return Watch.fromTicksToMs(tickCounts);
 	}
 	
-
 	public String toString() {
 		StringBuffer sb = new StringBuffer();
 		sb.append("value=").append(value);

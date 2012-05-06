@@ -56,7 +56,6 @@ public class RegistryManager implements RuntimeRegistry {
 	}
 
 	public void start() {
-		System.out.println(">>>>> REGISTRY STARTED") ;
 		logger.info("ModelS@RunTime 'Registry' - started");
 	}
 
@@ -146,7 +145,7 @@ public class RegistryManager implements RuntimeRegistry {
 			} catch (Exception e) {
 				locked_uuid.remove(uuid);
 				Thread.currentThread().interrupt();
-				throw new UnsupportedOperationException(e.getMessage());
+				throw new RuntimeException(e.getMessage());
 			}
 		}
 	}

@@ -53,14 +53,10 @@ public final class ConstRuntime {
 	 */
 	public static final String NODE_ID = "node";
 
-	/**
-	 * by default the cache service is running
-	 */
-	public static final boolean CACHED_AUTORUN = true;
 	/*
 	 * logger name
 	 */
-	public static final String LOG_NAME = "cilia.knowledge";
+	public static final String LOG_NAME = "cilia.runtime.knowledge";
 
 	/*
 	 * #items stored per state variables

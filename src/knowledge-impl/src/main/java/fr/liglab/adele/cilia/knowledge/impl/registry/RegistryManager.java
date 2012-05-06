@@ -147,7 +147,7 @@ public class RegistryManager implements RuntimeRegistry {
 			} catch (Exception e) {
 				locked_uuid.remove(uuid);
 				Thread.currentThread().interrupt();
-				throw new UnsupportedOperationException(e.getMessage());
+				throw new RuntimeException(e.getMessage());
 			}
 		}
 	}
