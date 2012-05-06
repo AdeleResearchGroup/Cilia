@@ -16,8 +16,10 @@
 package fr.liglab.adele.cilia.framework.monitor;
 
 import java.util.Dictionary;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.felix.ipojo.ConfigurationException;
@@ -32,10 +34,11 @@ import fr.liglab.adele.cilia.runtime.Const;
 
 public class AuditHandler extends PrimitiveHandler {
 	private final Logger logger = LoggerFactory.getLogger("cilia.runtime.audit-handler");
-	
+
 	private Set fieldsGet = new HashSet();
 	private Set fieldsSet = new HashSet();
-
+	private Map fieldsPrefix  = new HashMap() ;
+	
 	private IFieldMonitor monitor;
 
 	public void configure(Element metadata, Dictionary configuration)
@@ -43,12 +46,14 @@ public class AuditHandler extends PrimitiveHandler {
 		Element[] elem = metadata.getElements("audit", Const.CILIA_NAMESPACE);
 		Set fields = new HashSet();
 		if (elem != null) {
-			String field,rights;
+			String field, rights,prefix;
 			for (int i = 0; i < elem.length; i++) {
 				field = elem[i].getAttribute("field");
 				rights = elem[i].getAttribute("access");
+				prefix = elem[i].getAttribute("namespace") ;				
 				if (field != null) {
 					fields.add(field);
+					if (prefix !=null) fieldsPrefix.put(field,prefix+":") ;
 					if (rights == null) {
 						fieldsGet.add(field);
 						fieldsSet.add(field);
@@ -71,6 +76,7 @@ public class AuditHandler extends PrimitiveHandler {
 			FieldMetadata fm = pojoMeta.getField(field);
 			getInstanceManager().register(fm, this);
 		}
+		
 	}
 
 	public void start() {
@@ -79,6 +85,15 @@ public class AuditHandler extends PrimitiveHandler {
 	public void stop() {
 	}
 
+	private String getQualifiedId(String field) {
+		String name ;
+		if (fieldsPrefix.containsKey(field) ) {
+			name = fieldsPrefix.get(field) + field ;
+		}
+		else name=field;
+		return name ;
+	}
+	
 	/**
 	 * This method is called at each time the pojo 'get' a listened field. The
 	 * method return the stored value.
@@ -94,9 +109,12 @@ public class AuditHandler extends PrimitiveHandler {
 	 *      java.lang.Object)
 	 */
 	public Object onGet(Object pojo, String field, Object o) {
+		String name = getQualifiedId(field);
 		if (fieldsGet.contains(field)) {
-			if (monitor != null) monitor.onFieldGet(field, o);
-			logger.debug("Read access {}={}", field, o.toString());			
+			if (monitor != null) {
+				monitor.onFieldGet(name, o);
+			}
+			logger.debug("Read access {}={}", name, o.toString());
 		}
 		return o;
 	}
@@ -115,9 +133,11 @@ public class AuditHandler extends PrimitiveHandler {
 	 *      java.lang.Object)
 	 */
 	public void onSet(Object pojo, String field, Object newvalue) {
+		String name = getQualifiedId(field);
 		if (fieldsSet.contains(field)) {
-			if (monitor != null) monitor.onFieldSet(field, newvalue);
-			logger.debug("Write access {}={}", field, newvalue.toString());			
+			if (monitor != null)
+				monitor.onFieldSet(name, newvalue);
+			logger.debug("Write access {}={}", name, newvalue.toString());
 		}
 	}
 
