@@ -12,7 +12,7 @@
  * limitations under the License.
  */
 
-package fr.liglab.adele.cilia.knowledge.impl.registry;
+package fr.liglab.adele.cilia.runtime.dynamic;
 
 import java.util.Dictionary;
 import java.util.HashMap;
@@ -22,8 +22,6 @@ import java.util.Map;
 import fr.liglab.adele.cilia.MediatorComponent;
 import fr.liglab.adele.cilia.framework.monitor.statevariable.ComponentStateVarService;
 import fr.liglab.adele.cilia.runtime.ConstRuntime;
-import fr.liglab.adele.cilia.runtime.dynamic.DataNode;
-import fr.liglab.adele.cilia.runtime.dynamic.RegistryItem;
 
 /**
  * Object stored in the registry

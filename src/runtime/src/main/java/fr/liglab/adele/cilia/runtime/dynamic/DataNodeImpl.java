@@ -13,15 +13,13 @@
  * limitations under the License.
  */
 
-package fr.liglab.adele.cilia.knowledge.impl.runtime;
+package fr.liglab.adele.cilia.runtime.dynamic;
 
 
 import fr.liglab.adele.cilia.exceptions.CiliaIllegalParameterException;
 import fr.liglab.adele.cilia.exceptions.CiliaInvalidSyntaxException;
 import fr.liglab.adele.cilia.framework.monitor.statevariable.ComponentStateVarService;
 import fr.liglab.adele.cilia.runtime.ConstRuntime;
-import fr.liglab.adele.cilia.runtime.dynamic.RegistryItem;
-import fr.liglab.adele.cilia.runtime.dynamic.RuntimeRegistry;
 
 /**
  * Node = [mediator,adapter] at execution time

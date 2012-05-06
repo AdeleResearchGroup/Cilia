@@ -12,20 +12,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package fr.liglab.adele.cilia.util;
 
-package fr.liglab.adele.cilia.knowledge.impl;
 
-import fr.liglab.adele.cilia.dynamic.RawData;
-import fr.liglab.adele.cilia.dynamic.SetUp;
-import fr.liglab.adele.cilia.dynamic.Thresholds;
-
-/**
- * A node at runtime implements all interfaces
- *
- * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project
- *         Team</a>
- * 
- */
-public interface DataNode extends SetUp, RawData, Thresholds  {
-
+public interface Callable {
+  Object call() throws Exception;
 }

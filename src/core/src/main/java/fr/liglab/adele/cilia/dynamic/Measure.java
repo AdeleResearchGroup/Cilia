@@ -15,10 +15,24 @@
 
 package fr.liglab.adele.cilia.dynamic;
 
-public interface Measure  {
-
+/**
+ * Interface access for data recevied from the monitoring
+ * 
+ * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project
+ *         Team</a>
+ * 
+ */
+public interface Measure {
+	/**
+	 * 
+	 * @return value
+	 */
 	public Object value();
 
-	public long tickCounts();
-	
+	/**
+	 * timestamp at source level
+	 * @return time in ms
+	 */
+	public long timeStampMs();
+
 }

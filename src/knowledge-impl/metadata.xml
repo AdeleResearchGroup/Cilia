@@ -9,9 +9,10 @@
 		<callback transition="validate" method="start" />
 		<callback transition="invalidate" method="stop" />
 	</component>
-	<instance component="ModelRuntime_Core.Registry" />
+	<!--  <instance component="ModelRuntime_Core.Registry" /> -->
 
 	<!-- in charge to maintains dynamic properties of components discovered -->
+	<!--
 	<component
 		classname="fr.liglab.adele.cilia.knowledge.impl.runtime.DynamicPropertiesImpl"
 		name="ModelRuntime_Core.NodesRuntime">
@@ -23,7 +24,7 @@
 		<callback transition="validate" method="start" />
 		<callback transition="invalidate" method="stop" />
 	</component>
-	<instance component="ModelRuntime_Core.NodesRuntime" />
+	   <instance component="ModelRuntime_Core.NodesRuntime" /> -->
 
 	<!-- in charge to follow  specifications -->
 	<component
@@ -33,11 +34,11 @@
 		<requires field="listenerFramework" />
 		<requires field="publisher" />
 		<provides
-			specification="fr.liglab.adele.cilia.knowledge.specification.Application" />
+			specification="fr.liglab.adele.cilia.Application" />
 		<callback transition="validate" method="start" />
 		<callback transition="invalidate" method="stop" />
 	</component>
-	<instance component="ModelRuntime_Core.Specifications" />
+	<!--  <instance component="ModelRuntime_Core.Specifications" /> -->
 
 	<!-- Event bus , Listen event and notify subscribers -->
 	<component

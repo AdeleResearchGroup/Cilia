@@ -11,7 +11,7 @@
   30Jun1998  dl               Create public version
 */
 
-package fr.liglab.adele.cilia.knowledge.util;
+package fr.liglab.adele.cilia.util;
 import java.lang.reflect.*;
 
 /**

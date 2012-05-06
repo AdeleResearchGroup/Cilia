@@ -31,8 +31,8 @@ public interface ChainRegistration {
 	 * 
 	 * @param listener
 	 *            , listener to add
-	 * @throws CiliaIllegalParameterException
-	 * @throws CiliaInvalidSyntaxException
+	 * @throws CiliaIllegalParameterException , null parameter of wrong
+	 * @throws CiliaInvalidSyntaxException, ldap syntax error
 	 * 
 	 */
 	void addListener(String ldapFilter, ChainCallback listener)
@@ -43,7 +43,7 @@ public interface ChainRegistration {
 	 * 
 	 * @param listener
 	 *            , listener to remove
-	 * @throws CiliaIllegalParameterException
+	 * @throws CiliaIllegalParameterException , listener = null;
 	 */
 	void removeListener(ChainCallback listener) throws CiliaIllegalParameterException;
 }

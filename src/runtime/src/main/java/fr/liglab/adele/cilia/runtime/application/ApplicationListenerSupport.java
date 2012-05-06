@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-package fr.liglab.adele.cilia.knowledge.impl.specification;
+package fr.liglab.adele.cilia.runtime.application;
 
 import java.util.ArrayList;
 import java.util.Dictionary;
@@ -49,9 +49,9 @@ import fr.liglab.adele.cilia.util.concurrent.SyncMap;
  *         Team</a>
  * 
  */
-@SuppressWarnings({"rawtypes", "unchecked"})
-public class SpecificationListenerSupport implements TrackerCustomizer,
-		ChainRegistration, NodeRegistration {
+@SuppressWarnings({ "rawtypes", "unchecked" })
+public class ApplicationListenerSupport implements TrackerCustomizer, ChainRegistration,
+		NodeRegistration {
 
 	private final Logger logger = LoggerFactory.getLogger(ConstRuntime.LOG_NAME);
 
@@ -64,7 +64,7 @@ public class SpecificationListenerSupport implements TrackerCustomizer,
 	private BundleContext bundleContext;
 	private Tracker tracker;
 
-	public SpecificationListenerSupport(BundleContext bc) {
+	public ApplicationListenerSupport(BundleContext bc) {
 		bundleContext = bc;
 		listenerNode = new SyncMap(new HashMap(),
 				new ReentrantWriterPreferenceReadWriteLock());
@@ -90,7 +90,6 @@ public class SpecificationListenerSupport implements TrackerCustomizer,
 						this);
 				tracker.open();
 			} catch (InvalidSyntaxException e) {
-				/* never happens */
 			}
 		}
 
@@ -161,7 +160,7 @@ public class SpecificationListenerSupport implements TrackerCustomizer,
 			Iterator it = listenerNode.entrySet().iterator();
 			while (it.hasNext()) {
 				/*
-				 * call one time listener matching filter
+				 * call one time all listener matching filter
 				 */
 				Map.Entry pairs = (Map.Entry) it.next();
 				ArrayList filters = (ArrayList) pairs.getValue();
@@ -222,7 +221,6 @@ public class SpecificationListenerSupport implements TrackerCustomizer,
 				ArrayList filters = (ArrayList) pairs.getValue();
 				boolean tofire = false;
 				for (int i = 0; i < filters.size(); i++) {
-
 					if (((Filter) filters.get(i)).match(dico)) {
 						tofire = true;
 						break;
@@ -230,19 +228,20 @@ public class SpecificationListenerSupport implements TrackerCustomizer,
 				}
 
 				if (tofire) {
+					ChainCallback cb =(ChainCallback)pairs.getKey() ; 
 					String chainId = (String) dico.get(ConstRuntime.CHAIN_ID);
 					switch (evt) {
 					case 0:
-						((ChainCallback) pairs.getKey()).arrival(chainId);
+						cb.arrival(chainId);
 						break;
 					case 1:
-						((ChainCallback) pairs.getKey()).departure(chainId);
+						cb.departure(chainId);
 						break;
 					case 2:
-						((ChainCallback) pairs.getKey()).started(chainId);
+						cb.started(chainId);
 						break;
 					case 3:
-						((ChainCallback) pairs.getKey()).stopped(chainId);
+						cb.stopped(chainId);
 						break;
 					}
 				}
@@ -261,7 +260,7 @@ public class SpecificationListenerSupport implements TrackerCustomizer,
 		} catch (CiliaIllegalParameterException e) {
 		}
 	}
-	
+
 	/* insert a new listener tracked */
 	private void insertService(ServiceReference reference) {
 		String ldapFilter;
@@ -290,7 +289,7 @@ public class SpecificationListenerSupport implements TrackerCustomizer,
 			}
 		}
 	}
-	
+
 	public boolean addingService(ServiceReference reference) {
 		return true;
 	}

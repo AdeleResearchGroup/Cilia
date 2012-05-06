@@ -12,7 +12,7 @@
    4Aug1998  dl               Change to extend InterruptedException
 */
 
-package fr.liglab.adele.cilia.knowledge.util;
+package fr.liglab.adele.cilia.util;
 
 /**
  * Thrown by synchronization classes that report

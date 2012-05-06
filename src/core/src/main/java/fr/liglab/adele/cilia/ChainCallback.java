@@ -1,37 +1,44 @@
 package fr.liglab.adele.cilia;
 
 /**
- * callback  events level chain 
+ * callback events level chain
+ * 
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project
  *         Team</a>
- *
+ * 
  */
 public interface ChainCallback {
 
 	/**
 	 * Callback upon new chain arrival
 	 * 
-	 * @param node
+	 * @param chaindId
+	 *            chain identificator
 	 */
 	void arrival(String chainId);
 
 	/**
 	 * Callback upon chain departure
 	 * 
-	 * @param node
+	 * @param chaindId
+	 *            chain identificator
 	 */
 	void departure(String chainId);
-	
+
 	/**
 	 * Chain started
-	 * @param chainId
+	 * 
+	 * @param chaindId
+	 *            chain identificator
 	 */
-	void started(String chainId) ;
-	
+	void started(String chainId);
+
 	/**
 	 * Chain stopped
-	 * @param chainId
+	 * 
+	 * @param chaindId
+	 *            chain identificator
 	 */
-	void stopped(String chainId) ;
-	
+	void stopped(String chainId);
+
 }

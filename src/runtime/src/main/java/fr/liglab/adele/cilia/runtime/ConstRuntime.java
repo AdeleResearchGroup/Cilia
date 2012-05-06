@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-package fr.liglab.adele.cilia.knowledge.impl;
+package fr.liglab.adele.cilia.runtime;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -32,15 +32,16 @@ import fr.liglab.adele.cilia.exceptions.CiliaIllegalParameterException;
 import fr.liglab.adele.cilia.exceptions.CiliaInvalidSyntaxException;
 
 /**
- * Privates constants and static methods
+ * Privates constants and static methods used for runtime (dynamic and application)
  * 
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project
  *         Team</a>
  * 
  */
-public final class Knowledge {
+@SuppressWarnings({ "rawtypes", "unchecked" })
+public final class ConstRuntime {
 	/**
-	 * Unique ID identifier
+	 * Unique ID identifier 
 	 */
 	public static final String UUID = "uuid";
 	/**
@@ -82,6 +83,7 @@ public final class Knowledge {
 		System.arraycopy(second, 0, result, first.length, second.length);
 		return result;
 	}
+
 
 	public static final Set ldapKeys;
 	static {

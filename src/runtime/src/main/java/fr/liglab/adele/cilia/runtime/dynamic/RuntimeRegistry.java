@@ -13,9 +13,7 @@
  * limitations under the License.
  */
 
-package fr.liglab.adele.cilia.knowledge.registry;
-
-import org.osgi.framework.InvalidSyntaxException;
+package fr.liglab.adele.cilia.runtime.dynamic;
 
 import fr.liglab.adele.cilia.exceptions.CiliaIllegalParameterException;
 import fr.liglab.adele.cilia.exceptions.CiliaInvalidSyntaxException;

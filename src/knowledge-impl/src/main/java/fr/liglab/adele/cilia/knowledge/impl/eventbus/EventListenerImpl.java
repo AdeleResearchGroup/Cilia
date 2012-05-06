@@ -38,8 +38,8 @@ import fr.liglab.adele.cilia.knowledge.eventbus.OnEvent;
 import fr.liglab.adele.cilia.knowledge.eventbus.OnVeto;
 import fr.liglab.adele.cilia.knowledge.eventbus.SubscriberRegistration;
 import fr.liglab.adele.cilia.knowledge.eventbus.VetoSubscriberRegistration;
-import fr.liglab.adele.cilia.knowledge.impl.Knowledge;
-import fr.liglab.adele.cilia.knowledge.registry.RuntimeRegistry;
+import fr.liglab.adele.cilia.runtime.ConstRuntime;
+import fr.liglab.adele.cilia.runtime.dynamic.RuntimeRegistry;
 import fr.liglab.adele.cilia.util.Watch;
 import fr.liglab.adele.cilia.util.concurrent.CopyOnWriteArrayList;
 import fr.liglab.adele.cilia.util.concurrent.ReentrantWriterPreferenceReadWriteLock;
@@ -51,9 +51,10 @@ import fr.liglab.adele.cilia.util.concurrent.SyncList;
  *         Team</a>
  *
  */
+//@SuppressWarnings({"rawtypes", "unchecked"})
 public class EventListenerImpl extends CacheListenerSupport implements
 		SubscriberRegistration, VetoSubscriberRegistration, Cache {
-	private final Logger logger = LoggerFactory.getLogger(Knowledge.LOG_NAME);
+	private final Logger logger = LoggerFactory.getLogger(ConstRuntime.LOG_NAME);
 
 	private SyncList cachedEvent;
 	private int capacity;
@@ -70,7 +71,7 @@ public class EventListenerImpl extends CacheListenerSupport implements
 		this.cachedEvent = new SyncList(new ArrayList(),
 				new ReentrantWriterPreferenceReadWriteLock());
 		this.vetoByTopic = new ConcurrentHashMap();
-		this.enable=Knowledge.CACHED_AUTORUN ;
+		this.enable=ConstRuntime.CACHED_AUTORUN ;
 	}
 
 	/*

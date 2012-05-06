@@ -12,7 +12,7 @@
  * limitations under the License.
  */
 
-package fr.liglab.adele.cilia.knowledge.impl.runtime;
+package fr.liglab.adele.cilia.runtime.dynamic;
 
 import fr.liglab.adele.cilia.dynamic.Measure;
 import fr.liglab.adele.cilia.util.Watch;

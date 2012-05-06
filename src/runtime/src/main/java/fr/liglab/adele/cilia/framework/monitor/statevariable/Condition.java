@@ -51,7 +51,8 @@ public class Condition {
 	 *            LDAP expression or null
 	 * @throws InvalidSyntaxException
 	 */
-	public Condition(BundleContext bc, String ldapfilter) throws CiliaInvalidSyntaxException {
+	public Condition(BundleContext bc, String ldapfilter)
+			throws CiliaInvalidSyntaxException {
 		synchro = new Object();
 		dico = new Hashtable(7);
 		dico.put(VALUE_CURRENT, new Double(Double.NaN));
@@ -84,12 +85,11 @@ public class Condition {
 		if ((expression != null) && (expression.length() != 0)) {
 			synchronized (synchro) {
 				try {
-				filter = bc.createFilter(expression);
-				}catch (InvalidSyntaxException e) {
+					filter = bc.createFilter(expression);
+				} catch (InvalidSyntaxException e) {
 					throw new CiliaInvalidSyntaxException(e.getMessage(), e.getFilter());
 				}
 			}
-
 		}
 	}
 

@@ -9,7 +9,7 @@
 
  */
 
-package fr.liglab.adele.cilia.knowledge.util;
+package fr.liglab.adele.cilia.util;
 
 import java.lang.reflect.InvocationTargetException;
 

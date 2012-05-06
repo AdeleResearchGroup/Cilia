@@ -13,14 +13,13 @@
  * limitations under the License.
  */
 
-package fr.liglab.adele.cilia.knowledge.registry;
+package fr.liglab.adele.cilia.runtime.dynamic;
 
 import java.util.Dictionary;
 
 import fr.liglab.adele.cilia.MediatorComponent;
 import fr.liglab.adele.cilia.Node;
 import fr.liglab.adele.cilia.framework.monitor.statevariable.ComponentStateVarService;
-import fr.liglab.adele.cilia.knowledge.impl.DataNode;
 
 /**
  * Objects stored in the registry
@@ -29,6 +28,7 @@ import fr.liglab.adele.cilia.knowledge.impl.DataNode;
  *         Team</a>
  * 
  */
+@SuppressWarnings("rawtypes")
 public interface RegistryItem extends Node {
 
 	/**

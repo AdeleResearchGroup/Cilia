@@ -12,7 +12,7 @@
  * limitations under the License.
  */
 
-package fr.liglab.adele.cilia.knowledge.impl.runtime;
+package fr.liglab.adele.cilia.runtime.dynamic;
 
 import java.util.Dictionary;
 import java.util.Hashtable;
@@ -30,11 +30,7 @@ import fr.liglab.adele.cilia.dynamic.RawData;
 import fr.liglab.adele.cilia.dynamic.SetUp;
 import fr.liglab.adele.cilia.dynamic.Thresholds;
 import fr.liglab.adele.cilia.framework.monitor.statevariable.ComponentStateVarProperties;
-import fr.liglab.adele.cilia.knowledge.eventbus.EventProperties;
-import fr.liglab.adele.cilia.knowledge.impl.registry.RegistryItemImpl;
 import fr.liglab.adele.cilia.runtime.ConstRuntime;
-import fr.liglab.adele.cilia.runtime.dynamic.RegistryItem;
-import fr.liglab.adele.cilia.runtime.dynamic.RuntimeRegistry;
 
 /**
  * This class is in charge to store data sent by <br>
@@ -44,11 +40,11 @@ import fr.liglab.adele.cilia.runtime.dynamic.RuntimeRegistry;
  *         Team</a>
  * 
  */
-@SuppressWarnings({"rawtypes", "unchecked"})
+@SuppressWarnings({ "rawtypes", "unchecked" })
 public class StateVariablesListener implements ComponentStateVarProperties, EventHandler {
 
 	private final Logger logger = LoggerFactory.getLogger(ConstRuntime.LOG_NAME);
-	
+
 	private final BundleContext bundleContext;
 	/* topic to subscribe -> state variables published by mediator/adapter */
 	private ServiceRegistration serviceEventAdmin;
@@ -66,7 +62,6 @@ public class StateVariablesListener implements ComponentStateVarProperties, Even
 	public void setRegistry(RuntimeRegistry r) {
 		registry = r;
 	}
-
 
 	/* Start receiving state variable for this chain */
 	public void start() {
@@ -88,8 +83,8 @@ public class StateVariablesListener implements ComponentStateVarProperties, Even
 		if (serviceEventAdmin != null) {
 			serviceEventAdmin.unregister();
 		}
-		serviceEventAdmin = bundleContext.registerService(
-				EventHandler.class.getName(), this, dico);
+		serviceEventAdmin = bundleContext.registerService(EventHandler.class.getName(),
+				this, dico);
 	}
 
 	private void unregisterEventAdmin() {
@@ -117,32 +112,29 @@ public class StateVariablesListener implements ComponentStateVarProperties, Even
 	private void handleEventData(Dictionary dico) {
 		String uuid;
 		String stateVariable;
-		Object value ;
+		Object value;
 		long ticksCount;
 
 		/* state variable name */
-		stateVariable = (String) dico.get(SOURCE) ;		
+		stateVariable = (String) dico.get(SOURCE);
 		/* uuid : mediator / adapter source */
-		uuid = (String)dico.get(UUID) ;		
+		uuid = (String) dico.get(UUID);
 		/* value published */
-		value = dico.get(VALUE) ;
+		value = dico.get(VALUE);
 		/* timestamp in ticks */
-		ticksCount = ((Long)dico.get(TIMESTAMP)).longValue() ;
-		
+		ticksCount = ((Long) dico.get(TIMESTAMP)).longValue();
+
 		/* Retrieve the node and insert a new measure */
 		RegistryItem item = registry.findByUuid(uuid);
 		if (item != null) {
 			DataNodeImpl node = (DataNodeImpl) item.dataRuntimeReference();
 			if (node != null) {
-				int evt = node.addMeasure(stateVariable, new MeasureImpl(value, ticksCount));	
-				if (evt > 0) { 
-					/* != -1 , value recevied successfully, fire event to all listener */
-					evtSupport.fireMeasureReceived(node, stateVariable) ;
-					/* publish all value */
-					if (evt != EventProperties.DATA_UPDATE) {
-						evtSupport.fireThresholdEvent(node, stateVariable,evt);
-					}
-				}
+				int evt = node.addMeasure(stateVariable, new MeasureImpl(value,
+						ticksCount));
+				if (evt == 0)
+					evtSupport.fireMeasureReceived(node, stateVariable);
+				else if (evt > 0)
+					evtSupport.fireThresholdEvent(node, stateVariable, evt);
 			}
 		}
 	}
@@ -153,8 +145,8 @@ public class StateVariablesListener implements ComponentStateVarProperties, Even
 		DataNodeImpl c;
 		/* construct a node -> hold data fired by the mediator-adapter */
 		c = new DataNodeImpl(uuid, registry);
-		/* Store in the registry the previous Data node instancied   */
-		((RegistryItemImpl)item).setDataRuntimeReference(c) ; 
+		/* Store in the registry the previous Data node instancied */
+		((RegistryItemImpl) item).setDataRuntimeReference(c);
 		/* informs all listeners 'node arrival' */
 		evtSupport.fireNodeEvent(true, c);
 		logger.debug("Listen data published by [{}]", c.toString());
@@ -174,7 +166,7 @@ public class StateVariablesListener implements ComponentStateVarProperties, Even
 		SetUp proxy = null;
 		RegistryItem item = registry.findByUuid(uuid);
 		if (item != null) {
-			proxy = (SetUp) weakProxy.make(registry, uuid,SetUp.class);
+			proxy = (SetUp) weakProxy.make(registry, uuid, SetUp.class);
 		} else {
 			proxy = null;
 			logger.error("should never happens !");
@@ -186,7 +178,7 @@ public class StateVariablesListener implements ComponentStateVarProperties, Even
 		RawData proxy;
 		RegistryItem item = registry.findByUuid(uuid);
 		if (item != null) {
-			proxy = (RawData) weakProxy.make(registry, uuid,RawData.class);
+			proxy = (RawData) weakProxy.make(registry, uuid, RawData.class);
 		} else {
 			proxy = null;
 			logger.error("should never happens !");
@@ -198,7 +190,7 @@ public class StateVariablesListener implements ComponentStateVarProperties, Even
 		Thresholds proxy;
 		RegistryItem item = registry.findByUuid(uuid);
 		if (item != null) {
-			proxy = (Thresholds) weakProxy.make(registry, uuid,Thresholds.class);
+			proxy = (Thresholds) weakProxy.make(registry, uuid, Thresholds.class);
 		} else {
 			proxy = null;
 			logger.error("should never happens !");

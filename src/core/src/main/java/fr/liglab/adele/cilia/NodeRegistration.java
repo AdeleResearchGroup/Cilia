@@ -31,7 +31,9 @@ public interface NodeRegistration {
 	 * @param listener
 	 *            , listener to add
 	 * @throws CiliaIllegalParameterException
+	 *             , null of wrong parameter
 	 * @throws CiliaInvalidSyntaxException
+	 *             LDAP syntax error
 	 * 
 	 */
 	void addListener(String ldapFilter, NodeCallback listener)
@@ -40,6 +42,8 @@ public interface NodeRegistration {
 	/**
 	 * @param listener
 	 *            , listener to remove
+     * @throws CiliaIllegalParameterException
+	 *             , null parameter
 	 */
 	void removeListener(NodeCallback listener) throws CiliaIllegalParameterException;
 }

@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-package fr.liglab.adele.cilia.knowledge.impl.runtime;
+package fr.liglab.adele.cilia.runtime.dynamic;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -22,10 +22,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import fr.liglab.adele.cilia.dynamic.Measure;
+import fr.liglab.adele.cilia.dynamic.ThresholdsCallback;
 import fr.liglab.adele.cilia.exceptions.CiliaIllegalParameterException;
-import fr.liglab.adele.cilia.knowledge.eventbus.EventProperties;
 import fr.liglab.adele.cilia.runtime.ConstRuntime;
-import fr.liglab.adele.cilia.runtime.dynamic.DataNode;
 import fr.liglab.adele.cilia.util.concurrent.ConcurrentReaderHashMap;
 import fr.liglab.adele.cilia.util.concurrent.ReentrantWriterPreferenceReadWriteLock;
 import fr.liglab.adele.cilia.util.concurrent.SyncList;
@@ -246,15 +245,15 @@ public abstract class AbstractDataNode implements DataNode {
 			if ((m != null) && (m.value() instanceof Long)) {
 				Long l=(Long)m.value() ;
 				if ((threshold[0] != Double.NaN) && (l.longValue() < threshold[0]))
-					return EventProperties.DATA_VERY_LOW;
+					return ThresholdsCallback.VERY_LOW;
 				if ((threshold[1] != Double.NaN) && (l.longValue() < threshold[1]))
-					return EventProperties.DATA_LOW;
+					return ThresholdsCallback.LOW;
 				if ((threshold[3] != Double.NaN) && (l.longValue() > threshold[3]))
-					return EventProperties.DATA_VERY_HIGH;
+					return ThresholdsCallback.VERY_HIGH;
 				if ((threshold[2] != Double.NaN) && (l.longValue() > threshold[2]))
-					return EventProperties.DATA_VERY_HIGH;
+					return ThresholdsCallback.VERY_HIGH;
 			}
-			return EventProperties.DATA_UPDATE;
+			return 0;
 		}
 	}
 

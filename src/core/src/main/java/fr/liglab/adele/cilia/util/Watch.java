@@ -17,6 +17,7 @@ package fr.liglab.adele.cilia.util;
 import java.util.Calendar;
 import java.util.TimeZone;
 
+@SuppressWarnings("rawtypes")
 public class Watch implements java.lang.Comparable {
 	private static final long NANO_TO_MS = 1000000L;
 	private static TimeZone timeZone = TimeZone.getDefault();

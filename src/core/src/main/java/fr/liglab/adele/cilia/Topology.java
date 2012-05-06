@@ -21,7 +21,7 @@ import fr.liglab.adele.cilia.exceptions.CiliaIllegalStateException;
 import fr.liglab.adele.cilia.exceptions.CiliaInvalidSyntaxException;
 
 /**
- * Node retreival of a node, topology access
+ * Retreival of a node, topology access
  * 
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project
  *         Team</a>
@@ -32,10 +32,13 @@ public interface Topology {
 	/**
 	 * 
 	 * @param ldapFilter
-	 *            ldap filters,
-	 * @return list of adapter In if ldap syntax is not valid
+	 *            ldap filters keywords (chain,node,uuid) uuid is relevant only
+	 *            for dynamic components ( SetUp,RawData,Threshold)
+	 * @return list of adapter In ,
 	 * @throws CiliaInvalidSyntaxException
-	 *             if ldap syntax is not valid
+	 *             LDAP syntax error
+	 * @throws CiliaIllegalParameterException
+	 *             null parameter
 	 */
 	Node[] endpointIn(String ldapFilter) throws CiliaIllegalParameterException,
 			CiliaInvalidSyntaxException;
@@ -43,10 +46,13 @@ public interface Topology {
 	/**
 	 * 
 	 * @param ldapFilter
-	 *            ldap filters, keywords {uuid,chain,node}
-	 * @return list of adapter In
+	 *            ldap filters keywords (chain,node,uuid) uuid is relevant only
+	 *            for dynamic components ( SetUp,RawData,Threshold)
+	 * @return list of adapter Out
 	 * @throws CiliaInvalidSyntaxException
-	 *             if ldap syntax is not valid
+	 *             LDAP syntax error
+	 * @throws CiliaIllegalParameterException
+	 *             null parameter
 	 */
 	Node[] endpointOut(String ldapFilter) throws CiliaIllegalParameterException,
 			CiliaInvalidSyntaxException;
@@ -55,9 +61,11 @@ public interface Topology {
 	 * 
 	 * @param node
 	 *            node reference
-	 * @return array of successors , size = 0 if no node successor founded
-	 * @throws IllegalStateException
+	 * @return array of successors , size = 0 if no successor
 	 * @throws CiliaIllegalStateException
+	 *             the node doesn't exist
+	 * @throws CiliaIllegalParameterException
+	 *             null parameter
 	 */
 	Node[] connectedTo(Node node) throws CiliaIllegalParameterException,
 			CiliaIllegalStateException;
@@ -65,11 +73,13 @@ public interface Topology {
 	/**
 	 * 
 	 * @param ldapFilter
-	 *            define an unique node , ldap filters, keywords
-	 *            {uuid,chain,node}
+	 *            ldap filters keywords (chain,node,uuid) uuid is relevant only
+	 *            for dynamic components ( SetUp,RawData,Threshold)
 	 * @return array of successors, size=0 if no node matching the filter
+	 * @throws CiliaIllegalParameterException
+	 *             null parameter
 	 * @throws CiliaInvalidSyntaxException
-	 *             if syntax error ldapfilter
+	 *             LDAP syntax error
 	 */
 	Node[] connectedTo(String ldapFilter) throws CiliaIllegalParameterException,
 			CiliaInvalidSyntaxException;

@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-package fr.liglab.adele.cilia.knowledge.impl.runtime;
+package fr.liglab.adele.cilia.runtime.dynamic;
 
 import java.util.ArrayList;
 import java.util.HashMap;

@@ -12,7 +12,7 @@
  * limitations under the License.
  */
 
-package fr.liglab.adele.cilia.knowledge.impl.registry;
+package fr.liglab.adele.cilia.runtime.dynamic;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -29,8 +29,6 @@ import org.slf4j.LoggerFactory;
 import fr.liglab.adele.cilia.exceptions.CiliaIllegalParameterException;
 import fr.liglab.adele.cilia.exceptions.CiliaInvalidSyntaxException;
 import fr.liglab.adele.cilia.runtime.ConstRuntime;
-import fr.liglab.adele.cilia.runtime.dynamic.RegistryItem;
-import fr.liglab.adele.cilia.runtime.dynamic.RuntimeRegistry;
 import fr.liglab.adele.cilia.util.concurrent.Mutex;
 import fr.liglab.adele.cilia.util.concurrent.ReentrantWriterPreferenceReadWriteLock;
 import fr.liglab.adele.cilia.util.concurrent.SyncMap;
@@ -58,6 +56,7 @@ public class RegistryManager implements RuntimeRegistry {
 	}
 
 	public void start() {
+		System.out.println(">>>>> REGISTRY STARTED") ;
 		logger.info("ModelS@RunTime 'Registry' - started");
 	}
 

@@ -22,8 +22,8 @@ import org.slf4j.LoggerFactory;
 
 import fr.liglab.adele.cilia.knowledge.eventbus.CacheRegistration;
 import fr.liglab.adele.cilia.knowledge.eventbus.OnCacheEvent;
-import fr.liglab.adele.cilia.knowledge.impl.Knowledge;
-import fr.liglab.adele.cilia.knowledge.util.SwingWorker;
+import fr.liglab.adele.cilia.runtime.ConstRuntime;
+import fr.liglab.adele.cilia.util.SwingWorker;
 import fr.liglab.adele.cilia.util.concurrent.CopyOnWriteArrayList;
 
 /**
@@ -32,9 +32,10 @@ import fr.liglab.adele.cilia.util.concurrent.CopyOnWriteArrayList;
  *         Team</a>
  *
  */
+@SuppressWarnings({"rawtypes"})
 public class CacheListenerSupport implements CacheRegistration {
 
-	private final Logger logger = LoggerFactory.getLogger(Knowledge.LOG_NAME);
+	private final Logger logger = LoggerFactory.getLogger(ConstRuntime.LOG_NAME);
 	private CopyOnWriteArrayList listener = new CopyOnWriteArrayList();
 
 	public void removeAllListener() {

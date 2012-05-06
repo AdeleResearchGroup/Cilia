@@ -55,5 +55,4 @@ public class Uuid {
 		return Long.toHexString(hi | (val & (hi - 1))).substring(1);
 	}
 	
-	
 }

@@ -12,7 +12,7 @@
  * limitations under the License.
  */
 
-package fr.liglab.adele.cilia.knowledge.impl.runtime;
+package fr.liglab.adele.cilia.runtime.dynamic;
 
 import java.util.Collections;
 import java.util.Date;
@@ -39,13 +39,9 @@ import fr.liglab.adele.cilia.dynamic.Thresholds;
 import fr.liglab.adele.cilia.exceptions.CiliaIllegalParameterException;
 import fr.liglab.adele.cilia.exceptions.CiliaIllegalStateException;
 import fr.liglab.adele.cilia.exceptions.CiliaInvalidSyntaxException;
-import fr.liglab.adele.cilia.knowledge.impl.eventbus.Publisher;
-import fr.liglab.adele.cilia.knowledge.impl.registry.RegistryItemImpl;
 import fr.liglab.adele.cilia.model.ChainRuntime;
 import fr.liglab.adele.cilia.model.PatternType;
 import fr.liglab.adele.cilia.runtime.ConstRuntime;
-import fr.liglab.adele.cilia.runtime.dynamic.RegistryItem;
-import fr.liglab.adele.cilia.runtime.dynamic.RuntimeRegistry;
 import fr.liglab.adele.cilia.util.concurrent.ReadWriteLock;
 import fr.liglab.adele.cilia.util.concurrent.WriterPreferenceReadWriteLock;
 
@@ -64,8 +60,6 @@ public class DynamicPropertiesImpl extends NodeListenerSupport implements
 
 	/* injected by ipojo , registry access */
 	private RuntimeRegistry registry;
-	/* Bus Event , publisher */
-	private Publisher publisher;
 	/* Cilia components discovery (adapters, mediators) */
 	private NodeDiscoveryImpl discovery;
 	/* Cilia application model */
@@ -86,7 +80,6 @@ public class DynamicPropertiesImpl extends NodeListenerSupport implements
 	 */
 	public void start() {
 		super.start() ;
-		discovery.setPublisher(publisher);
 		discovery.setRegistry(registry);
 		chainRt.setRegistry(registry);
 		/* Start listening state variables */

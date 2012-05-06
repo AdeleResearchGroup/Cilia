@@ -26,12 +26,15 @@ import fr.liglab.adele.cilia.Node;
  * 
  */
 public interface ThresholdsCallback {
-
+	static int VERY_LOW = 1 ;
+	static int LOW = 2 ; 
+	static int HIGH = 3 ; 
+	static int VERY_HIGH = 4 ;
 	/**
 	 * 
 	 * @param evt
 	 *            event threshold number
-	 *            {DATA_VERY_LOW,DATA_LOW,DATA_HIGH,DATA_VERY_HIGH}
+	 *            {VERY_LOW,LOW,HIGH,VERY_HIGH}
 	 * @param variable
 	 *            urn:uuid:state-variable
 	 */

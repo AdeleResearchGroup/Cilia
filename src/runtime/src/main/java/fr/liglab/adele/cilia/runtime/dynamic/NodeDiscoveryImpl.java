@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-package fr.liglab.adele.cilia.knowledge.impl.runtime;
+package fr.liglab.adele.cilia.runtime.dynamic;
 
 import org.apache.felix.ipojo.util.Tracker;
 import org.apache.felix.ipojo.util.TrackerCustomizer;
@@ -26,12 +26,7 @@ import org.slf4j.LoggerFactory;
 import fr.liglab.adele.cilia.NodeCallback;
 import fr.liglab.adele.cilia.framework.monitor.statevariable.ComponentStateVarProperties;
 import fr.liglab.adele.cilia.framework.monitor.statevariable.ComponentStateVarService;
-import fr.liglab.adele.cilia.knowledge.eventbus.EventProperties;
-import fr.liglab.adele.cilia.knowledge.impl.eventbus.Publisher;
-import fr.liglab.adele.cilia.knowledge.impl.registry.RegistryItemImpl;
 import fr.liglab.adele.cilia.runtime.ConstRuntime;
-import fr.liglab.adele.cilia.runtime.dynamic.RegistryItem;
-import fr.liglab.adele.cilia.runtime.dynamic.RuntimeRegistry;
 import fr.liglab.adele.cilia.util.Watch;
 
 /**
@@ -46,7 +41,7 @@ public class NodeDiscoveryImpl implements TrackerCustomizer, ComponentStateVarPr
 	private final BundleContext bundleContext;
 
 	private RuntimeRegistry registry;
-	private Publisher publisher;
+
 	private final Logger logger = LoggerFactory.getLogger(ConstRuntime.LOG_NAME);
 	private final NodeCallback callback ;
 	private Tracker tracker;
@@ -55,10 +50,6 @@ public class NodeDiscoveryImpl implements TrackerCustomizer, ComponentStateVarPr
 	public NodeDiscoveryImpl(BundleContext bc,NodeCallback cb) {
 		this.bundleContext = bc;
 		this.callback=cb;
-	}
-
-	public void setPublisher(Publisher p) {
-		this.publisher = p;
 	}
 
 	public void setRegistry(RuntimeRegistry r) {
@@ -123,8 +114,6 @@ public class NodeDiscoveryImpl implements TrackerCustomizer, ComponentStateVarPr
 		RegistryItem item = (RegistryItem) registry.findByUuid(uuid);
 		if (item != null) {
 			callback.departure(item) ;
-			publisher.publish(EventProperties.TOPIC_DYN_PROPERTIES, item,
-					EventProperties.DEPARTURE, Watch.getCurrentTicks());
 			logger.debug("Node [{}] disappear", item.toString());
 		}
 	}
@@ -140,10 +129,6 @@ public class NodeDiscoveryImpl implements TrackerCustomizer, ComponentStateVarPr
 		item.setRuntimeReference(mediatorHandler);
 		registry.register(item);
 		callback.arrival(item) ;
-		publisher.publish(EventProperties.TOPIC_DYN_PROPERTIES, item,
-				EventProperties.ARRIVAL, Watch.getCurrentTicks());
-
 		logger.debug("Node [{}] discovered", item.toString());
-
 	}
 }

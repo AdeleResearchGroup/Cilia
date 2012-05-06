@@ -12,7 +12,7 @@
  * limitations under the License.
  */
 
-package fr.liglab.adele.cilia.knowledge.impl.runtime;
+package fr.liglab.adele.cilia.runtime.dynamic;
 
 import java.lang.ref.WeakReference;
 import java.lang.reflect.InvocationHandler;
@@ -21,7 +21,6 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 
 import fr.liglab.adele.cilia.exceptions.CiliaIllegalStateException;
-import fr.liglab.adele.cilia.runtime.dynamic.RuntimeRegistry;
 
 /**
  * Build a Weak Reference proxy

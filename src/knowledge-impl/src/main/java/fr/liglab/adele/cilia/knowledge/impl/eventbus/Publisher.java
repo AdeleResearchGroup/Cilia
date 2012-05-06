@@ -26,6 +26,7 @@ import fr.liglab.adele.cilia.Node;
  *         Team</a>
  * 
  */
+@SuppressWarnings({"rawtypes"})
 public interface Publisher {
 
 	/**

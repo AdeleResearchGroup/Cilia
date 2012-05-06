@@ -13,19 +13,13 @@
  * limitations under the License.
  */
 
-package fr.liglab.adele.cilia.knowledge.specification;
+package fr.liglab.adele.cilia;
 
 import java.util.Dictionary;
 
-import fr.liglab.adele.cilia.ChainRegistration;
-import fr.liglab.adele.cilia.MediatorComponent;
-import fr.liglab.adele.cilia.Node;
-import fr.liglab.adele.cilia.NodeRegistration;
-import fr.liglab.adele.cilia.Topology;
 import fr.liglab.adele.cilia.exceptions.CiliaIllegalParameterException;
 import fr.liglab.adele.cilia.exceptions.CiliaIllegalStateException;
 import fr.liglab.adele.cilia.exceptions.CiliaInvalidSyntaxException;
-import fr.liglab.adele.cilia.exceptions.CiliaRuntimeException;
 
 /**
  * 
@@ -33,6 +27,7 @@ import fr.liglab.adele.cilia.exceptions.CiliaRuntimeException;
  *         Team</a>
  * 
  */
+@SuppressWarnings({ "rawtypes" })
 public interface Application extends Topology, NodeRegistration, ChainRegistration {
 
 	/**
@@ -41,24 +36,30 @@ public interface Application extends Topology, NodeRegistration, ChainRegistrati
 	String[] getChains();
 
 	/**
-	 * @throws CiliaInvalidSyntaxException
+	 * Retreives all nodes matching the filter
 	 * 
 	 * @param ldapFilter
-	 *            define a node , ldap filters, keywords
+	 *            , keywords = chain, node
+	 * 
 	 * @return array of node matching the filter, array size 0 if no node
 	 *         matching the filterá
-	 * @throws
+	 * @throws CiliaInvalidSyntaxException
+	 *             , ldap syntax error
 	 */
 	Node[] findByFilter(String ldapFilter) throws CiliaIllegalParameterException,
 			CiliaInvalidSyntaxException;
 
 	/**
+	 * Unmodifiable properties
 	 * 
 	 * @param node
-	 * @return Readonly properties or empty if no property found
+	 *            retreive the properties
+	 * @return unmodiable dictionary, or empty dictionary is the node is not
+	 *         found.
 	 * @throws CiliaIllegalParameterException
-	 *             if null
-	 * 
+	 *             , wrong parameter
+	 * @throws CiliaIllegalStateException
+	 *             , the node object doesn't 
 	 */
 	Dictionary properties(Node node) throws CiliaIllegalParameterException,
 			CiliaIllegalStateException;
@@ -66,14 +67,12 @@ public interface Application extends Topology, NodeRegistration, ChainRegistrati
 	/**
 	 * 
 	 * @param node
-	 * @return
+	 * @return Mediator component model
 	 * @throws CiliaIllegalParameterException
 	 *             , wrong parameter
-	 * @throws CiliaRuntimeException
-	 *             , internal error !
 	 * @throws CiliaIllegalStateException
-	 *             , the node object doesn't exist anymore
+	 *             , the node object doesn't
 	 */
 	MediatorComponent getModel(Node node) throws CiliaIllegalParameterException,
-			CiliaIllegalStateException, CiliaRuntimeException;
+			CiliaIllegalStateException;
 }

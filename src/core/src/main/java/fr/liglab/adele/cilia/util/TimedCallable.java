@@ -13,7 +13,7 @@
 
  */
 
-package fr.liglab.adele.cilia.knowledge.util;
+package fr.liglab.adele.cilia.util;
 
 /**
  * TimedCallable runs a Callable function for a given length of time.
