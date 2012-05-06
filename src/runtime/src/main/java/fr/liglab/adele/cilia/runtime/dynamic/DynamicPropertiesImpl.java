@@ -52,7 +52,7 @@ import fr.liglab.adele.cilia.util.concurrent.WriterPreferenceReadWriteLock;
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project
  *         Team</a>
  */
-@SuppressWarnings({"rawtypes", "unchecked"})
+@SuppressWarnings({ "rawtypes", "unchecked" })
 public class DynamicPropertiesImpl extends NodeListenerSupport implements
 		DynamicProperties, NodeCallback {
 
@@ -79,7 +79,7 @@ public class DynamicPropertiesImpl extends NodeListenerSupport implements
 	 * Start the service
 	 */
 	public void start() {
-		super.start() ;
+		super.start();
 		discovery.setRegistry(registry);
 		chainRt.setRegistry(registry);
 		/* Start listening state variables */
@@ -105,7 +105,7 @@ public class DynamicPropertiesImpl extends NodeListenerSupport implements
 			try {
 				RegistryItem item = registry.findByUuid(uuid);
 				/* Store in the registry the specification reference */
-				((RegistryItemImpl)item).setSpecificationReference(getModel(item));
+				((RegistryItemImpl) item).setSpecificationReference(getModel(item));
 				chainRt.addNode(uuid);
 			} catch (Exception e) {
 				logger.error("Internal error, cannot retrieve mediatorComponent reference");
@@ -150,7 +150,7 @@ public class DynamicPropertiesImpl extends NodeListenerSupport implements
 	 */
 	public SetUp[] nodeSetup(String ldapFilter) throws CiliaInvalidSyntaxException,
 			CiliaIllegalParameterException {
-		RegistryItem[] item = registry.findByFilter(ldapFilter);
+		Node[] item = registry.findByFilter(ldapFilter);
 		Set set = new HashSet();
 		try {
 			mutex.readLock().acquire();
@@ -187,7 +187,7 @@ public class DynamicPropertiesImpl extends NodeListenerSupport implements
 	 */
 	public RawData[] nodeRawData(String ldapFilter) throws CiliaInvalidSyntaxException,
 			CiliaIllegalParameterException {
-		RegistryItem[] item = registry.findByFilter(ldapFilter);
+		Node[] item = registry.findByFilter(ldapFilter);
 		Set set = new HashSet();
 		try {
 			mutex.readLock().acquire();
@@ -214,9 +214,9 @@ public class DynamicPropertiesImpl extends NodeListenerSupport implements
 		}
 	}
 
-	public Thresholds[] nodeMonitoring(String ldapFilter) throws CiliaInvalidSyntaxException,
-			CiliaIllegalParameterException {
-		RegistryItem[] item = registry.findByFilter(ldapFilter);
+	public Thresholds[] nodeMonitoring(String ldapFilter)
+			throws CiliaInvalidSyntaxException, CiliaIllegalParameterException {
+		Node[] item = registry.findByFilter(ldapFilter);
 		Set set = new HashSet();
 		try {
 			mutex.readLock().acquire();
@@ -249,7 +249,7 @@ public class DynamicPropertiesImpl extends NodeListenerSupport implements
 		Chain chain;
 		Adapter adapter;
 		Set adapterSet = new HashSet();
-		RegistryItem[] item = registry.findByFilter(ldapFilter);
+		Node[] item = registry.findByFilter(ldapFilter);
 		for (int i = 0; i < item.length; i++) {
 			chain = ciliaContext.getChain(item[i].chainId());
 			if (chain != null) {
@@ -322,9 +322,9 @@ public class DynamicPropertiesImpl extends NodeListenerSupport implements
 			String name = (String) it.next();
 			/* construct the ldap filter */
 			String filter = makefilter(node.chainId(), name);
-			RegistryItem item[];
+			Node item[];
 			try {
-				item = registry.findByFilter(filter);
+				item = findNodeByFilter(filter);
 				for (int i = 0; i < item.length; i++) {
 					nodeSet.add(item[i]);
 				}
@@ -387,7 +387,7 @@ public class DynamicPropertiesImpl extends NodeListenerSupport implements
 
 	public Node[] connectedTo(String ldapFilter) throws CiliaInvalidSyntaxException,
 			CiliaIllegalParameterException {
-		RegistryItem[] item = registry.findByFilter(ldapFilter);
+		Node[] item = findNodeByFilter(ldapFilter);
 		Node[] nodes = new Node[0];
 
 		if (item.length > 0) {
@@ -461,15 +461,20 @@ public class DynamicPropertiesImpl extends NodeListenerSupport implements
 		}
 	}
 
-	public Node[] findByFilter(String ldapFilter) throws CiliaInvalidSyntaxException,
+	public Node[] findNodeByFilter(String ldapFilter) throws CiliaInvalidSyntaxException,
 			CiliaIllegalParameterException {
-		return registry.findByFilter(ldapFilter);
+		RegistryItem[] nodes = registry.findByFilter(ldapFilter);
+		Node[] result = new Node[nodes.length];
+		for (int i = 0; i < nodes.length; i++) {
+			result[i] = nodes[i].specificationReference();
+		}
+		return result;
 	}
 
-	public Node findByUuid(String uuid) throws CiliaIllegalParameterException {
+	public Node findNodeByUUID(String uuid) throws CiliaIllegalParameterException {
 		if (uuid == null)
 			throw new CiliaIllegalParameterException("uuid is null !");
-		return registry.findByUuid(uuid);
+		return registry.findByUuid(uuid).specificationReference();
 	}
 
 	private MediatorComponent getModel(Node node) throws CiliaIllegalParameterException,

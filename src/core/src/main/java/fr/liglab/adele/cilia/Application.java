@@ -46,7 +46,7 @@ public interface Application extends Topology, NodeRegistration, ChainRegistrati
 	 * @throws CiliaInvalidSyntaxException
 	 *             , ldap syntax error
 	 */
-	Node[] findByFilter(String ldapFilter) throws CiliaIllegalParameterException,
+	Node[] findNodeByFilter(String ldapFilter) throws CiliaIllegalParameterException,
 			CiliaInvalidSyntaxException;
 
 	/**

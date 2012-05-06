@@ -203,7 +203,7 @@ public class SpecificationImpl extends SpecificationListenerSupport implements
 			CiliaIllegalParameterException {
 
 		Node[] nodes = new Node[0];
-		Node[] source = findByFilter(ldapFilter);
+		Node[] source = findNodeByFilter(ldapFilter);
 
 		if (source.length > 0) {
 			try {
@@ -325,7 +325,7 @@ public class SpecificationImpl extends SpecificationListenerSupport implements
 		return mc;
 	}
 
-	public Node[] findByFilter(String ldapFilter) throws CiliaInvalidSyntaxException,
+	public Node[] findNodeByFilter(String ldapFilter) throws CiliaInvalidSyntaxException,
 			CiliaIllegalParameterException {
 
 		Filter filter = ConstRuntime.createFilter(ldapFilter);

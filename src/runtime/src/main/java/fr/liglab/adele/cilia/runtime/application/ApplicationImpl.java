@@ -43,6 +43,7 @@ import fr.liglab.adele.cilia.exceptions.CiliaInvalidSyntaxException;
 import fr.liglab.adele.cilia.model.PatternType;
 import fr.liglab.adele.cilia.runtime.ConstRuntime;
 import fr.liglab.adele.cilia.util.UnModifiableDictionary;
+import fr.liglab.adele.cilia.util.concurrent.Mutex;
 
 /**
  * Application implementation
@@ -59,9 +60,11 @@ public class ApplicationImpl extends ApplicationListenerSupport implements Appli
 
 	private CiliaContext ciliaContext;
 	private CiliaFrameworkListener listenerFramework;
+	private Mutex mutex;
 
 	public ApplicationImpl(BundleContext bc) {
 		super(bc);
+		mutex = new Mutex();
 	}
 
 	public void start() {
@@ -197,7 +200,7 @@ public class ApplicationImpl extends ApplicationListenerSupport implements Appli
 			CiliaIllegalParameterException {
 
 		Node[] nodes = new Node[0];
-		Node[] source = findByFilter(ldapFilter);
+		Node[] source = findNodeByFilter(ldapFilter);
 
 		if (source.length > 0) {
 			try {
@@ -270,7 +273,7 @@ public class ApplicationImpl extends ApplicationListenerSupport implements Appli
 		return new UnModifiableDictionary(mc.getProperties());
 	}
 
-	public Node[] findByFilter(String ldapFilter) throws CiliaInvalidSyntaxException,
+	public Node[] findNodeByFilter(String ldapFilter) throws CiliaInvalidSyntaxException,
 			CiliaIllegalParameterException {
 
 		Filter filter = ConstRuntime.createFilter(ldapFilter);
@@ -280,28 +283,37 @@ public class ApplicationImpl extends ApplicationListenerSupport implements Appli
 		Set componentSet = new HashSet();
 
 		String chainId[] = getChains();
-
-		for (int i = 0; i < chainId.length; i++) {
-			/* retreive all adapters per chain */
-			dico.put(ConstRuntime.CHAIN_ID, chainId[i]);
-			/* Iterate over all adapters */
-			Iterator it = getAdaptersSet(chainId[i]).iterator();
-			while (it.hasNext()) {
-				component = (MediatorComponent) it.next();
-				dico.put(ConstRuntime.NODE_ID, component.getId());
-				if (filter.match(dico)) {
-					componentSet.add(component.getId());
+		try {
+			ciliaContext.getMutex().readLock().acquire();
+			try {
+				for (int i = 0; i < chainId.length; i++) {
+					/* retreive all adapters per chain */
+					dico.put(ConstRuntime.CHAIN_ID, chainId[i]);
+					/* Iterate over all adapters */
+					Iterator it = getAdaptersSet(chainId[i]).iterator();
+					while (it.hasNext()) {
+						component = (MediatorComponent) it.next();
+						dico.put(ConstRuntime.NODE_ID, component.getId());
+						if (filter.match(dico)) {
+							componentSet.add(component.getId());
+						}
+					}
+					/* Iterate over all mediators */
+					it = getMediatorSet(chainId[i]).iterator();
+					while (it.hasNext()) {
+						component = (MediatorComponent) it.next();
+						dico.put(ConstRuntime.NODE_ID, component.getId());
+						if (filter.match(dico)) {
+							componentSet.add(component.getId());
+						}
+					}
 				}
+			} finally {
+				ciliaContext.getMutex().readLock().release();
 			}
-			/* Iterate over all mediators */
-			it = getMediatorSet(chainId[i]).iterator();
-			while (it.hasNext()) {
-				component = (MediatorComponent) it.next();
-				dico.put(ConstRuntime.NODE_ID, component.getId());
-				if (filter.match(dico)) {
-					componentSet.add(component.getId());
-				}
-			}
+		} catch (InterruptedException e) {
+			Thread.currentThread().interrupt();
+			throw new RuntimeException(e.getMessage());
 		}
 		return (Node[]) componentSet.toArray(new Node[componentSet.size()]);
 	}

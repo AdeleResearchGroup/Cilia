@@ -468,12 +468,12 @@ public class DynamicPropertiesImpl extends NodeListenerSupport implements
 		}
 	}
 
-	public Node[] findByFilter(String ldapFilter) throws CiliaInvalidSyntaxException,
+	public Node[] findNodeByFilter(String ldapFilter) throws CiliaInvalidSyntaxException,
 			CiliaIllegalParameterException {
 		return registry.findByFilter(ldapFilter);
 	}
 
-	public Node findByUuid(String uuid) throws CiliaIllegalParameterException {
+	public Node findNodeByUUID(String uuid) throws CiliaIllegalParameterException {
 		if (uuid == null)
 			throw new CiliaIllegalParameterException("uuid is null !");
 		return registry.findByUuid(uuid);

@@ -71,7 +71,7 @@ public interface DynamicProperties extends Topology, NodeRegistration,
 	 * @throws CiliaIllegalParameterException
 	 * @throws CiliaInvalidSyntaxException
 	 */
-	Node[] findByFilter(String ldapFilter) throws CiliaIllegalParameterException,
+	Node[] findNodeByFilter(String ldapFilter) throws CiliaIllegalParameterException,
 			CiliaInvalidSyntaxException;
 
 	/**
@@ -81,7 +81,7 @@ public interface DynamicProperties extends Topology, NodeRegistration,
 	 * @return object stored in the registry, or null if not found
 	 * @throws CiliaIllegalParameterException
 	 */
-	Node findByUuid(String uuid) throws CiliaIllegalParameterException;
+	Node findNodeByUUID(String uuid) throws CiliaIllegalParameterException;
 
 	/**
 	 * @throws CiliaInvalidSyntaxException
