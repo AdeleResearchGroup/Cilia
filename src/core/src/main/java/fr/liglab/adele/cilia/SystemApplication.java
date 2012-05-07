@@ -13,18 +13,18 @@
  * limitations under the License.
  */
 
-package fr.liglab.adele.cilia.builder;
+package fr.liglab.adele.cilia;
 
 import java.util.Date;
 
 /**
- * System informations
+ * Gateway and system informations
  * 
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project
  *         Team</a>
  * 
  */
-public interface System {
+public interface SystemApplication {
 	/**
 	 * 
 	 * @return last start of the gateway 

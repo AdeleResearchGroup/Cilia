@@ -159,9 +159,7 @@ public class ApplicationListenerSupport implements TrackerCustomizer, ChainRegis
 			/* iterates over listeners */
 			Iterator it = listenerNode.entrySet().iterator();
 			while (it.hasNext()) {
-				/*
-				 * call one time all listener matching filter
-				 */
+
 				Map.Entry pairs = (Map.Entry) it.next();
 				ArrayList filters = (ArrayList) pairs.getValue();
 				boolean tofire = false;
@@ -228,7 +226,7 @@ public class ApplicationListenerSupport implements TrackerCustomizer, ChainRegis
 				}
 
 				if (tofire) {
-					ChainCallback cb =(ChainCallback)pairs.getKey() ; 
+					ChainCallback cb = (ChainCallback) pairs.getKey();
 					String chainId = (String) dico.get(ConstRuntime.CHAIN_ID);
 					switch (evt) {
 					case 0:

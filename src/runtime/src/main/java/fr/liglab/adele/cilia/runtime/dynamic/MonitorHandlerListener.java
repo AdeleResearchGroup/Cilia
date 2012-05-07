@@ -41,7 +41,7 @@ import fr.liglab.adele.cilia.runtime.ConstRuntime;
  * 
  */
 @SuppressWarnings({ "rawtypes", "unchecked" })
-public class StateVariablesListener implements ComponentStateVarProperties, EventHandler {
+public class MonitorHandlerListener implements ComponentStateVarProperties, EventHandler {
 
 	private final Logger logger = LoggerFactory.getLogger(ConstRuntime.LOG_NAME);
 
@@ -53,7 +53,7 @@ public class StateVariablesListener implements ComponentStateVarProperties, Even
 
 	private final NodeListenerSupport evtSupport;
 
-	public StateVariablesListener(BundleContext bc, NodeListenerSupport evtSupport) {
+	public MonitorHandlerListener(BundleContext bc, NodeListenerSupport evtSupport) {
 		this.bundleContext = bc;
 		this.evtSupport = evtSupport;
 		this.weakProxy = new NodeProxy();

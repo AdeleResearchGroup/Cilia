@@ -48,6 +48,7 @@ public interface DynamicProperties extends Topology, NodeRegistration,
 	int getChainState(String chainId) throws CiliaIllegalParameterException,
 			CiliaIllegalStateException;
 
+	
 	/**
 	 * Return last Command start or stop level chain
 	 * 
@@ -59,29 +60,6 @@ public interface DynamicProperties extends Topology, NodeRegistration,
 	Date lastCommand(String chainId) throws CiliaIllegalParameterException,
 			CiliaIllegalStateException;
 
-	/**
-	 * Return an array of Nodes matching the filter <br>
-	 * keywords = {uuid, chain, node} <br>
-	 * example (findByFilter("&((application.id=chain1)(component.id=adapt*))");
-	 * 
-	 * @param ldapFilter
-	 *            , LDAP filter
-	 * @return entries matching the filter or an array size 0 if not item
-	 *         founded
-	 * @throws CiliaIllegalParameterException
-	 * @throws CiliaInvalidSyntaxException
-	 */
-	Node[] findNodeByFilter(String ldapFilter) throws CiliaIllegalParameterException,
-			CiliaInvalidSyntaxException;
-
-	/**
-	 * Fast access
-	 * 
-	 * @param uuid
-	 * @return object stored in the registry, or null if not found
-	 * @throws CiliaIllegalParameterException
-	 */
-	Node findNodeByUUID(String uuid) throws CiliaIllegalParameterException;
 
 	/**
 	 * @throws CiliaInvalidSyntaxException

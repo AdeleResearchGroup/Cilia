@@ -22,7 +22,7 @@ import fr.liglab.adele.cilia.exceptions.CiliaIllegalStateException;
 import fr.liglab.adele.cilia.exceptions.CiliaInvalidSyntaxException;
 
 /**
- * 
+ *
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project
  *         Team</a>
  * 
@@ -34,21 +34,7 @@ public interface Application extends Topology, NodeRegistration, ChainRegistrati
 	 * @return list of chain Id
 	 */
 	String[] getChains();
-
-	/**
-	 * Retreives all nodes matching the filter
-	 * 
-	 * @param ldapFilter
-	 *            , keywords = chain, node
-	 * 
-	 * @return array of node matching the filter, array size 0 if no node
-	 *         matching the filterá
-	 * @throws CiliaInvalidSyntaxException
-	 *             , ldap syntax error
-	 */
-	Node[] findNodeByFilter(String ldapFilter) throws CiliaIllegalParameterException,
-			CiliaInvalidSyntaxException;
-
+	
 	/**
 	 * Unmodifiable properties
 	 * 

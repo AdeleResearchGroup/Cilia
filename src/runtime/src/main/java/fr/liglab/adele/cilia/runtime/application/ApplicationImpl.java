@@ -15,7 +15,6 @@
 
 package fr.liglab.adele.cilia.runtime.application;
 
-import java.util.Collections;
 import java.util.Dictionary;
 import java.util.HashSet;
 import java.util.Hashtable;
@@ -29,11 +28,13 @@ import org.slf4j.LoggerFactory;
 
 import fr.liglab.adele.cilia.Adapter;
 import fr.liglab.adele.cilia.Application;
-import fr.liglab.adele.cilia.Binding;
 import fr.liglab.adele.cilia.Chain;
+import fr.liglab.adele.cilia.ChainCallback;
 import fr.liglab.adele.cilia.CiliaContext;
+import fr.liglab.adele.cilia.Mediator;
 import fr.liglab.adele.cilia.MediatorComponent;
 import fr.liglab.adele.cilia.Node;
+import fr.liglab.adele.cilia.NodeCallback;
 import fr.liglab.adele.cilia.event.CiliaEvent;
 import fr.liglab.adele.cilia.event.CiliaFrameworkEvent;
 import fr.liglab.adele.cilia.event.CiliaFrameworkListener;
@@ -41,9 +42,9 @@ import fr.liglab.adele.cilia.exceptions.CiliaIllegalParameterException;
 import fr.liglab.adele.cilia.exceptions.CiliaIllegalStateException;
 import fr.liglab.adele.cilia.exceptions.CiliaInvalidSyntaxException;
 import fr.liglab.adele.cilia.model.PatternType;
+import fr.liglab.adele.cilia.runtime.AbstractTopology;
 import fr.liglab.adele.cilia.runtime.ConstRuntime;
 import fr.liglab.adele.cilia.util.UnModifiableDictionary;
-import fr.liglab.adele.cilia.util.concurrent.Mutex;
 
 /**
  * Application implementation
@@ -53,91 +54,39 @@ import fr.liglab.adele.cilia.util.concurrent.Mutex;
  * 
  */
 @SuppressWarnings({ "rawtypes", "unchecked" })
-public class ApplicationImpl extends ApplicationListenerSupport implements Application,
+public class ApplicationImpl  extends AbstractTopology implements Application,
 		CiliaEvent, CiliaFrameworkEvent {
 
 	private final Logger logger = LoggerFactory.getLogger(ConstRuntime.LOG_NAME);
 
 	private CiliaContext ciliaContext;
 	private CiliaFrameworkListener listenerFramework;
-	private Mutex mutex;
-
+	private ApplicationListenerSupport listenerSupport ;
+	
 	public ApplicationImpl(BundleContext bc) {
-		super(bc);
-		mutex = new Mutex();
+		listenerSupport = new ApplicationListenerSupport(bc);
 	}
 
 	public void start() {
 		logger.info("ModelS@RunTime 'Specification components' - started");
-		super.start();
+		super.setContext(ciliaContext);
+		listenerSupport.start();
 		listenerFramework.register(this, ALL_EVENTS);
 	}
 
 	public void stop() {
 		logger.info("ModelS@RunTime 'Specification component' - stopped");
-		super.stop();
+		listenerSupport.stop();
 		listenerFramework.unregister(this);
 	}
 
-	/**
-	 * retreives all chain ID
-	 */
-	public String[] getChains() {
-		Set chainSet;
-		try {
-			ciliaContext.getMutex().readLock().acquire();
-			chainSet = ciliaContext.getAllChains();
-		} catch (InterruptedException e) {
-			chainSet = Collections.EMPTY_SET;
-		} finally {
-			ciliaContext.getMutex().readLock().release();
-		}
-		Set setName = new HashSet();
-		if (chainSet == null) {
-			chainSet = Collections.EMPTY_SET;
-		}
-		Iterator it = chainSet.iterator();
-		while (it.hasNext()) {
-			Chain c = (Chain) it.next();
-			setName.add(c.getId());
-		}
-		return (String[]) setName.toArray(new String[setName.size()]);
-	}
-
-	/* Return the list of Adapter for the chain */
-	private Set getAdaptersSet(String chain) {
-		Set adapter;
-		try {
-			ciliaContext.getMutex().readLock().acquire();
-			adapter = ciliaContext.getChain(chain).getAdapters();
-		} catch (InterruptedException e) {
-			adapter = Collections.EMPTY_SET;
-		} finally {
-			ciliaContext.getMutex().readLock().release();
-		}
-		return adapter;
-	}
-
-	/* Return the list of Mediator for the chain */
-	private Set getMediatorSet(String chain) {
-		Set adapter;
-		try {
-			ciliaContext.getMutex().readLock().acquire();
-			adapter = ciliaContext.getChain(chain).getAdapters();
-		} catch (InterruptedException e) {
-			adapter = Collections.EMPTY_SET;
-		} finally {
-			ciliaContext.getMutex().readLock().release();
-		}
-		return adapter;
-	}
 
 	/**
 	 * Type = pattern matching
 	 * 
 	 * @throws CiliaIllegalParameterException
 	 */
-	private Node[] getEndpoints(String ldapFilter, PatternType type)
+	protected Node[] getEndpoints(String ldapFilter, PatternType type)
 			throws CiliaInvalidSyntaxException, CiliaIllegalParameterException {
 
 		Adapter adapter;
@@ -146,115 +95,182 @@ public class ApplicationImpl extends ApplicationListenerSupport implements Appli
 
 		Dictionary dico = new Hashtable();
 		String chainId[] = getChains();
-		for (int i = 0; i < chainId.length; i++) {
-			/* retreive all adapters per all chain */
-			dico.put(ConstRuntime.CHAIN_ID, chainId[i]);
-			/* Iterate over all adapters per chain */
-			Iterator it = getAdaptersSet(chainId[i]).iterator();
-			while (it.hasNext()) {
-				adapter = (Adapter) it.next();
-				dico.put(ConstRuntime.NODE_ID, adapter.getId());
-				if (filter.match(dico)) {
-					/* verify the pattern */
-					PatternType pattern = adapter.getPattern();
-					if ((pattern.equals(type) || (pattern.equals(PatternType.UNASSIGNED)) || (pattern
-							.equals(PatternType.IN_OUT)))) {
-						adapterResult.add(adapter);
+		try {
+			ciliaContext.getMutex().readLock().acquire();
+			try {
+				for (int i = 0; i < chainId.length; i++) {
+					/* retreive all adapters per all chain */
+					dico.put(ConstRuntime.CHAIN_ID, chainId[i]);
+					/* Iterate over all adapters per chain */
+					Iterator it = ciliaContext.getChain(chainId[i]).getAdapters()
+							.iterator();
+					while (it.hasNext()) {
+						adapter = (Adapter) it.next();
+						dico.put(ConstRuntime.NODE_ID, adapter.getId());
+						if (filter.match(dico)) {
+							/* verify the pattern */
+							PatternType pattern = adapter.getPattern();
+							if ((pattern.equals(type)
+									|| (pattern.equals(PatternType.UNASSIGNED)) || (pattern
+									.equals(PatternType.IN_OUT)))) {
+								adapterResult.add(adapter);
+							}
+						}
 					}
 				}
+			} finally {
+				ciliaContext.getMutex().readLock().release();
 			}
+		} catch (InterruptedException e) {
+			Thread.currentThread().interrupt();
+			throw new RuntimeException();
 		}
 		return (Node[]) adapterResult.toArray(new Node[adapterResult.size()]);
 	}
-
-	public Node[] endpointIn(String ldapFilter) throws CiliaInvalidSyntaxException,
-			CiliaIllegalParameterException {
-		return getEndpoints(ldapFilter, PatternType.IN_ONLY);
-	}
-
-	public Node[] endpointOut(String ldapFilter) throws CiliaInvalidSyntaxException,
-			CiliaIllegalParameterException {
-		return getEndpoints(ldapFilter, PatternType.OUT_ONLY);
-	}
-
-	public Node[] connectedTo(Node node) throws CiliaIllegalStateException {
-
-		Binding[] bindings;
-		Set nodeSet = new HashSet();
-		MediatorComponent mc;
-		try {
-			mc = getModel(node);
-			bindings = mc.getOutBindings();
-
-			if (bindings != null) {
-				for (int i = 0; i < bindings.length; i++) {
-					nodeSet.add(bindings[i].getTargetMediator());
-				}
-			}
-		} catch (CiliaIllegalParameterException e) {
-		}
-		return (Node[]) nodeSet.toArray(new Node[nodeSet.size()]);
-	}
-
-	public Node[] connectedTo(String ldapFilter) throws CiliaInvalidSyntaxException,
-			CiliaIllegalParameterException {
-
-		Node[] nodes = new Node[0];
-		Node[] source = findNodeByFilter(ldapFilter);
-
-		if (source.length > 0) {
-			try {
-				for (int i = 0; i < nodes.length; i++) {
-					nodes = ConstRuntime.concat(nodes, connectedTo(source[i]));
-				}
-			} catch (CiliaIllegalStateException e) {
-			}
-		}
-		return nodes;
-	}
+//
+//	public Node[] endpointIn(String ldapFilter) throws CiliaInvalidSyntaxException,
+//			CiliaIllegalParameterException {
+//		return getEndpoints(ldapFilter, PatternType.IN_ONLY);
+//	}
+//
+//	public Node[] endpointOut(String ldapFilter) throws CiliaInvalidSyntaxException,
+//			CiliaIllegalParameterException {
+//		return getEndpoints(ldapFilter, PatternType.OUT_ONLY);
+//	}
+//
+//	/*
+//	 * using the binding retreives nodes connected to
+//	 */
+//	private Node[] getNextNodes(Binding[] bindings, Node node) {
+//		if (bindings == null)
+//			return new Node[0];
+//
+//		Set nodeSet = new HashSet();
+//		Set set = new HashSet();
+//		/* Retreive the mediators name in the cilia context (model) */
+//		for (int i = 0; i < bindings.length; i++) {
+//			set.add(bindings[i].getTargetMediator().getId());
+//			System.out.println("Next -> " + bindings[i].getTargetMediator().getId());
+//		}
+//		Iterator it = set.iterator();
+//		/* Retreives real mediators connected */
+//		while (it.hasNext()) {
+//			String name = (String) it.next();
+//			/* construct the ldap filter */
+//			String filter = makeFilter(node.chainId(), name);
+//			Node item[];
+//			try {
+//				item = findNodeByFilter(filter);
+//				for (int i = 0; i < item.length; i++) {
+//					nodeSet.add(item[i]);
+//				}
+//			} catch (CiliaInvalidSyntaxException e) {
+//				logger.error("Internal ldap syntax error !, should never happens");
+//			} catch (CiliaIllegalParameterException e) {
+//				logger.error("Internal parameter ! null");
+//			}
+//		}
+//		return (Node[]) nodeSet.toArray(new Node[nodeSet.size()]);
+//	}
+//
+//	public Node[] connectedTo(Node node) throws CiliaIllegalStateException {
+//		Chain chain;
+//		Mediator mediator;
+//		Adapter adapter;
+//		Node[] nodes;
+//
+//		if (node == null)
+//			return new Node[0];
+//		try {
+//			ciliaContext.getMutex().readLock().acquire();
+//			try {
+//				/* retreive the chain hosting the mediator/component */
+//				chain = ciliaContext.getChain(node.chainId());
+//				if (chain != null) {
+//					/* checks if the node is an adapter */
+//					adapter = chain.getAdapter(node.nodeId());
+//					if (adapter != null) {
+//						nodes = getNextNodes(adapter.getOutBindings(), node);
+//					} else {
+//						/* Mediators */
+//						mediator = chain.getMediator(node.nodeId());
+//						if (mediator == null) {
+//							nodes = new Node[0];
+//						} else {
+//							nodes = getNextNodes(mediator.getOutBindings(), node);
+//						}
+//					}
+//
+//				} else
+//					/* chain no found */
+//					nodes = new Node[0];
+//			} finally {
+//				ciliaContext.getMutex().readLock().release();
+//			}
+//		} catch (InterruptedException e) {
+//			Thread.currentThread().interrupt();
+//			throw new RuntimeException(e.getMessage());
+//		}
+//		return nodes;
+//	}
+//
+//	public Node[] connectedTo(String ldapFilter) throws CiliaInvalidSyntaxException,
+//			CiliaIllegalParameterException {
+//
+//		Node[] nodes = new Node[0];
+//		Node[] source = findNodeByFilter(ldapFilter);
+//		try {
+//			for (int i = 0; i < source.length; i++) {
+//				nodes = ConstRuntime.concat(nodes, connectedTo(source[i]));
+//			}
+//		} catch (CiliaIllegalStateException e) {
+//
+//		}
+//		return nodes;
+//	}
 
 	/* callback event fired by the cilia framework */
 	public void event(String chainId, String mediatorId, int evtNumber) {
 		if ((evtNumber & EVENT_CHAIN_ADDED) == EVENT_CHAIN_ADDED) {
-			fireEventChain(0, chainId);
+			listenerSupport.fireEventChain(0, chainId);
 		}
 
 		if ((evtNumber & EVENT_CHAIN_REMOVED) == EVENT_CHAIN_REMOVED) {
-			fireEventChain(1, chainId);
+			listenerSupport.fireEventChain(1, chainId);
 		}
 
 		if ((evtNumber & EVENT_CHAIN_STARTED) == EVENT_CHAIN_STARTED) {
-			fireEventChain(2, chainId);
+			listenerSupport.fireEventChain(2, chainId);
 		}
 
 		if ((evtNumber & EVENT_CHAIN_STOPPED) == EVENT_CHAIN_STOPPED) {
-			fireEventChain(3, chainId);
+			listenerSupport.fireEventChain(3, chainId);
 		}
 
 		if ((evtNumber & EVENT_MEDIATOR_ADDED) == EVENT_MEDIATOR_ADDED) {
 			try {
-				fireEventNode(true, getModel(chainId, mediatorId));
+				listenerSupport.fireEventNode(true, getModel(chainId, mediatorId));
 			} catch (CiliaIllegalStateException e) {
 			}
 		}
 
 		if ((evtNumber & EVENT_MEDIATOR_REMOVED) == EVENT_MEDIATOR_REMOVED) {
 			try {
-				fireEventNode(false, getModel(chainId, mediatorId));
+				listenerSupport.fireEventNode(false, getModel(chainId, mediatorId));
 			} catch (CiliaIllegalStateException e) {
 			}
 		}
 
 		if ((evtNumber & EVENT_ADAPTER_ADDED) == EVENT_ADAPTER_ADDED) {
 			try {
-				fireEventNode(true, getModel(chainId, mediatorId));
+				listenerSupport.fireEventNode(true, getModel(chainId, mediatorId));
 			} catch (CiliaIllegalStateException e) {
 			}
 		}
 
 		if ((evtNumber & EVENT_ADAPTER_REMOVED) == EVENT_ADAPTER_REMOVED) {
 			try {
-				fireEventNode(false, getModel(chainId, mediatorId));
+				listenerSupport.fireEventNode(false, getModel(chainId, mediatorId));
 			} catch (CiliaIllegalStateException e) {
 			}
 		}
@@ -277,7 +293,6 @@ public class ApplicationImpl extends ApplicationListenerSupport implements Appli
 			CiliaIllegalParameterException {
 
 		Filter filter = ConstRuntime.createFilter(ldapFilter);
-
 		MediatorComponent component;
 		Dictionary dico = new Hashtable();
 		Set componentSet = new HashSet();
@@ -287,24 +302,27 @@ public class ApplicationImpl extends ApplicationListenerSupport implements Appli
 			ciliaContext.getMutex().readLock().acquire();
 			try {
 				for (int i = 0; i < chainId.length; i++) {
+
 					/* retreive all adapters per chain */
 					dico.put(ConstRuntime.CHAIN_ID, chainId[i]);
 					/* Iterate over all adapters */
-					Iterator it = getAdaptersSet(chainId[i]).iterator();
+					Iterator it = ciliaContext.getChain(chainId[i]).getAdapters()
+							.iterator();
 					while (it.hasNext()) {
 						component = (MediatorComponent) it.next();
 						dico.put(ConstRuntime.NODE_ID, component.getId());
 						if (filter.match(dico)) {
-							componentSet.add(component.getId());
+							componentSet.add(component);
 						}
 					}
 					/* Iterate over all mediators */
-					it = getMediatorSet(chainId[i]).iterator();
+					it = ciliaContext.getChain(chainId[i]).getMediators().iterator();
 					while (it.hasNext()) {
 						component = (MediatorComponent) it.next();
+
 						dico.put(ConstRuntime.NODE_ID, component.getId());
 						if (filter.match(dico)) {
-							componentSet.add(component.getId());
+							componentSet.add(component);
 						}
 					}
 				}
@@ -313,28 +331,41 @@ public class ApplicationImpl extends ApplicationListenerSupport implements Appli
 			}
 		} catch (InterruptedException e) {
 			Thread.currentThread().interrupt();
-			throw new RuntimeException(e.getMessage());
+			throw new RuntimeException();
 		}
+
 		return (Node[]) componentSet.toArray(new Node[componentSet.size()]);
 	}
-
-	private MediatorComponent getModel(String chainId, String component)
-			throws CiliaIllegalStateException {
+	public Node[] connectedTo(Node node) throws CiliaIllegalStateException {
 		Chain chain;
-		MediatorComponent mc;
+		Mediator mediator;
+		Adapter adapter;
+		Node[] nodes;
+
+		if (node == null)
+			return new Node[0];
 		try {
 			ciliaContext.getMutex().readLock().acquire();
 			try {
-				chain = ciliaContext.getChain(chainId);
-				if (chain == null) /* chain not found */
-					throw new CiliaIllegalStateException(chainId + " not existing !");
-				mc = chain.getAdapter(component);
-				/* checks Adapter or mediator */
-				if (mc == null)
-					mc = chain.getMediator(component);
-				if (mc == null)
-					throw new CiliaIllegalStateException(chainId + "/" + component
-							+ " not existing !");
+				/* retreive the chain hosting the mediator/component */
+				chain = ciliaContext.getChain(node.chainId());
+				if (chain != null) {
+					/* checks if the node is an adapter */
+					adapter = chain.getAdapter(node.nodeId());
+					if (adapter != null) {
+						nodes = getNextNodes(adapter.getOutBindings(), node);
+					} else {
+						/* Mediators */
+						mediator = chain.getMediator(node.nodeId());
+						if (mediator == null) {
+							nodes = new Node[0];
+						} else {
+							nodes = getNextNodes(mediator.getOutBindings(), node);
+						}
+					}
+				} else
+					/* chain no found */
+					nodes = new Node[0];
 			} finally {
 				ciliaContext.getMutex().readLock().release();
 			}
@@ -342,21 +373,68 @@ public class ApplicationImpl extends ApplicationListenerSupport implements Appli
 			Thread.currentThread().interrupt();
 			throw new RuntimeException(e.getMessage());
 		}
-		return mc;
+		return nodes;
 	}
 
-	/*
-	 * openess access ! (non-Javadoc)
-	 * 
-	 * @see
-	 * fr.liglab.adele.cilia.knowledge.core.specification.Application#getModel
-	 * (fr.liglab.adele.cilia.knowledge.core.Node)
-	 */
-	public MediatorComponent getModel(Node node) throws CiliaIllegalParameterException,
-			CiliaIllegalStateException {
-		if (node == null)
-			throw new CiliaIllegalParameterException("node is null !");
-		return getModel(node.chainId(), node.nodeId());
+//	private MediatorComponent getModel(String chainId, String component)
+//			throws CiliaIllegalStateException {
+//		Chain chain;
+//		MediatorComponent mc;
+//		try {
+//			ciliaContext.getMutex().readLock().acquire();
+//			try {
+//				chain = ciliaContext.getChain(chainId);
+//				if (chain == null) /* chain not found */
+//					throw new CiliaIllegalStateException(chainId + " not existing !");
+//				mc = chain.getAdapter(component);
+//				/* checks Adapter or mediator */
+//				if (mc == null)
+//					mc = chain.getMediator(component);
+//				if (mc == null)
+//					throw new CiliaIllegalStateException(chainId + "/" + component
+//							+ " not existing !");
+//			} finally {
+//				ciliaContext.getMutex().readLock().release();
+//			}
+//		} catch (InterruptedException e) {
+//			Thread.currentThread().interrupt();
+//			throw new RuntimeException(e.getMessage());
+//		}
+//		return mc;
+//	}
+//
+//	/*
+//	 * openess access ! (non-Javadoc)
+//	 * 
+//	 * @see
+//	 * fr.liglab.adele.cilia.knowledge.core.specification.Application#getModel
+//	 * (fr.liglab.adele.cilia.knowledge.core.Node)
+//	 */
+//	public MediatorComponent getModel(Node node) throws CiliaIllegalParameterException,
+//			CiliaIllegalStateException {
+//		if (node == null)
+//			throw new CiliaIllegalParameterException("node is null !");
+//		return getModel(node.chainId(), node.nodeId());
+//	}
+
+	public void addListener(String ldapFilter, NodeCallback listener)
+			throws CiliaIllegalParameterException, CiliaInvalidSyntaxException {
+		listenerSupport.addListener(ldapFilter, listener);
+	}
+
+	public void removeListener(NodeCallback listener)
+			throws CiliaIllegalParameterException {
+		listenerSupport.removeListener(listener);
+	}
+
+	public void addListener(String ldapFilter, ChainCallback listener)
+			throws CiliaIllegalParameterException, CiliaInvalidSyntaxException {
+			listenerSupport.addListener(ldapFilter, listener);
+	}
+
+	public void removeListener(ChainCallback listener)
+			throws CiliaIllegalParameterException {
+		listenerSupport.removeListener(listener);
 	}
 
 }

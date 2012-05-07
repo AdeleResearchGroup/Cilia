@@ -27,8 +27,22 @@ import fr.liglab.adele.cilia.exceptions.CiliaInvalidSyntaxException;
  *         Team</a>
  * 
  */
-public interface Topology {
 
+public interface Topology {
+	
+	/**
+	 * Retreives all nodes matching the filter
+	 * 
+	 * @param ldapFilter
+	 *            , keywords = chain, node
+	 * 
+	 * @return array of node matching the filter, array size 0 if no node
+	 *         matching the filterá
+	 * @throws CiliaInvalidSyntaxException
+	 *             , ldap syntax error
+	 */
+	public  Node[] findNodeByFilter(String ldapFilter)
+			throws CiliaIllegalParameterException, CiliaInvalidSyntaxException;
 	/**
 	 * 
 	 * @param ldapFilter
