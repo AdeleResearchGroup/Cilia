@@ -37,7 +37,6 @@ public class MediatorComponentFactory extends CiliaComponentFactory implements
 	Component schedulerDescription;
 
 	Component dispatcherDescription;
-	
 
 	private final static String COMPONENT_TYPE = "mediator";
 
@@ -96,11 +95,11 @@ public class MediatorComponentFactory extends CiliaComponentFactory implements
 	 * instance.
 	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public ComponentInstance createInstance(Dictionary config, IPojoContext context,
-			HandlerManager[] handlers)
+	public ComponentInstance createInstance(Dictionary config,
+			IPojoContext context, HandlerManager[] handlers)
 			throws org.apache.felix.ipojo.ConfigurationException {
 		String filter = createConstituantFilter(processorDescription);
-		String msg ;
+		String msg;
 
 		try {
 			ServiceReference[] serv = m_context.getAllServiceReferences(
@@ -109,10 +108,10 @@ public class MediatorComponentFactory extends CiliaComponentFactory implements
 				processorFactory = (Factory) m_context.getService(serv[0]);
 			}
 		} catch (InvalidSyntaxException e1) {
-			msg = "unable to retrieve Processor factory" ;
-			logger.error(msg) ;
+			msg = "unable to retrieve Processor factory";
+			logger.error(msg);
 			throw new ConfigurationException(msg); // should
-																						// never
+			// never
 			// happend.
 		}
 
@@ -128,7 +127,8 @@ public class MediatorComponentFactory extends CiliaComponentFactory implements
 		}
 		if (schedulerDescription.getNamespace() != null
 				&& config.get(CILIA_SCHEDULER_NAMESPACE) == null) {
-			config.put(CILIA_SCHEDULER_NAMESPACE, schedulerDescription.getNamespace());
+			config.put(CILIA_SCHEDULER_NAMESPACE,
+					schedulerDescription.getNamespace());
 		}
 		// obtain the dispatcher configuration. from the mediator description
 		if (dispatcherDescription.getId() != null
@@ -137,7 +137,8 @@ public class MediatorComponentFactory extends CiliaComponentFactory implements
 		}
 		if (dispatcherDescription.getNamespace() != null
 				&& config.get(CILIA_DISPATCHER_NAMESPACE) == null) {
-			config.put(CILIA_DISPATCHER_NAMESPACE, dispatcherDescription.getNamespace());
+			config.put(CILIA_DISPATCHER_NAMESPACE,
+					dispatcherDescription.getNamespace());
 		}
 
 		if (logger.isDebugEnabled()) {
@@ -191,17 +192,14 @@ public class MediatorComponentFactory extends CiliaComponentFactory implements
 			RequiredHandler req = (RequiredHandler) it.next();
 			if ((!req.equals(new RequiredHandler("scheduler", null))) // "org.apache.felix.ipojo:scheduler"
 					&& !(req.equals(new RequiredHandler("processor", null))) // "org.apache.felix.ipojo:processor"
-					// Processor
-					// handler
-					// must
-					// be
-					// present
 					&& !(req.equals(new RequiredHandler("dispatcher", null))) // "org.apache.felix.ipojo:dispatcher"
-					&& !(req.equals(new RequiredHandler("dispatcher", DEFAULT_NAMESPACE))) // "fr.liglab.adele.cilia:dispatcher"
-					&& !(req.equals(new RequiredHandler("processor", DEFAULT_NAMESPACE))) // "fr.liglab.adele.cilia:processor"
-					// Processor handler must be
-					// present
-					&& !(req.equals(new RequiredHandler("scheduler", DEFAULT_NAMESPACE))) // "fr.liglab.adele.cilia:scheduler"
+					&& !(req.equals(new RequiredHandler("dispatcher",DEFAULT_NAMESPACE))) // "fr.liglab.adele.cilia:dispatcher"
+					&& !(req.equals(new RequiredHandler("processor",DEFAULT_NAMESPACE))) // "fr.liglab.adele.cilia:processor"
+					&& !(req.equals(new RequiredHandler("scheduler",DEFAULT_NAMESPACE))) // "fr.liglab.adele.cilia:scheduler"
+					&& !(req.equals(new RequiredHandler("in-ports",null))) // "org.apache.felix.ipojo:in-ports"
+					&& !(req.equals(new RequiredHandler("in-ports",DEFAULT_NAMESPACE))) // "fr.liglab.adele.cilia:out-ports"
+					&& !(req.equals(new RequiredHandler("out-ports",null))) // "org.apache.felix.ipojo:in-ports"
+					&& !(req.equals(new RequiredHandler("out-ports",DEFAULT_NAMESPACE))) // "fr.liglab.adele.cilia:out-ports"
 			) {
 				if (!returnedList.contains(req)) {
 					returnedList.add(req);
@@ -229,7 +227,8 @@ public class MediatorComponentFactory extends CiliaComponentFactory implements
 			returnedList.add(reqs);
 		}
 
-		RequiredHandler reqm = new RequiredHandler("monitor-statevar-handler",DEFAULT_NAMESPACE);
+		RequiredHandler reqm = new RequiredHandler("monitor-statevar-handler",
+				DEFAULT_NAMESPACE);
 		if (!returnedList.contains(reqm)) {
 			returnedList.add(reqm);
 		}
@@ -249,12 +248,12 @@ public class MediatorComponentFactory extends CiliaComponentFactory implements
 				constituantTracker.open();
 			} catch (InvalidSyntaxException e) {
 				logger.error("a factory filter is not valid: " + e.getMessage()); // Holding
-																					// the
-																					// lock
-																					// should
-																					// not
-																					// be
-																					// an
+				// the
+				// lock
+				// should
+				// not
+				// be
+				// an
 				// issue here.
 				stop();
 			}
@@ -283,7 +282,7 @@ public class MediatorComponentFactory extends CiliaComponentFactory implements
 			procName = (String) reference.getProperty("dispatcher.name");
 		}
 		if (procName == null) { // if is neither scheduler, processor nor
-								// dispatcher, its a normal handler.
+			// dispatcher, its a normal handler.
 			return super.addingService(reference);
 		}
 		return true; // return true if is a scheduler, processor or dispatcher.
@@ -298,7 +297,8 @@ public class MediatorComponentFactory extends CiliaComponentFactory implements
 		}
 	}
 
-	protected void computeConstituantsDescriptions() throws ConfigurationException {
+	protected void computeConstituantsDescriptions()
+			throws ConfigurationException {
 		processorDescription = computeDescription("processor");
 		schedulerDescription = computeDescription("scheduler");
 		dispatcherDescription = computeDescription("dispatcher");
@@ -306,7 +306,7 @@ public class MediatorComponentFactory extends CiliaComponentFactory implements
 
 	protected Component computeDescription(String constituantType)
 			throws ConfigurationException {
-		String msg ;
+		String msg;
 		String name = null;
 		String namespace = null;
 		Element elem[] = m_componentMetadata.getElements(constituantType,
@@ -316,14 +316,14 @@ public class MediatorComponentFactory extends CiliaComponentFactory implements
 			// namespace
 		}
 		if (elem == null) {
-			msg = "a mediator must have one "
-				+ constituantType + " : " + m_componentMetadata ;
+			msg = "a mediator must have one " + constituantType + " : "
+					+ m_componentMetadata;
 			logger.error(msg);
-			throw new ConfigurationException(msg);			
+			throw new ConfigurationException(msg);
 		}
 		if (elem.length != 1) {
-			msg = "a mediator must have only one "
-				+ constituantType + " : " + m_componentMetadata;
+			msg = "a mediator must have only one " + constituantType + " : "
+					+ m_componentMetadata;
 			logger.error(msg);
 			throw new ConfigurationException(msg);
 		}
@@ -332,8 +332,8 @@ public class MediatorComponentFactory extends CiliaComponentFactory implements
 		if (procElement.containsAttribute("name")) {
 			name = procElement.getAttribute("name");
 		} else {
-			msg = "a " + constituantType
-			+ " in mediator must have a name : " + m_componentMetadata ;
+			msg = "a " + constituantType + " in mediator must have a name : "
+					+ m_componentMetadata;
 			logger.error(msg);
 			throw new ConfigurationException(msg);
 		}
@@ -348,11 +348,12 @@ public class MediatorComponentFactory extends CiliaComponentFactory implements
 	protected String createConstituantFilter(Component constituant) {
 
 		StringBuffer filterBuffer = new StringBuffer();
-		filterBuffer.append("(&(" + constituant.getType() + CONSTITUANT_NAME + "="
-				+ constituant.getId() + ")");
+		filterBuffer.append("(&(" + constituant.getType() + CONSTITUANT_NAME
+				+ "=" + constituant.getId() + ")");
 		if (constituant.getNamespace() != null) {
-			filterBuffer.append("(" + constituant.getType() + CONSTITUANT_NAMESPACE + "="
-					+ constituant.getNamespace() + ")");
+			filterBuffer.append("(" + constituant.getType()
+					+ CONSTITUANT_NAMESPACE + "=" + constituant.getNamespace()
+					+ ")");
 		}
 		// End Filter.
 		filterBuffer.append("(factory.state=1))");
@@ -400,7 +401,8 @@ public class MediatorComponentFactory extends CiliaComponentFactory implements
 		}
 
 		public String getFullName() {
-			return getNamespace() + ":" + getName() + "( " + constituantToTrack + " )";
+			return getNamespace() + ":" + getName() + "( " + constituantToTrack
+					+ " )";
 		}
 
 	}
