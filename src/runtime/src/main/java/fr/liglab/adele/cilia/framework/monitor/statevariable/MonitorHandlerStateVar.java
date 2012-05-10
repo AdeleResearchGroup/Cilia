@@ -15,6 +15,7 @@
 
 package fr.liglab.adele.cilia.framework.monitor.statevariable;
 
+import java.util.Collections;
 import java.util.Dictionary;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -39,7 +40,8 @@ public class MonitorHandlerStateVar extends AbstractStateVariable {
 	private static final String PROPERTY_MSG_HISTORY = "cilia.message.history";
 	private static final String PROPERTY_BINDING_TIME = "cilia.message.time.bind";
 	/* Liste of state var */
-	private static final Set setStateVar, setDependencyCall, setEventing, setSystemCall;
+	private static final Set setStateVar, setDependencyCall, setEventing, setSystemCall,
+			setFunctionnalCall;
 
 	static {
 		/* State var Event fired by dependency Manager */
@@ -78,16 +80,23 @@ public class MonitorHandlerStateVar extends AbstractStateVariable {
 		/* time between dispatch and collect */
 		setSystemCall.add("transmission.delay");
 
+		setFunctionnalCall = new HashSet();
+		setFunctionnalCall.add("field.set");
+		setFunctionnalCall.add("field.set.count");
+		setFunctionnalCall.add("field.get");
+		setFunctionnalCall.add("field.get.count");
+
 		/* All state variables */
 		setStateVar = new HashSet(setSystemCall);
 		setStateVar.addAll(setDependencyCall);
 		setStateVar.addAll(setEventing);
+		setStateVar.addAll(setFunctionnalCall);
 
 	}
 
 	/* This reference will be injected by iPOJO */
 	private WorkQueue m_systemQueue;
-	private long[] m_counters = new long[10];
+	private long[] m_counters = new long[12];
 	private LinkedList m_gatherMsgIn = new LinkedList();
 	private LinkedList m_snapshootMsg = new LinkedList();
 	private LinkedList m_historyList = new LinkedList();
@@ -97,32 +106,11 @@ public class MonitorHandlerStateVar extends AbstractStateVariable {
 	public void configure(Element metadata, Dictionary configuration)
 			throws ConfigurationException {
 		super.configure(metadata, configuration);
-		Iterator it;
-		/* Configure by default only state var in the dsl */
-		Map stateVarList = (Map) configuration.get("state.variable.configuration");
-		if (stateVarList != null) {
-			it = stateVarList.keySet().iterator();
-			while (it.hasNext()) {
-				String id = (String) it.next();
-				if ((id != null) && setStateVar.contains(id)) {
-					addStateVarId(id, (String) configuration.get(id));
-				}
-			}
-		} else {
-			/* No configuration , configure all system state-variables */
-			it = setStateVar.iterator();
-			while (it.hasNext()) {
-				String id = (String) it.next();
-				addStateVarId(id, null);
-			}
+		Iterator it = setStateVar.iterator();
+		while (it.hasNext()) {
+			String id = (String) it.next();
+			addStateVarId(id, null);
 		}
-		/* set enabled status, default = enabled */
-		//String enabled = (String) configuration.get("state.variable.status");
-		//if (enabled != null) {
-		//	isStateVarEnable = enabled.equalsIgnoreCase("true");
-		//} else {
-		//	isStateVarEnable = false;
-		//}
 	}
 
 	public void validate() {
@@ -186,10 +174,11 @@ public class MonitorHandlerStateVar extends AbstractStateVariable {
 
 		if (isEnabled("scheduler.count")) {
 			m_counters[0]++;
-			m_systemQueue.execute(new AsynchronousExec("scheduler.count", m_counters[0]));
+			m_systemQueue.execute(new AsynchronousExec("scheduler.count", new Long(
+					m_counters[0])));
 		}
 		if (isEnabled("scheduler.data")) {
-			m_systemQueue.execute(new AsynchronousExec("scheduler.data", data));
+			m_systemQueue.execute(new AsynchronousExec("scheduler.data", new Data(data)));
 		}
 		/* Computes the binding time */
 		if (isEnabled("transmission.delay")) {
@@ -200,7 +189,7 @@ public class MonitorHandlerStateVar extends AbstractStateVariable {
 					if (watch != null) {
 						long elapsedTime = Watch.fromTicksToMs(watch.getElapsedTicks());
 						m_systemQueue.execute(new AsynchronousExec("transmission.delay",
-								elapsedTime));
+								new Long(elapsedTime)));
 					}
 				}
 			}
@@ -210,8 +199,8 @@ public class MonitorHandlerStateVar extends AbstractStateVariable {
 			/* Retreive history */
 			List list = (List) data.getProperty(PROPERTY_MSG_HISTORY);
 			if ((list != null) && (!list.isEmpty())) {
-				Data history = new Data(list);
-				m_systemQueue.execute(new AsynchronousExec("message.history", history));
+				m_systemQueue.execute(new AsynchronousExec("message.history", new Data(
+						list)));
 			}
 		}
 	}
@@ -220,24 +209,25 @@ public class MonitorHandlerStateVar extends AbstractStateVariable {
 
 		if (m_listStateVarEnable.isEmpty())
 			return;
-		
+
 		snapShotHistory();
 
 		processTime = new Watch();
 		if (isEnabled("process.entry.count")) {
 			m_counters[1]++;
-			m_systemQueue.execute(new AsynchronousExec("process.entry.count",
-					m_counters[1]));
+			m_systemQueue.execute(new AsynchronousExec("process.entry.count", new Long(
+					m_counters[1])));
 		}
 		if (isEnabled("process.entry.data")) {
-			m_systemQueue.execute(new AsynchronousExec("process.entry.data", data));
+			m_systemQueue.execute(new AsynchronousExec("process.entry.data", new Data(
+					data)));
 		}
 		if (isEnabled("process.msg.treated")) {
 			/* # number of messages treated */
 			if (data != null)
 				m_counters[8] += data.size();
-			m_systemQueue.execute(new AsynchronousExec("process.msg.treated",
-					m_counters[8]));
+			m_systemQueue.execute(new AsynchronousExec("process.msg.treated", new Long(
+					m_counters[8])));
 		}
 	}
 
@@ -245,18 +235,18 @@ public class MonitorHandlerStateVar extends AbstractStateVariable {
 
 		if (m_listStateVarEnable.isEmpty())
 			return;
-		
+
 		if (isEnabled("message.history") || isEnabled("transmission.delay"))
 			injectTags(data);
 
 		if (isEnabled("processing.delay")) {
-			m_systemQueue.execute(new AsynchronousExec("processing.delay", Watch
-					.fromTicksToMs(processTime.getElapsedTicks())));
+			m_systemQueue.execute(new AsynchronousExec("processing.delay", new Long(Watch
+					.fromTicksToMs(processTime.getElapsedTicks()))));
 		}
 		if (isEnabled("process.exit.count")) {
 			m_counters[2]++;
-			m_systemQueue.execute(new AsynchronousExec("process.exit.count",
-					m_counters[2]));
+			m_systemQueue.execute(new AsynchronousExec("process.exit.count", new Long(
+					m_counters[2])));
 		}
 
 	}
@@ -267,16 +257,17 @@ public class MonitorHandlerStateVar extends AbstractStateVariable {
 
 		if (isEnabled("dispatch.count")) {
 			m_counters[3]++;
-			m_systemQueue.execute(new AsynchronousExec("dispatch.count", m_counters[3]));
+			m_systemQueue.execute(new AsynchronousExec("dispatch.count", new Long(
+					m_counters[3])));
 		}
 		if (isEnabled("dispatch.data")) {
-			m_systemQueue.execute(new AsynchronousExec("dispatch.data", data));
+			m_systemQueue.execute(new AsynchronousExec("dispatch.data", new Data(data)));
 		}
 		if (isEnabled("dispatch.msg.treated")) {
 			if (data != null)
 				m_counters[9] += data.size();
-			m_systemQueue.execute(new AsynchronousExec("dispatch.msg.treated",
-					m_counters[9]));
+			m_systemQueue.execute(new AsynchronousExec("dispatch.msg.treated", new Long(
+					m_counters[9])));
 		}
 
 	}
@@ -288,11 +279,12 @@ public class MonitorHandlerStateVar extends AbstractStateVariable {
 		m_counters[4]++;
 		if (isEnabled("process.err.count")) {
 			m_counters[4]++;
-			m_systemQueue
-					.execute(new AsynchronousExec("process.err.count", m_counters[4]));
+			m_systemQueue.execute(new AsynchronousExec("process.err.count", new Long(
+					m_counters[4])));
 		}
 		if (isEnabled("process.err.data")) {
-			m_systemQueue.execute(new AsynchronousExec("process.err.data", data));
+			m_systemQueue
+					.execute(new AsynchronousExec("process.err.data", new Data(data)));
 		}
 	}
 
@@ -308,8 +300,8 @@ public class MonitorHandlerStateVar extends AbstractStateVariable {
 		}
 		if (isEnabled("fire.event.count")) {
 			m_counters[5]++;
-			m_systemQueue
-					.execute(new AsynchronousExec("fire.event.count", m_counters[5]));
+			m_systemQueue.execute(new AsynchronousExec("fire.event.count", new Long(
+					m_counters[5])));
 		}
 	}
 
@@ -325,8 +317,8 @@ public class MonitorHandlerStateVar extends AbstractStateVariable {
 		}
 		if (isEnabled("service.arrival.count")) {
 			m_counters[6]++;
-			m_systemQueue.execute(new AsynchronousExec("service.arrival.count",
-					m_counters[6]));
+			m_systemQueue.execute(new AsynchronousExec("service.arrival.count", new Long(
+					m_counters[6])));
 		}
 	}
 
@@ -343,12 +335,42 @@ public class MonitorHandlerStateVar extends AbstractStateVariable {
 		if (isEnabled("service.departure.count")) {
 			m_counters[7]++;
 			m_systemQueue.execute(new AsynchronousExec("service.departure.count",
-					m_counters[7]));
+					new Long(m_counters[7])));
+		}
+	}
+
+	public void onFieldGet(String field, Object o) {
+		if (m_listStateVarEnable.isEmpty())
+			return;
+		if (isEnabled("field.get")) {
+			m_systemQueue.equals(new AsynchronousExec("field.get", Collections
+					.singletonMap(field, o)));
+		}
+		if (isEnabled("field.get.count")) {
+			m_counters[10]++;
+			m_systemQueue.execute(new AsynchronousExec("field.get.count", new Long(
+					m_counters[10])));
+		}
+
+	}
+
+	public void onFieldSet(String field, Object o) {
+		if (m_listStateVarEnable.isEmpty())
+			return;
+		if (isEnabled("field.set")) {
+			m_systemQueue.equals(new AsynchronousExec("field.set", Collections
+					.singletonMap(field, o)));
+		}
+		if (isEnabled("field.set.count")) {
+			m_counters[11]++;
+			m_systemQueue.execute(new AsynchronousExec("field.set.count", new Long(
+					m_counters[11])));
 		}
 	}
 
 	public String[] getCategories() {
-		String[] array = { "SystemCall", "DependencyCall", "EventingCall" };
+		String[] array = { "SystemCall", "DependencyCall", "EventingCall",
+				"FunctionnalCall" };
 		return array;
 	}
 
@@ -362,6 +384,8 @@ public class MonitorHandlerStateVar extends AbstractStateVariable {
 					.size()]);
 		} else if (category.equalsIgnoreCase("EventingCall")) {
 			array = (String[]) setEventing.toArray(new String[setEventing.size()]);
+		} else if (category.equalsIgnoreCase("FunctionnalCall")) {
+			array = (String[]) setEventing.toArray(new String[setFunctionnalCall.size()]);
 		} else
 			array = new String[0];
 
@@ -373,35 +397,17 @@ public class MonitorHandlerStateVar extends AbstractStateVariable {
 	 * 
 	 */
 	private class AsynchronousExec implements Runnable {
-		private String stateVar;
-		private Object data = null;
-		private long value = 0;
+		private final String stateVar;
+		private final Object data;
 		private final long tickCount = Watch.getCurrentTicks();
-		private final int type;
-
-		AsynchronousExec(String stateVar, long value) {
-			this.stateVar = stateVar;
-			this.value = value;
-			type = 1;
-		}
 
 		AsynchronousExec(String stateVar, Object data) {
 			this.stateVar = stateVar;
 			this.data = data;
-			type = 2;
 		}
 
-		/* Asynchronous event execution */
 		public void run() {
-
-			switch (type) {
-			case 1:
-				publish(stateVar, value, tickCount);
-				break;
-			case 2:
-				publish(stateVar, data, tickCount);
-				break;
-			}
+			publish(stateVar, data, tickCount);
 		}
 	}
 

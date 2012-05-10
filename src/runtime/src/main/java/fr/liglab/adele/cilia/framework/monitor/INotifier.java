@@ -17,8 +17,6 @@ package fr.liglab.adele.cilia.framework.monitor;
 import java.util.Map;
 
 public interface INotifier {
-
-	public void setMonitor(IProcessorMonitor pmonitor);
 	
 	public void fireEvent(Map info);
 	

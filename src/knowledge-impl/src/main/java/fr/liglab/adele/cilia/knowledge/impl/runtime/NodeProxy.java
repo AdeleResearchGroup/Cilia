@@ -20,7 +20,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 
-import fr.liglab.adele.cilia.knowledge.registry.RuntimeRegistry;
+import fr.liglab.adele.cilia.exceptions.CiliaIllegalStateException;
+import fr.liglab.adele.cilia.runtime.dynamic.RuntimeRegistry;
 
 /**
  * Build a Weak Reference proxy
@@ -29,11 +30,11 @@ import fr.liglab.adele.cilia.knowledge.registry.RuntimeRegistry;
  *         Team</a>
  *
  */
+@SuppressWarnings({"rawtypes", "unchecked"})
 public class NodeProxy {
 
-	public Object make(RuntimeRegistry r, String uuid, Object resource,
-			Class interfaceClass) {
-		Handler handler = new Handler(r, uuid, resource);
+	public Object make(RuntimeRegistry r, String uuid,Class interfaceClass) {
+		Handler handler = new Handler(r,uuid,r.findByUuid(uuid).dataRuntimeReference());
 		Object proxy = Proxy.newProxyInstance(interfaceClass.getClassLoader(),
 				new Class[] { interfaceClass }, handler);
 		return interfaceClass.cast(proxy);
@@ -44,9 +45,9 @@ public class NodeProxy {
 		private final RuntimeRegistry registry;
 		private final String uuid;
 
-		public Handler(RuntimeRegistry r, String uuid, Object resource) {
+		public Handler(RuntimeRegistry r, String uuid,Object resource) {
 			this.registry = r;
-			this.uuid = uuid;
+			this.uuid = uuid;	
 			this.resourceRef = new WeakReference(resource);
 		}
 
@@ -55,7 +56,7 @@ public class NodeProxy {
 			Object resource = resourceRef.get();
 			if ((resource == null) || (registry.findByUuid(uuid) == null)) {
 				/* disappears */
-				throw new IllegalStateException(uuid +" no longer exists");
+				throw new CiliaIllegalStateException(uuid +" no longer exists");
 			} else {
 				try { 
 					return method.invoke(resource, args);

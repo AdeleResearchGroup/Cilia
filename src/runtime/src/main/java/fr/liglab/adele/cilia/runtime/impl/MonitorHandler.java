@@ -14,35 +14,59 @@
  */
 package fr.liglab.adele.cilia.runtime.impl;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.felix.ipojo.ComponentInstance;
 import org.apache.felix.ipojo.ConfigurationException;
 import org.apache.felix.ipojo.PrimitiveHandler;
 import org.apache.felix.ipojo.metadata.Element;
+import org.apache.felix.ipojo.parser.FieldMetadata;
+import org.apache.felix.ipojo.parser.PojoMetadata;
 
 import fr.liglab.adele.cilia.Data;
 import fr.liglab.adele.cilia.framework.monitor.IMonitor;
 import fr.liglab.adele.cilia.framework.monitor.INotifier;
 import fr.liglab.adele.cilia.framework.monitor.IProcessorMonitor;
 import fr.liglab.adele.cilia.framework.monitor.IServiceMonitor;
+import fr.liglab.adele.cilia.framework.monitor.ProcessorNotifier;
+import fr.liglab.adele.cilia.runtime.Const;
+
 /**
  * 
- *
- * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project Team</a>
- *
+ * 
+ * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project
+ *         Team</a>
+ * 
  */
 
 public class MonitorHandler extends PrimitiveHandler implements IProcessorMonitor,
-IServiceMonitor {
+		IServiceMonitor {
 
 	List<IMonitor> listeners = new ArrayList<IMonitor>();
+	private String field = null;
 
 	@SuppressWarnings("rawtypes")
 	public void configure(Element metadata, Dictionary configuration)
-	throws ConfigurationException {
+			throws ConfigurationException {
+		Element[] elem = metadata.getElements("method", Const.CILIA_NAMESPACE);
+		if (elem != null) {
+			/* retreive the field to inject */
+			field = elem[0].getAttribute("notifier");
+			PojoMetadata pojoMeta = getPojoMetadata();
+			FieldMetadata fm = pojoMeta.getField(field);
+			if (fm != null) {
+				// Then check that the field is a ProcessorNotifier field
+				if (!fm.getFieldType().equals(ProcessorNotifier.class.getName())) {
+					field = null;
+				}
+			}
+			else field=null ;
+		}
 	}
 
 	public void stop() {
@@ -53,7 +77,7 @@ IServiceMonitor {
 	}
 
 	private void removeListeners() {
-		if(isEmpty()){
+		if (isEmpty()) {
 			return;
 		}
 		synchronized (listeners) {
@@ -68,7 +92,7 @@ IServiceMonitor {
 	}
 
 	public void removeListener(IMonitor listener) {
-		if(isEmpty()){
+		if (isEmpty()) {
 			return;
 		}
 		synchronized (listener) {
@@ -77,7 +101,7 @@ IServiceMonitor {
 	}
 
 	public void notifyOnProcessEntry(List<Data> data) {
-		if(isEmpty()){
+		if (isEmpty()) {
 			return;
 		}
 		List<IMonitor> copyListeners = null;
@@ -91,7 +115,7 @@ IServiceMonitor {
 	}
 
 	public void notifyOnProcessExit(List<Data> data) {
-		if(isEmpty()){
+		if (isEmpty()) {
 			return;
 		}
 		List<IMonitor> copyListeners = null;
@@ -105,7 +129,7 @@ IServiceMonitor {
 	}
 
 	public void notifyOnDispatch(List<Data> data) {
-		if(isEmpty()){
+		if (isEmpty()) {
 			return;
 		}
 		List<IMonitor> copyListeners = null;
@@ -118,9 +142,8 @@ IServiceMonitor {
 		}
 	}
 
-
 	public void notifyOnProcessError(List<Data> data, Exception ex) {
-		if(isEmpty()){
+		if (isEmpty()) {
 			return;
 		}
 		List<IMonitor> copyListeners = null;
@@ -135,7 +158,7 @@ IServiceMonitor {
 
 	@SuppressWarnings("rawtypes")
 	public void fireEvent(Map info) {
-		if(isEmpty()){
+		if (isEmpty()) {
 			return;
 		}
 		List<IMonitor> copyListeners = null;
@@ -149,7 +172,7 @@ IServiceMonitor {
 	}
 
 	public void notifyOnCollect(Data data) {
-		if(isEmpty()){
+		if (isEmpty()) {
 			return;
 		}
 		List<IMonitor> copyListeners = null;
@@ -163,15 +186,33 @@ IServiceMonitor {
 	}
 
 	public void onCreation(Object instance) {
-		if (instance instanceof INotifier) {
-			INotifier pojo = (INotifier) instance;
-			pojo.setMonitor(this);
+		/* injeted the monitor handler reference */
+		if (field != null) {
+			try {
+				/* field has been already tested */
+				Field fieldToInject = instance.getClass().getField(field);
+				try { 
+					boolean isAccessible;
+					if (!Modifier.isPublic(fieldToInject.getModifiers())) { 
+						fieldToInject.setAccessible(true);
+						isAccessible=false ;
+					}
+					else isAccessible=true ;
+					fieldToInject.set(instance, new ProcessorNotifier(this));
+					fieldToInject.setAccessible(isAccessible);
+				} catch (IllegalArgumentException e) {
+				} catch (IllegalAccessException e) {
+				}
+			} catch (SecurityException e) {
+
+			} catch (NoSuchFieldException e) {
+			}
 		}
 	}
 
 	@SuppressWarnings("rawtypes")
 	public void onServiceArrival(Map info) {
-		if(isEmpty()){
+		if (isEmpty()) {
 			return;
 		}
 		List<IMonitor> copyListeners = null;
@@ -186,7 +227,7 @@ IServiceMonitor {
 
 	@SuppressWarnings("rawtypes")
 	public void onServiceDeparture(Map info) {
-		if(isEmpty()){
+		if (isEmpty()) {
 			return;
 		}
 		List<IMonitor> copyListeners = null;
@@ -198,15 +239,15 @@ IServiceMonitor {
 			listener.onServiceDeparture(info);
 		}
 	}
-	private boolean isEmpty(){ 
-		//if any listeners, return immediately.
+
+	private boolean isEmpty() {
+		// if any listeners, return immediately.
 		synchronized (listeners) {
-			if(listeners.isEmpty()) {
+			if (listeners.isEmpty()) {
 				return true;
 			}
 		}
 		return false;
 	}
-
 
 }

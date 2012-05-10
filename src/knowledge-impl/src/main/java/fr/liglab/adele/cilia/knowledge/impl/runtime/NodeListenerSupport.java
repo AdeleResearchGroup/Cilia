@@ -15,144 +15,369 @@
 
 package fr.liglab.adele.cilia.knowledge.impl.runtime;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 
+import org.apache.felix.ipojo.util.Tracker;
+import org.apache.felix.ipojo.util.TrackerCustomizer;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.Filter;
+import org.osgi.framework.InvalidSyntaxException;
+import org.osgi.framework.ServiceReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import fr.liglab.adele.cilia.knowledge.Node;
-import fr.liglab.adele.cilia.knowledge.NodeCallback;
-import fr.liglab.adele.cilia.knowledge.NodeRegistration;
-import fr.liglab.adele.cilia.knowledge.impl.Knowledge;
-import fr.liglab.adele.cilia.knowledge.runtime.ThresholdsCallback;
-import fr.liglab.adele.cilia.knowledge.runtime.ThresholdsRegistration;
-import fr.liglab.adele.cilia.knowledge.util.SwingWorker;
-import fr.liglab.adele.cilia.util.concurrent.CopyOnWriteArrayList;
+import fr.liglab.adele.cilia.Node;
+import fr.liglab.adele.cilia.NodeCallback;
+import fr.liglab.adele.cilia.NodeRegistration;
+import fr.liglab.adele.cilia.dynamic.MeasureCallback;
+import fr.liglab.adele.cilia.dynamic.MeasuresRegistration;
+import fr.liglab.adele.cilia.dynamic.ThresholdsCallback;
+import fr.liglab.adele.cilia.exceptions.CiliaIllegalParameterException;
+import fr.liglab.adele.cilia.exceptions.CiliaInvalidSyntaxException;
+import fr.liglab.adele.cilia.runtime.ConstRuntime;
+import fr.liglab.adele.cilia.util.SwingWorker;
+import fr.liglab.adele.cilia.util.concurrent.ReentrantWriterPreferenceReadWriteLock;
+import fr.liglab.adele.cilia.util.concurrent.SyncMap;
 
 /**
  * 
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project
  *         Team</a>
- *
+ * 
  */
-public class NodeListenerSupport implements NodeRegistration, ThresholdsRegistration {
-	protected final Logger logger = LoggerFactory.getLogger(Knowledge.LOG_NAME);
+@SuppressWarnings({"rawtypes", "unchecked"})
+public class NodeListenerSupport implements TrackerCustomizer, NodeRegistration,
+		MeasuresRegistration {
+	protected final Logger logger = LoggerFactory.getLogger(ConstRuntime.LOG_NAME);
 
-	private CopyOnWriteArrayList listenerNode = new CopyOnWriteArrayList();
-	private CopyOnWriteArrayList listenerThreshold = new CopyOnWriteArrayList();
+	private static final String NODE_LISTENER = "cilia.runtime.node";
+	private static final String NODE_DATA = "cilia.node.data";
+	private static final String NODE_DATA_THRESHOLD = "cilia.node.data.threshold";
+	private static final String FILTER = "(|(cilia.runtime.node=*)(cilia.node.data=*)(cilia.node.data.threshold=*))";
 
-	public NodeListenerSupport() {
+	private SyncMap nodeListeners;
+	private SyncMap thresholdListeners;
+	private SyncMap measureListeners;
+
+	private Tracker tracker;
+	private BundleContext bundleContext;
+
+	public NodeListenerSupport(BundleContext bc) {
+		bundleContext = bc;
+		nodeListeners = new SyncMap(new HashMap(),
+				new ReentrantWriterPreferenceReadWriteLock());
+		thresholdListeners = new SyncMap(new HashMap(),
+				new ReentrantWriterPreferenceReadWriteLock());
+		measureListeners = new SyncMap(new HashMap(),
+				new ReentrantWriterPreferenceReadWriteLock());
 	}
 
-	public void removeAllListenerNode() {
-		listenerNode.clear();
+	/* insert a new listener ,associated to a ldap filter */
+	protected void addFilterListener(Map map, String filter, Object listener)
+			throws CiliaIllegalParameterException, CiliaInvalidSyntaxException {
+		if (listener == null)
+			throw new CiliaIllegalParameterException("listener is null");
+		if (!map.containsKey(listener)) {
+			map.put(listener, new ArrayList());
+		}
+		((ArrayList) map.get(listener)).add(ConstRuntime.createFilter(filter));
 	}
 
-	public void removeAllListenerThreshold() {
-		listenerThreshold.clear();
+	/* Remove a listener */
+	protected void removeFilterListener(Map map, Object listener)
+			throws CiliaIllegalParameterException {
+		if (listener == null)
+			throw new CiliaIllegalParameterException("listener is null");
+		map.remove(listener);
 	}
 
-	/**
+	/*
+	 * Node registration , add a listener (non-Javadoc)
 	 * 
-	 * @return number of listener
+	 * @see
+	 * fr.liglab.adele.cilia.knowledge.NodeRegistration#addListener(java.lang
+	 * .String, fr.liglab.adele.cilia.knowledge.NodeCallback)
 	 */
-	protected int sizeListenerNode() {
-		return listenerNode.size();
+	public void addListener(String ldapfilter, NodeCallback listener)
+			throws CiliaIllegalParameterException, CiliaInvalidSyntaxException {
+		addFilterListener(nodeListeners, ldapfilter, listener);
 	}
 
-	protected int sizeListenerThreshold() {
-		return listenerThreshold.size();
+	/*
+	 * Node registration , remove a listener (non-Javadoc)
+	 * 
+	 * @see
+	 * fr.liglab.adele.cilia.knowledge.NodeRegistration#removeListener(fr.liglab
+	 * .adele.cilia.knowledge.NodeCallback)
+	 */
+	public void removeListener(NodeCallback listener)
+			throws CiliaIllegalParameterException {
+		removeFilterListener(nodeListeners, listener);
 	}
 
 	/**
-	 * Notifies all listeners
+	 * Notifies all node listeners
 	 * 
 	 * @param source
 	 */
-	public void fireNodeEvent(boolean departure, Node source) {
-		if (!listenerNode.isEmpty())
-			new NodeFirer(departure, source).start();
-	}
-
-	/**
-	 * Notifies all listeners
-	 * 
-	 * @param source
-	 */
-	public void fireThresholdEvent(int evt, String urn) {
-		if (!listenerThreshold.isEmpty())
-			new ThresholdFirer(evt, urn).start();
-	}
-
-	public void addListener(ThresholdsCallback listener) {
-		if (listener != null)
-			this.listenerThreshold.addIfAbsent(listener);
-	}
-
-	public void removeListener(ThresholdsCallback listener) {
-		if (listener != null)
-			this.listenerThreshold.remove(listener);
-	}
-
-	public void addListener(NodeCallback listener) {
-		if (listener != null)
-			this.listenerNode.addIfAbsent(listener);
-	}
-
-	public void removeListener(NodeCallback listener) {
-		if (listener != null)
-			this.listenerNode.remove(listener);
+	public void fireNodeEvent(boolean arrival, Node source) {
+		if (!nodeListeners.isEmpty())
+			new NodeFirer(arrival, source).start();
 	}
 
 	/* Run in a thread MIN_PRIORITY+1 */
 	private class NodeFirer extends SwingWorker {
 
-		private boolean departure;
-		private Node source;
+		private boolean arrival;
+		private Node node;
 
-		public NodeFirer(boolean departure, Node source) {
-			this.departure = departure;
-			this.source = source;
+		public NodeFirer(boolean arrival, Node node) {
+			this.arrival = arrival;
+			this.node = node;
 		}
 
 		protected Object construct() throws Exception {
-			Iterator it = listenerNode.listIterator();
-			NodeCallback subscriber;
+			Iterator it = nodeListeners.entrySet().iterator();
 			while (it.hasNext()) {
-				try {
-					subscriber = (NodeCallback) it.next();
-					if (departure)
-						subscriber.departure(source);
-					else
-						subscriber.arrival(source);
-				} catch (Exception e) {
-					logger.error("error while dispatching 'fireNodeEvent' node=" + source);
+				Map.Entry pairs = (Map.Entry) it.next();
+				ArrayList filters = (ArrayList) pairs.getValue();
+				boolean toFire = false;
+				for (int i = 0; i < filters.size(); i++) {
+					if (ConstRuntime.isNodeMatching((Filter) filters.get(i), node)) {
+						toFire = true;
+						break;
+					}
 				}
+				/* call only one time the same subsriber */
+				if (toFire) {
+					if (arrival)
+						((NodeCallback) pairs.getKey()).arrival(node);
+					else
+						((NodeCallback) pairs.getKey()).departure(node);
+				}
+			}
+
+			return null;
+		}
+	}
+
+	/* ---- Measures Listener Support --- */
+
+	/*
+	 * Measure listener, add a listener
+	 */
+	public void addListener(String ldapfilter, MeasureCallback listener)
+			throws CiliaIllegalParameterException, CiliaInvalidSyntaxException {
+		addFilterListener(measureListeners, ldapfilter, listener);
+	}
+
+	/*
+	 * Measure listener, Remove a listener (non-Javadoc)
+	 */
+	public void removeListener(MeasureCallback listener)
+			throws CiliaIllegalParameterException {
+		removeFilterListener(measureListeners, listener);
+	}
+
+	/**
+	 * Notify all listeners matching the filter
+	 * 
+	 * @param node
+	 * @param variableId
+	 */
+	public void fireMeasureReceived(Node node, String variableId) {
+		if (!measureListeners.isEmpty())
+			new MeasureFirer(node, variableId).start();
+	}
+
+	public class MeasureFirer extends SwingWorker {
+		private Node node;
+		private String variableId;
+
+		public MeasureFirer(Node node, String variableId) {
+			this.node = node;
+			this.variableId = variableId;
+		}
+
+		protected Object construct() throws Exception {
+			Iterator it = measureListeners.entrySet().iterator();
+			while (it.hasNext()) {
+				Map.Entry pairs = (Map.Entry) it.next();
+				ArrayList filters = (ArrayList) pairs.getValue();
+				boolean tofire = false;
+				for (int i = 0; i < filters.size(); i++) {
+					if (ConstRuntime.isNodeMatching((Filter) filters.get(i), node)) {
+						tofire = true;
+						break;
+					}
+				}
+				if (tofire)
+					((MeasureCallback) pairs.getKey()).onUpdate(node, variableId);
 			}
 			return null;
 		}
+	}
+
+	/*
+	 * Threshold listener, add a listener (non-Javadoc)
+	 * 
+	 * @see
+	 * fr.liglab.adele.cilia.knowledge.runtime.MeasuresRegistration#addListener
+	 * (java.lang.String,
+	 * fr.liglab.adele.cilia.knowledge.runtime.ThresholdsCallback)
+	 */
+	public void addListener(String ldapfilter, ThresholdsCallback listener)
+			throws CiliaIllegalParameterException, CiliaInvalidSyntaxException {
+		addFilterListener(thresholdListeners, ldapfilter, listener);
+	}
+
+	/*
+	 * Remove a thrshold listener (non-Javadoc)
+	 * 
+	 * @see
+	 * fr.liglab.adele.cilia.knowledge.runtime.MeasuresRegistration#removeListener
+	 * (fr.liglab.adele.cilia.knowledge.runtime.ThresholdsCallback)
+	 */
+	public void removeListener(ThresholdsCallback listener)
+			throws CiliaIllegalParameterException {
+		removeFilterListener(thresholdListeners, listener);
+	}
+
+	public void fireThresholdEvent(Node node, String variableId, int evt) {
+		if (!thresholdListeners.isEmpty())
+			new ThresholdFirer(node, variableId, evt).start();
 	}
 
 	/* Run in a thread MIN_PRIORITY+1 */
 	private class ThresholdFirer extends SwingWorker {
 		private int evt;
-		private String urn;
+		private String variable;
+		private Node node;
 
-		public ThresholdFirer(int evt, String urn) {
+		public ThresholdFirer(Node node, String variable, int evt) {
 			this.evt = evt;
-			this.urn = urn;
+			this.variable = variable;
+			this.node = node;
 		}
 
 		protected Object construct() throws Exception {
-			Iterator it = listenerNode.listIterator();
+			Iterator it = thresholdListeners.entrySet().iterator();
 			while (it.hasNext()) {
-				try {
-					((ThresholdsCallback) it.next()).onThreshold(evt, urn);
-				} catch (Exception e) {
-					logger.error("error while dispatching fireThresholdEvent");
+				Map.Entry pairs = (Map.Entry) it.next();
+				ArrayList filters = (ArrayList) pairs.getValue();
+				boolean tofire = false;
+				for (int i = 0; i < filters.size(); i++) {
+					if (ConstRuntime.isNodeMatching((Filter) filters.get(i), node)) {
+						tofire = true;
+						break;
+					}
 				}
+				if (tofire)
+					((ThresholdsCallback) pairs.getKey())
+							.onThreshold(node, variable, evt);
 			}
 			return null;
 		}
 	}
+
+	protected void start() {
+		registerTracker();
+	}
+
+	protected void stop() {
+		unRegisterTracker();
+		nodeListeners.clear();
+		measureListeners.clear();
+		thresholdListeners.clear();
+	}
+
+	private void registerTracker() {
+		if (tracker == null) {
+			try {
+				tracker = new Tracker(bundleContext, bundleContext.createFilter(FILTER),
+						this);
+				tracker.open();
+			} catch (InvalidSyntaxException e) {
+				/* never happens */
+			}
+		}
+
+	}
+
+	private void unRegisterTracker() {
+		if (tracker != null) {
+			tracker.close();
+		}
+	}
+
+	/* insert a new listener tracked */
+	private void insertService(ServiceReference reference) {
+		String property;
+		Object service = bundleContext.getService(reference);
+
+		property = (String) reference.getProperty(NODE_LISTENER);
+		if (property != null) {
+			/* checks if the interface is implemented */
+			try {
+				if (service instanceof NodeCallback) {
+					addFilterListener(nodeListeners, property, service);
+				}
+			} catch (Exception e) {
+				logger.error("Cannot add a listener ");
+			}
+		}
+		property = (String) reference.getProperty(NODE_DATA);
+		if (property != null) {
+			/* checks if the interface is implemented */
+			try {
+				if (service instanceof MeasureCallback) {
+					addFilterListener(measureListeners, property, service);
+				}
+			} catch (Exception e) {
+				logger.error("Cannot add a listener ");
+			}
+		}
+		property = (String) reference.getProperty(NODE_DATA_THRESHOLD);
+		if (property != null) {
+			/* checks if the interface is implemented */
+			try {
+				if (service instanceof ThresholdsCallback) {
+					addFilterListener(thresholdListeners, property, service);
+				}
+			} catch (Exception e) {
+				logger.error("Cannot add a listener ");
+			}
+		}
+	}
+
+	/* remove a listener tracked */
+	private void extractService(Object service) {
+		try {
+			removeFilterListener(measureListeners, service);
+			removeFilterListener(nodeListeners, service);
+			removeFilterListener(thresholdListeners, service);
+		} catch (CiliaIllegalParameterException e) {
+		}
+	}
+
+	public boolean addingService(ServiceReference reference) {
+		return true;
+	}
+
+	public void addedService(ServiceReference reference) {
+		insertService(reference);
+	}
+
+	public void modifiedService(ServiceReference reference, Object service) {
+		extractService(service);
+		insertService(reference);
+	}
+
+	public void removedService(ServiceReference reference, Object service) {
+		extractService(service);
+	}
+
 }

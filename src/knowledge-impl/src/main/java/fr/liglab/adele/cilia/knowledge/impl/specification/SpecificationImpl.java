@@ -16,7 +16,6 @@
 package fr.liglab.adele.cilia.knowledge.impl.specification;
 
 import java.util.Collections;
-import java.util.Date;
 import java.util.Dictionary;
 import java.util.HashSet;
 import java.util.Hashtable;
@@ -25,59 +24,66 @@ import java.util.Set;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Filter;
-import org.osgi.framework.InvalidSyntaxException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import fr.liglab.adele.cilia.Adapter;
+import fr.liglab.adele.cilia.Application;
 import fr.liglab.adele.cilia.Binding;
 import fr.liglab.adele.cilia.Chain;
 import fr.liglab.adele.cilia.CiliaContext;
 import fr.liglab.adele.cilia.MediatorComponent;
+import fr.liglab.adele.cilia.Node;
 import fr.liglab.adele.cilia.event.CiliaEvent;
 import fr.liglab.adele.cilia.event.CiliaFrameworkEvent;
 import fr.liglab.adele.cilia.event.CiliaFrameworkListener;
-import fr.liglab.adele.cilia.exceptions.IllegalParameterException;
-import fr.liglab.adele.cilia.knowledge.Constants;
-import fr.liglab.adele.cilia.knowledge.Node;
+import fr.liglab.adele.cilia.exceptions.CiliaIllegalParameterException;
+import fr.liglab.adele.cilia.exceptions.CiliaIllegalStateException;
+import fr.liglab.adele.cilia.exceptions.CiliaInvalidSyntaxException;
 import fr.liglab.adele.cilia.knowledge.eventbus.EventProperties;
-import fr.liglab.adele.cilia.knowledge.impl.Knowledge;
 import fr.liglab.adele.cilia.knowledge.impl.eventbus.Publisher;
-import fr.liglab.adele.cilia.knowledge.specification.Application;
-import fr.liglab.adele.cilia.knowledge.util.UnModifiableDictionary;
-import fr.liglab.adele.cilia.model.ChainRuntime;
 import fr.liglab.adele.cilia.model.PatternType;
+import fr.liglab.adele.cilia.runtime.ConstRuntime;
+import fr.liglab.adele.cilia.util.UnModifiableDictionary;
 import fr.liglab.adele.cilia.util.Watch;
 
 /**
- * Specification
+ * Application implementation 
  * 
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project
  *         Team</a>
  * 
  */
+@SuppressWarnings({"rawtypes", "unchecked"})
 public class SpecificationImpl extends SpecificationListenerSupport implements
 		Application, CiliaEvent, CiliaFrameworkEvent {
 
-	private final Logger logger = LoggerFactory.getLogger(Knowledge.LOG_NAME);
+	private final Logger logger = LoggerFactory.getLogger(ConstRuntime.LOG_NAME);
 
 	private CiliaContext ciliaContext;
 	private CiliaFrameworkListener listenerFramework;
 	private Publisher publisher;
 
-	public SpecificationImpl(BundleContext bc) {
 
+	public SpecificationImpl(BundleContext bc) {
+		super(bc);
 	}
 
 	public void start() {
 		logger.info("ModelS@RunTime 'Specification components' - started");
+		super.start();
 		listenerFramework.register(this, ALL_EVENTS);
 	}
 
 	public void stop() {
 		logger.info("ModelS@RunTime 'Specification component' - stopped");
+		super.stop();		
+		listenerFramework.unregister(this);
 	}
 
+	/**
+	 * retreives all chain ID 
+	 */
 	public String[] getChains() {
 		Set chainSet;
 		try {
@@ -131,30 +137,32 @@ public class SpecificationImpl extends SpecificationListenerSupport implements
 
 	/**
 	 * Type = pattern matching
+	 * 
+	 * @throws CiliaIllegalParameterException
 	 */
 	private Node[] getEndpoints(String ldapFilter, PatternType type)
-			throws InvalidSyntaxException {
+			throws CiliaInvalidSyntaxException, CiliaIllegalParameterException {
 
 		Adapter adapter;
 		Set adapterResult = new HashSet();
-		Filter filter = Knowledge.createFilter(ldapFilter);
+		Filter filter = ConstRuntime.createFilter(ldapFilter);
 
 		Dictionary dico = new Hashtable();
 		String chainId[] = getChains();
 		for (int i = 0; i < chainId.length; i++) {
 			/* retreive all adapters per all chain */
-			dico.put(Constants.CHAIN_ID, chainId[i]);
+			dico.put(ConstRuntime.CHAIN_ID, chainId[i]);
 			/* Iterate over all adapters per chain */
 			Iterator it = getAdaptersSet(chainId[i]).iterator();
 			while (it.hasNext()) {
 				adapter = (Adapter) it.next();
-				dico.put(Constants.NODE_ID, adapter.getId());
+				dico.put(ConstRuntime.NODE_ID, adapter.getId());
 				if (filter.match(dico)) {
 					/* verify the pattern */
 					PatternType pattern = adapter.getPattern();
 					if ((pattern.equals(type) || (pattern.equals(PatternType.UNASSIGNED)) || (pattern
 							.equals(PatternType.IN_OUT)))) {
-						adapterResult.add(new NodeImpl(chainId[i], adapter.getId()));
+						adapterResult.add(adapter);
 					}
 				}
 			}
@@ -162,15 +170,17 @@ public class SpecificationImpl extends SpecificationListenerSupport implements
 		return (Node[]) adapterResult.toArray(new Node[adapterResult.size()]);
 	}
 
-	public Node[] endpointIn(String ldapFilter) throws InvalidSyntaxException {
+	public Node[] endpointIn(String ldapFilter) throws CiliaInvalidSyntaxException,
+			CiliaIllegalParameterException {
 		return getEndpoints(ldapFilter, PatternType.IN_ONLY);
 	}
 
-	public Node[] endpointOut(String ldapFilter) throws InvalidSyntaxException {
+	public Node[] endpointOut(String ldapFilter) throws CiliaInvalidSyntaxException,
+			CiliaIllegalParameterException {
 		return getEndpoints(ldapFilter, PatternType.OUT_ONLY);
 	}
 
-	public Node[] connectedTo(Node node) throws IllegalStateException {
+	public Node[] connectedTo(Node node) throws CiliaIllegalStateException {
 
 		Binding[] bindings;
 		Set nodeSet = new HashSet();
@@ -181,95 +191,88 @@ public class SpecificationImpl extends SpecificationListenerSupport implements
 
 			if (bindings != null) {
 				for (int i = 0; i < bindings.length; i++) {
-					nodeSet.add(new NodeImpl(node.chainId(), bindings[i]
-							.getTargetMediator().getId()));
+					nodeSet.add( bindings[i].getTargetMediator());
 				}
 			}
-		} catch (IllegalParameterException e) {
+		} catch (CiliaIllegalParameterException e) {
 		}
 		return (Node[]) nodeSet.toArray(new Node[nodeSet.size()]);
 	}
 
-	
-	public Node[] connectedTo(String ldapFilter) throws InvalidSyntaxException {
+	public Node[] connectedTo(String ldapFilter) throws CiliaInvalidSyntaxException,
+			CiliaIllegalParameterException {
 
 		Node[] nodes = new Node[0];
-		Node[] source = findByFilter(ldapFilter);
+		Node[] source = findNodeByFilter(ldapFilter);
 
 		if (source.length > 0) {
 			try {
 				for (int i = 0; i < nodes.length; i++) {
-					nodes = Knowledge.concat(nodes, connectedTo(source[i]));
+					nodes = ConstRuntime.concat(nodes, connectedTo(source[i]));
 				}
-			} catch (IllegalStateException e) {
+			} catch (CiliaIllegalStateException e) {
 
 			}
 		}
 		return nodes;
 	}
 
-	public int getChainState(String chainId) {
-		if (chainId == null)
-			throw new RuntimeException("chain id is null");
-		ChainRuntime chain = ciliaContext.getChainRuntime(chainId);
-		if (chain == null)
-			throw new RuntimeException("'" + chainId + "' not found");
-		return chain.getState();
-	}
-
 	/* callback event fired by the cilia framework */
 	public void event(String chainId, String mediatorId, int evtNumber) {
-
 		if ((evtNumber & EVENT_CHAIN_ADDED) == EVENT_CHAIN_ADDED) {
 			publisher.publish(EventProperties.TOPIC_APPLICATION,
-					EventProperties.MODEL_CHAIN_CREATE, chainId, Watch.getCurrentTicks());
+					new NodeImpl(chainId, ""), EventProperties.MODEL_CHAIN_CREATE,
+					Watch.getCurrentTicks());
 			fireEventChain(0, chainId);
 		}
 
 		if ((evtNumber & EVENT_CHAIN_REMOVED) == EVENT_CHAIN_REMOVED) {
 			publisher.publish(EventProperties.TOPIC_APPLICATION,
-					EventProperties.MODEL_CHAIN_DELETE, chainId, Watch.getCurrentTicks());
+					new NodeImpl(chainId, ""), EventProperties.MODEL_CHAIN_DELETE,
+					Watch.getCurrentTicks());
 			fireEventChain(1, chainId);
 		}
 
 		if ((evtNumber & EVENT_CHAIN_STARTED) == EVENT_CHAIN_STARTED) {
 			fireEventChain(2, chainId);
 			publisher.publish(EventProperties.TOPIC_APPLICATION,
-					EventProperties.MODEL_CHAIN_START, chainId, Watch.getCurrentTicks());
+					new NodeImpl(chainId, ""), EventProperties.MODEL_CHAIN_START,
+					Watch.getCurrentTicks());
 		}
 
 		if ((evtNumber & EVENT_CHAIN_STOPPED) == EVENT_CHAIN_STOPPED) {
 			fireEventChain(3, chainId);
 			publisher.publish(EventProperties.TOPIC_APPLICATION,
-					EventProperties.MODEL_CHAIN_STOP, chainId, Watch.getCurrentTicks());
+					new NodeImpl(chainId, ""), EventProperties.MODEL_CHAIN_STOP,
+					Watch.getCurrentTicks());
 		}
 
 		if ((evtNumber & EVENT_MEDIATOR_ADDED) == EVENT_MEDIATOR_ADDED) {
 			fireEventNode(true, new NodeImpl(chainId, mediatorId));
-			publisher.publish(EventProperties.TOPIC_APPLICATION,
-					EventProperties.MODEL_MEDIATOR_CREATE, chainId + "/" + mediatorId,
-					Watch.getCurrentTicks());
+			publisher.publish(EventProperties.TOPIC_APPLICATION, new NodeImpl(chainId,
+					mediatorId), EventProperties.MODEL_MEDIATOR_CREATE, Watch
+					.getCurrentTicks());
 		}
 
 		if ((evtNumber & EVENT_MEDIATOR_REMOVED) == EVENT_MEDIATOR_REMOVED) {
 			fireEventNode(false, new NodeImpl(chainId, mediatorId));
-			publisher.publish(EventProperties.TOPIC_APPLICATION,
-					EventProperties.MODEL_MEDIATOR_DELETE, chainId + "/" + mediatorId,
-					Watch.getCurrentTicks());
+			publisher.publish(EventProperties.TOPIC_APPLICATION, new NodeImpl(chainId,
+					mediatorId), EventProperties.MODEL_MEDIATOR_DELETE, Watch
+					.getCurrentTicks());
 		}
 
 		if ((evtNumber & EVENT_ADAPTER_ADDED) == EVENT_ADAPTER_ADDED) {
 			fireEventNode(true, new NodeImpl(chainId, mediatorId));
-			publisher.publish(EventProperties.TOPIC_APPLICATION,
-					EventProperties.MODEL_ADAPTER_CREATE, chainId + "/" + mediatorId,
-					Watch.getCurrentTicks());
+			publisher.publish(EventProperties.TOPIC_APPLICATION, new NodeImpl(chainId,
+					mediatorId), EventProperties.MODEL_ADAPTER_CREATE, Watch
+					.getCurrentTicks());
 		}
 
 		if ((evtNumber & EVENT_ADAPTER_REMOVED) == EVENT_ADAPTER_REMOVED) {
 			fireEventNode(false, new NodeImpl(chainId, mediatorId));
-			publisher.publish(EventProperties.TOPIC_APPLICATION,
-					EventProperties.MODEL_MEDIATOR_DELETE, chainId + "/" + mediatorId,
-					Watch.getCurrentTicks());
+			publisher.publish(EventProperties.TOPIC_APPLICATION, new NodeImpl(chainId,
+					mediatorId), EventProperties.MODEL_MEDIATOR_DELETE, Watch
+					.getCurrentTicks());
 		}
 	}
 
@@ -280,8 +283,8 @@ public class SpecificationImpl extends SpecificationListenerSupport implements
 	 * fr.liglab.adele.cilia.knowledge.core.specification.Application#properties
 	 * (fr.liglab.adele.cilia.knowledge.core.Node)
 	 */
-	public Dictionary properties(Node node) throws IllegalStateException,
-			IllegalParameterException, IllegalStateException {
+	public Dictionary properties(Node node) throws CiliaIllegalStateException,
+			CiliaIllegalParameterException {
 		MediatorComponent mc = getModel(node);
 		return new UnModifiableDictionary(mc.getProperties());
 	}
@@ -293,17 +296,16 @@ public class SpecificationImpl extends SpecificationListenerSupport implements
 	 * fr.liglab.adele.cilia.knowledge.core.specification.Application#getModel
 	 * (fr.liglab.adele.cilia.knowledge.core.Node)
 	 */
-	public MediatorComponent getModel(Node node) throws IllegalParameterException,
-			IllegalStateException {
+	public MediatorComponent getModel(Node node) throws CiliaIllegalParameterException,
+			CiliaIllegalStateException {
 		if (node == null)
-			throw new IllegalParameterException("node is null !");
+			throw new CiliaIllegalParameterException("node is null !");
 		Chain chain;
 		MediatorComponent mc;
 		try {
 			ciliaContext.getMutex().readLock().acquire();
 			try {
 				chain = ciliaContext.getChain(node.chainId());
-
 				if (chain == null) /* chain not found */
 					throw new IllegalStateException(node.chainId() + " not existing !");
 				mc = chain.getAdapter(node.nodeId());
@@ -323,9 +325,10 @@ public class SpecificationImpl extends SpecificationListenerSupport implements
 		return mc;
 	}
 
-	public Node[] findByFilter(String ldapFilter) throws InvalidSyntaxException {
+	public Node[] findNodeByFilter(String ldapFilter) throws CiliaInvalidSyntaxException,
+			CiliaIllegalParameterException {
 
-		Filter filter = Knowledge.createFilter(ldapFilter);
+		Filter filter = ConstRuntime.createFilter(ldapFilter);
 
 		MediatorComponent component;
 		Dictionary dico = new Hashtable();
@@ -335,31 +338,51 @@ public class SpecificationImpl extends SpecificationListenerSupport implements
 
 		for (int i = 0; i < chainId.length; i++) {
 			/* retreive all adapters per all chain */
-			dico.put(Constants.CHAIN_ID, chainId[i]);
+			dico.put(ConstRuntime.CHAIN_ID, chainId[i]);
 			/* Iterate over all adapters */
 			Iterator it = getAdaptersSet(chainId[i]).iterator();
 			while (it.hasNext()) {
 				component = (MediatorComponent) it.next();
-				dico.put(Constants.NODE_ID, component.getId());
+				dico.put(ConstRuntime.NODE_ID, component.getId());
 				if (filter.match(dico)) {
-					componentSet.add(new NodeImpl(chainId[i], component.getId()));
+					componentSet.add(component.getId());
 				}
 			}
 			/* Iterate over all mediators */
 			it = getMediatorSet(chainId[i]).iterator();
 			while (it.hasNext()) {
 				component = (MediatorComponent) it.next();
-				dico.put(Constants.NODE_ID, component.getId());
+				dico.put(ConstRuntime.NODE_ID, component.getId());
 				if (filter.match(dico)) {
-					componentSet.add(new NodeImpl(chainId[i], component.getId()));
+					componentSet.add(component.getId());
 				}
 			}
 		}
 		return (Node[]) componentSet.toArray(new Node[componentSet.size()]);
 	}
 
-	public Date lastStart(String chainId) {
-		throw new UnsupportedOperationException("a mettre dans ChainRuntime l'heure du Start");
-	}
+	private class NodeImpl implements Node {
 
+		private final String chain;
+		private final String node;
+
+		public NodeImpl(String chain, String node) {
+			this.chain = chain;
+			this.node = node;
+		}
+
+		public String chainId() {
+			return chain;
+		}
+
+		public String nodeId() {
+			return node;
+		}
+
+		public String uuid() {
+			//throw new UnsupportedOperationException(
+			//"uuid is not relevant for the specification");
+			return null;
+		}
+	}
 }

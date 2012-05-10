@@ -19,9 +19,11 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
 
-import fr.liglab.adele.cilia.knowledge.Constants;
-import fr.liglab.adele.cilia.knowledge.UniformResourceName;
-import fr.liglab.adele.cilia.knowledge.registry.RegistryItem;
+import fr.liglab.adele.cilia.MediatorComponent;
+import fr.liglab.adele.cilia.framework.monitor.statevariable.ComponentStateVarService;
+import fr.liglab.adele.cilia.runtime.ConstRuntime;
+import fr.liglab.adele.cilia.runtime.dynamic.DataNode;
+import fr.liglab.adele.cilia.runtime.dynamic.RegistryItem;
 
 /**
  * Object stored in the registry
@@ -30,6 +32,7 @@ import fr.liglab.adele.cilia.knowledge.registry.RegistryItem;
  *         Team</a>
  * 
  */
+@SuppressWarnings({"rawtypes", "unchecked"})
 public class RegistryItemImpl implements RegistryItem {
 
 	private final Map props;
@@ -39,14 +42,14 @@ public class RegistryItemImpl implements RegistryItem {
 		if (p != null) {
 			this.props = new HashMap(p);
 		} else
-			this.props = new HashMap(5);
+			this.props = new HashMap(6);
 
-		props.put(Constants.UUID, uuid);
+		props.put(ConstRuntime.UUID, uuid);
 
 		if (appid != null)
-			props.put(Constants.CHAIN_ID, appid);
+			props.put(ConstRuntime.CHAIN_ID, appid);
 		if (componentId != null)
-			props.put(Constants.NODE_ID, componentId);
+			props.put(ConstRuntime.NODE_ID, componentId);
 
 	}
 	
@@ -54,33 +57,40 @@ public class RegistryItemImpl implements RegistryItem {
 		this(uuid,appid,componentId,null);
 	}
 	
-
 	public String uuid() {
-		return (String) props.get(Constants.UUID);
+		return (String) props.get(ConstRuntime.UUID);
 	}
 
 	public String chainId() {
-		return (String) props.get(Constants.CHAIN_ID);
+		return (String) props.get(ConstRuntime.CHAIN_ID);
 	}
 
 	public String nodeId() {
-		return (String) props.get(Constants.NODE_ID);
+		return (String) props.get(ConstRuntime.NODE_ID);
 	}
 
-	public Object objectRef() {
-		return (Object) props.get("registry.object.reference");
+	public ComponentStateVarService runtimeReference() {
+		return (ComponentStateVarService) props.get("registry.object.runtime.reference");
 	}
 
-	public Object nodeReference() {
-		return (Object) props.get("registry.node.reference");
+	public DataNode dataRuntimeReference() {
+		return  (DataNode) props.get("registry.node.data.reference");
 	}
 
-	public void setObjectReference(Object o) {
-		props.put("registry.object.reference", o);
+	public void setRuntimeReference(ComponentStateVarService o) {
+		props.put("registry.object.runtime.reference", o);
 	}
 
-	public void setNodeReference(Object o) {
-		props.put("registry.node.reference", o);
+	public void setDataRuntimeReference(DataNode o) {
+		props.put("registry.node.data.reference", o);
+	}
+	
+	public MediatorComponent specificationReference() {
+		return (MediatorComponent)props.get("registry.mediator.component") ;
+	}
+	
+	public void setSpecificationReference(MediatorComponent mc) {
+		props.put("registry.mediator.component", mc) ;
 	}
 
 	public void clear() {

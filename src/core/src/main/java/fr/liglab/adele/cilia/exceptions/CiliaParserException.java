@@ -21,7 +21,6 @@ package fr.liglab.adele.cilia.exceptions;
 public class CiliaParserException extends CiliaException {
 
 
-
 	/**
 	 * 
 	 */

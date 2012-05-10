@@ -6,27 +6,25 @@
 		name="ModelRuntime_Core.Registry">
 		<provides
 			specification="fr.liglab.adele.cilia.knowledge.registry.RuntimeRegistry" />
-		<provides
-			specification="fr.liglab.adele.cilia.knowledge.registry.Registry" />
 		<callback transition="validate" method="start" />
 		<callback transition="invalidate" method="stop" />
 	</component>
-	<instance component="ModelRuntime_Core.Registry" />
+	<!--  <instance component="ModelRuntime_Core.Registry" /> -->
 
 	<!-- in charge to maintains dynamic properties of components discovered -->
+	<!--
 	<component
 		classname="fr.liglab.adele.cilia.knowledge.impl.runtime.DynamicPropertiesImpl"
 		name="ModelRuntime_Core.NodesRuntime">
 		<provides
-			specification="fr.liglab.adele.cilia.knowledge.runtime.DynamicProperties" />
+			specification="fr.liglab.adele.cilia.runtime.DynamicProperties" />
 		<requires field="registry" />
-		<requires field="subscriber" />
 		<requires field="publisher" />
 		<requires field="ciliaContext" />
 		<callback transition="validate" method="start" />
 		<callback transition="invalidate" method="stop" />
 	</component>
-	<instance component="ModelRuntime_Core.NodesRuntime" />
+	   <instance component="ModelRuntime_Core.NodesRuntime" /> -->
 
 	<!-- in charge to follow  specifications -->
 	<component
@@ -36,11 +34,11 @@
 		<requires field="listenerFramework" />
 		<requires field="publisher" />
 		<provides
-			specification="fr.liglab.adele.cilia.knowledge.specification.Application" />
+			specification="fr.liglab.adele.cilia.Application" />
 		<callback transition="validate" method="start" />
 		<callback transition="invalidate" method="stop" />
 	</component>
-	<instance component="ModelRuntime_Core.Specifications" />
+	<!--  <instance component="ModelRuntime_Core.Specifications" /> -->
 
 	<!-- Event bus , Listen event and notify subscribers -->
 	<component

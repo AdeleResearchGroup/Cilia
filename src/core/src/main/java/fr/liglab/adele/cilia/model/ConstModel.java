@@ -25,12 +25,14 @@ public interface ConstModel {
 
 	public String PROPERTY_CHAIN_ID = "cilia.chain.name";
 	public String PROPERTY_COMPONENT_ID = "cilia.component.id";
+	public String PROPERTY_UUID ="cilia.component.uuid" ;
+	
 	public String PROPERTY_LOCK_UNLOCK = "cilia.command.lock.unlock" ;
 	public String SET_LOCK ="lock" ;
 	public String SET_UNLOCK = "unlock" ;
 	
 	/* Properties related to the monitoring */
-	public String MONTORING_STATEVARIABLE_CONF = "state.variable.configuration" ;
-	public String MONITORING_STATUS = "state.variable.status" ;
+	//public String MONTORING_STATEVARIABLE_CONF = "state.variable.configuration" ;
+	//public String MONITORING_STATUS = "state.variable.status" ;
 
 }

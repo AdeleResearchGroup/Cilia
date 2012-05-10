@@ -18,7 +18,7 @@ package fr.liglab.adele.cilia;
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project Team</a>
  *
  */
-public interface MediatorComponent extends Component { 
+public interface MediatorComponent extends Node,Component { 
 	
 	/**
 	 * get the qualified id 'chainId/mediatorId'

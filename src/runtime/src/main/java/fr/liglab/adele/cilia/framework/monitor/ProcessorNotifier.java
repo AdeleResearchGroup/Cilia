@@ -16,15 +16,16 @@ package fr.liglab.adele.cilia.framework.monitor;
 
 import java.util.Map;
 
-public abstract class ProcessorNotifier implements INotifier {
+public class ProcessorNotifier implements INotifier {
 
 	IProcessorMonitor monitor;
 
-	public void setMonitor(IProcessorMonitor pmonitor) {
-		monitor = pmonitor;
+	public ProcessorNotifier(IProcessorMonitor pmonitor) {
+		monitor=pmonitor ;
 	}
-
+	
 	public void fireEvent(Map info) {
+		System.out.println(">>>>>>>PROCESSOR NOTFIER ");
 		if (monitor != null)
 			monitor.fireEvent(info);
 	}

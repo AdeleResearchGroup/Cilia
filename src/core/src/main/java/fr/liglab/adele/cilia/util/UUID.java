@@ -16,12 +16,12 @@ package fr.liglab.adele.cilia.util;
 
 import java.util.Random;
 
-public class UUID {
+public class Uuid {
 	private final long msb;
 	private final long lsb;
 	private static final Random generator = new Random(System.currentTimeMillis());
 
-	private UUID(byte[] data) {
+	private Uuid(byte[] data) {
 		long msb = 0;
 		long lsb = 0;
 
@@ -33,7 +33,7 @@ public class UUID {
 		this.lsb = lsb;
 	}
 	
-	public static UUID generate() {
+	public static Uuid generate() {
 		Long ng = new Long(generator.nextLong());
 		byte[] randomBytes = new byte[16];
 		generator.nextBytes(randomBytes) ;
@@ -41,7 +41,7 @@ public class UUID {
 		randomBytes[6] |= 0x40; /* set to version 4 */
 		randomBytes[8] &= 0x3f; /* clear variant */
 		randomBytes[8] |= 0x80; /* set to IETF variant */
-		return new UUID(randomBytes);
+		return new Uuid(randomBytes);
 	}
 	
 	public String toString() {
@@ -54,6 +54,5 @@ public class UUID {
 		long hi = 1L << (digits * 4);
 		return Long.toHexString(hi | (val & (hi - 1))).substring(1);
 	}
-	
 	
 }

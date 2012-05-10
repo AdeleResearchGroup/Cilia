@@ -25,6 +25,8 @@ import org.osgi.util.measurement.Measurement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import fr.liglab.adele.cilia.exceptions.CiliaInvalidSyntaxException;
+
 public class Condition {
 	private static Logger logger = LoggerFactory
 			.getLogger("cilia.ipojo.runtime.monitoring");
@@ -49,7 +51,8 @@ public class Condition {
 	 *            LDAP expression or null
 	 * @throws InvalidSyntaxException
 	 */
-	public Condition(BundleContext bc, String ldapfilter) throws InvalidSyntaxException {
+	public Condition(BundleContext bc, String ldapfilter)
+			throws CiliaInvalidSyntaxException {
 		synchro = new Object();
 		dico = new Hashtable(7);
 		dico.put(VALUE_CURRENT, new Double(Double.NaN));
@@ -77,15 +80,17 @@ public class Condition {
 	}
 
 	public void setCondition(BundleContext bc, String expression)
-			throws InvalidSyntaxException {
+			throws CiliaInvalidSyntaxException {
 		filter = null;
 		if ((expression != null) && (expression.length() != 0)) {
 			synchronized (synchro) {
-				filter = bc.createFilter(expression);
+				try {
+					filter = bc.createFilter(expression);
+				} catch (InvalidSyntaxException e) {
+					throw new CiliaInvalidSyntaxException(e.getMessage(), e.getFilter());
+				}
 			}
-
 		}
-
 	}
 
 	public void setCondition(Filter filter) {

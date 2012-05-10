@@ -17,8 +17,7 @@ package fr.liglab.adele.cilia.framework.monitor.statevariable;
 
 import java.util.Dictionary;
 
-import org.osgi.framework.InvalidSyntaxException;
-
+import fr.liglab.adele.cilia.exceptions.CiliaInvalidSyntaxException;
 import fr.liglab.adele.cilia.framework.monitor.IMonitor;
 
 public interface ComponentStateVarService extends IMonitor{
@@ -37,8 +36,9 @@ public interface ComponentStateVarService extends IMonitor{
 	 * @param ldapCondition
 	 *            ldap condition string format, null if no condition associated
 	 * @throws InvalidSyntaxException 
+	 * @throws CiliaInvalidSyntaxException 
 	 */
-	public void setCondition(String stateVarId, String ldapCondition) throws InvalidSyntaxException ;
+	public void setCondition(String stateVarId, String ldapCondition) throws CiliaInvalidSyntaxException ;
 
 	/**
 	 * Gives the current condition associated to the state var

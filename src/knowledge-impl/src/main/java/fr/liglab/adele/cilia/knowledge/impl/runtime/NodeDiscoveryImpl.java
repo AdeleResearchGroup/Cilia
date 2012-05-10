@@ -23,14 +23,15 @@ import org.osgi.framework.ServiceReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import fr.liglab.adele.cilia.NodeCallback;
 import fr.liglab.adele.cilia.framework.monitor.statevariable.ComponentStateVarProperties;
 import fr.liglab.adele.cilia.framework.monitor.statevariable.ComponentStateVarService;
 import fr.liglab.adele.cilia.knowledge.eventbus.EventProperties;
-import fr.liglab.adele.cilia.knowledge.impl.Knowledge;
 import fr.liglab.adele.cilia.knowledge.impl.eventbus.Publisher;
 import fr.liglab.adele.cilia.knowledge.impl.registry.RegistryItemImpl;
-import fr.liglab.adele.cilia.knowledge.registry.RegistryItem;
-import fr.liglab.adele.cilia.knowledge.registry.RuntimeRegistry;
+import fr.liglab.adele.cilia.runtime.ConstRuntime;
+import fr.liglab.adele.cilia.runtime.dynamic.RegistryItem;
+import fr.liglab.adele.cilia.runtime.dynamic.RuntimeRegistry;
 import fr.liglab.adele.cilia.util.Watch;
 
 /**
@@ -46,12 +47,14 @@ public class NodeDiscoveryImpl implements TrackerCustomizer, ComponentStateVarPr
 
 	private RuntimeRegistry registry;
 	private Publisher publisher;
-	private final Logger logger = LoggerFactory.getLogger(Knowledge.LOG_NAME);
-
+	private final Logger logger = LoggerFactory.getLogger(ConstRuntime.LOG_NAME);
+	private final NodeCallback callback ;
 	private Tracker tracker;
 
-	public NodeDiscoveryImpl(BundleContext bc) {
+
+	public NodeDiscoveryImpl(BundleContext bc,NodeCallback cb) {
 		this.bundleContext = bc;
+		this.callback=cb;
 	}
 
 	public void setPublisher(Publisher p) {
@@ -70,12 +73,12 @@ public class NodeDiscoveryImpl implements TrackerCustomizer, ComponentStateVarPr
 	 */
 	public synchronized void start() {
 		registerTracker();
-		logger.info("ModelS@RunTime'Node discovery' - started") ;
+		logger.info("ModelS@RunTime'Node discovery' - started");
 	}
 
 	public synchronized void stop() {
 		unregisterTracker();
-		logger.info("ModelS@RunTime 'Node discovery' - stopped") ;
+		logger.info("ModelS@RunTime 'Node discovery' - stopped");
 	}
 
 	/*
@@ -119,8 +122,9 @@ public class NodeDiscoveryImpl implements TrackerCustomizer, ComponentStateVarPr
 		String uuid = (String) mediatorHandler.getProperty(MONITOR_UUID);
 		RegistryItem item = (RegistryItem) registry.findByUuid(uuid);
 		if (item != null) {
-			publisher.publish(EventProperties.TOPIC_DYN_PROPERTIES,
-					EventProperties.UNREGISTER, uuid, Watch.getCurrentTicks());
+			callback.departure(item) ;
+			publisher.publish(EventProperties.TOPIC_DYN_PROPERTIES, item,
+					EventProperties.DEPARTURE, Watch.getCurrentTicks());
 			logger.debug("Node [{}] disappear", item.toString());
 		}
 	}
@@ -130,14 +134,15 @@ public class NodeDiscoveryImpl implements TrackerCustomizer, ComponentStateVarPr
 		String chainId = (String) mediatorHandler.getProperty(MONITOR_CHAIN_ID);
 		String mediatorId = (String) mediatorHandler.getProperty(MONITOR_NODE_ID);
 		String uuid = (String) mediatorHandler.getProperty(MONITOR_UUID);
-		
+
 		/* Creates the object stored i nthe registry */
 		RegistryItemImpl item = new RegistryItemImpl(uuid, chainId, mediatorId);
-		item.setObjectReference(mediatorHandler);
+		item.setRuntimeReference(mediatorHandler);
 		registry.register(item);
-		publisher.publish(EventProperties.TOPIC_DYN_PROPERTIES,
-				EventProperties.REGISTER, uuid, Watch.getCurrentTicks());
-		
+		callback.arrival(item) ;
+		publisher.publish(EventProperties.TOPIC_DYN_PROPERTIES, item,
+				EventProperties.ARRIVAL, Watch.getCurrentTicks());
+
 		logger.debug("Node [{}] discovered", item.toString());
 
 	}

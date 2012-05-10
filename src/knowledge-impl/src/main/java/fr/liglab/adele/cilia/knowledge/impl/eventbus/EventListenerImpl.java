@@ -16,17 +16,14 @@
 package fr.liglab.adele.cilia.knowledge.impl.eventbus;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Dictionary;
 import java.util.Hashtable;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.osgi.framework.BundleContext;
-import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.event.Event;
 import org.osgi.service.event.EventConstants;
@@ -34,8 +31,6 @@ import org.osgi.service.event.EventHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import fr.liglab.adele.cilia.knowledge.Node;
-import fr.liglab.adele.cilia.knowledge.Registry;
 import fr.liglab.adele.cilia.knowledge.eventbus.Cache;
 import fr.liglab.adele.cilia.knowledge.eventbus.CachedEvent;
 import fr.liglab.adele.cilia.knowledge.eventbus.EventProperties;
@@ -43,8 +38,8 @@ import fr.liglab.adele.cilia.knowledge.eventbus.OnEvent;
 import fr.liglab.adele.cilia.knowledge.eventbus.OnVeto;
 import fr.liglab.adele.cilia.knowledge.eventbus.SubscriberRegistration;
 import fr.liglab.adele.cilia.knowledge.eventbus.VetoSubscriberRegistration;
-import fr.liglab.adele.cilia.knowledge.impl.Knowledge;
-import fr.liglab.adele.cilia.knowledge.registry.RuntimeRegistry;
+import fr.liglab.adele.cilia.runtime.ConstRuntime;
+import fr.liglab.adele.cilia.runtime.dynamic.RuntimeRegistry;
 import fr.liglab.adele.cilia.util.Watch;
 import fr.liglab.adele.cilia.util.concurrent.CopyOnWriteArrayList;
 import fr.liglab.adele.cilia.util.concurrent.ReentrantWriterPreferenceReadWriteLock;
@@ -56,9 +51,10 @@ import fr.liglab.adele.cilia.util.concurrent.SyncList;
  *         Team</a>
  *
  */
+//@SuppressWarnings({"rawtypes", "unchecked"})
 public class EventListenerImpl extends CacheListenerSupport implements
 		SubscriberRegistration, VetoSubscriberRegistration, Cache {
-	private final Logger logger = LoggerFactory.getLogger(Knowledge.LOG_NAME);
+	private final Logger logger = LoggerFactory.getLogger(ConstRuntime.LOG_NAME);
 
 	private SyncList cachedEvent;
 	private int capacity;
@@ -75,7 +71,7 @@ public class EventListenerImpl extends CacheListenerSupport implements
 		this.cachedEvent = new SyncList(new ArrayList(),
 				new ReentrantWriterPreferenceReadWriteLock());
 		this.vetoByTopic = new ConcurrentHashMap();
-		this.enable=Knowledge.CACHED_AUTORUN ;
+		this.enable=true ;
 	}
 
 	/*
@@ -185,9 +181,9 @@ public class EventListenerImpl extends CacheListenerSupport implements
 				}
 				try {
 					/* source.id and event.number are mandatories */
-					String uuid = (String) dico.get(EventProperties.EVENT_SOURCE_ID);
-					if (uuid == null)
-						return;
+					String uuid = (String) dico.get(EventProperties.EVENT_SOURCE_UUID);
+					String chainId = (String) dico.get(EventProperties.EVENT_SOURCE_CHAIN_ID) ;
+					String nodeId = (String) dico.get(EventProperties.EVENT_SOURCE_NODE_ID) ;				
 					int i = ((Integer) dico.get(EventProperties.EVENT_NUMBER)).intValue();
 					/* optional 'tick.number' */
 					Long timestamp = ((Long) dico.get(EventProperties.EVENT_TICK_NUMBER));
@@ -199,10 +195,10 @@ public class EventListenerImpl extends CacheListenerSupport implements
 
 					if (b == null) {
 						/* by default all events are cached */
-						addEventToCache(i,timestamp.longValue(),uuid);
+						addEventToCache(i,timestamp.longValue(),uuid,chainId,nodeId);
 					} else {
 						if (b.booleanValue())
-							addEventToCache(i,timestamp.longValue(),uuid);
+							addEventToCache(i,timestamp.longValue(),uuid,chainId,nodeId);
 					}
 					/* Event will be notified if there is no veto */
 					if (!isVetoable(topic, i, uuid, dico))
@@ -297,12 +293,12 @@ public class EventListenerImpl extends CacheListenerSupport implements
 	}
 
 	/* insert a new event in the cache */
-	private void addEventToCache(int event, long timestamp,String uuid) {
+	private void addEventToCache(int event, long timestamp,String uuid,String chainId,String nodeId) {
 		if (!enable) return ;
 		try {
 			try {
 				cachedEvent.writerSync().acquire();
-				cachedEvent.add(0, new CachedEventImpl(event, timestamp,uuid));
+				cachedEvent.add(0, new CachedEventImpl(event, timestamp,uuid,chainId,nodeId));
 				if (cachedEvent.size() > capacity) {
 					cachedEvent.remove(capacity - 1);
 					fireOverRun(Watch.getCurrentTicks());

@@ -23,29 +23,29 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Filter;
-import org.osgi.framework.InvalidSyntaxException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import fr.liglab.adele.cilia.knowledge.Constants;
-import fr.liglab.adele.cilia.knowledge.UniformResourceName;
-import fr.liglab.adele.cilia.knowledge.impl.Knowledge;
-import fr.liglab.adele.cilia.knowledge.registry.RegistryItem;
-import fr.liglab.adele.cilia.knowledge.registry.RuntimeRegistry;
+import fr.liglab.adele.cilia.exceptions.CiliaIllegalParameterException;
+import fr.liglab.adele.cilia.exceptions.CiliaInvalidSyntaxException;
+import fr.liglab.adele.cilia.runtime.ConstRuntime;
+import fr.liglab.adele.cilia.runtime.dynamic.RegistryItem;
+import fr.liglab.adele.cilia.runtime.dynamic.RuntimeRegistry;
 import fr.liglab.adele.cilia.util.concurrent.Mutex;
 import fr.liglab.adele.cilia.util.concurrent.ReentrantWriterPreferenceReadWriteLock;
 import fr.liglab.adele.cilia.util.concurrent.SyncMap;
 
 /**
- * Implements a 'Registry' Constains all Cilia objects discovered at runtime.
+ * Implements a 'Registry' Constain all Cilia objects discovered at runtime.
  * 
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project
  *         Team</a>
  * 
  */
+@SuppressWarnings({"rawtypes", "unchecked"})
 public class RegistryManager implements RuntimeRegistry {
 
-	private final Logger logger = LoggerFactory.getLogger(Knowledge.LOG_NAME);
+	private final Logger logger = LoggerFactory.getLogger(ConstRuntime.LOG_NAME);
 
 	/* m_registry association uuid <-> RegistryItem */
 	private SyncMap registry;
@@ -75,9 +75,11 @@ public class RegistryManager implements RuntimeRegistry {
 	 * (fr.liglab.adele.cilia.knowledge.core.registry.RegistryItem)
 	 */
 	public void register(RegistryItem obj) {
-		if (obj == null)
+		if ((obj == null) || (obj.uuid() == null)) {
+			logger.error("object or uuid is null , cannot be registered ");
 			return;
-		registry.put(obj.getProperties().get(Constants.UUID), obj);
+		}
+		registry.put(obj.uuid(), obj);
 		logger.debug("[{}] registered", obj.toString());
 	}
 
@@ -89,16 +91,18 @@ public class RegistryManager implements RuntimeRegistry {
 	 * (java.lang.String)
 	 */
 	public synchronized void unregister(String uuid) {
-		if ((uuid == null))
+		if ((uuid == null)) {
+			logger.error("uuid is null, cannot unregister object");
 			return;
+		}
 		try {
 			Mutex mutex = (Mutex) locked_uuid.get(uuid);
 			if (mutex != null) {
 				/* avoid infinite wait */
 				if (mutex.attempt(10000) == false) {
 					unlock_uuid(uuid);
-					logger.error("uuid is locked since 10 seconds, automatic unlock done," +
-							     "to avoid infinite lock");
+					logger.error("uuid is locked since 10 seconds, automatic unlock is done,"
+							+ "to avoid infinite lock");
 				}
 			}
 			RegistryItemImpl item = (RegistryItemImpl) registry.remove(uuid);
@@ -122,39 +126,18 @@ public class RegistryManager implements RuntimeRegistry {
 		return registry.size();
 	}
 
-/*
-	public String dumpRegistry() {
-		StringBuffer sb = new StringBuffer();
-		try {
-			registry.readerSync().acquire();
-			try {
-				Iterator it = registry.entrySet().iterator();
-				while (it.hasNext()) {
-					Map.Entry pairs = (Map.Entry) it.next();
-					RegistryItem item = (RegistryItem) pairs.getValue();
-					sb.append(item.toString()).append("\n");
-				}
-				return sb.toString();
-			} finally {
-				registry.readerSync().release();
-			}
-		} catch (Exception e) {
-			Thread.currentThread().interrupt();
-			throw new RuntimeException(e.getMessage());
-		}
-	}
-*/
 	/*
-	 * This uuid is locked temporaly (max 10 10seconds) from removal
-	 * (non-Javadoc)
+	 * This uuid is locked temporaly (max 10 seconds) from removal (non-Javadoc)
 	 * 
 	 * @see
 	 * fr.liglab.adele.cilia.knowledge.core.registry.RuntimeRegistry#lock_uuid
 	 * (java.lang.String)
 	 */
 	public void lock_uuid(String uuid) {
-		if (uuid == null)
+		if (uuid == null) {
+			logger.error("uuid is null , cannot lock uuid");
 			return;
+		}
 
 		if (!locked_uuid.containsKey(uuid)) {
 			try {
@@ -164,7 +147,7 @@ public class RegistryManager implements RuntimeRegistry {
 			} catch (Exception e) {
 				locked_uuid.remove(uuid);
 				Thread.currentThread().interrupt();
-				throw new UnsupportedOperationException(e.getMessage());
+				throw new RuntimeException(e.getMessage());
 			}
 		}
 	}
@@ -177,8 +160,10 @@ public class RegistryManager implements RuntimeRegistry {
 	 * (java.lang.String)
 	 */
 	public void unlock_uuid(String uuid) {
-		if (uuid == null)
+		if (uuid == null) {
+			logger.error("uuid is null , cannot perform un_lock");
 			return;
+		}
 		Mutex mutex = (Mutex) locked_uuid.remove(uuid);
 		if (mutex != null)
 			mutex.release();
@@ -191,9 +176,10 @@ public class RegistryManager implements RuntimeRegistry {
 	 * fr.liglab.adele.cilia.knowledge.core.registry.RuntimeRegistry#findByFilter
 	 * (java.lang.String)
 	 */
-	public RegistryItem[] findByFilter(String ldap) throws InvalidSyntaxException {
+	public RegistryItem[] findByFilter(String ldap) throws CiliaInvalidSyntaxException,
+			CiliaIllegalParameterException {
 		Set itemfound = new HashSet();
-		Filter filter = Knowledge.createFilter(ldap);
+		Filter filter = ConstRuntime.createFilter(ldap);
 		try {
 			registry.readerSync().acquire();
 			try {
@@ -231,5 +217,4 @@ public class RegistryManager implements RuntimeRegistry {
 			item = (RegistryItem) registry.get(uuid);
 		return item;
 	}
-
 }

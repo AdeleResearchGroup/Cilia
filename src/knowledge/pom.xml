@@ -93,10 +93,7 @@
 						</Import-Package>
 						<Export-Package >
 						    fr.liglab.adele.cilia.knowledge,
-							fr.liglab.adele.cilia.knowledge.eventbus,
-							fr.liglab.adele.cilia.knowledge.runtime,
-							fr.liglab.adele.cilia.knowledge.specification,
-							fr.liglab.adele.cilia.knowledge.util
+							fr.liglab.adele.cilia.knowledge.eventbus
 						</Export-Package>
 						<Include-Resource>
 							{maven-resources},

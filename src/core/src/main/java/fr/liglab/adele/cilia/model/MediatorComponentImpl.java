@@ -27,14 +27,13 @@ import fr.liglab.adele.cilia.Binding;
 import fr.liglab.adele.cilia.Chain;
 import fr.liglab.adele.cilia.MediatorComponent;
 import fr.liglab.adele.cilia.Port;
+import fr.liglab.adele.cilia.util.Uuid;
 
 /**
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project Team</a>
  *
  */
 public abstract class MediatorComponentImpl extends ComponentImpl implements MediatorComponent{
-
-
 	
 	/**
 	 * Reference to the parent chain which contains this mediator representation
@@ -72,6 +71,8 @@ public abstract class MediatorComponentImpl extends ComponentImpl implements Med
 	private String qualifiedId ;
 	
 	private String version = null;
+	
+	private final String uuid = Uuid.generate().toString();
 
 	/**
 	 * 
@@ -429,4 +430,16 @@ public abstract class MediatorComponentImpl extends ComponentImpl implements Med
 		this.version = version;
 	}
 	
+	
+	public String nodeId() {
+		return getId();
+	}
+	
+	public String chainId() {
+		return getChain().getId();
+	}
+	
+	public String uuid() {
+		return uuid ;
+	}
 }

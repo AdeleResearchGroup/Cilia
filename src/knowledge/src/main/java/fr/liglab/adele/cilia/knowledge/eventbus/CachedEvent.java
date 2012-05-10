@@ -15,27 +15,26 @@
 
 package fr.liglab.adele.cilia.knowledge.eventbus;
 
+import fr.liglab.adele.cilia.Node;
+
 /**
  * Event stored in the Event bus
+ * 
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project
  *         Team</a>
- *
+ * 
  */
-public interface CachedEvent {
+public interface CachedEvent extends Node {
 	/**
 	 * 
-	 * @return event number 
+	 * @return event number
 	 */
-	int eventNumber() ;
+	int eventNumber();
+
 	/**
 	 * 
 	 * @return #tickNumber ( ms ou ns )
 	 */
-	long tickNumber() ;	
-	
-	/**
-	 * 
-	 * @return event identification ( uuid, qualified name )
-	 */
-	String source() ;	
+	long tickNumber();
+
 }

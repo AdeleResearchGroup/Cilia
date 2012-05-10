@@ -68,7 +68,6 @@ public class ArchitectureImpl implements Architecture {
 	 * 
 	 * @see fr.liglab.adele.cilia.builder.Architecture#bind()
 	 */
-	@Override
 	public Binder bind() throws BuilderException {
 		checkValidation();
 		Binder bind = new BinderImpl(this);
@@ -81,7 +80,7 @@ public class ArchitectureImpl implements Architecture {
 	 * 
 	 * @see fr.liglab.adele.cilia.builder.Architecture#bind()
 	 */
-	@Override
+
 	public Binder unbind() throws BuilderException {
 		checkValidation();
 		Binder bind = new UnBinderImpl(this);
@@ -94,7 +93,7 @@ public class ArchitectureImpl implements Architecture {
 	 * 
 	 * @see fr.liglab.adele.cilia.builder.Architecture#create()
 	 */
-	@Override
+
 	public Creator create() throws BuilderException {
 		checkValidation();
 		CreatorImpl creator = new CreatorImpl(this);
@@ -107,7 +106,7 @@ public class ArchitectureImpl implements Architecture {
 	 * 
 	 * @see fr.liglab.adele.cilia.builder.Architecture#remove()
 	 */
-	@Override
+
 	public Remover remove() throws BuilderException {
 		checkValidation();
 		Remover remover = new RemoverImpl(this);

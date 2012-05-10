@@ -15,8 +15,6 @@
 
 package fr.liglab.adele.cilia.knowledge.eventbus;
 
-import java.util.Collection;
-
 /**
  * Event bus , cache access 
  * 

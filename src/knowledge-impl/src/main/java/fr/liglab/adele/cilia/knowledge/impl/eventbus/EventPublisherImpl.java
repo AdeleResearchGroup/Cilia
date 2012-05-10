@@ -27,8 +27,9 @@ import org.osgi.service.event.EventAdmin;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import fr.liglab.adele.cilia.Node;
 import fr.liglab.adele.cilia.knowledge.eventbus.EventProperties;
-import fr.liglab.adele.cilia.knowledge.impl.Knowledge;
+import fr.liglab.adele.cilia.runtime.ConstRuntime;
 import fr.liglab.adele.cilia.util.concurrent.Mutex;
 
 /**
@@ -37,9 +38,10 @@ import fr.liglab.adele.cilia.util.concurrent.Mutex;
  *         Team</a>
  *
  */
+@SuppressWarnings({"rawtypes", "unchecked"})
 public class EventPublisherImpl implements Publisher {
 
-	private final Logger logger = LoggerFactory.getLogger(Knowledge.LOG_NAME);
+	private final Logger logger = LoggerFactory.getLogger(ConstRuntime.LOG_NAME);
 
 	private final BundleContext bcontext;
 	private final Mutex mutex;
@@ -85,9 +87,9 @@ public class EventPublisherImpl implements Publisher {
 		if (!param.containsKey(EventProperties.EVENT_NUMBER))
 			throw new RuntimeException("Missing mandatory key {"
 					+ EventProperties.EVENT_NUMBER + "}");
-		if (!param.containsKey(EventProperties.EVENT_SOURCE_ID))
+		if (!param.containsKey(EventProperties.EVENT_SOURCE_UUID))
 			throw new RuntimeException("Missing mandatory key {"
-					+ EventProperties.EVENT_SOURCE_ID + "}");
+					+ EventProperties.EVENT_SOURCE_UUID + "}");
 
 		try {
 			mutex.acquire();
@@ -115,22 +117,26 @@ public class EventPublisherImpl implements Publisher {
 		}
 	}
 
-	public void publish(String topic, int evt, String uuid, long timestamp) {
-		Map param = new HashMap(3);
+	
+	public void publish(String topic,Node node,int evt,long timestamp) {
+		Map param = new HashMap(5);
 		param.put(EventProperties.EVENT_NUMBER, new Integer(evt));
-		param.put(EventProperties.EVENT_SOURCE_ID, uuid);
+		param.put(EventProperties.EVENT_SOURCE_UUID, node.uuid());
+		param.put(EventProperties.EVENT_SOURCE_CHAIN_ID, node.chainId());
+		param.put(EventProperties.EVENT_SOURCE_NODE_ID, node.nodeId());		
 		param.put(EventProperties.EVENT_TICK_NUMBER, new Long(timestamp));
-		publish(topic, param);
+		publish(topic, param);	
 	}
-
-	public void publish(String topic, int evt, String uuid, long timestamp,
-			boolean isEventCached) {
-		Map param = new HashMap(4);
+	public void publish(String topic,Node node,int evt,long timestamp,boolean isEventCached) {
+		Map param = new HashMap(6);
 		param.put(EventProperties.EVENT_NUMBER, new Integer(evt));
-		param.put(EventProperties.EVENT_SOURCE_ID, uuid);
+		param.put(EventProperties.EVENT_SOURCE_UUID, node.uuid());
+		param.put(EventProperties.EVENT_SOURCE_CHAIN_ID, node.chainId());
+		param.put(EventProperties.EVENT_SOURCE_NODE_ID, node.nodeId());		
 		param.put(EventProperties.EVENT_TICK_NUMBER, new Long(timestamp));
 		param.put(EventProperties.EVENT_CACHED, new Boolean(isEventCached));
-		publish(topic, param);
+		publish(topic, param);	
 	}
+	
 
 }

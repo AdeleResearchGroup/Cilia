@@ -50,6 +50,11 @@
 	</handler>
 
 	<handler
+		classname="fr.liglab.adele.cilia.framework.monitor.AuditHandler"
+		name="audit" namespace="fr.liglab.adele.cilia" architecture="true">
+	</handler>
+	
+	<handler
 		classname="fr.liglab.adele.cilia.framework.monitor.statevariable.MonitorHandlerStateVar"
 		name="monitor-statevar-handler" namespace="fr.liglab.adele.cilia"
 		architecture="true">
@@ -412,5 +417,38 @@
 		immediate="true">
 		<provides />
 	</component>
+	
+	<component
+		classname="fr.liglab.adele.cilia.runtime.dynamic.RegistryManager"
+		name="ModelRuntime.Registry_DynamicComponent">
+		<provides
+			specification="fr.liglab.adele.cilia.runtime.dynamic.RuntimeRegistry" />
+		<callback transition="validate" method="start" />
+		<callback transition="invalidate" method="stop" />
+	</component>
+	<instance component="ModelRuntime.Registry_DynamicComponent" />
 
+	<component
+		classname="fr.liglab.adele.cilia.runtime.application.ApplicationImpl"
+		name="ModelRuntime_Core.Application">
+		<requires field="ciliaContext" />
+		<requires field="listenerFramework" />
+		<provides
+			specification="fr.liglab.adele.cilia.Application" />
+		<callback transition="validate" method="start" />
+		<callback transition="invalidate" method="stop" />
+	</component>
+	<instance component="ModelRuntime_Core.Application" />
+	
+	<component
+		classname="fr.liglab.adele.cilia.runtime.dynamic.DynamicPropertiesImpl"
+		name="ModelRuntime_Core.NodesRuntime">
+		<provides
+			specification="fr.liglab.adele.cilia.runtime.DynamicProperties" />
+		<requires field="registry" />
+		<requires field="ciliaContext" />
+		<callback transition="validate" method="start" />
+		<callback transition="invalidate" method="stop" />
+	</component>
+	   <instance component="ModelRuntime_Core.NodesRuntime" /> 
 </ipojo>
