@@ -196,10 +196,8 @@ public class MediatorComponentFactory extends CiliaComponentFactory implements
 					&& !(req.equals(new RequiredHandler("dispatcher",DEFAULT_NAMESPACE))) // "fr.liglab.adele.cilia:dispatcher"
 					&& !(req.equals(new RequiredHandler("processor",DEFAULT_NAMESPACE))) // "fr.liglab.adele.cilia:processor"
 					&& !(req.equals(new RequiredHandler("scheduler",DEFAULT_NAMESPACE))) // "fr.liglab.adele.cilia:scheduler"
-					&& !(req.equals(new RequiredHandler("in-ports",null))) // "org.apache.felix.ipojo:in-ports"
-					&& !(req.equals(new RequiredHandler("in-ports",DEFAULT_NAMESPACE))) // "fr.liglab.adele.cilia:out-ports"
-					&& !(req.equals(new RequiredHandler("out-ports",null))) // "org.apache.felix.ipojo:in-ports"
-					&& !(req.equals(new RequiredHandler("out-ports",DEFAULT_NAMESPACE))) // "fr.liglab.adele.cilia:out-ports"
+					&& !(req.equals(new RequiredHandler("ports",null))) // "org.apache.felix.ipojo:ports"
+					&& !(req.equals(new RequiredHandler("ports",DEFAULT_NAMESPACE))) // "fr.liglab.adele.cilia:ports"
 			) {
 				if (!returnedList.contains(req)) {
 					returnedList.add(req);

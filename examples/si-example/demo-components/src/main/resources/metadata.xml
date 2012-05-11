@@ -33,6 +33,10 @@
 	<!-- ***************** Mediators **********************-->
 	<mediator-component name="UC1Aggregator" namespace="fr.examples.tp5"
 		category="Aggregator">
+		<ports>
+			<in-port name="toto" data.type="String" />
+			<out-port name="toto" data.type="String" />
+		</ports>
 		<cilia:processor name="UC1AggregatorProcessor" namespace="fr.examples.tp5"/>
 		<cilia:scheduler name="correlation-scheduler" />
 		<cilia:dispatcher name="multicast-dispatcher" />
