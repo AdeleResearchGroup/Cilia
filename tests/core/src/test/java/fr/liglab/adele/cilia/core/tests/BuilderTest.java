@@ -34,16 +34,15 @@ import org.ops4j.pax.exam.junit.Configuration;
 import org.ops4j.pax.exam.junit.JUnit4TestRunner;
 import org.ops4j.pax.exam.junit.JUnitOptions;
 import org.osgi.framework.BundleContext;
-import org.osgi.framework.InvalidSyntaxException;
-import org.osgi.framework.ServiceReference;
 
-import fr.liglab.adele.cilia.CiliaContext;
+import fr.liglab.adele.cilia.CiliaContainer;
 import fr.liglab.adele.cilia.builder.Architecture;
 import fr.liglab.adele.cilia.builder.Builder;
 import fr.liglab.adele.cilia.exceptions.BuilderConfigurationException;
 import fr.liglab.adele.cilia.exceptions.BuilderException;
 import fr.liglab.adele.cilia.exceptions.BuilderPerformerException;
 import fr.liglab.adele.cilia.exceptions.CiliaException;
+import fr.liglab.adele.cilia.runtime.CiliaPlatform;
 
 /**
  * 
@@ -346,8 +345,8 @@ public class BuilderTest {
 	}
 
 	public Builder getBuilder() {
-		osgi.getServiceObject(CiliaContext.class.getName(), null);
-		CiliaContext ccontext = (CiliaContext)osgi.getServiceObject(CiliaContext.class.getName(), null);
+		osgi.getServiceObject(CiliaContainer.class.getName(), null);
+		CiliaPlatform ccontext = (CiliaPlatform)osgi.getServiceObject(CiliaPlatform.class.getName(), null);
 		return ccontext.getBuilder();
 	}
 

@@ -14,7 +14,7 @@
  */
 package fr.liglab.adele.cilia.builder.impl;
 
-import fr.liglab.adele.cilia.CiliaContext;
+import fr.liglab.adele.cilia.CiliaContainer;
 import fr.liglab.adele.cilia.builder.Architecture;
 import fr.liglab.adele.cilia.builder.Builder;
 import fr.liglab.adele.cilia.exceptions.BuilderException;
@@ -27,11 +27,11 @@ import fr.liglab.adele.cilia.exceptions.BuilderPerformerException;
  */
 public class BuilderImpl implements Builder {
 
-	CiliaContext ccontext;
+	CiliaContainer ccontext;
 	
 	Architecture architecture = null;
 	
-	public BuilderImpl(CiliaContext context) {
+	public BuilderImpl(CiliaContainer context) {
 		this.ccontext = context;
 	}
 	

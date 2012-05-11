@@ -19,7 +19,7 @@ import java.util.List;
 
 import fr.liglab.adele.cilia.Binding;
 import fr.liglab.adele.cilia.Chain;
-import fr.liglab.adele.cilia.CiliaContext;
+import fr.liglab.adele.cilia.CiliaContainer;
 import fr.liglab.adele.cilia.MediatorComponent;
 import fr.liglab.adele.cilia.builder.Architecture;
 import fr.liglab.adele.cilia.exceptions.BuilderException;
@@ -39,14 +39,14 @@ import fr.liglab.adele.cilia.model.PatternType;
  */
 public class BuilderPerformer {
 
-	private CiliaContext ccontext;
+	private CiliaContainer ccontext;
 	private ArchitectureImpl architecture;
 	private ChainImpl chain;
 
 	/**
 	 * @param architectureImpl
 	 */
-	protected BuilderPerformer(ArchitectureImpl arch, CiliaContext context) {
+	protected BuilderPerformer(ArchitectureImpl arch, CiliaContainer context) {
 		ccontext = context;
 		architecture = arch;
 	}

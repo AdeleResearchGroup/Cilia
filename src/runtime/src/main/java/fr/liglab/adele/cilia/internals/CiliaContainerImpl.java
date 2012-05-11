@@ -27,7 +27,7 @@ import org.slf4j.LoggerFactory;
 
 import fr.liglab.adele.cilia.Chain;
 import fr.liglab.adele.cilia.ChainListener;
-import fr.liglab.adele.cilia.CiliaContext;
+import fr.liglab.adele.cilia.CiliaContainer;
 import fr.liglab.adele.cilia.builder.Builder;
 import fr.liglab.adele.cilia.builder.impl.BuilderImpl;
 import fr.liglab.adele.cilia.event.CiliaEvent;
@@ -51,7 +51,7 @@ import fr.liglab.adele.cilia.util.concurrent.ReentrantWriterPreferenceReadWriteL
  *         Team</a> NA:ST
  * 
  */
-public class CiliaContextImpl implements CiliaContext {
+public class CiliaContainerImpl implements CiliaContainer{
 	private static final Logger logger = LoggerFactory.getLogger(Const.LOGGER_CORE);
 	/**
 	 * The creatorThread creates pojo instances using a given model.
@@ -76,12 +76,6 @@ public class CiliaContextImpl implements CiliaContext {
 	private final ReadWriteLock mutex ;
 	
 
-	/**
-	 * Get the cilia version.
-	 */
-	public String getCiliaVersion() {
-		return CILIA_VERSION;
-	}
 
 	/**
 	 * Create a CiliaContext instance. This instance is created by iPOJO.
@@ -89,7 +83,7 @@ public class CiliaContextImpl implements CiliaContext {
 	 * @param context
 	 *            OSGi Bundle Context.
 	 */
-	public CiliaContextImpl(BundleContext context) {
+	public CiliaContainerImpl(BundleContext context) {
 		bcontext = context;
 		creator = new CreatorThread();
 		chainInstances = new Hashtable();
@@ -439,7 +433,5 @@ public class CiliaContextImpl implements CiliaContext {
 		return chain ;
 	}
 
-	public Builder getBuilder(){
-		return new BuilderImpl(this);
-	}
+
 }

@@ -34,11 +34,9 @@ import fr.liglab.adele.cilia.util.concurrent.ReadWriteLock;
  * getRuntime();
  */
 //@SuppressWarnings("rawtypes")
-public interface CiliaContext {
+public interface CiliaContainer {
 
-	static final String CILIA_VERSION = "1.0.0";
 		
-	String getCiliaVersion();
 
 	Chain addChain(Chain chain) ;
 	
@@ -67,9 +65,7 @@ public interface CiliaContext {
 	/* Mutual exclusion access on ciliaContext  */
 	ReadWriteLock getMutex();
 
-	
-	Builder getBuilder();
-	
+
 	/*  Runtime informations , level chain */ 
 	public ChainRuntime getChainRuntime(String chainId) ;
 	

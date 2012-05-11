@@ -17,7 +17,7 @@ package fr.liglab.adele.cilia.builder.impl;
 import java.util.ArrayList;
 import java.util.List;
 
-import fr.liglab.adele.cilia.CiliaContext;
+import fr.liglab.adele.cilia.CiliaContainer;
 import fr.liglab.adele.cilia.builder.Architecture;
 import fr.liglab.adele.cilia.builder.Binder;
 import fr.liglab.adele.cilia.builder.Builder;
@@ -36,7 +36,7 @@ import fr.liglab.adele.cilia.exceptions.BuilderPerformerException;
  */
 public class ArchitectureImpl implements Architecture {
 
-	private CiliaContext ccontext;
+	private CiliaContainer ccontext;
 	private boolean creatingChain = false;
 	private String chainId = null;
 	private volatile boolean isValid = false;
@@ -54,7 +54,7 @@ public class ArchitectureImpl implements Architecture {
 	 * @param chainid
 	 * @param creating
 	 */
-	protected ArchitectureImpl(CiliaContext cc, Builder builder, String chainid,
+	protected ArchitectureImpl(CiliaContainer cc, Builder builder, String chainid,
 			boolean creating) {
 		ccontext = cc;
 		setChainId(chainid);

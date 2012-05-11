@@ -25,7 +25,7 @@ import org.slf4j.LoggerFactory;
 
 import fr.liglab.adele.cilia.Adapter;
 import fr.liglab.adele.cilia.Chain;
-import fr.liglab.adele.cilia.CiliaContext;
+import fr.liglab.adele.cilia.CiliaContainer;
 import fr.liglab.adele.cilia.Data;
 import fr.liglab.adele.cilia.Mediator;
 import fr.liglab.adele.cilia.model.AdapterImpl;
@@ -39,7 +39,7 @@ public class CiliaCopierProcessor {
 	/**
 	 * The Cilia context.
 	 */
-	CiliaContext ccontext;
+	CiliaContainer ccontext;
 
 	BundleContext m_bundleContext;
 

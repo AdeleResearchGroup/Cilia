@@ -19,7 +19,7 @@ import java.util.Properties;
 import fr.liglab.adele.cilia.Adapter;
 import fr.liglab.adele.cilia.Chain;
 import fr.liglab.adele.cilia.ChainListener;
-import fr.liglab.adele.cilia.CiliaContext;
+import fr.liglab.adele.cilia.CiliaContainer;
 import fr.liglab.adele.cilia.Mediator;
 import fr.liglab.adele.cilia.model.AdapterImpl;
 import fr.liglab.adele.cilia.model.ChainImpl;
@@ -39,7 +39,7 @@ public class GogoShellActivator implements ChainListener {
 	 * 
 	 * @Injected
 	 */
-	private CiliaContext ccontext;
+	private CiliaContainer ccontext;
 
 	/**
 	 * The Felix Gogo shell adapter.

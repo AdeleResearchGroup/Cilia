@@ -19,7 +19,7 @@ import org.slf4j.LoggerFactory;
 
 import fr.liglab.adele.cilia.Adapter;
 import fr.liglab.adele.cilia.Chain;
-import fr.liglab.adele.cilia.CiliaContext;
+import fr.liglab.adele.cilia.CiliaContainer;
 import fr.liglab.adele.cilia.Data;
 import fr.liglab.adele.cilia.Mediator;
 import fr.liglab.adele.cilia.MediatorComponent;
@@ -43,7 +43,7 @@ public class CiliaCreatorProcessor {
 	/**
 	 * The Cilia Context to interact with the framework.
 	 */
-	CiliaContext ccontext;
+	CiliaContainer ccontext;
 
 	/**
 	 * The main process method, this method is called by the cilia framework.

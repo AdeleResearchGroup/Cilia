@@ -7,7 +7,7 @@ import java.util.Set;
 
 import fr.liglab.adele.cilia.Binding;
 import fr.liglab.adele.cilia.Chain;
-import fr.liglab.adele.cilia.CiliaContext;
+import fr.liglab.adele.cilia.CiliaContainer;
 import fr.liglab.adele.cilia.MediatorComponent;
 import fr.liglab.adele.cilia.Node;
 import fr.liglab.adele.cilia.Topology;
@@ -20,12 +20,12 @@ import fr.liglab.adele.cilia.model.PatternType;
 @SuppressWarnings({ "rawtypes", "unchecked" })
 public abstract class AbstractTopology implements Topology {
 
-	private CiliaContext ciliaContext;
+	private CiliaContainer ciliaContext;
 
 	public AbstractTopology() {
 	}
 
-	protected void setContext(CiliaContext cc) {
+	protected void setContext(CiliaContainer cc) {
 		ciliaContext = cc;
 	}
 
@@ -36,7 +36,7 @@ public abstract class AbstractTopology implements Topology {
 	 *            , keywords = chain, node
 	 * 
 	 * @return array of node matching the filter, array size 0 if no node
-	 *         matching the filterá
+	 *         matching the filterï¿½
 	 * @throws CiliaInvalidSyntaxException
 	 *             , ldap syntax error
 	 */

@@ -32,7 +32,7 @@ import fr.liglab.adele.cilia.exceptions.CiliaException;
 import fr.liglab.adele.cilia.util.ChainParser;
 import fr.liglab.adele.cilia.util.CiliaFileManager;
 
-import fr.liglab.adele.cilia.CiliaContext;
+import fr.liglab.adele.cilia.CiliaContainer;
 import fr.liglab.adele.cilia.Chain;
 
 /**
@@ -48,7 +48,7 @@ public class CiliaFileManagerImpl implements CiliaFileManager {
 	/**
 	 * Cilia Cotnext Service.
 	 */
-	CiliaContext ccontext;
+	CiliaContainer ccontext;
 	/**
 	 * The Cilia logger.
 	 */

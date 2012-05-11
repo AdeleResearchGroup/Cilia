@@ -30,7 +30,7 @@ import fr.liglab.adele.cilia.Adapter;
 import fr.liglab.adele.cilia.Application;
 import fr.liglab.adele.cilia.Chain;
 import fr.liglab.adele.cilia.ChainCallback;
-import fr.liglab.adele.cilia.CiliaContext;
+import fr.liglab.adele.cilia.CiliaContainer;
 import fr.liglab.adele.cilia.Mediator;
 import fr.liglab.adele.cilia.MediatorComponent;
 import fr.liglab.adele.cilia.Node;
@@ -59,7 +59,7 @@ public class ApplicationImpl  extends AbstractTopology implements Application,
 
 	private final Logger logger = LoggerFactory.getLogger(ConstRuntime.LOG_NAME);
 
-	private CiliaContext ciliaContext;
+	private CiliaContainer ciliaContext;
 	private CiliaFrameworkListener listenerFramework;
 	private ApplicationListenerSupport listenerSupport ;
 	

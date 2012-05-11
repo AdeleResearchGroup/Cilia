@@ -24,7 +24,7 @@ import org.slf4j.LoggerFactory;
 
 import fr.liglab.adele.cilia.Adapter;
 import fr.liglab.adele.cilia.Chain;
-import fr.liglab.adele.cilia.CiliaContext;
+import fr.liglab.adele.cilia.CiliaContainer;
 import fr.liglab.adele.cilia.Mediator;
 import fr.liglab.adele.cilia.Node;
 import fr.liglab.adele.cilia.NodeCallback;
@@ -62,7 +62,7 @@ public class DynamicPropertiesImpl extends AbstractTopology implements DynamicPr
 	/* Cilia components discovery (adapters, mediators) */
 	private NodeDiscoveryImpl discovery;
 	/* Cilia application model */
-	private CiliaContext ciliaContext;
+	private CiliaContainer ciliaContext;
 	/* holds values fired by mediators/adapters */
 	private MonitorHandlerListener chainRt;
 	private ReadWriteLock mutex;

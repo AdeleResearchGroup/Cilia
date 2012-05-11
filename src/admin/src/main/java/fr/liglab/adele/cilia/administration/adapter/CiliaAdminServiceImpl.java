@@ -14,7 +14,7 @@
  */
 package fr.liglab.adele.cilia.administration.adapter;
 
-import fr.liglab.adele.cilia.CiliaContext;
+import fr.liglab.adele.cilia.CiliaContainer;
 import fr.liglab.adele.cilia.Data;
 import fr.liglab.adele.cilia.administration.CiliaAdminService;
 import fr.liglab.adele.cilia.administration.util.CiliaInstructionConverter;
@@ -31,7 +31,7 @@ import fr.liglab.adele.cilia.Mediator;
  */
 public class CiliaAdminServiceImpl extends AbstractCollector implements CiliaAdminService  {
 
-	CiliaContext ccontext;
+	CiliaContainer ccontext;
 	/* (non-Javadoc)
 	 * @see fr.liglab.adele.cilia.administration.CiliaAdminService#getChain(java.lang.String)
 	 */

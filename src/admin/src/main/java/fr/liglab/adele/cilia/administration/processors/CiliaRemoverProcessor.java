@@ -19,7 +19,7 @@ import org.slf4j.LoggerFactory;
 
 import fr.liglab.adele.cilia.Binding;
 import fr.liglab.adele.cilia.Chain;
-import fr.liglab.adele.cilia.CiliaContext;
+import fr.liglab.adele.cilia.CiliaContainer;
 import fr.liglab.adele.cilia.Data;
 import fr.liglab.adele.cilia.MediatorComponent;
 import fr.liglab.adele.cilia.Port;
@@ -42,7 +42,7 @@ public class CiliaRemoverProcessor {
 	/**
 	 * The Cilia context.
 	 */
-	CiliaContext ccontext;
+	CiliaContainer ccontext;
 
 	/**
 	 * The main process method, this method is called by the cilia framework.

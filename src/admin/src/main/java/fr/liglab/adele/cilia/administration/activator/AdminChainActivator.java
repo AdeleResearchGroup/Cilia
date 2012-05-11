@@ -15,7 +15,7 @@
 package fr.liglab.adele.cilia.administration.activator;
 
 
-import fr.liglab.adele.cilia.CiliaContext;
+import fr.liglab.adele.cilia.CiliaContainer;
 import fr.liglab.adele.cilia.ext.ContentBasedRouting;
 import fr.liglab.adele.cilia.model.AdapterImpl;
 import fr.liglab.adele.cilia.model.ChainImpl;
@@ -31,7 +31,7 @@ public class AdminChainActivator {
 	/**
 	 * The cilia context, to add a mediation chain and initialize.
 	 */
-	CiliaContext ccontext;
+	CiliaContainer ccontext;
 	/**
 	 * The cilia-admin chain.
 	 */

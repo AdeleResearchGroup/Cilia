@@ -24,7 +24,7 @@ import org.osgi.framework.ServiceReference;
 import fr.liglab.adele.cilia.Adapter;
 import fr.liglab.adele.cilia.Binding;
 import fr.liglab.adele.cilia.Chain;
-import fr.liglab.adele.cilia.CiliaContext;
+import fr.liglab.adele.cilia.CiliaContainer;
 import fr.liglab.adele.cilia.Component;
 import fr.liglab.adele.cilia.Mediator;
 import fr.liglab.adele.cilia.core.tests.tools.CiliaTools;
@@ -46,7 +46,7 @@ public class ChainModelTest {
 	@Inject
 	private BundleContext context;
 
-	private CiliaContext ccontext;
+	private CiliaContainer ccontext;
 
 	private OSGiHelper osgi;
 
@@ -90,11 +90,11 @@ public class ChainModelTest {
 	public void initializeServices() {
 		ServiceReference sr[] = null;
 		try {
-			sr = context.getServiceReferences (CiliaContext.class.getName(), null);
+			sr = context.getServiceReferences (CiliaContainer.class.getName(), null);
 		} catch (InvalidSyntaxException e) {
 			e.printStackTrace();
 		}
-		ccontext = (CiliaContext) context.getService(sr[0]);
+		ccontext = (CiliaContainer) context.getService(sr[0]);
 	}
 
 

@@ -18,7 +18,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import fr.liglab.adele.cilia.Chain;
-import fr.liglab.adele.cilia.CiliaContext;
+import fr.liglab.adele.cilia.CiliaContainer;
 import fr.liglab.adele.cilia.Data;
 import fr.liglab.adele.cilia.runtime.Const;
 /**
@@ -33,7 +33,7 @@ public class CiliaStarterProcessor {
 	/**
 	 * The Cilia Context service, injected by iPOJO
 	 */
-	CiliaContext ccontext;
+	CiliaContainer ccontext;
 	/**
 	 * The main process method, this method is called by the cilia framework.
 	 * @param data contains the parameters to start a cilia chain element instance.
