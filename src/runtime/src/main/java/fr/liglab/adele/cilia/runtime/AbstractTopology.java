@@ -1,3 +1,18 @@
+/*
+ * Copyright Adele Team LIG
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package fr.liglab.adele.cilia.runtime;
 
 import java.util.Collections;
@@ -17,6 +32,13 @@ import fr.liglab.adele.cilia.exceptions.CiliaInvalidSyntaxException;
 
 import fr.liglab.adele.cilia.model.PatternType;
 
+/**
+ * topological access to node
+ * 
+ * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project
+ *         Team</a>
+ * 
+ */
 @SuppressWarnings({ "rawtypes", "unchecked" })
 public abstract class AbstractTopology implements Topology {
 
@@ -28,20 +50,6 @@ public abstract class AbstractTopology implements Topology {
 	protected void setContext(CiliaContext cc) {
 		ciliaContext = cc;
 	}
-
-	/**
-	 * Retreives all nodes matching the filter
-	 * 
-	 * @param ldapFilter
-	 *            , keywords = chain, node
-	 * 
-	 * @return array of node matching the filter, array size 0 if no node
-	 *         matching the filterá
-	 * @throws CiliaInvalidSyntaxException
-	 *             , ldap syntax error
-	 */
-	public abstract Node[] findNodeByFilter(String ldapFilter)
-			throws CiliaIllegalParameterException, CiliaInvalidSyntaxException;
 
 	/*
 	 * Return the list of endpoints matching the filter
@@ -60,6 +68,9 @@ public abstract class AbstractTopology implements Topology {
 		return sb.toString();
 	}
 
+	/**
+	 * return array of node matching the filter
+	 */
 	public Node[] connectedTo(String ldapFilter) throws CiliaInvalidSyntaxException,
 			CiliaIllegalParameterException {
 		Node[] nodes = new Node[0];
@@ -168,16 +179,14 @@ public abstract class AbstractTopology implements Topology {
 
 	}
 
+	/**
+	 * 
+	 * @return array of chain identification
+	 */
 	public String[] getChains() {
 		Set chainSet;
-		try {
-			ciliaContext.getMutex().readLock().acquire();
-			chainSet = ciliaContext.getAllChains();
-		} catch (InterruptedException e) {
-			chainSet = Collections.EMPTY_SET;
-		} finally {
-			ciliaContext.getMutex().readLock().release();
-		}
+		chainSet = ciliaContext.getAllChains();
+
 		Set setName = new HashSet();
 		if (chainSet == null) {
 			chainSet = Collections.EMPTY_SET;
@@ -188,7 +197,6 @@ public abstract class AbstractTopology implements Topology {
 			setName.add(c.getId());
 		}
 		return (String[]) setName.toArray(new String[setName.size()]);
-
 	}
 
 }

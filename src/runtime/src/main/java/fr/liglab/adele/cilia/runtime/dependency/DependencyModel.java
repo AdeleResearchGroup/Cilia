@@ -50,7 +50,7 @@ import org.slf4j.LoggerFactory;
  */
 public abstract class DependencyModel implements TrackerCustomizer {
 	protected static Logger logger = LoggerFactory
-			.getLogger("cilia.ipojo.compendium.dependency");
+			.getLogger("cilia.runtime.dependency");
 
 	/**
 	 * Dependency state : BROKEN. A broken dependency cannot be fulfilled

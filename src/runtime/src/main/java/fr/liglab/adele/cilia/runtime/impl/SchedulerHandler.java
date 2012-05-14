@@ -309,11 +309,6 @@ public class SchedulerHandler extends PrimitiveHandler implements ISchedulerHand
 				collectorsManager.addInstance(portname, ciliaCollector);
 			}
 			ciliaCollector.start();
-			/* FIX ME if InstancManager is null */
-			configureHandler((InstanceManager) ciliaCollector.getInstanceManager(),
-					"dependency");
-			configureHandler((InstanceManager) ciliaCollector.getInstanceManager(),
-			"audit");
 
 			ICollector col = (ICollector) ciliaCollector.getObject();
 			if (col != null) {

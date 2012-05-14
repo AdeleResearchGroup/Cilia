@@ -472,8 +472,6 @@ public class DynamicPropertiesImpl extends AbstractTopology implements DynamicPr
 	public Node[] findNodeByFilter(String ldapFilter) throws CiliaInvalidSyntaxException,
 			CiliaIllegalParameterException {
 		RegistryItem[] nodes = registry.findByFilter(ldapFilter);
-		System.out.println("Find node by filter " + ldapFilter + " nodes ="
-				+ nodes.length);
 		Node[] result = new Node[nodes.length];
 		for (int i = 0; i < nodes.length; i++) {
 			result[i] = nodes[i].specificationReference();

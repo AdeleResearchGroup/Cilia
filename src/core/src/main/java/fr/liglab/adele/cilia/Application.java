@@ -19,7 +19,6 @@ import java.util.Dictionary;
 
 import fr.liglab.adele.cilia.exceptions.CiliaIllegalParameterException;
 import fr.liglab.adele.cilia.exceptions.CiliaIllegalStateException;
-import fr.liglab.adele.cilia.exceptions.CiliaInvalidSyntaxException;
 
 /**
  *

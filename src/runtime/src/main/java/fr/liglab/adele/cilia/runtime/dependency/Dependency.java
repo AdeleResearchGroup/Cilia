@@ -47,6 +47,7 @@ import org.osgi.framework.Filter;
 import org.osgi.framework.ServiceReference;
 
 import fr.liglab.adele.cilia.framework.monitor.IServiceMonitor;
+import fr.liglab.adele.cilia.runtime.Const;
 import fr.liglab.adele.cilia.runtime.dependency.ServiceUsage.Usage;
 
 /**
@@ -655,10 +656,11 @@ public class Dependency extends DependencyModel implements FieldInterceptor,
 	 */
 	public void onServiceArrival(ServiceReference reference) {
 		StringBuffer sb = new StringBuffer().append("Service arrival");
-		if (monitor != null) {
+		IServiceMonitor mon = getMonitor();
+		if (mon != null) {
 			sb.append(" notifed to monitor handler");
 			/* call the monitor handler to raise event 'service arrival' */
-			monitor.onServiceArrival(Collections.EMPTY_MAP);
+			mon.onServiceArrival(Collections.EMPTY_MAP);
 		}
 		callBindMethod(reference);
 		// The method is only called when a new service arrives, or when the
@@ -691,10 +693,11 @@ public class Dependency extends DependencyModel implements FieldInterceptor,
 	 */
 	public void onServiceDeparture(ServiceReference ref) {
 		StringBuffer sb = new StringBuffer().append("Service departure");
-		if (monitor != null) {
+		IServiceMonitor mon = getMonitor() ;
+		if (mon != null) {
 			sb.append(" notified to monitor handler");
 			/* call the monitor handler to raise event 'service arrival' */
-			monitor.onServiceDeparture(Collections.EMPTY_MAP);
+			mon.onServiceDeparture(Collections.EMPTY_MAP);
 		}
 		callUnbindMethod(ref);
 		logger.debug(sb.toString());
@@ -1337,15 +1340,13 @@ public class Dependency extends DependencyModel implements FieldInterceptor,
     	
     }
     
-	/**
-	 * Added for Cilia framework monitoring the monitor catch events from the
-	 * framework
-	 * 
-	 * @param ref
-	 *            monitor Reference
-	 */
-	public void setMonitor(Object ref) {
-		monitor = (IServiceMonitor) ref;
+    /* Retreives the monitor handler */
+	private IServiceMonitor getMonitor() {
+		if (monitor == null) {
+			monitor = (IServiceMonitor) m_handler.getHandler(
+					Const.ciliaQualifiedName("monitor-handler"));
+		}
+		return monitor;
 	}
 
 }

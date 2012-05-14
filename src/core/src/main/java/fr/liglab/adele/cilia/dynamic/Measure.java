@@ -16,7 +16,7 @@
 package fr.liglab.adele.cilia.dynamic;
 
 /**
- * Interface access for data recevied from the monitoring
+ * Interface data recevied from the monitoring
  * 
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project
  *         Team</a>

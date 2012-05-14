@@ -21,7 +21,7 @@ import fr.liglab.adele.cilia.exceptions.CiliaIllegalStateException;
 import fr.liglab.adele.cilia.exceptions.CiliaInvalidSyntaxException;
 
 /**
- * Retreival of a node, topology access
+ * Node, topological access
  * 
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project
  *         Team</a>
@@ -34,7 +34,7 @@ public interface Topology {
 	 * Retreives all nodes matching the filter
 	 * 
 	 * @param ldapFilter
-	 *            , keywords = chain, node
+	 *            , keywords = chain, node, uuid
 	 * 
 	 * @return array of node matching the filter, array size 0 if no node
 	 *         matching the filterá

@@ -187,4 +187,16 @@ public class DataNodeImpl extends AbstractDataNode {
 		return mediatorHandler.getCondition(variableId);
 	}
 
+
+	public String[] getCategories() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+	public String[] variablesName(String category) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

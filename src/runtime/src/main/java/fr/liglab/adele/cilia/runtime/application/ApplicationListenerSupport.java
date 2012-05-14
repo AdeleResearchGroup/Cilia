@@ -243,7 +243,6 @@ public class ApplicationListenerSupport implements TrackerCustomizer, ChainRegis
 						break;
 					}
 				}
-
 			}
 			return null;
 		}
@@ -304,5 +303,4 @@ public class ApplicationListenerSupport implements TrackerCustomizer, ChainRegis
 	public void removedService(ServiceReference reference, Object service) {
 		extractService(service);
 	}
-
 }

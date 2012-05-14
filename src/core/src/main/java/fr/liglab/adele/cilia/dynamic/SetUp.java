@@ -30,23 +30,16 @@ import fr.liglab.adele.cilia.exceptions.CiliaInvalidSyntaxException;
 public interface SetUp extends Node {
 
 	/**
-	 * @return State variable name 'Category SystemCall'
-	 * @throws IllegalStateException 
+	 * 
+	 * @return Categories of variables
 	 */
-	public String[] systemVariable();
-
-	/**
-	 * @return State variable name 'Category Dependency '
-	 */
-	public String[] dependencyVariable();
-
+	public String [] getCategories() ;
 	/**
 	 * 
-	 * @return State variable name 'Category Eventing'
-	 * @throws IllegalStateException
+	 * @return Array of variable name by category
 	 */
-	public String[] eventVariable();
-
+	public String[] variablesByCategory(String category) ;
+	
 	/**
 	 * Configure the monitoring on this object
 	 * 

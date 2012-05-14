@@ -18,7 +18,6 @@ package fr.liglab.adele.cilia.runtime.impl;
 import java.util.Date;
 
 import fr.liglab.adele.cilia.model.ChainRuntime;
-import fr.liglab.adele.cilia.util.Uuid;
 /**
  * 
  *

@@ -41,20 +41,12 @@ public class DataNodeImpl extends AbstractDataNode {
 		mediatorHandler = item.runtimeReference() ;
 	}
 
-
-	/* return the list of state variables 'category system call' */
-	public String[] systemVariable() {
-		return mediatorHandler.getStateVarIdCategory("SystemCall");
+	public String [] getCategories() {
+		return mediatorHandler.getCategories() ;
 	}
-
-	/* return the list of state variable category 'dependency' */
-	public String[] dependencyVariable() {
-		return mediatorHandler.getStateVarIdCategory("DependencyCall");
-	}
-
-	/* return the list of state variable category 'eventing' */
-	public String[] eventVariable() {
-		return mediatorHandler.getStateVarIdCategory("EventingCall");
+	
+	public String [] variablesByCategory(String category) {
+		return mediatorHandler.getStateVarIdCategory(category);
 	}
 
 	public String[] enabledVariable() {

@@ -336,6 +336,7 @@ public class ApplicationImpl  extends AbstractTopology implements Application,
 
 		return (Node[]) componentSet.toArray(new Node[componentSet.size()]);
 	}
+	
 	public Node[] connectedTo(Node node) throws CiliaIllegalStateException {
 		Chain chain;
 		Mediator mediator;

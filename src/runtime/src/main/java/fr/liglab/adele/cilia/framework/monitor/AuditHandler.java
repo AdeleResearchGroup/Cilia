@@ -75,11 +75,11 @@ public class AuditHandler extends PrimitiveHandler {
 			String field = (String) it.next();
 			FieldMetadata fm = pojoMeta.getField(field);
 			getInstanceManager().register(fm, this);
-		}
-		
+		}	
 	}
 
 	public void start() {
+
 	}
 
 	public void stop() {
@@ -92,6 +92,14 @@ public class AuditHandler extends PrimitiveHandler {
 		}
 		else name=field;
 		return name ;
+	}
+	
+	private IFieldMonitor getMonitor() {
+		if (monitor == null) {
+			monitor = (IFieldMonitor) getInstanceManager().getHandler(
+					Const.ciliaQualifiedName("monitor-handler"));
+		}
+		return monitor;
 	}
 	
 	/**
@@ -111,8 +119,9 @@ public class AuditHandler extends PrimitiveHandler {
 	public Object onGet(Object pojo, String field, Object o) {
 		String name = getQualifiedId(field);
 		if (fieldsGet.contains(field)) {
-			if (monitor != null) {
-				monitor.onFieldGet(name, o);
+			IFieldMonitor mon = getMonitor();
+			if (mon != null) {
+				mon.onFieldGet(name, o);
 			}
 			logger.debug("Read access {}={}", name, o.toString());
 		}
@@ -135,8 +144,9 @@ public class AuditHandler extends PrimitiveHandler {
 	public void onSet(Object pojo, String field, Object newvalue) {
 		String name = getQualifiedId(field);
 		if (fieldsSet.contains(field)) {
-			if (monitor != null)
-				monitor.onFieldSet(name, newvalue);
+			IFieldMonitor mon = getMonitor();
+			if (mon != null)
+				mon.onFieldSet(name, newvalue);
 			logger.debug("Write access {}={}", name, newvalue.toString());
 		}
 	}

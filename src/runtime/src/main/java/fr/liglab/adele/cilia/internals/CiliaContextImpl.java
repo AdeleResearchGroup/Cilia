@@ -61,7 +61,7 @@ public class CiliaContextImpl implements CiliaContext {
 	/* Model */
 	private final Map /* <ChainInstance> */chainInstances;
 	/* Run time information */
-	private final Map chainRuntime ;
+	private final Map chainRuntime;
 
 	private final BundleContext bcontext;
 
@@ -72,9 +72,8 @@ public class CiliaContextImpl implements CiliaContext {
 	private final Object lockObject = new Object();
 
 	private CiliaFrameworkEventPublisher eventNotifier;
-	
-	private final ReadWriteLock mutex ;
-	
+
+	private final ReadWriteLock mutex;
 
 	/**
 	 * Get the cilia version.
@@ -95,7 +94,7 @@ public class CiliaContextImpl implements CiliaContext {
 		chainInstances = new Hashtable();
 		listeners = new Hashtable();
 		chainRuntime = new Hashtable();
-		mutex = new ReentrantWriterPreferenceReadWriteLock() ;
+		mutex = new ReentrantWriterPreferenceReadWriteLock();
 	}
 
 	/**
@@ -117,13 +116,13 @@ public class CiliaContextImpl implements CiliaContext {
 		chainName = chain.getId();
 		synchronized (lockObject) {
 			if (!chainInstances.containsKey(chain.getId())) {
-				ChainControllerImpl chainInstance = new ChainControllerImpl(bcontext, chain,
-						creator);
+				ChainControllerImpl chainInstance = new ChainControllerImpl(bcontext,
+						chain, creator);
 				chainInstances.put(chainName, chainInstance);
 				chainRuntime.put(chainName, new ChainRuntimeImpl());
 				eventNotifier.publish(chainName, CiliaEvent.EVENT_CHAIN_ADDED);
-				logger.info("Chain [{}] added",chainName) ;
-				
+				logger.info("Chain [{}] added", chainName);
+
 			} else {
 				msg = "Chain with the same id already in the CiliaContext";
 				log.error(msg);
@@ -175,14 +174,24 @@ public class CiliaContextImpl implements CiliaContext {
 	public Set getAllChains() {
 		Set chainModels = null;
 		Set tchainInstances = null;
-		synchronized (lockObject) {
-			chainModels = new HashSet(chainInstances.size());
-			tchainInstances = chainInstances.keySet();
-		}
-		Iterator it = tchainInstances.iterator();
-		while (it != null && it.hasNext()) {
-			String chid = (String) it.next();
-			chainModels.add(getChain(chid));
+		try {
+			try {
+				mutex.readLock().acquire();
+				synchronized (lockObject) {
+					chainModels = new HashSet(chainInstances.size());
+					tchainInstances = chainInstances.keySet();
+				}
+				Iterator it = tchainInstances.iterator();
+				while (it != null && it.hasNext()) {
+					String chid = (String) it.next();
+					chainModels.add(getChain(chid));
+				}
+			} finally {
+				mutex.readLock().release();
+			}
+		} catch (InterruptedException e) {
+			Thread.currentThread().interrupt();
+			throw new RuntimeException();
 		}
 		return chainModels;
 	}
@@ -210,20 +219,30 @@ public class CiliaContextImpl implements CiliaContext {
 	 */
 	public void startChain(String chainId) {
 		ChainControllerImpl cinstance = null;
-		synchronized (lockObject) {
-			if (chainInstances.containsKey(chainId)) {
-				cinstance = (ChainControllerImpl) chainInstances.get(chainId);
+		try {
+			mutex.writeLock().acquire();
+			try {
+				synchronized (lockObject) {
+					if (chainInstances.containsKey(chainId)) {
+						cinstance = (ChainControllerImpl) chainInstances.get(chainId);
+					}
+				}
+				if (cinstance != null) {
+					cinstance.start();
+					ChainRuntimeImpl chainRt = (ChainRuntimeImpl) chainRuntime
+							.get(chainId);
+					chainRt.setState(ChainRuntime.STATE_STARTED);
+					chainRt.setLastDate();
+					eventNotifier.publish(chainId, CiliaEvent.EVENT_CHAIN_STARTED);
+					logger.info("Chain [{}] started", chainId);
+				}
+			} finally {
+				mutex.writeLock().release();
 			}
+		} catch (InterruptedException e) {
+			Thread.currentThread().interrupt();
+			throw new RuntimeException();
 		}
-		if (cinstance != null) {
-			cinstance.start();
-			ChainRuntimeImpl chainRt=(ChainRuntimeImpl)chainRuntime.get(chainId) ;
-			chainRt.setState(ChainRuntime.STATE_STARTED) ;
-			chainRt.setLastDate();
-			eventNotifier.publish(chainId, CiliaEvent.EVENT_CHAIN_STARTED);
-			logger.info("Chain [{}] started",chainId) ;
-		}
-
 	}
 
 	/**
@@ -248,25 +267,36 @@ public class CiliaContextImpl implements CiliaContext {
 	public void removeChain(String chainId) {
 		ChainControllerImpl toBeRemoved = null;
 		Chain chain = null;
-		if (chainId != null) {
-			synchronized (lockObject) {
-				if (chainInstances.containsKey(chainId)) {
-					toBeRemoved = (ChainControllerImpl) chainInstances.remove(chainId);
+		try {
+			mutex.writeLock().acquire();
+			try {
+				if (chainId != null) {
+					synchronized (lockObject) {
+						if (chainInstances.containsKey(chainId)) {
+							toBeRemoved = (ChainControllerImpl) chainInstances
+									.remove(chainId);
+						}
+					}
+					if (toBeRemoved != null) {
+						chain = toBeRemoved.getChain();
+						notifyRemove(chain);
+						toBeRemoved.dispose();
+						toBeRemoved = null;
+						ChainImpl.class.cast(chain).dispose();
+						chain = null;
+						eventNotifier.publish(chainId, CiliaEvent.EVENT_CHAIN_REMOVED);
+						logger.info("Chain [{}] removed", chainId);
+					}
+				} else {
+					log.error("remove chain", new NullPointerException(
+							"ChainId must not be null."));
 				}
+			} finally {
+				mutex.writeLock().release();
 			}
-			if (toBeRemoved != null) {
-				chain = toBeRemoved.getChain();
-				notifyRemove(chain);
-				toBeRemoved.dispose();
-				toBeRemoved = null;
-				ChainImpl.class.cast(chain).dispose();
-				chain = null;
-				eventNotifier.publish(chainId, CiliaEvent.EVENT_CHAIN_REMOVED);
-				logger.info("Chain [{}] removed",chainId) ;
-			}
-		} else {
-			log.error("remove chain", new NullPointerException(
-					"ChainId must not be null."));
+		} catch (InterruptedException e) {
+			Thread.currentThread().interrupt();
+			throw new RuntimeException();
 		}
 	}
 
@@ -292,28 +322,39 @@ public class CiliaContextImpl implements CiliaContext {
 	public void stopChain(String chainId) {
 		String msg;
 		ChainControllerImpl ci = null;
-		if (chainId != null) {
-			synchronized (lockObject) {
-				if (chainInstances.containsKey(chainId)) {
-					ci = (ChainControllerImpl) chainInstances.get(chainId);
+		try {
+			mutex.writeLock().acquire();
+			try {
+				if (chainId != null) {
+					synchronized (lockObject) {
+						if (chainInstances.containsKey(chainId)) {
+							ci = (ChainControllerImpl) chainInstances.get(chainId);
+						}
+					}
+					if (ci != null) {
+						ci.stop();
+						ChainRuntimeImpl chainRt = (ChainRuntimeImpl) chainRuntime
+								.get(chainId);
+						chainRt.setState(ChainRuntime.STATE_STOPPED);
+						chainRt.setLastDate();
+						eventNotifier.publish(chainId, CiliaEvent.EVENT_CHAIN_STOPPED);
+						logger.info("Chain [{}] stopped", chainId);
+					} else {
+						msg = "There is any chain with the given id " + chainId;
+						log.error(msg);
+						throw new NullPointerException(msg);
+					}
+				} else {
+					msg = "ChainId must not be null";
+					log.error(msg);
+					throw new NullPointerException(msg);
 				}
+			} finally {
+				mutex.writeLock().release();
 			}
-			if (ci != null) {
-				ci.stop();
-				ChainRuntimeImpl chainRt = (ChainRuntimeImpl)chainRuntime.get(chainId);
-				chainRt.setState(ChainRuntime.STATE_STOPPED);
-				chainRt.setLastDate();
-				eventNotifier.publish(chainId, CiliaEvent.EVENT_CHAIN_STOPPED);
-				logger.info("Chain [{}] stopped",chainId);
-			} else {
-				msg = "There is any chain with the given id " + chainId;
-				log.error(msg);
-				throw new NullPointerException(msg);
-			}
-		} else {
-			msg = "ChainId must not be null";
-			log.error(msg);
-			throw new NullPointerException(msg);
+		} catch (InterruptedException e) {
+			Thread.currentThread().interrupt();
+			throw new RuntimeException();
 		}
 	}
 
@@ -323,8 +364,16 @@ public class CiliaContextImpl implements CiliaContext {
 	public void stop() {
 		creator.shutdown();
 		try {
-			disposeChains();
-		} catch (Exception ex) {
+			mutex.writeLock().acquire();
+			try {
+				disposeChains();
+			} catch (Exception e) {
+			} finally {
+				mutex.writeLock().release();
+			}
+		} catch (InterruptedException ex) {
+			Thread.currentThread().interrupt();
+			throw new RuntimeException();
 		}
 	}
 
@@ -428,18 +477,18 @@ public class CiliaContextImpl implements CiliaContext {
 	}
 
 	public ReadWriteLock getMutex() {
-		return mutex ;
+		return mutex;
 	}
 
 	public ChainRuntime getChainRuntime(String chainId) {
-		ChainRuntime chain=null ;
+		ChainRuntime chain = null;
 		if (chainId != null) {
-			chain = (ChainRuntime)chainRuntime.get(chainId) ;
+			chain = (ChainRuntime) chainRuntime.get(chainId);
 		}
-		return chain ;
+		return chain;
 	}
 
-	public Builder getBuilder(){
+	public Builder getBuilder() {
 		return new BuilderImpl(this);
 	}
 }

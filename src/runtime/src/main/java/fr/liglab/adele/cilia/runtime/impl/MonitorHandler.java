@@ -16,12 +16,11 @@ package fr.liglab.adele.cilia.runtime.impl;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
-import java.util.ArrayList;
 import java.util.Dictionary;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.felix.ipojo.ComponentInstance;
 import org.apache.felix.ipojo.ConfigurationException;
 import org.apache.felix.ipojo.PrimitiveHandler;
 import org.apache.felix.ipojo.metadata.Element;
@@ -29,12 +28,13 @@ import org.apache.felix.ipojo.parser.FieldMetadata;
 import org.apache.felix.ipojo.parser.PojoMetadata;
 
 import fr.liglab.adele.cilia.Data;
+import fr.liglab.adele.cilia.framework.monitor.IFieldMonitor;
 import fr.liglab.adele.cilia.framework.monitor.IMonitor;
-import fr.liglab.adele.cilia.framework.monitor.INotifier;
 import fr.liglab.adele.cilia.framework.monitor.IProcessorMonitor;
 import fr.liglab.adele.cilia.framework.monitor.IServiceMonitor;
 import fr.liglab.adele.cilia.framework.monitor.ProcessorNotifier;
 import fr.liglab.adele.cilia.runtime.Const;
+import fr.liglab.adele.cilia.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * 
@@ -43,14 +43,14 @@ import fr.liglab.adele.cilia.runtime.Const;
  *         Team</a>
  * 
  */
-
+@SuppressWarnings("rawtypes")
 public class MonitorHandler extends PrimitiveHandler implements IProcessorMonitor,
-		IServiceMonitor {
+		IServiceMonitor,IFieldMonitor {
 
-	List<IMonitor> listeners = new ArrayList<IMonitor>();
+	CopyOnWriteArrayList listeners = new CopyOnWriteArrayList();
 	private String field = null;
 
-	@SuppressWarnings("rawtypes")
+
 	public void configure(Element metadata, Dictionary configuration)
 			throws ConfigurationException {
 		Element[] elem = metadata.getElements("method", Const.CILIA_NAMESPACE);
@@ -77,119 +77,60 @@ public class MonitorHandler extends PrimitiveHandler implements IProcessorMonito
 	}
 
 	private void removeListeners() {
-		if (isEmpty()) {
-			return;
-		}
-		synchronized (listeners) {
 			listeners.clear();
-		}
 	}
 
 	public void addListener(IMonitor listener) {
-		synchronized (listener) {
-			listeners.add(listener);
-		}
+		listeners.addIfAbsent(listener);
+
 	}
 
 	public void removeListener(IMonitor listener) {
-		if (isEmpty()) {
-			return;
-		}
-		synchronized (listener) {
 			listeners.remove(listener);
-		}
 	}
 
 	public void notifyOnProcessEntry(List<Data> data) {
-		if (isEmpty()) {
-			return;
-		}
-		List<IMonitor> copyListeners = null;
-		synchronized (listeners) {
-			copyListeners = new ArrayList<IMonitor>(listeners);
-		}
-		for (int i = 0; i < copyListeners.size(); i++) {
-			IMonitor listener = copyListeners.get(i);
-			listener.onProcessEntry(data);
-		}
+		Iterator it= listeners.listIterator() ;
+		while (it.hasNext())
+			((IMonitor )it.next()).onProcessEntry(data);
 	}
 
 	public void notifyOnProcessExit(List<Data> data) {
-		if (isEmpty()) {
-			return;
-		}
-		List<IMonitor> copyListeners = null;
-		synchronized (listeners) {
-			copyListeners = new ArrayList<IMonitor>(listeners);
-		}
-		for (int i = 0; i < copyListeners.size(); i++) {
-			IMonitor listener = copyListeners.get(i);
-			listener.onProcessExit(data);
-		}
+		Iterator it= listeners.listIterator() ;
+		while (it.hasNext())
+			((IMonitor )it.next()).onProcessExit(data);
 	}
 
 	public void notifyOnDispatch(List<Data> data) {
-		if (isEmpty()) {
-			return;
-		}
-		List<IMonitor> copyListeners = null;
-		synchronized (listeners) {
-			copyListeners = new ArrayList<IMonitor>(listeners);
-		}
-		for (int i = 0; i < copyListeners.size(); i++) {
-			IMonitor listener = copyListeners.get(i);
-			listener.onDispatch(data);
-		}
+		Iterator it= listeners.listIterator() ;
+		while (it.hasNext())
+			((IMonitor )it.next()).onDispatch(data);
 	}
 
 	public void notifyOnProcessError(List<Data> data, Exception ex) {
-		if (isEmpty()) {
-			return;
-		}
-		List<IMonitor> copyListeners = null;
-		synchronized (listeners) {
-			copyListeners = new ArrayList<IMonitor>(listeners);
-		}
-		for (int i = 0; i < copyListeners.size(); i++) {
-			IMonitor listener = copyListeners.get(i);
-			listener.onProcessError(data, ex);
-		}
+		Iterator it= listeners.listIterator() ;
+		while (it.hasNext())
+			((IMonitor )it.next()).onProcessError(data, ex);
 	}
 
-	@SuppressWarnings("rawtypes")
+
 	public void fireEvent(Map info) {
-		if (isEmpty()) {
-			return;
-		}
-		List<IMonitor> copyListeners = null;
-		synchronized (listeners) {
-			copyListeners = new ArrayList<IMonitor>(listeners);
-		}
-		for (int i = 0; i < copyListeners.size(); i++) {
-			IMonitor listener = copyListeners.get(i);
-			listener.fireEvent(info);
-		}
+		Iterator it= listeners.listIterator() ;
+		while (it.hasNext())
+			((IMonitor )it.next()).fireEvent(info);
 	}
 
 	public void notifyOnCollect(Data data) {
-		if (isEmpty()) {
-			return;
-		}
-		List<IMonitor> copyListeners = null;
-		synchronized (listeners) {
-			copyListeners = new ArrayList<IMonitor>(listeners);
-		}
-		for (int i = 0; i < copyListeners.size(); i++) {
-			IMonitor listener = copyListeners.get(i);
-			listener.onCollect(data);
-		}
+		Iterator it= listeners.listIterator() ;
+		while (it.hasNext())
+			((IMonitor )it.next()).onCollect(data);
 	}
 
 	public void onCreation(Object instance) {
 		/* injeted the monitor handler reference */
 		if (field != null) {
 			try {
-				/* field has been already tested */
+				/* field has already been tested */
 				Field fieldToInject = instance.getClass().getField(field);
 				try { 
 					boolean isAccessible;
@@ -210,44 +151,30 @@ public class MonitorHandler extends PrimitiveHandler implements IProcessorMonito
 		}
 	}
 
-	@SuppressWarnings("rawtypes")
+
 	public void onServiceArrival(Map info) {
-		if (isEmpty()) {
-			return;
-		}
-		List<IMonitor> copyListeners = null;
-		synchronized (listeners) {
-			copyListeners = new ArrayList<IMonitor>(listeners);
-		}
-		for (int i = 0; i < copyListeners.size(); i++) {
-			IMonitor listener = copyListeners.get(i);
-			listener.onServiceArrival(info);
-		}
+		Iterator it= listeners.listIterator() ;
+		while (it.hasNext())
+			((IMonitor )it.next()).onServiceArrival(info);
 	}
 
-	@SuppressWarnings("rawtypes")
+
 	public void onServiceDeparture(Map info) {
-		if (isEmpty()) {
-			return;
-		}
-		List<IMonitor> copyListeners = null;
-		synchronized (listeners) {
-			copyListeners = new ArrayList<IMonitor>(listeners);
-		}
-		for (int i = 0; i < copyListeners.size(); i++) {
-			IMonitor listener = copyListeners.get(i);
-			listener.onServiceDeparture(info);
-		}
+		Iterator it= listeners.listIterator() ;
+		while (it.hasNext())
+			((IMonitor )it.next()).onServiceDeparture(info);
 	}
 
-	private boolean isEmpty() {
-		// if any listeners, return immediately.
-		synchronized (listeners) {
-			if (listeners.isEmpty()) {
-				return true;
-			}
-		}
-		return false;
+	public void onFieldGet(String field, Object o) {
+		Iterator it= listeners.listIterator() ;
+		while (it.hasNext())
+			((IMonitor )it.next()).onFieldGet(field, o);
 	}
 
+	public void onFieldSet(String field, Object o) {
+		Iterator it= listeners.listIterator() ;
+		while (it.hasNext())
+			((IMonitor )it.next()).onFieldSet(field, o);		
+	}
+	
 }

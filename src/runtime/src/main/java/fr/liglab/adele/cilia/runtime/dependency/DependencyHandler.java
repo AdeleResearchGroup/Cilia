@@ -53,7 +53,7 @@ import fr.liglab.adele.cilia.runtime.Const;
 public class DependencyHandler extends PrimitiveHandler implements
 		DependencyStateListener {
 	public static Logger logger = LoggerFactory
-			.getLogger("cilia.ipojo.compendium.dependency");
+			.getLogger("cilia.runtime.dependency");
 
 	/**
 	 * This filter Id is used when no id has been defined
@@ -808,15 +808,6 @@ public class DependencyHandler extends PrimitiveHandler implements
 		return m_description;
 	}
 
-	public void reconfigure(Dictionary configuration) {
-		if (configuration != null) {
-			logger.debug("reconfiguration called");
-			Object ref = configuration.get("cilia.monitor.handler");
-			for (int i = 0; i < m_dependencies.length; i++) {
-				m_dependencies[i].setMonitor(ref);
-			}
-		}
-	}
 
 	/**
 	 * Extract the cardinality minimum

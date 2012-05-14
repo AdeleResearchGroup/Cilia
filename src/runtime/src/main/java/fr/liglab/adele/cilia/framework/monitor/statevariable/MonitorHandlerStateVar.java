@@ -340,6 +340,7 @@ public class MonitorHandlerStateVar extends AbstractStateVariable {
 	}
 
 	public void onFieldGet(String field, Object o) {
+		System.out.println(">>> Mediator Handler ON GET "+field) ;
 		if (m_listStateVarEnable.isEmpty())
 			return;
 		if (isEnabled("field.get")) {
@@ -355,6 +356,8 @@ public class MonitorHandlerStateVar extends AbstractStateVariable {
 	}
 
 	public void onFieldSet(String field, Object o) {
+		System.out.println(">>> Mediator Handler ON SET "+field) ;
+
 		if (m_listStateVarEnable.isEmpty())
 			return;
 		if (isEnabled("field.set")) {
@@ -388,7 +391,6 @@ public class MonitorHandlerStateVar extends AbstractStateVariable {
 			array = (String[]) setEventing.toArray(new String[setFunctionnalCall.size()]);
 		} else
 			array = new String[0];
-
 		return array;
 	}
 
