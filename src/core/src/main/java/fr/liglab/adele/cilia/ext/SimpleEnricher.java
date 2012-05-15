@@ -17,7 +17,7 @@ package fr.liglab.adele.cilia.ext;
 import java.util.Dictionary;
 import java.util.Hashtable;
 
-import fr.liglab.adele.cilia.Mediator;
+import fr.liglab.adele.cilia.model.Mediator;
 
 /**
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project Team</a>

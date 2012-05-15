@@ -23,14 +23,14 @@ import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import fr.liglab.adele.cilia.Adapter;
-import fr.liglab.adele.cilia.Chain;
-import fr.liglab.adele.cilia.CiliaContainer;
 import fr.liglab.adele.cilia.Data;
-import fr.liglab.adele.cilia.Mediator;
-import fr.liglab.adele.cilia.model.AdapterImpl;
-import fr.liglab.adele.cilia.model.ConstModel;
-import fr.liglab.adele.cilia.model.MediatorImpl;
+import fr.liglab.adele.cilia.model.Adapter;
+import fr.liglab.adele.cilia.model.Chain;
+import fr.liglab.adele.cilia.model.CiliaContainer;
+import fr.liglab.adele.cilia.model.Mediator;
+import fr.liglab.adele.cilia.model.impl.AdapterImpl;
+import fr.liglab.adele.cilia.model.impl.ConstModel;
+import fr.liglab.adele.cilia.model.impl.MediatorImpl;
 import fr.liglab.adele.cilia.runtime.Const;
 
 public class CiliaCopierProcessor {

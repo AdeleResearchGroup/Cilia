@@ -6,34 +6,35 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
-import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import fr.liglab.adele.cilia.Adapter;
-import fr.liglab.adele.cilia.Binding;
-import fr.liglab.adele.cilia.Chain;
-import fr.liglab.adele.cilia.Component;
-import fr.liglab.adele.cilia.Mediator;
-import fr.liglab.adele.cilia.MediatorComponent;
-import fr.liglab.adele.cilia.Port;
+import fr.liglab.adele.cilia.CiliaContext;
+import fr.liglab.adele.cilia.builder.Architecture;
+import fr.liglab.adele.cilia.builder.Builder;
+import fr.liglab.adele.cilia.exceptions.BuilderConfigurationException;
+import fr.liglab.adele.cilia.exceptions.BuilderException;
+import fr.liglab.adele.cilia.exceptions.BuilderPerformerException;
 import fr.liglab.adele.cilia.exceptions.CiliaException;
 import fr.liglab.adele.cilia.exceptions.CiliaParserException;
 import fr.liglab.adele.cilia.framework.data.XmlTools;
-import fr.liglab.adele.cilia.model.AdapterImpl;
-import fr.liglab.adele.cilia.model.BindingImpl;
-import fr.liglab.adele.cilia.model.ChainImpl;
-import fr.liglab.adele.cilia.model.MediatorImpl;
-import fr.liglab.adele.cilia.model.PatternType;
+import fr.liglab.adele.cilia.model.Adapter;
+import fr.liglab.adele.cilia.model.Component;
+import fr.liglab.adele.cilia.model.Mediator;
+import fr.liglab.adele.cilia.model.impl.AdapterImpl;
+import fr.liglab.adele.cilia.model.impl.MediatorImpl;
+import fr.liglab.adele.cilia.model.impl.PatternType;
+
 import fr.liglab.adele.cilia.util.ChainParser;
 import fr.liglab.adele.cilia.util.CiliaExtenderParser;
 
@@ -65,15 +66,7 @@ public class CiliaChainInstanceParser implements ChainParser {
 
 	protected volatile static int mediatorNumbers = 0;
 
-	public CiliaChainInstanceParser() {
-	}
-
-	public CiliaChainInstanceParser(BundleContext context) {
-	}
-
-	public String getChainType() {
-		return "dscilia";
-	}
+	private CiliaContext ccontext;
 
 	/**
 	 * 
@@ -87,20 +80,13 @@ public class CiliaChainInstanceParser implements ChainParser {
 		return (Node) chain;
 	}
 
-	/**
-	 * It will convert a Chain model to a Chain in a Node. TODO: use JAXB
-	 */
-	public Object convertChain(Chain chain) {
-		log.error("public Object convertChain(Chain chain){..} method is not implemented");
-		throw new UnsupportedOperationException(" This method is not implemented");
-	}
 
 	/**
 	 * 
 	 * @param xmlFile
 	 * @return
 	 */
-	public Chain[] obtainChains(URL xmlFile) throws CiliaException, FileNotFoundException {
+	public Builder[] obtainChains(URL xmlFile) throws CiliaException, BuilderException, BuilderPerformerException, FileNotFoundException {
 		List listChains = new ArrayList();
 		InputStream fis;
 		try {
@@ -123,7 +109,7 @@ public class CiliaChainInstanceParser implements ChainParser {
 			String nodeName = possibleChain.getNodeName();
 			if (nodeName.compareTo(ROOT_CHAIN) == 0) {
 				log.debug("Found chain in file: ");
-				Chain newChain = parseChain(possibleChain);
+				Builder newChain = parseChain(possibleChain);
 				if (newChain == null) {
 					log.warn("Found chain in file but is null: ");
 				} else {
@@ -136,80 +122,74 @@ public class CiliaChainInstanceParser implements ChainParser {
 		if (listChains.isEmpty()) {
 			return null;
 		}
-		Chain[] newArray = new Chain[listChains.size()];
+		Builder[] newArray = new Builder[listChains.size()];
 		for (int i = 0; i < listChains.size(); i++)
-			newArray[i] = (Chain) listChains.get(i);
+			newArray[i] = (Builder) listChains.get(i);
 		return newArray;
 	}
 
 	/**
 	 * It will convert a Chain in a Node to a chain model. TODO: Use JAXB.
 	 */
-	public Chain parseChain(Object chain) throws CiliaException {
-		Node nchain = checkObject(chain);
-		ChainImpl newChain = null;
-		Mediator[] mediators = null;
-		Adapter[] adapters = null;
-		Binding[] bindings = null;
+	public Builder parseChain(Object objectchain) throws CiliaException, BuilderException, BuilderPerformerException {
+		Node nchain = checkObject(objectchain);
+
 		if (nchain == null) {
-			throw new CiliaException("Object:" + chain
+			throw new CiliaException("Object:" + objectchain
 					+ " is not instance of org.w3c.dom.Node");
 		}
 
 		if (nchain == null || nchain.getNodeName().compareTo(ROOT_CHAIN) != 0) {
 			log.debug(nchain.getNodeName() + "Node is not a chain");
-			return null;
+			throw new CiliaException("Node is not a chain. It must start with <chain>");
 		}
 		// It must add mediators at first.
 		String id = getId(nchain);
 		String type = getType(nchain);
 		Properties props = getProperties(nchain);
-		newChain = new ChainImpl(id, type, null, props);
+		Builder builder = ccontext.getBuilder();
+		Architecture chain = builder.create(id);
 		Node node = nchain.getFirstChild();
 		while (node != null) {
 			if (node.getNodeName().compareToIgnoreCase(CHAIN_MEDIATORS) == 0) {
-				mediators = getMediators(node);
+				getMediators(node, chain);
 			}
 			node = node.getNextSibling();
 		}
-		// Add mediators to the new chain.
-		for (int i = 0; mediators != null && i < mediators.length; i++) {
-			newChain.add(mediators[i]);
-		}
+
 		// It must add adapters then.
 		Node nodeAdapters = nchain.getFirstChild();
 		while (nodeAdapters != null) {
 			if (nodeAdapters.getNodeName().compareToIgnoreCase(CHAIN_ADAPTERS) == 0) {
-				adapters = getAdapters(nodeAdapters);
+				getAdapters(nodeAdapters, chain);
 			}
 			nodeAdapters = nodeAdapters.getNextSibling();
 		}
-		// Add adapters to the new chain.
-		for (int i = 0; adapters != null && i < adapters.length; i++) {
-			newChain.add(adapters[i]);
-		}
-
+	
+		
 		// Add bindings to the chain.
 		Node nodeBindings = nchain.getFirstChild();
 		while (nodeBindings != null) {
 			if (nodeBindings.getNodeName().compareToIgnoreCase(CHAIN_BINDINGS) == 0) {
-				setBindings(newChain, nodeBindings);
+				setBindings(nodeBindings, chain);
 			}
 			nodeBindings = nodeBindings.getNextSibling();
 		}
-		return newChain;
+		return builder;
 	}
 
 	/**
 	 * 
 	 * @param chain
 	 * @param node
+	 * @throws BuilderException 
+	 * @throws BuilderConfigurationException 
 	 */
-	protected void setBindings(ChainImpl chain, Node node) {
+	protected void setBindings(Node node, Architecture chain) throws BuilderConfigurationException, BuilderException {
 		Node binding = node.getFirstChild();
 		do {
 			if (binding.getNodeName().compareToIgnoreCase(BINDING) == 0) {
-				computeBinding(chain, binding);
+				computeBinding(binding, chain);
 			}
 		} while ((binding = binding.getNextSibling()) != null);
 
@@ -219,11 +199,11 @@ public class CiliaChainInstanceParser implements ChainParser {
 	 * 
 	 * @param chain
 	 * @param bindingNode
+	 * @throws BuilderException 
+	 * @throws BuilderConfigurationException 
 	 */
-	protected void computeBinding(ChainImpl chain, Node bindingNode) {
-		Binding bindingModel = null;
-		MediatorComponent sourceMediator;
-		MediatorComponent targetMediator;
+	protected void computeBinding(Node bindingNode, Architecture chain) throws BuilderConfigurationException, BuilderException {
+
 		String sourceMediatorId;
 		String sourceMediatorPort;
 
@@ -239,13 +219,15 @@ public class CiliaChainInstanceParser implements ChainParser {
 			}
 		}
 		Properties bindingProperties = getProperties(bindingNode);
-		bindingModel = new BindingImpl(bindingType, bindingProperties);
-		//
+		
 		String colport = getAttributeValue(bindingNode, BINDING_to);
 		String sendport = getAttributeValue(bindingNode, BINDING_from);
+		
+		
 		if ((colport == null && sendport != null)
 				|| (colport != null && sendport == null)) {
-			computeHalfBinding(chain, bindingNode, bindingModel);
+			throw new BuilderConfigurationException("Unexpected configuration in binding");
+			//computeHalfBinding(chain, bindingNode, bindingModel);
 		} else {
 			// get SourceMediator
 			String[] targs = colport.split(PORT_SEPARATOR);
@@ -267,80 +249,63 @@ public class CiliaChainInstanceParser implements ChainParser {
 			targetMediatorId = targs[0];
 
 			if (!analizeBindingData(sourceMediatorId, sourceMediatorPort,
-					targetMediatorId, targetMediatorPort))
-				return;
-			sourceMediator = chain.getMediator(sourceMediatorId);
-			if (sourceMediator == null) { // search if is an adapter.
-				sourceMediator = chain.getAdapter(sourceMediatorId);
-			}
-			targetMediator = chain.getMediator(targetMediatorId);
-			if (targetMediator == null) {// search if is an adapter.
-				targetMediator = chain.getAdapter(targetMediatorId);
-			}
-			if (sourceMediator == null) {
-				log.error("Binding not added. Mediator " + sourceMediatorId
-						+ " does not exist in chain" + chain.getId());
+					targetMediatorId, targetMediatorPort)) {
 				return;
 			}
-			if (targetMediator == null) {
-				log.error("Binding not added. Mediator " + targetMediatorId
-						+ "does not exist in chain" + chain.getId());
-				return;
-			}
-			chain.bind(sourceMediator.getOutPort(sourceMediatorPort),
-					targetMediator.getInPort(targetMediatorPort), bindingModel);
+			chain.bind().using(bindingType).from(sourceMediatorId+":"+ sourceMediatorPort).to(targetMediatorId+":"+targetMediatorPort).configure(bindingProperties);
+			
 		}
 	}
 
-	protected void computeHalfBinding(ChainImpl chain, Node bindingNode, Binding bindingModel) {
-		String mediatorId = null;
-		String mediatorPort = null;
-		Port port = null;
-		String colport = getAttributeValue(bindingNode, BINDING_to);
-		String sendport = getAttributeValue(bindingNode, BINDING_from);
-		Mediator mediator = null;
-		// will add a bind.
-		if (colport == null && sendport != null) {
-			String[] ins = sendport.split(PORT_SEPARATOR);
-			if (ins.length != 2) {
-				mediatorPort = "std";
-			} else {
-				mediatorPort = ins[1];
-			}
-			mediatorId = ins[0];
-			mediator = chain.getMediator(mediatorId);
-			if (mediator == null) {
-				log.error("Binding not added, Mediator " + mediatorId
-						+ "is doesnt exist in chain.");
-				return;
-			}
-			port = mediator.getOutPort(mediatorPort);
-
-		} else if (colport != null && sendport == null) {
-			String[] ins = colport.split(PORT_SEPARATOR);
-			if (ins.length != 2) {
-				mediatorPort = "std";
-			} else {
-				mediatorPort = ins[1];
-			}
-			mediatorId = ins[0];
-			mediator = chain.getMediator(mediatorId);
-			if (mediator == null) {
-				log.error("Binding not added, Mediator " + mediatorId
-						+ "is doesnt exist in chain.");
-				return;
-			}
-			port = mediator.getInPort(mediatorPort);
-		} else {
-			// It must never perform this code.
-			log.error("Mediators in bindings must have ports. \"mediatorId:portName\"");
-			log.error("Binding not added.");
-		}
-		log.warn("Binding added: portName" + port.getName() + " type:"
-				+ bindingModel.getType() + "nature:" + port.getType());
-		log.warn("Half binding is not supported, from and to is need.");
-		chain.bind(port, bindingModel);
-	}
+//	protected void computeHalfBinding(ChainImpl chain, Node bindingNode, Binding bindingModel) {
+//		String mediatorId = null;
+//		String mediatorPort = null;
+//		Port port = null;
+//		String colport = getAttributeValue(bindingNode, BINDING_to);
+//		String sendport = getAttributeValue(bindingNode, BINDING_from);
+//		Mediator mediator = null;
+//		// will add a bind.
+//		if (colport == null && sendport != null) {
+//			String[] ins = sendport.split(PORT_SEPARATOR);
+//			if (ins.length != 2) {
+//				mediatorPort = "std";
+//			} else {
+//				mediatorPort = ins[1];
+//			}
+//			mediatorId = ins[0];
+//			mediator = chain.getMediator(mediatorId);
+//			if (mediator == null) {
+//				log.error("Binding not added, Mediator " + mediatorId
+//						+ "is doesnt exist in chain.");
+//				return;
+//			}
+//			port = mediator.getOutPort(mediatorPort);
+//
+//		} else if (colport != null && sendport == null) {
+//			String[] ins = colport.split(PORT_SEPARATOR);
+//			if (ins.length != 2) {
+//				mediatorPort = "std";
+//			} else {
+//				mediatorPort = ins[1];
+//			}
+//			mediatorId = ins[0];
+//			mediator = chain.getMediator(mediatorId);
+//			if (mediator == null) {
+//				log.error("Binding not added, Mediator " + mediatorId
+//						+ "is doesnt exist in chain.");
+//				return;
+//			}
+//			port = mediator.getInPort(mediatorPort);
+//		} else {
+//			// It must never perform this code.
+//			log.error("Mediators in bindings must have ports. \"mediatorId:portName\"");
+//			log.error("Binding not added.");
+//		}
+//		log.warn("Binding added: portName" + port.getName() + " type:"
+//				+ bindingModel.getType() + "nature:" + port.getType());
+//		log.warn("Half binding is not supported, from and to is need.");
+//		chain.bind(port, bindingModel);
+//	}
 
 	protected boolean analizeBindingData(String sourceMediatorId,
 			String sourceMediatorPort, String targetMediatorId, String targetMediatorPort) {
@@ -369,32 +334,21 @@ public class CiliaChainInstanceParser implements ChainParser {
 	 * @param node
 	 * @return
 	 */
-	protected Mediator[] getMediators(Node node) {
+	protected void getMediators(Node node, Architecture chain) throws CiliaException {
 		Node mediatorNode = node.getFirstChild();
-		List mediatorsList = new ArrayList();
+		int iterator = 0;
 		if (mediatorNode == null) {
-			return null;
+			throw new CiliaException("Unable to retrieve first mediator in XML Node");
 		}
 		do {
 			if (mediatorNode.getNodeName().compareTo(MEDIATOR) == 0) {
-				Component mediator = getMediator(mediatorNode);
-				if (mediator == null) {
-					log.error("Unable to obtain Mediator :");
-				} else {
-					mediatorsList.add(mediator);
-					log.debug("Adding Mediator:" + mediator.getId());
-				}
+				getMediator(mediatorNode, chain);
 			}
 			mediatorNode = mediatorNode.getNextSibling();
+			iterator ++;
 		} while (mediatorNode != null);
-		if (mediatorsList.isEmpty()) {
-			return null;
-		}
-		log.debug("Number of mediators found:" + mediatorsList.size());
-		Mediator[] mediators = new Mediator[mediatorsList.size()];
-		for (int i = 0; i < mediatorsList.size(); i++)
-			mediators[i] = (Mediator) mediatorsList.get(i);
-		return mediators;
+		log.debug("Number of mediators found:" + iterator);
+
 	}
 
 	/**
@@ -403,32 +357,22 @@ public class CiliaChainInstanceParser implements ChainParser {
 	 * @param node
 	 * @return
 	 */
-	protected Adapter[] getAdapters(Node node) {
+	protected void getAdapters(Node node, Architecture chain) throws CiliaException {
 		Node mediatorNode = node.getFirstChild();
-		List mediatorsList = new ArrayList();
+		int iterator = 0;
+
 		if (mediatorNode == null) {
-			return null;
+			throw new CiliaException("Unable to retrieve first adapter in XML Node");
 		}
 		do {
 			if (mediatorNode.getNodeName().compareTo(ADAPTER) == 0) {
-				Component mediator = getAdapter(mediatorNode);
-				if (mediator == null) {
-					log.error("Unable to obtain Adapter :");
-				} else {
-					mediatorsList.add(mediator);
-					log.debug("Adding Adapter:" + mediator.getId());
-				}
+				getAdapter(mediatorNode, chain);
+
 			}
 			mediatorNode = mediatorNode.getNextSibling();
+			iterator ++;
 		} while (mediatorNode != null);
-		if (mediatorsList.isEmpty()) {
-			return null;
-		}
-		log.debug("Number of mediators found:" + mediatorsList.size());
-		Adapter[] mediators = new Adapter[mediatorsList.size()];
-		for (int i = 0; i < mediatorsList.size(); i++)
-			mediators[i] = (Adapter) mediatorsList.get(i);
-		return mediators;
+		log.debug("Number of adapters found:" + iterator);
 	}
 
 	/**
@@ -437,27 +381,31 @@ public class CiliaChainInstanceParser implements ChainParser {
 	 * @param nmediator
 	 *            Mediator node.
 	 * @return the new mediator.
+	 * @throws BuilderException 
+	 * @throws BuilderConfigurationException 
 	 */
-	protected Mediator getMediator(Node nmediator) {
+	protected void getMediator(Node nmediator, Architecture chain) throws BuilderConfigurationException, BuilderException {
 		mediatorNumbers++;
 		Mediator mediator = null;
 		String mediatorId = getId(nmediator);
 		String mediatorType = getType(nmediator);
-		;
-		Properties mediatorProperties = getMediatorProperties(nmediator);
+		Hashtable mediatorProperties = getMediatorProperties(nmediator);
 
 		if (mediatorType == null) {
-			log.error("Type not found in Mediator Node");
-			return null;
+			log.error("Type not found in Mediator XML Node");
+			throw new BuilderConfigurationException("Mediator must have an type");
 		}
 		if (mediatorId == null) {
-			mediatorId = mediatorType + mediatorNumbers;
+			log.error("ID not found in Mediator XML Node");
+			throw new BuilderConfigurationException("Mediator must have an ID");
 		}
 
+		chain.create().mediator().type(mediatorType).id(mediatorId);
+		/*TODO: This code is temporal, Extender parser must be change to use new Builder Pattern*/
 		mediator = new MediatorImpl(mediatorId, mediatorType, null,null,null, mediatorProperties, null);
 		mediator = (Mediator)extendersParsers(nmediator, mediator);
+		chain.configure().mediator().id(mediatorId).set(mediator.getProperties());
 
-		return mediator;
 	}
 
 	/**
@@ -466,8 +414,10 @@ public class CiliaChainInstanceParser implements ChainParser {
 	 * @param nadapter
 	 *            adapter node.
 	 * @return the new adapter.
+	 * @throws BuilderConfigurationException 
+	 * @throws BuilderException 
 	 */
-	protected Adapter getAdapter(Node nadapter) {
+	protected void getAdapter(Node nadapter, Architecture chain) throws BuilderConfigurationException, BuilderException {
 		mediatorNumbers++;
 		Adapter adapter = null;
 		PatternType pt = getPattern(nadapter);
@@ -476,17 +426,19 @@ public class CiliaChainInstanceParser implements ChainParser {
 
 		Properties adapterProperties = getProperties(nadapter);
 		if (adapterType == null) {
-			log.error("Type not found in Mediator Node");
-			return null;
+			log.error("Type not found in Adapter XML Node");
+			throw new BuilderConfigurationException("Adapter must have an type");
 		}
 		if (adapterId == null) {
-			adapterId = adapterType + mediatorNumbers;
+			log.error("ID not found in Adapter XML Node");
+			throw new BuilderConfigurationException("Adapter must have an ID");		
 		}
-
-		// String pattern = getAttributeValue(nmediator, pattern)
+		chain.create().adapter().type(adapterType).id(adapterId);
+		/*TODO: This code is temporal, Extender parser must be change to use new Builder Pattern*/
 		adapter = new AdapterImpl(adapterId, adapterType, null,null, adapterProperties, null, pt);
 		adapter = (Adapter)extendersParsers(nadapter, adapter);
-		return adapter;
+		chain.configure().adapter().id(adapterId).set(adapter.getProperties());
+
 	}
 
 	private PatternType getPattern(Node nadapter) {
@@ -508,8 +460,6 @@ public class CiliaChainInstanceParser implements ChainParser {
 		props.putAll(getPropertiesFrom(mediator, "scheduler"));
 		props.putAll(getPropertiesFrom(mediator, "dispatcher"));
 		props.putAll(getPropertiesFrom(mediator, "monitoring"));
-		log.debug("Creating " + getAttributeValue(mediator, "id")
-				+ " mediator with properties" + props);
 		return props;
 	}
 
@@ -540,7 +490,7 @@ public class CiliaChainInstanceParser implements ChainParser {
 					if (component != null && component.getNodeName() != null) {
 						value = component.getNodeValue();
 					}
-					
+
 					if ((name != null) && (value != null)) {
 						properties.put(name, value);
 					} else if ((name != null) && (value == null)) {
@@ -549,7 +499,7 @@ public class CiliaChainInstanceParser implements ChainParser {
 							properties.put(name, propEmb);
 						}
 					}
-					
+
 				}
 			}
 			child = child.getNextSibling();
@@ -682,7 +632,7 @@ public class CiliaChainInstanceParser implements ChainParser {
 	private Map getPropertyMap(Node mapProperty) {
 		Properties map = new Properties();
 		Node node = mapProperty.getFirstChild();
-		
+
 		while (node != null) {
 			if (node.getNodeType() == Node.ELEMENT_NODE) {
 				String key = getAttributeValue(node, "key");

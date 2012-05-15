@@ -18,19 +18,15 @@ import org.ops4j.pax.exam.junit.Configuration;
 import org.ops4j.pax.exam.junit.JUnit4TestRunner;
 import org.ops4j.pax.exam.junit.JUnitOptions;
 import org.osgi.framework.BundleContext;
-import org.osgi.framework.InvalidSyntaxException;
-import org.osgi.framework.ServiceReference;
 
-import fr.liglab.adele.cilia.Adapter;
-import fr.liglab.adele.cilia.Binding;
-import fr.liglab.adele.cilia.Chain;
-import fr.liglab.adele.cilia.CiliaContainer;
-import fr.liglab.adele.cilia.Component;
-import fr.liglab.adele.cilia.Mediator;
 import fr.liglab.adele.cilia.core.tests.tools.CiliaTools;
-import fr.liglab.adele.cilia.model.AdapterImpl;
-import fr.liglab.adele.cilia.model.ChainImpl;
-import fr.liglab.adele.cilia.model.MediatorImpl;
+import fr.liglab.adele.cilia.model.Adapter;
+import fr.liglab.adele.cilia.model.Binding;
+import fr.liglab.adele.cilia.model.Component;
+import fr.liglab.adele.cilia.model.Mediator;
+import fr.liglab.adele.cilia.model.impl.AdapterImpl;
+import fr.liglab.adele.cilia.model.impl.ChainImpl;
+import fr.liglab.adele.cilia.model.impl.MediatorImpl;
 
 
 @RunWith(JUnit4TestRunner.class)
@@ -46,7 +42,6 @@ public class ChainModelTest {
 	@Inject
 	private BundleContext context;
 
-	private CiliaContainer ccontext;
 
 	private OSGiHelper osgi;
 
@@ -87,15 +82,7 @@ public class ChainModelTest {
 		return options(JUnitOptions.mockitoBundles());
 	}
 
-	public void initializeServices() {
-		ServiceReference sr[] = null;
-		try {
-			sr = context.getServiceReferences (CiliaContainer.class.getName(), null);
-		} catch (InvalidSyntaxException e) {
-			e.printStackTrace();
-		}
-		ccontext = (CiliaContainer) context.getService(sr[0]);
-	}
+
 
 
 	public void chainTimeCreation() {
@@ -113,24 +100,7 @@ public class ChainModelTest {
 		Assert.assertTrue(CiliaTools.bytesToKilobytes(initialmemory) >= CiliaTools.bytesToKilobytes(finalmemory));
 	}
 	
-	@Test
-	public void chainCreation() {
-		try {
-            Thread.sleep(2000);//wait to be registered
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-		String chainId = "chainId";
-		initializeServices();
-		Chain chain = new ChainImpl(chainId, "type", "", null);
 
-		ccontext.addChain(chain);
-		ccontext.startChain(chain);
-		
-		Chain c = ccontext.getChain(chainId);
-		
-		Assert.assertEquals(c, chain);
-	}
 
 	@Test
 	public void testComponents() {

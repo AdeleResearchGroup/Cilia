@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-package fr.liglab.adele.cilia.model;
+package fr.liglab.adele.cilia.model.impl;
 
 import java.util.Dictionary;
 import java.util.Enumeration;
@@ -22,8 +22,8 @@ import java.util.Map;
 import java.util.Observable;
 import java.util.regex.Pattern;
 
-import fr.liglab.adele.cilia.Component;
 import fr.liglab.adele.cilia.exceptions.CiliaIllegalParameterException;
+import fr.liglab.adele.cilia.model.Component;
 
 /**
  * This class is the basic representation model, which contains the information
@@ -151,8 +151,8 @@ public class ComponentImpl extends Observable implements Component {
 	 * 
 	 * @return properties.
 	 */
-	public Dictionary getProperties() {
-		Dictionary rp = null;
+	public Hashtable getProperties() {
+		Hashtable rp = null;
 		synchronized (lockObject) {
 			rp = new Hashtable(properties);
 		}

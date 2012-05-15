@@ -14,11 +14,11 @@
  */
 package fr.liglab.adele.cilia.builder.impl;
 
-import fr.liglab.adele.cilia.CiliaContainer;
 import fr.liglab.adele.cilia.builder.Architecture;
 import fr.liglab.adele.cilia.builder.Builder;
 import fr.liglab.adele.cilia.exceptions.BuilderException;
 import fr.liglab.adele.cilia.exceptions.BuilderPerformerException;
+import fr.liglab.adele.cilia.model.CiliaContainer;
 
 /**
  *
@@ -29,7 +29,7 @@ public class BuilderImpl implements Builder {
 
 	CiliaContainer ccontext;
 	
-	Architecture architecture = null;
+	ArchitectureImpl architecture = null;
 	
 	public BuilderImpl(CiliaContainer context) {
 		this.ccontext = context;
@@ -38,7 +38,6 @@ public class BuilderImpl implements Builder {
 	/* (non-Javadoc)
 	 * @see fr.liglab.adele.cilia.builder.Builder#create(java.lang.String)
 	 */
-	@Override
 	public Architecture create(String chainId) throws BuilderException {
 		if (null == chainId) {
 			throw new BuilderException("Unable to create chain with ID=null");
@@ -49,7 +48,7 @@ public class BuilderImpl implements Builder {
 		if (architecture != null) {
 			throw new BuilderException("Builder with existing configuration");
 		} else {
-			architecture = new ArchitectureImpl(ccontext, this, chainId, true);
+			architecture = new ArchitectureImpl(ccontext, this, chainId, Architecture.CREATE);
 		}
 		return architecture;
 	}
@@ -57,7 +56,6 @@ public class BuilderImpl implements Builder {
 	/* (non-Javadoc)
 	 * @see fr.liglab.adele.cilia.builder.Builder#get(java.lang.String)
 	 */
-	@Override
 	public Architecture get(String chainId) throws BuilderException {
 		if (null == chainId) {
 			throw new BuilderException("Unable to retrieve null chain");
@@ -69,7 +67,7 @@ public class BuilderImpl implements Builder {
 			throw new BuilderException("There is a Builder Configuration for a Chain with id :" + ((ArchitectureImpl)architecture).getChainId());
 		}
 		if (architecture == null) {
-			architecture =  new ArchitectureImpl(ccontext, this, chainId, false);
+			architecture =  new ArchitectureImpl(ccontext, this, chainId, Architecture.MODIFY);
 		}
 		return architecture;
 	}
@@ -85,9 +83,34 @@ public class BuilderImpl implements Builder {
 	/* (non-Javadoc)
 	 * @see fr.liglab.adele.cilia.builder.Builder#undo()
 	 */
-	@Override
 	public Builder undo() throws BuilderException {
 		throw new UnsupportedOperationException("undo operation is currently unsupported");
 	}
-
+	/**
+	 * Return the current chain id this builder is working on.
+	 * Return null if there is any configuration on this builder.
+	 */
+	public String current() {
+		return architecture.getChainId();
+	}
+	/**
+	 * Remove a mediation chain.
+	 * @param chainId the id of the chain to remove.
+	 * @throws BuilderException 
+	 */
+	public Builder remove(String chainId) throws BuilderException{
+		if (null == chainId) {
+			throw new BuilderException("Unable to retrieve null chain");
+		}
+		if (ccontext.getChain(chainId) == null && architecture == null) {
+			throw new BuilderException("There is any Chain with id :" + chainId);
+		}
+		if (architecture != null && !((ArchitectureImpl)architecture).getChainId().equalsIgnoreCase(chainId) ) {
+			throw new BuilderException("There is a Builder Configuration for a Chain with id :" + ((ArchitectureImpl)architecture).getChainId());
+		}
+		if (architecture == null) {
+			architecture =  new ArchitectureImpl(ccontext, this, chainId, Architecture.REMOVE);
+		}
+		return this;
+	}
 }

@@ -13,9 +13,10 @@
  * limitations under the License.
  */
 
-package fr.liglab.adele.cilia;
+package fr.liglab.adele.cilia.model;
 
 import java.util.Set;
+
 /**
  * 
  *

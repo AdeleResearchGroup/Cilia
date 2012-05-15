@@ -13,12 +13,13 @@
  * limitations under the License.
  */
 
-package fr.liglab.adele.cilia;
+package fr.liglab.adele.cilia.model;
 
 import java.util.Set;
 
+import fr.liglab.adele.cilia.ChainListener;
 import fr.liglab.adele.cilia.builder.Builder;
-import fr.liglab.adele.cilia.model.ChainRuntime;
+import fr.liglab.adele.cilia.model.impl.ChainRuntime;
 import fr.liglab.adele.cilia.specification.MediatorSpecification;
 import fr.liglab.adele.cilia.util.concurrent.ReadWriteLock;
 

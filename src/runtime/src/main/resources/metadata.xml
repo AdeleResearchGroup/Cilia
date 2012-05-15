@@ -10,7 +10,7 @@
 <ipojo xmlns:cilia="fr.liglab.adele.cilia">
 
 
-	<component classname="fr.liglab.adele.cilia.internals.CiliaContainerImpl"
+	<component classname="fr.liglab.adele.cilia.internals.CiliaContextImpl"
 		name="CiliaContext" architecture="false" immediate="true">
 		<provides>
 			<property name="cilia.context.type" type="string" value="ipojo" />
@@ -163,23 +163,12 @@
 		<cilia:method data.type="fr.liglab.adele.cilia.Data" />
 	</processor>
 
-	<component classname="fr.liglab.adele.cilia.framework.GenericBindingService"
-		name="Generic-Binding" architecture="false" immediate="true">
-		<provides>
-			<property name="cilia.binding.type" type="string" />
-		</provides>
-		<properties>
-			<property name="collector.type" method="setCollectorType"
-				type="String" />
-			<property name="sender.type" method="setSenderType" type="String" />
-		</properties>
-	</component>
-
 
 	<processor name="simple-processor" namespace="fr.liglab.adele.cilia"
 		classname="fr.liglab.adele.cilia.framework.components.SimpleProcessor" />
 
 	<!-- INSTANCES -->
+	
 	<instance component="CiliaContext" name="Cilia Context" />
 
 
@@ -222,22 +211,11 @@
 	</component>
 
 
-	<!-- Component CiliaFrameworkListener -->
-	<component
-		classname="fr.liglab.adele.cilia.runtime.impl.CiliaFrameworkEventListenerImpl"
-		name="CiliaFrameworkEventListener" architecture="false" immediate="true">
-		<provides specification="fr.liglab.adele.cilia.event.CiliaFrameworkListener">
-		</provides>
-		<callback transition="validate" method="start" />
-		<callback transition="invalidate" method="stop" />
-	</component>
-	<instance component="CiliaFrameworkEventListener" name="Cilia.Framework.EventListener" />
-
-
 	<!-- PARSERS -->
 	<component classname="fr.liglab.adele.cilia.internals.CiliaChainInstanceParser"
 		name="Cilia-Chain-Parser" architecture="false">
 		<provides />
+		<requires field="ccontext"/>
 		<requires aggregate="true" optional="true">
 			<callback type="bind" method="bindExtenderParsers" />
 			<callback type="unbind" method="unbindExtenderParser" />
@@ -407,48 +385,18 @@
 		<provides />
 	</component>
 	<instance component="fr.liglab.adele.cilia.internals.DependencyParser" />
+	
 	<component
 		classname="fr.liglab.adele.cilia.internals.EnricherParser">
 		<provides />
 	</component>
 	<instance
 		component="fr.liglab.adele.cilia.internals.EnricherParser" />
+		
 	<component classname="fr.liglab.adele.cilia.internals.MonitorErrorHandlerParser"
 		immediate="true">
 		<provides />
 	</component>
 	
-	<component
-		classname="fr.liglab.adele.cilia.runtime.dynamic.RegistryManager"
-		name="ModelRuntime.Registry_DynamicComponent">
-		<provides
-			specification="fr.liglab.adele.cilia.runtime.dynamic.RuntimeRegistry" />
-		<callback transition="validate" method="start" />
-		<callback transition="invalidate" method="stop" />
-	</component>
-	<instance component="ModelRuntime.Registry_DynamicComponent" />
 
-	<component
-		classname="fr.liglab.adele.cilia.runtime.application.ApplicationImpl"
-		name="ModelRuntime_Core.Application">
-		<requires field="ciliaContext" />
-		<requires field="listenerFramework" />
-		<provides
-			specification="fr.liglab.adele.cilia.Application" />
-		<callback transition="validate" method="start" />
-		<callback transition="invalidate" method="stop" />
-	</component>
-	<instance component="ModelRuntime_Core.Application" />
-	
-	<component
-		classname="fr.liglab.adele.cilia.runtime.dynamic.DynamicPropertiesImpl"
-		name="ModelRuntime_Core.NodesRuntime">
-		<provides
-			specification="fr.liglab.adele.cilia.runtime.DynamicProperties" />
-		<requires field="registry" />
-		<requires field="ciliaContext" />
-		<callback transition="validate" method="start" />
-		<callback transition="invalidate" method="stop" />
-	</component>
-	   <instance component="ModelRuntime_Core.NodesRuntime" /> 
 </ipojo>

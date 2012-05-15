@@ -30,6 +30,12 @@ public interface Architecture {
 	
 	final static int BINDING = 2;
 	
+	final static int CREATE = 0;
+	
+	final static int MODIFY = 1;
+	
+	final static int REMOVE = 2;
+	
 	Binder bind ()throws BuilderException;
 	
 	Binder unbind ()throws BuilderException;

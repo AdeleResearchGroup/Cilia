@@ -12,25 +12,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package fr.liglab.adele.cilia;
 
-import fr.liglab.adele.cilia.builder.Builder;
-import fr.liglab.adele.cilia.model.ChainRuntime;
+package fr.liglab.adele.cilia.model.impl;
 
-/**
- *
- * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project Team</a>
- *
- */
-public interface Platform {
-	String getVersion();
+import java.util.Date;
+
+public interface ChainRuntime {
+	/* The ChainImpl has never received a start or a stop command */
+	public static final int STATE_IDLE = 0;
+	/* the chain has received a command 'startChain' */
+	public static final int STATE_STARTED =1 ;
+	/* the chain has received a command 'stopChain' */
+	public static final int STATE_STOPPED =2 ;
 	
-	Builder getBuilder();
+	/* return the current state of the ChainImpl */
+	public int getState() ;
 	
-	
-	Application getApplication();
-	
-	/*  Runtime informations , level chain */ 
-	ChainRuntime getChainRuntime(String chainId) ;
+	/* date for the last run command  */
+	public Date lastCommand() ;
 
 }

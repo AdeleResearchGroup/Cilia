@@ -20,7 +20,7 @@ import fr.liglab.adele.cilia.framework.IDispatcher;
 import fr.liglab.adele.cilia.framework.IProcessor;
 import fr.liglab.adele.cilia.framework.IScheduler;
 import fr.liglab.adele.cilia.framework.ISender;
-import fr.liglab.adele.cilia.model.ConstModel;
+import fr.liglab.adele.cilia.model.impl.ConstModel;
 
 public class Const implements ConstModel {
 	

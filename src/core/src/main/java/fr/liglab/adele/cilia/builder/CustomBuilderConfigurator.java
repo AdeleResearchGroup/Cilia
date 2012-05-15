@@ -23,5 +23,5 @@ import java.util.Hashtable;
  */
 public interface CustomBuilderConfigurator {
 
-	Hashtable getProperties();
+	Hashtable properties();
 }

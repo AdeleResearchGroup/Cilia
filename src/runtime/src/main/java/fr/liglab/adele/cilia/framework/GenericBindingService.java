@@ -19,7 +19,7 @@ import java.util.Dictionary;
 import java.util.Properties;
 
 import fr.liglab.adele.cilia.exceptions.CiliaException;
-import fr.liglab.adele.cilia.Binding;
+import fr.liglab.adele.cilia.model.Binding;
 
 
 public class GenericBindingService extends AbstractBindingService implements

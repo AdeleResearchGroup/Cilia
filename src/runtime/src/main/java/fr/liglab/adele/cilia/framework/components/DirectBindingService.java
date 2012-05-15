@@ -4,9 +4,9 @@ import java.util.Dictionary;
 import java.util.Properties;
 import java.util.Random;
 
-import fr.liglab.adele.cilia.Binding;
 import fr.liglab.adele.cilia.framework.AbstractBindingService;
 import fr.liglab.adele.cilia.framework.CiliaBindingService;
+import fr.liglab.adele.cilia.model.Binding;
 
 public class DirectBindingService extends AbstractBindingService implements CiliaBindingService {
    protected static final String senderProperty = "mediator.address";

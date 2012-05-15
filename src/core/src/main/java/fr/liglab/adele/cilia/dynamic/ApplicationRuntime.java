@@ -31,7 +31,7 @@ import fr.liglab.adele.cilia.exceptions.CiliaInvalidSyntaxException;
  *         Team</a>
  * 
  */
-public interface DynamicProperties extends Topology, NodeRegistration,
+public interface ApplicationRuntime extends Topology, NodeRegistration,
 		MeasuresRegistration {
 	/**
 	 * @return list of chain Id
@@ -136,5 +136,21 @@ public interface DynamicProperties extends Topology, NodeRegistration,
 	 */
 	Thresholds nodeMonitoring(Node node) throws CiliaIllegalParameterException,
 			CiliaIllegalStateException;
+	
+	/**
+	 * initializes a chain.
+	 * @param chainId the chain ID to initialize
+	 * @return true if success, false if not.
+	 * @throws CiliaIllegalParameterException when the chain ID does not exist.
+	 */
+	boolean start(String chainId) throws CiliaIllegalParameterException;
+	
+	/**
+	 * Stops a mediation chain.
+	 * @param chainId The chain id to stop.
+	 * @return true if success, false if not.
+	 * @throws CiliaIllegalParameterException when the chain ID does not exist.
+	 */
+	boolean stop(String chainId) throws CiliaIllegalParameterException;
 
 }

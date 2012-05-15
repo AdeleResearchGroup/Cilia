@@ -17,9 +17,9 @@ package fr.liglab.adele.cilia.runtime.dynamic;
 
 import java.util.Dictionary;
 
-import fr.liglab.adele.cilia.MediatorComponent;
 import fr.liglab.adele.cilia.Node;
 import fr.liglab.adele.cilia.framework.monitor.statevariable.ComponentStateVarService;
+import fr.liglab.adele.cilia.model.MediatorComponent;
 
 /**
  * Objects stored in the registry

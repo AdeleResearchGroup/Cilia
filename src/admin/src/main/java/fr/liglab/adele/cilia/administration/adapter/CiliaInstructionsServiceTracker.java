@@ -23,7 +23,7 @@ import org.osgi.framework.ServiceReference;
 import org.osgi.util.tracker.ServiceTracker;
 import org.osgi.util.tracker.ServiceTrackerCustomizer;
 
-import fr.liglab.adele.cilia.CiliaContainer;
+import fr.liglab.adele.cilia.model.CiliaContainer;
 
 
 public class CiliaInstructionsServiceTracker  extends ServiceTracker implements ServiceTrackerCustomizer {

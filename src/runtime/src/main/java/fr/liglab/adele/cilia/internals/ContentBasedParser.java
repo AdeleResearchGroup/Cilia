@@ -16,10 +16,10 @@ package fr.liglab.adele.cilia.internals;
 
 import org.w3c.dom.Node;
 
-import fr.liglab.adele.cilia.Component;
 import fr.liglab.adele.cilia.exceptions.CiliaParserException;
 import fr.liglab.adele.cilia.ext.ContentBasedRouting;
-import fr.liglab.adele.cilia.model.MediatorComponentImpl;
+import fr.liglab.adele.cilia.model.Component;
+import fr.liglab.adele.cilia.model.impl.MediatorComponentImpl;
 import fr.liglab.adele.cilia.util.CiliaExtenderParser;
 
 /**
@@ -34,7 +34,7 @@ public class ContentBasedParser extends DomExtenderParser implements CiliaExtend
 	private static final String LANGUAGE = "language";
 
 	/* (non-Javadoc)
-	 * @see fr.liglab.adele.cilia.model.parser.CiliaExtenderParser#getComponent(java.lang.Object, fr.liglab.adele.cilia.model.IComponent)
+	 * @see fr.liglab.adele.cilia.model.impl.parser.CiliaExtenderParser#getComponent(java.lang.Object, fr.liglab.adele.cilia.model.impl.IComponent)
 	 */
 	public ContentBasedParser(){
 		NAMESPACE = "fr.imag.adele.cilia.dispatcher";
@@ -44,7 +44,7 @@ public class ContentBasedParser extends DomExtenderParser implements CiliaExtend
 			Component currentComponent) throws CiliaParserException {
 		Node child = getNode("dispatcher",componentDescription);
 		if (child != null) {
-			ContentBasedRouting cbr = new ContentBasedRouting((MediatorComponentImpl)currentComponent);
+			ContentBasedRouting cbr = new ContentBasedRouting();
 			String language = getAttributeValue(child, LANGUAGE);
 			if (language != null) {
 				cbr.evaluator(language);
@@ -60,12 +60,13 @@ public class ContentBasedParser extends DomExtenderParser implements CiliaExtend
 				}
 				conf = conf.getNextSibling();
 			}
+			currentComponent.setProperties(cbr.properties());
 		}
 		return currentComponent;
 	}
 
 	/* (non-Javadoc)
-	 * @see fr.liglab.adele.cilia.model.parser.CiliaExtenderParser#canHandle(java.lang.Object)
+	 * @see fr.liglab.adele.cilia.model.impl.parser.CiliaExtenderParser#canHandle(java.lang.Object)
 	 */
 	public boolean canHandle(Object mediatorDescription) {
 		Node disp = getNode("dispatcher",mediatorDescription);

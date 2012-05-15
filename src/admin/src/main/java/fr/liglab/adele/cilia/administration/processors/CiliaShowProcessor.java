@@ -19,18 +19,18 @@ import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.Set;
 
-import fr.liglab.adele.cilia.Adapter;
-import fr.liglab.adele.cilia.Binding;
-import fr.liglab.adele.cilia.Chain;
-import fr.liglab.adele.cilia.CiliaContainer;
+import fr.liglab.adele.cilia.ApplicationSpecification;
+import fr.liglab.adele.cilia.CiliaContext;
 import fr.liglab.adele.cilia.Data;
-import fr.liglab.adele.cilia.Mediator;
-import fr.liglab.adele.cilia.MediatorComponent;
-import fr.liglab.adele.cilia.model.AdapterImpl;
-import fr.liglab.adele.cilia.model.BindingImpl;
-import fr.liglab.adele.cilia.model.ChainImpl;
-import fr.liglab.adele.cilia.model.MediatorImpl;
-import fr.liglab.adele.cilia.model.MediatorComponentImpl;
+import fr.liglab.adele.cilia.model.Adapter;
+import fr.liglab.adele.cilia.model.Binding;
+import fr.liglab.adele.cilia.model.Chain;
+import fr.liglab.adele.cilia.model.Mediator;
+import fr.liglab.adele.cilia.model.MediatorComponent;
+import fr.liglab.adele.cilia.model.impl.AdapterImpl;
+import fr.liglab.adele.cilia.model.impl.BindingImpl;
+import fr.liglab.adele.cilia.model.impl.ChainImpl;
+import fr.liglab.adele.cilia.model.impl.MediatorImpl;
 
 /**
  * CiliaShowProcessor: The processor class. Shows cilia chain instances, chains,
@@ -43,7 +43,7 @@ public class CiliaShowProcessor {
 	/**
 	 * The Cilia Context service, injected by iPOJO
 	 */
-	CiliaContainer ccontext;
+	CiliaContext ccontext;
 
 	/**
 	 * The main process method, this method is called by the cilia framework.
@@ -54,25 +54,19 @@ public class CiliaShowProcessor {
 	 * @return the same unchanged data.
 	 */
 	public Data show(Data data) {
-		try {
-			ccontext.getMutex().readLock().acquire();
-		} catch (InterruptedException e) {
+
+		if ("chain".compareToIgnoreCase(String.valueOf(data.getProperty("element"))) == 0) {
+			showChainInfo(String.valueOf(data.getProperty("id")));
+		} else if ("mediator".compareToIgnoreCase(String.valueOf(data
+				.getProperty("element"))) == 0) {
+			showMediatorInfo(data);
+		} else if ("adapter".compareToIgnoreCase(String.valueOf(data
+				.getProperty("element"))) == 0) {
+			showAdapterInfo(data);
+		} else {
+			showChains();
 		}
-		try {
-			if ("chain".compareToIgnoreCase(String.valueOf(data.getProperty("element"))) == 0) {
-				showChainInfo(String.valueOf(data.getProperty("id")));
-			} else if ("mediator".compareToIgnoreCase(String.valueOf(data
-					.getProperty("element"))) == 0) {
-				showMediatorInfo(data);
-			} else if ("adapter".compareToIgnoreCase(String.valueOf(data
-					.getProperty("element"))) == 0) {
-				showAdapterInfo(data);
-			} else {
-				showChains();
-			}
-		} finally {
-			ccontext.getMutex().readLock().release();
-		}
+
 		return data;
 	}
 
@@ -81,14 +75,10 @@ public class CiliaShowProcessor {
 	 */
 	private void showChains() {
 		StringBuffer toShow = new StringBuffer("Chains:\n");
-		Set chains = ccontext.getAllChains();
-		if (chains == null || chains.size() < 1) {
-			return;
-		}
-		Iterator it = chains.iterator();
-		while (it.hasNext()) {
-			ChainImpl ch = (ChainImpl) it.next();
-			toShow.append(ch.getId());
+		ApplicationSpecification chains = ccontext.getApplicationSpecification();
+		String[] chainnames = chains.getChains();
+		for (int i = 0; i < chainnames.length; i ++) {
+			toShow.append(chainnames[i]);
 			toShow.append("\n");
 		}
 		System.out.println(toShow.toString());
@@ -101,7 +91,9 @@ public class CiliaShowProcessor {
 	 *            The chain id to see.
 	 */
 	private void showChainInfo(String chainId) {
-		Chain ch = ccontext.getChain(chainId);
+		
+		ApplicationSpecification chains = ccontext.getApplicationSpecification();
+		Chain ch = chains.get(chainId);
 		StringBuffer toShow = new StringBuffer("ChainImpl: ");
 		if (ch == null) {
 			toShow.append(chainId);
@@ -153,12 +145,12 @@ public class CiliaShowProcessor {
 	 *            chain). The property "element" in data must be mediator.
 	 */
 	private void showMediatorInfo(Data data) {
-		Chain ch = null;
 		Mediator med = null;
 		StringBuffer toShow = new StringBuffer();
 		String mediatorId = String.valueOf(data.getProperty("id"));
 		String chainId = String.valueOf(data.getProperty("chain"));
-		ch = ccontext.getChain(chainId);
+		ApplicationSpecification chains = ccontext.getApplicationSpecification();
+		Chain ch = chains.get(chainId);
 		if (ch == null) {
 			System.out.println("ChainImpl " + chainId + " Not found.");
 			return;
@@ -183,12 +175,14 @@ public class CiliaShowProcessor {
 	 *            chain). The property "element" in data must be adapter.
 	 */
 	private void showAdapterInfo(Data data) {
-		Chain ch = null;
 		Adapter med = null;
 		StringBuffer toShow = new StringBuffer();
 		String mediatorId = String.valueOf(data.getProperty("id"));
 		String chainId = String.valueOf(data.getProperty("chain"));
-		ch = ccontext.getChain(chainId);
+		
+		ApplicationSpecification chains = ccontext.getApplicationSpecification();
+		Chain ch = chains.get(chainId);
+
 		if (ch == null) {
 			System.err.println("ChainImpl " + chainId + " Not found.");
 			return;

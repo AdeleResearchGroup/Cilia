@@ -13,13 +13,12 @@
  * limitations under the License.
  */
 
-package fr.liglab.adele.cilia.model;
+package fr.liglab.adele.cilia.model.impl;
 
 import java.util.Dictionary;
-import java.util.Hashtable;
 
-import fr.liglab.adele.cilia.Chain;
-import fr.liglab.adele.cilia.Mediator;
+import fr.liglab.adele.cilia.model.Chain;
+import fr.liglab.adele.cilia.model.Mediator;
 
 /**
  * This class is a mediator representation model.

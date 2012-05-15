@@ -17,7 +17,7 @@ package fr.liglab.adele.cilia.ext;
 import java.util.HashMap;
 import java.util.Map;
 
-import fr.liglab.adele.cilia.model.MediatorComponentImpl;
+import fr.liglab.adele.cilia.model.impl.MediatorComponentImpl;
 
 /**
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project Team</a>

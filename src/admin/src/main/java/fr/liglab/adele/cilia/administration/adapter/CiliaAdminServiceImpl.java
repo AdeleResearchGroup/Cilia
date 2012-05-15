@@ -14,16 +14,16 @@
  */
 package fr.liglab.adele.cilia.administration.adapter;
 
-import fr.liglab.adele.cilia.CiliaContainer;
 import fr.liglab.adele.cilia.Data;
 import fr.liglab.adele.cilia.administration.CiliaAdminService;
 import fr.liglab.adele.cilia.administration.util.CiliaInstructionConverter;
 import fr.liglab.adele.cilia.administration.util.ParserUtils;
 import fr.liglab.adele.cilia.framework.AbstractCollector;
-import fr.liglab.adele.cilia.model.ChainImpl;
-import fr.liglab.adele.cilia.Adapter;
-import fr.liglab.adele.cilia.Chain;
-import fr.liglab.adele.cilia.Mediator;
+import fr.liglab.adele.cilia.model.Adapter;
+import fr.liglab.adele.cilia.model.Chain;
+import fr.liglab.adele.cilia.model.CiliaContainer;
+import fr.liglab.adele.cilia.model.Mediator;
+import fr.liglab.adele.cilia.model.impl.ChainImpl;
 
 /**
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project Team</a>

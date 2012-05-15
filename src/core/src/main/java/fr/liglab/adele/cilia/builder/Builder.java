@@ -24,7 +24,9 @@ import fr.liglab.adele.cilia.exceptions.BuilderPerformerException;
  */
 public interface Builder {
 	Architecture create(String chainid) throws BuilderException;
+	Builder remove(String chainId) throws BuilderException;
 	Architecture get(String chainId) throws BuilderException;
 	Builder done() throws BuilderException, BuilderPerformerException;
 	Builder undo() throws BuilderException;
+	String current();
 }

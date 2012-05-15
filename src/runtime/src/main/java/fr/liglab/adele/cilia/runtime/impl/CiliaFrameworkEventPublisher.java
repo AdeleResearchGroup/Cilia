@@ -25,9 +25,9 @@ import org.osgi.service.event.EventAdmin;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import fr.liglab.adele.cilia.Chain;
-import fr.liglab.adele.cilia.MediatorComponent;
 import fr.liglab.adele.cilia.event.CiliaEvent;
+import fr.liglab.adele.cilia.model.Chain;
+import fr.liglab.adele.cilia.model.MediatorComponent;
 import fr.liglab.adele.cilia.runtime.CiliaFrameworkEventProperties;
 import fr.liglab.adele.cilia.util.concurrent.Mutex;
 /**

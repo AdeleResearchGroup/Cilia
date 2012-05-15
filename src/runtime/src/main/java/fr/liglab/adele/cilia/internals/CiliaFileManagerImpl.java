@@ -28,12 +28,15 @@ import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import fr.liglab.adele.cilia.CiliaContext;
+import fr.liglab.adele.cilia.builder.Builder;
+import fr.liglab.adele.cilia.exceptions.BuilderException;
+import fr.liglab.adele.cilia.exceptions.BuilderPerformerException;
 import fr.liglab.adele.cilia.exceptions.CiliaException;
+import fr.liglab.adele.cilia.model.Chain;
 import fr.liglab.adele.cilia.util.ChainParser;
 import fr.liglab.adele.cilia.util.CiliaFileManager;
 
-import fr.liglab.adele.cilia.CiliaContainer;
-import fr.liglab.adele.cilia.Chain;
 
 /**
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project Team</a>
@@ -48,7 +51,7 @@ public class CiliaFileManagerImpl implements CiliaFileManager {
 	/**
 	 * Cilia Cotnext Service.
 	 */
-	CiliaContainer ccontext;
+	CiliaContext ccontext;
 	/**
 	 * The Cilia logger.
 	 */
@@ -110,28 +113,28 @@ public class CiliaFileManagerImpl implements CiliaFileManager {
 	}
 
 
-	private void startManagementFor(File file) {
+	private void startManagementFor(File file) throws CiliaException {
 		List chainsList = new ArrayList();
-		Chain[] chains = null;
+		Builder builders[] = null;
 		logger.debug("Processing file: " + file.getName());
 		try {
-			chains = parser.obtainChains(file.toURI().toURL());
-		} catch (CiliaException e) {
-			logger.warn( e.getMessage(), e);
+			builders = parser.obtainChains(file.toURI().toURL());
 		} catch (FileNotFoundException e) {
-			logger.error(e.getMessage(), e);
+			throw new BuilderException("File not found: " + file.getAbsolutePath());
 		} catch (MalformedURLException e) {
-			logger.error(e.getMessage(), e);
-		}
-		if (chains != null && chains.length >=1) {
-			for (int i = 0; i < chains.length; i++) {
-				if (chains[i] == null) {
+			throw new BuilderException("Unable to open file: " + file.getAbsolutePath());
+		} 
+		if (builders != null && builders.length >=1) {
+			for (int i = 0; i < builders.length; i++) {
+				if (builders[i] == null) {
 					logger.error("Chain in chain list is null in bundle: " + file.getName());
 				} else {
-					ccontext.addChain(chains[i]);
-					ccontext.startChain(chains[i]);
-					chainsList.add(chains[i]);
-					logger.debug("Handling Cilia Chain : " + chains[i].getId());
+					//ccontext.addChain(chains[i]);
+					//ccontext.startChain(chains[i]);
+					builders[i].done();
+					ccontext.getApplicationRuntime().start(builders[i].current());
+					chainsList.add(builders[i].current());
+					logger.debug("Handling Cilia Chain : " + builders[i].current());
 				}
 			}
 			synchronized (handledChains) {
@@ -149,13 +152,14 @@ public class CiliaFileManagerImpl implements CiliaFileManager {
 		}
 		if (chainList != null) {
 			Object[] obs = chainList.toArray();
-			Chain[] chains = new Chain[obs.length];
+			String[] chains = new String[obs.length];
 			if (chains != null) {
 				chainList.toArray(chains);
 				for (int i = 0; i < chains.length; i++) {
 					if (ccontext != null) { //CiliaContext could disappear and this service is stopping also.
 						try{
-							ccontext.removeChain(chains[i]);
+							ccontext.getApplicationRuntime().stop(chains[i]);
+							//ccontext.removeChain(chains[i]);
 						}catch(Exception ex) {} //Exception when stoping iPOJO runtime.
 					}
 				}

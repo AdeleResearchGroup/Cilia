@@ -12,28 +12,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package fr.liglab.adele.cilia.model.impl;
 
-package fr.liglab.adele.cilia.model;
+import java.util.Dictionary;
 
-import fr.liglab.adele.cilia.Component;
+/**
+ * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project Team</a>
+ *
+ */
+public class CollectorImpl extends InternalComponent {
 
-
-public class UpdateEvent {
-
-	
-	private int updateAction;
-	private Component source;
-	
-	public UpdateEvent(int updateAction, Component source) {
-		this.updateAction = updateAction;
-		this.source = source;
+	/**
+	 * @param id
+	 * @param type
+	 * @param nspace
+	 * @param properties
+	 */
+	public CollectorImpl(String id, String type, String nspace,
+			Dictionary properties) {
+		super(id, type, nspace, properties);
+		// TODO Auto-generated constructor stub
 	}
-	
-	public int getUpdateAction() {
-		return this.updateAction;
-	}
-	
-	public Component getSource() {
-		return this.source;
-	}
+
 }

@@ -12,11 +12,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package fr.liglab.adele.cilia.model;
+package fr.liglab.adele.cilia.model.impl;
 
 import java.util.Dictionary;
-
-import fr.liglab.adele.cilia.exceptions.CiliaIllegalParameterException;
 /**
  * This class is the Element representation model.
  * 

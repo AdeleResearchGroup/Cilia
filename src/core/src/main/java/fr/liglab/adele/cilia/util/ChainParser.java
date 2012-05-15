@@ -18,7 +18,9 @@ package fr.liglab.adele.cilia.util;
 import java.io.FileNotFoundException;
 import java.net.URL;
 
-import fr.liglab.adele.cilia.Chain;
+import fr.liglab.adele.cilia.builder.Builder;
+import fr.liglab.adele.cilia.exceptions.BuilderException;
+import fr.liglab.adele.cilia.exceptions.BuilderPerformerException;
 import fr.liglab.adele.cilia.exceptions.CiliaException;
 
 
@@ -29,11 +31,8 @@ import fr.liglab.adele.cilia.exceptions.CiliaException;
  */
 public interface ChainParser {
 
-    Chain parseChain(Object chain) throws CiliaException;
+    Builder parseChain(Object chain) throws CiliaException, BuilderException, BuilderPerformerException;
     
-    Object convertChain(Chain chain);
+    Builder[] obtainChains(URL url) throws CiliaException, BuilderException, BuilderPerformerException, FileNotFoundException;
     
-    Chain[] obtainChains(URL url) throws CiliaException, FileNotFoundException;
-    
-    String getChainType();
 }

@@ -22,13 +22,9 @@ import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import fr.liglab.adele.cilia.Adapter;
-import fr.liglab.adele.cilia.Chain;
-import fr.liglab.adele.cilia.CiliaContainer;
-import fr.liglab.adele.cilia.Mediator;
 import fr.liglab.adele.cilia.Node;
 import fr.liglab.adele.cilia.NodeCallback;
-import fr.liglab.adele.cilia.dynamic.DynamicProperties;
+import fr.liglab.adele.cilia.dynamic.ApplicationRuntime;
 import fr.liglab.adele.cilia.dynamic.MeasureCallback;
 import fr.liglab.adele.cilia.dynamic.RawData;
 import fr.liglab.adele.cilia.dynamic.SetUp;
@@ -37,8 +33,12 @@ import fr.liglab.adele.cilia.dynamic.ThresholdsCallback;
 import fr.liglab.adele.cilia.exceptions.CiliaIllegalParameterException;
 import fr.liglab.adele.cilia.exceptions.CiliaIllegalStateException;
 import fr.liglab.adele.cilia.exceptions.CiliaInvalidSyntaxException;
-import fr.liglab.adele.cilia.model.ChainRuntime;
-import fr.liglab.adele.cilia.model.PatternType;
+import fr.liglab.adele.cilia.model.Adapter;
+import fr.liglab.adele.cilia.model.Chain;
+import fr.liglab.adele.cilia.model.CiliaContainer;
+import fr.liglab.adele.cilia.model.Mediator;
+import fr.liglab.adele.cilia.model.impl.ChainRuntime;
+import fr.liglab.adele.cilia.model.impl.PatternType;
 import fr.liglab.adele.cilia.runtime.AbstractTopology;
 import fr.liglab.adele.cilia.runtime.ConstRuntime;
 import fr.liglab.adele.cilia.util.concurrent.ReadWriteLock;
@@ -52,35 +52,37 @@ import fr.liglab.adele.cilia.util.concurrent.WriterPreferenceReadWriteLock;
  *         Team</a>
  */
 @SuppressWarnings({ "rawtypes", "unchecked" })
-public class DynamicPropertiesImpl extends AbstractTopology implements DynamicProperties,
+public class DynamicPropertiesImpl extends AbstractTopology implements ApplicationRuntime,
 		NodeCallback {
 
 	private final Logger logger = LoggerFactory.getLogger(ConstRuntime.LOG_NAME);
 
 	/* injected by ipojo , registry access */
-	private RuntimeRegistry registry;
+	private RegistryManager registry;
 	/* Cilia components discovery (adapters, mediators) */
 	private NodeDiscoveryImpl discovery;
 	/* Cilia application model */
-	private CiliaContainer ciliaContext;
+	private CiliaContainer ciliaContainer;
 	/* holds values fired by mediators/adapters */
 	private MonitorHandlerListener chainRt;
 	private ReadWriteLock mutex;
 	private NodeListenerSupport nodeListenerSupport;
 
-	public DynamicPropertiesImpl(BundleContext bc) {
-
+	public DynamicPropertiesImpl(BundleContext bc, CiliaContainer cc) {
+		registry = new RegistryManager(bc);
 		discovery = new NodeDiscoveryImpl(bc, this);
 		mutex = new WriterPreferenceReadWriteLock();
 		nodeListenerSupport = new NodeListenerSupport(bc);
 		chainRt = new MonitorHandlerListener(bc, nodeListenerSupport);
+		ciliaContainer = cc;
 	}
 
 	/*
 	 * Start the service
 	 */
 	public void start() {
-		super.setContext(ciliaContext);
+		registry.start();
+		super.setContext(ciliaContainer);
 		nodeListenerSupport.start();
 		discovery.setRegistry(registry);
 		chainRt.setRegistry(registry);
@@ -95,6 +97,7 @@ public class DynamicPropertiesImpl extends AbstractTopology implements DynamicPr
 	 * Stop the service
 	 */
 	public void stop() {
+		registry.stop();
 		nodeListenerSupport.stop();
 		chainRt.stop();
 		discovery.stop();
@@ -253,7 +256,7 @@ public class DynamicPropertiesImpl extends AbstractTopology implements DynamicPr
 		Set adapterSet = new HashSet();
 		Node[] item = registry.findByFilter(ldapFilter);
 		for (int i = 0; i < item.length; i++) {
-			chain = ciliaContext.getChain(item[i].chainId());
+			chain = ciliaContainer.getChain(item[i].chainId());
 			if (chain != null) {
 				adapter = chain.getAdapter(item[i].nodeId());
 				if (adapter != null) {
@@ -361,7 +364,7 @@ public class DynamicPropertiesImpl extends AbstractTopology implements DynamicPr
 		if (registry.findByUuid(node.uuid()) == null)
 			throw new CiliaIllegalStateException("node disappears");
 		/* retreive the chain hosting the mediator/component */
-		chain = ciliaContext.getChain(node.chainId());
+		chain = ciliaContainer.getChain(node.chainId());
 		if (chain != null) {
 			/* checks if the node is an adapter */
 			adapter = chain.getAdapter(node.nodeId());
@@ -491,7 +494,7 @@ public class DynamicPropertiesImpl extends AbstractTopology implements DynamicPr
 			CiliaIllegalStateException {
 		if (chainId == null)
 			throw new CiliaIllegalParameterException("chain id is null");
-		ChainRuntime chain = ciliaContext.getChainRuntime(chainId);
+		ChainRuntime chain = ciliaContainer.getChainRuntime(chainId);
 		if (chain == null)
 			throw new CiliaIllegalStateException("'" + chainId + "' not found");
 		return chain.getState();
@@ -501,7 +504,7 @@ public class DynamicPropertiesImpl extends AbstractTopology implements DynamicPr
 			CiliaIllegalStateException {
 		if (chainId == null)
 			throw new CiliaIllegalParameterException("chain id is null");
-		ChainRuntime chain = ciliaContext.getChainRuntime(chainId);
+		ChainRuntime chain = ciliaContainer.getChainRuntime(chainId);
 		if (chain == null)
 			throw new CiliaIllegalStateException("'" + chainId + "' not found");
 		return chain.lastCommand();
@@ -535,6 +538,34 @@ public class DynamicPropertiesImpl extends AbstractTopology implements DynamicPr
 	public void removeListener(MeasureCallback listener)
 			throws CiliaIllegalParameterException {
 		nodeListenerSupport.removeListener(listener);
+	}
+
+	/* (non-Javadoc)
+	 * @see fr.liglab.adele.cilia.dynamic.ApplicationRuntime#start(java.lang.String)
+	 */
+	public boolean start(String chainId) throws CiliaIllegalParameterException {
+		if (chainId == null) {
+			throw new CiliaIllegalParameterException("Chain ID is null");
+		}
+		if (ciliaContainer.getChain(chainId) == null) {
+			return false;
+		}
+		ciliaContainer.startChain(chainId);
+		return true;
+	}
+
+	/* (non-Javadoc)
+	 * @see fr.liglab.adele.cilia.dynamic.ApplicationRuntime#stop(java.lang.String)
+	 */
+	public boolean stop(String chainId) throws CiliaIllegalParameterException {
+		if (chainId == null) {
+			throw new CiliaIllegalParameterException("Chain ID is null");
+		}
+		if (ciliaContainer.getChain(chainId) == null) {
+			return false;
+		}
+		ciliaContainer.stopChain(chainId);
+		return true;
 	}
 
 }

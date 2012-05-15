@@ -1,4 +1,5 @@
-package fr.liglab.adele.cilia.model;
+package fr.liglab.adele.cilia.model.impl;
+
 
 public final class PatternType {
 	public static final PatternType IN_ONLY = new PatternType(1);

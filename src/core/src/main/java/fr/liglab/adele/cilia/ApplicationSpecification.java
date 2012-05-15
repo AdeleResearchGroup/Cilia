@@ -19,7 +19,8 @@ import java.util.Dictionary;
 
 import fr.liglab.adele.cilia.exceptions.CiliaIllegalParameterException;
 import fr.liglab.adele.cilia.exceptions.CiliaIllegalStateException;
-import fr.liglab.adele.cilia.exceptions.CiliaInvalidSyntaxException;
+import fr.liglab.adele.cilia.model.Chain;
+import fr.liglab.adele.cilia.model.MediatorComponent;
 
 /**
  *
@@ -28,7 +29,7 @@ import fr.liglab.adele.cilia.exceptions.CiliaInvalidSyntaxException;
  * 
  */
 @SuppressWarnings({ "rawtypes" })
-public interface Application extends Topology, NodeRegistration, ChainRegistration {
+public interface ApplicationSpecification extends Topology, NodeRegistration, ChainRegistration {
 
 	/**
 	 * @return list of chain Id
@@ -61,4 +62,6 @@ public interface Application extends Topology, NodeRegistration, ChainRegistrati
 	 */
 	MediatorComponent getModel(Node node) throws CiliaIllegalParameterException,
 			CiliaIllegalStateException;
+	
+	Chain get(String chainId);
 }

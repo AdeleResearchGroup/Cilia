@@ -12,26 +12,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package fr.liglab.adele.cilia.model;
 
-import java.util.Dictionary;
+import fr.liglab.adele.cilia.model.impl.PortType;
 
-/**
- * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project Team</a>
- *
- */
-public class CollectorImpl extends InternalComponent {
+public interface Port {
 
 	/**
-	 * @param id
-	 * @param type
-	 * @param nspace
-	 * @param properties
+	 * Get the port Tyoe.
+	 * @return
 	 */
-	public CollectorImpl(String id, String type, String nspace,
-			Dictionary properties) {
-		super(id, type, nspace, properties);
-		// TODO Auto-generated constructor stub
-	}
+	public PortType getType();
+
+	/**
+	 * Get the port name.
+	 * @return
+	 */
+	public String getName();
+
+	/**
+	 * Get the mediator reference which contain this port.
+	 * @return
+	 */
+	public MediatorComponent getMediator();
 
 }

@@ -22,4 +22,5 @@ package fr.liglab.adele.cilia.builder;
 public interface Modifier {
 	InstanceModifier adapter();
 	InstanceModifier mediator();
+	
 }

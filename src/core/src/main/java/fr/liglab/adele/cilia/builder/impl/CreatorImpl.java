@@ -56,7 +56,6 @@ public class CreatorImpl extends MediatorConfiguratorImpl implements Creator,
 	/**
 	 * @see fr.liglab.adele.cilia.builder.Creator#mediator()
 	 */
-	@Override
 	public InstanceCreator mediator() {
 		instanceType = Architecture.MEDIATOR;
 		return this;
@@ -65,7 +64,6 @@ public class CreatorImpl extends MediatorConfiguratorImpl implements Creator,
 	/**
 	 * @see fr.liglab.adele.cilia.builder.Creator#adapter()
 	 */
-	@Override
 	public InstanceCreator adapter() {
 		instanceType = Architecture.ADAPTER;
 		return this;
@@ -74,7 +72,6 @@ public class CreatorImpl extends MediatorConfiguratorImpl implements Creator,
 	/**
 	 * @see fr.liglab.adele.cilia.builder.InstanceCreator#type(java.lang.String)
 	 */
-	@Override
 	public InstanceCreatorConfiguration type(String type) {
 		this.type = type;
 		return this;
@@ -83,7 +80,6 @@ public class CreatorImpl extends MediatorConfiguratorImpl implements Creator,
 	/**
 	 * @see fr.liglab.adele.cilia.builder.InstanceCreatorConfiguration#namespace(java.lang.String)
 	 */
-	@Override
 	public InstanceCreatorConfiguration namespace(String nspace) {
 		this.namespace = nspace;
 		return this;
@@ -108,7 +104,6 @@ public class CreatorImpl extends MediatorConfiguratorImpl implements Creator,
 	/**
 	 * @see fr.liglab.adele.cilia.builder.InstanceCreatorConfiguration#id(java.lang.String)
 	 */
-	@Override
 	public ConfiguratorReturner id(String id)
 			throws BuilderConfigurationException {
 		if (alreadyInList(id)) {
@@ -122,7 +117,6 @@ public class CreatorImpl extends MediatorConfiguratorImpl implements Creator,
 	/**
 	 * @see fr.liglab.adele.cilia.builder.ConfiguratorReturner#configure()
 	 */
-	@Override
 	public MediatorConfigurator configure() {
 		return this;
 	}
@@ -155,17 +149,6 @@ public class CreatorImpl extends MediatorConfiguratorImpl implements Creator,
 		return type;
 	}
 
-	/**
-	 * @return
-	 */
-	protected Hashtable getProperties() {
-		Hashtable prps = new Hashtable();
-		prps.putAll(sharedprops);
-		prps.put("scheduler.properties", schedulerprops);
-		prps.put("processor.properties", processorprops);
-		prps.put("dispatcher.properties", dispatcherprops);
-		return prps;
-	}
 
 	/**
 	 * @return the category

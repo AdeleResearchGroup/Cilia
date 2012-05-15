@@ -38,13 +38,13 @@ import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import fr.liglab.adele.cilia.Component;
 import fr.liglab.adele.cilia.Data;
 import fr.liglab.adele.cilia.exceptions.CiliaException;
 import fr.liglab.adele.cilia.framework.AbstractDispatcher;
 import fr.liglab.adele.cilia.framework.IDispatcher;
 import fr.liglab.adele.cilia.framework.ISender;
-import fr.liglab.adele.cilia.model.Dispatcher;
+import fr.liglab.adele.cilia.model.Component;
+import fr.liglab.adele.cilia.model.impl.Dispatcher;
 import fr.liglab.adele.cilia.runtime.CiliaInstance;
 import fr.liglab.adele.cilia.runtime.CiliaInstanceManager;
 import fr.liglab.adele.cilia.runtime.CiliaInstanceWrapper;
@@ -115,43 +115,42 @@ Observer, IDispatcherHandler {
 		Element[] dispatcherHanlerMetadata = metadata.getElements(
 				CILIA_DISPATCHER_HANDLERNAME, Const.CILIA_NAMESPACE);
 
-		if (dispatcherHanlerMetadata != null && dispatcherHanlerMetadata.length == 1) {
+		if (dispatcherHanlerMetadata != null ) {
 
-			for (int i = 0; i < dispatcherHanlerMetadata.length; i++) {
-				Element procesorMetadata = null;
-				if (metadata.containsElement("method", Const.CILIA_NAMESPACE)) {
-					procesorMetadata = metadata.getElements("method",
-							Const.CILIA_NAMESPACE)[0];
-				} else if (metadata.containsElement("method")) {
-					procesorMetadata = metadata.getElements("method")[0];
-				} else {
-					procesorMetadata = dispatcherHanlerMetadata[0];
-				}
-				ProcessorMetadata cm = new ProcessorMetadata(procesorMetadata);
-				PojoMetadata pojometadata = getPojoMetadata();
+			Element procesorMetadata = null;
+			if (metadata.containsElement("method", Const.CILIA_NAMESPACE)) {
+				procesorMetadata = metadata.getElements("method",
+						Const.CILIA_NAMESPACE)[0];
+			} else if (metadata.containsElement("method")) {
+				procesorMetadata = metadata.getElements("method")[0];
+			} else {
+				procesorMetadata = dispatcherHanlerMetadata[0];
+			}
+			ProcessorMetadata cm = new ProcessorMetadata(procesorMetadata);
+			PojoMetadata pojometadata = getPojoMetadata();
 
-				MethodMetadata methodMetadata;
-				methodMetadata = pojometadata.getMethod(cm.getMethod(),
-						cm.getParameterDataType());
+			MethodMetadata methodMetadata;
+			methodMetadata = pojometadata.getMethod(cm.getMethod(),
+					cm.getParameterDataType());
 
-				if (methodMetadata == null) {
-					throw new ConfigurationException("Method " + cm.getMethod()
-							+ " in pojo should " + "receive "
-							+ cm.getReturnedDataType()[0]);
-				}
-				String returnDataType = methodMetadata.getMethodReturn();
-				if (returnDataType.compareTo(cm.getReturnedDataType()[0]) != 0) {
-					throw new ConfigurationException("Method " + cm.getMethod()
-							+ " in pojo should " + "return "
-							+ cm.getReturnedDataType()[0]);
-				}
+			if (methodMetadata == null) {
+				throw new ConfigurationException("Method " + cm.getMethod()
+						+ " in pojo should " + "receive "
+						+ cm.getReturnedDataType()[0]);
+			}
+			String returnDataType = methodMetadata.getMethodReturn();
+			if (returnDataType.compareTo(cm.getReturnedDataType()[0]) != 0) {
+				throw new ConfigurationException("Method " + cm.getMethod()
+						+ " in pojo should " + "return "
+						+ cm.getReturnedDataType()[0]);
 			}
 
 		} else {
 			throw new ConfigurationException("Error in configuration"
 					+ " this handler should be configured with one handler name:"
 					+ CILIA_DISPATCHER_HANDLERNAME + " and HandlerNamespace:"
-					+ Const.CILIA_NAMESPACE);
+					+ Const.CILIA_NAMESPACE + metadata);
+
 		}
 	}
 
@@ -170,8 +169,6 @@ Observer, IDispatcherHandler {
 		extentedConfiguration();
 		initiainitializeProperties(properties);
 		// it will obtain dispatcher description from dictionary.
-
-		initiainitializeProperties(properties);
 
 		((Observable) senderManager).addObserver(this);
 
@@ -528,16 +525,17 @@ Observer, IDispatcherHandler {
 
 	private void createDispatcherInstance(Dictionary dictionary) {
 		BundleContext context = getInstanceManager().getContext();
-		String schedulerName = "dispatcher";
-		String schedulerFilter = createFilter();
+		String dispatcherName = "dispatcher";
+		String dispatcherFilter = createFilter();
 		Dictionary dispProperties = getDispatcherProperties(dictionary);
-		dispatcherComponent = new CiliaInstanceWrapper(context, schedulerName,
-				schedulerFilter, dispProperties, this);
+		dispatcherComponent = new CiliaInstanceWrapper(context, dispatcherName,
+				dispatcherFilter, dispProperties, this);
 	}
 
 	private Dictionary getDispatcherProperties(Dictionary dictionary) {
 		Dictionary dispatcherProperties;
-		Object properties = dictionary.get("dispatcher");
+		
+		Object properties = dictionary.get("dispatcher.properties");
 		if (properties != null && properties instanceof Dictionary) {
 			dispatcherProperties = (Dictionary) properties;
 		} else {

@@ -19,8 +19,8 @@ import org.osgi.framework.ServiceReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import fr.liglab.adele.cilia.Component;
-import fr.liglab.adele.cilia.model.ComponentImpl;
+import fr.liglab.adele.cilia.model.Component;
+import fr.liglab.adele.cilia.model.impl.ComponentImpl;
 
 public class MediatorComponentFactory extends CiliaComponentFactory implements
 		TrackerCustomizer {

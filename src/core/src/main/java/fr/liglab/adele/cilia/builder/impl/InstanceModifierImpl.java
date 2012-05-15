@@ -27,12 +27,12 @@ import fr.liglab.adele.cilia.builder.Modifier;
 public class InstanceModifierImpl extends MediatorConfiguratorImpl implements InstanceModifier, Modifier {
 	String id;
 	int type;
+	BinderImpl binderConfig;
 	protected InstanceModifierImpl() {
 	}
 	/* (non-Javadoc)
 	 * @see fr.liglab.adele.cilia.builder.InstanceModifier#id(java.lang.String)
 	 */
-	@Override
 	public MediatorConfigurator id(String id) {
 		this.id = id;
 		return this;
@@ -40,7 +40,6 @@ public class InstanceModifierImpl extends MediatorConfiguratorImpl implements In
 	/* (non-Javadoc)
 	 * @see fr.liglab.adele.cilia.builder.InstanceModifier#adapter()
 	 */
-	@Override
 	public InstanceModifier adapter() {
 		type = Architecture.ADAPTER;
 		return this;
@@ -48,7 +47,6 @@ public class InstanceModifierImpl extends MediatorConfiguratorImpl implements In
 	/* (non-Javadoc)
 	 * @see fr.liglab.adele.cilia.builder.InstanceModifier#mediator()
 	 */
-	@Override
 	public InstanceModifier mediator() {
 		type = Architecture.MEDIATOR;
 		return this;
