@@ -17,7 +17,6 @@ package fr.liglab.adele.cilia.runtime.application;
 
 import java.util.ArrayList;
 import java.util.Dictionary;
-import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Map;
@@ -40,8 +39,7 @@ import fr.liglab.adele.cilia.exceptions.CiliaIllegalParameterException;
 import fr.liglab.adele.cilia.exceptions.CiliaInvalidSyntaxException;
 import fr.liglab.adele.cilia.runtime.ConstRuntime;
 import fr.liglab.adele.cilia.util.SwingWorker;
-import fr.liglab.adele.cilia.util.concurrent.ReentrantWriterPreferenceReadWriteLock;
-import fr.liglab.adele.cilia.util.concurrent.SyncMap;
+import fr.liglab.adele.cilia.util.concurrent.ConcurrentReaderHashMap;
 
 /**
  * 
@@ -59,17 +57,15 @@ public class ApplicationListenerSupport implements TrackerCustomizer, ChainRegis
 	private static final String CHAIN_APPLICATION_LISTENER = "cilia.application.chain";
 	private static final String FILTER = "(|(cilia.application.node=*)(cilia.application.chain=*))";
 
-	private SyncMap listenerNode;
-	private SyncMap listenerChain;
+	private Map listenerNode;
+	private Map listenerChain;
 	private BundleContext bundleContext;
 	private Tracker tracker;
 
 	public ApplicationListenerSupport(BundleContext bc) {
 		bundleContext = bc;
-		listenerNode = new SyncMap(new HashMap(),
-				new ReentrantWriterPreferenceReadWriteLock());
-		listenerChain = new SyncMap(new HashMap(),
-				new ReentrantWriterPreferenceReadWriteLock());
+		listenerNode = new ConcurrentReaderHashMap();
+		listenerChain = new ConcurrentReaderHashMap();
 	}
 
 	public void start() {
@@ -103,18 +99,22 @@ public class ApplicationListenerSupport implements TrackerCustomizer, ChainRegis
 	}
 
 	/* insert a new listener ,associated to a ldap filter */
-	protected void addFilterListener(Map map, String filter, Object listener)
+	private void addFilterListener(Map map, String filter, Object listener)
 			throws CiliaIllegalParameterException, CiliaInvalidSyntaxException {
 		if (listener == null)
 			throw new CiliaIllegalParameterException("listener is null");
-		if (!map.containsKey(listener)) {
-			map.put(listener, new ArrayList());
+		ArrayList array =new ArrayList(1);
+		ArrayList old ;
+		array.add(ConstRuntime.createFilter(filter)) ;
+		/* Efficient with ConcurrentReaderHashMap */
+		old = (ArrayList)map.put(listener,array);
+		if (old !=null) {
+			array.addAll(old) ;
 		}
-		((ArrayList) map.get(listener)).add(ConstRuntime.createFilter(filter));
 	}
 
 	/* Remove a listener */
-	protected void removeFilterListener(Map map, Object listener)
+	private void removeFilterListener(Map map, Object listener)
 			throws CiliaIllegalParameterException {
 		if (listener == null)
 			throw new CiliaIllegalParameterException("listener is null");
@@ -212,8 +212,8 @@ public class ApplicationListenerSupport implements TrackerCustomizer, ChainRegis
 		}
 
 		protected Object construct() throws Exception {
-			Iterator it = listenerNode.keySet().iterator();
 
+			Iterator it = listenerChain.keySet().iterator();
 			while (it.hasNext()) {
 				Map.Entry pairs = (Map.Entry) it.next();
 				ArrayList filters = (ArrayList) pairs.getValue();
@@ -224,7 +224,6 @@ public class ApplicationListenerSupport implements TrackerCustomizer, ChainRegis
 						break;
 					}
 				}
-
 				if (tofire) {
 					ChainCallback cb = (ChainCallback) pairs.getKey();
 					String chainId = (String) dico.get(ConstRuntime.CHAIN_ID);

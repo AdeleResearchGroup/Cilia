@@ -84,5 +84,4 @@ public interface RuntimeRegistry {
 	 * remove an entry
 	 */
 	void unregister(String uuid);
-
 }

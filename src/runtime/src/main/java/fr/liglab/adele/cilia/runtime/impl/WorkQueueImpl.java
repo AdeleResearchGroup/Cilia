@@ -22,13 +22,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import fr.liglab.adele.cilia.runtime.WorkQueue;
+
 /**
  * 
- *
- * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project Team</a>
- *
+ * 
+ * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project
+ *         Team</a>
+ * 
  */
-@SuppressWarnings({"rawtypes", "unchecked"})
+@SuppressWarnings({ "rawtypes", "unchecked" })
 public class WorkQueueImpl implements WorkQueue {
 	private ArrayList threads;
 	private LinkedList queue;
@@ -37,7 +39,7 @@ public class WorkQueueImpl implements WorkQueue {
 	private String m_name;
 	private int m_size;
 	private int m_priority;
-	
+
 	private static final Logger logger = LoggerFactory.getLogger("cilia.ipojo.runtime");
 
 	public void WorkQueue() {
@@ -80,7 +82,7 @@ public class WorkQueueImpl implements WorkQueue {
 	private void addThread(int i) {
 		Worker worker = new Worker();
 		threads.add(worker);
-		worker.setDaemon(true) ;
+		worker.setDaemon(true);
 		worker.setName(m_name + "-" + i);
 		worker.setPriority(m_priority);
 		worker.start();
@@ -225,11 +227,10 @@ public class WorkQueueImpl implements WorkQueue {
 				}
 				try {
 					r.run();
-				} catch (RuntimeException e) {
+				} catch (Throwable e) {
 					logger.error("Exception Worker(" + this.getName() + ")=" + e);
 				}
 			}
 		}
 	}
-
 }

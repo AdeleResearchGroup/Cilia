@@ -62,6 +62,6 @@ public interface SystemApplication {
 	 * 
 	 * @return java total memory available
 	 */
-	long totalMemory ();
+	long totalMemory();
 	
 }

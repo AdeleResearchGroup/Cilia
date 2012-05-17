@@ -14,12 +14,10 @@
 
 package fr.liglab.adele.cilia.runtime.dynamic;
 
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Filter;
@@ -29,9 +27,8 @@ import org.slf4j.LoggerFactory;
 import fr.liglab.adele.cilia.exceptions.CiliaIllegalParameterException;
 import fr.liglab.adele.cilia.exceptions.CiliaInvalidSyntaxException;
 import fr.liglab.adele.cilia.runtime.ConstRuntime;
+import fr.liglab.adele.cilia.util.concurrent.ConcurrentReaderHashMap;
 import fr.liglab.adele.cilia.util.concurrent.Mutex;
-import fr.liglab.adele.cilia.util.concurrent.ReentrantWriterPreferenceReadWriteLock;
-import fr.liglab.adele.cilia.util.concurrent.SyncMap;
 
 /**
  * Implements a 'Registry' Constain all Cilia objects discovered at runtime.
@@ -40,19 +37,18 @@ import fr.liglab.adele.cilia.util.concurrent.SyncMap;
  *         Team</a>
  * 
  */
-@SuppressWarnings({"rawtypes", "unchecked"})
-public class RegistryManager implements RuntimeRegistry {
+@SuppressWarnings({ "rawtypes", "unchecked" })
+public class RuntimeRegistryImpl implements RuntimeRegistry {
 
 	private final Logger logger = LoggerFactory.getLogger(ConstRuntime.LOG_NAME);
 
 	/* m_registry association uuid <-> RegistryItem */
-	private SyncMap registry;
+	private Map registry;
 	private Map locked_uuid;
 
-	public RegistryManager(BundleContext bc) {
-		registry = new SyncMap(new HashMap(),
-				new ReentrantWriterPreferenceReadWriteLock());
-		locked_uuid = new ConcurrentHashMap();
+	public RuntimeRegistryImpl(BundleContext bc) {
+		registry = new ConcurrentReaderHashMap();
+		locked_uuid = new ConcurrentReaderHashMap();
 	}
 
 	public void start() {
@@ -131,7 +127,7 @@ public class RegistryManager implements RuntimeRegistry {
 	 * fr.liglab.adele.cilia.knowledge.core.registry.RuntimeRegistry#lock_uuid
 	 * (java.lang.String)
 	 */
-	public void lock_uuid(String uuid) {
+	public synchronized void lock_uuid(String uuid) {
 		if (uuid == null) {
 			logger.error("uuid is null , cannot lock uuid");
 			return;
@@ -142,7 +138,7 @@ public class RegistryManager implements RuntimeRegistry {
 				Mutex mutex = new Mutex();
 				mutex.acquire();
 				locked_uuid.put(uuid, mutex);
-			} catch (Exception e) {
+			} catch (InterruptedException e) {
 				locked_uuid.remove(uuid);
 				Thread.currentThread().interrupt();
 				throw new RuntimeException(e.getMessage());
@@ -178,26 +174,16 @@ public class RegistryManager implements RuntimeRegistry {
 			CiliaIllegalParameterException {
 		Set itemfound = new HashSet();
 		Filter filter = ConstRuntime.createFilter(ldap);
-		try {
-			registry.readerSync().acquire();
-			try {
-				Iterator it = registry.entrySet().iterator();
-				while (it.hasNext()) {
-					Map.Entry pairs = (Map.Entry) it.next();
-					RegistryItem item = (RegistryItem) pairs.getValue();
-					if (filter.match(item.getProperties())) {
-						itemfound.add(item);
-					}
-				}
-				return (RegistryItem[]) itemfound.toArray(new RegistryItem[itemfound
-						.size()]);
-			} finally {
-				registry.readerSync().release();
+
+		Iterator it = registry.entrySet().iterator();
+		while (it.hasNext()) {
+			Map.Entry pairs = (Map.Entry) it.next();
+			RegistryItem item = (RegistryItem) pairs.getValue();
+			if (filter.match(item.getProperties())) {
+				itemfound.add(item);
 			}
-		} catch (Exception e) {
-			Thread.currentThread().interrupt();
-			throw new RuntimeException(e.getMessage());
 		}
+		return (RegistryItem[]) itemfound.toArray(new RegistryItem[itemfound.size()]);
 	}
 
 	/*

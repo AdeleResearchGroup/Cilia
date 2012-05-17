@@ -419,36 +419,36 @@
 	</component>
 	
 	<component
-		classname="fr.liglab.adele.cilia.runtime.dynamic.RegistryManager"
-		name="ModelRuntime.Registry_DynamicComponent">
+		classname="fr.liglab.adele.cilia.runtime.dynamic.RuntimeRegistryImpl"
+		name="Registry.DynamicComponent">
 		<provides
 			specification="fr.liglab.adele.cilia.runtime.dynamic.RuntimeRegistry" />
 		<callback transition="validate" method="start" />
 		<callback transition="invalidate" method="stop" />
 	</component>
-	<instance component="ModelRuntime.Registry_DynamicComponent" />
+	<instance component="Registry.DynamicComponent" />
 
 	<component
-		classname="fr.liglab.adele.cilia.runtime.application.ApplicationImpl"
-		name="ModelRuntime_Core.Application">
+		classname="fr.liglab.adele.cilia.runtime.application.ApplicationSpecificationImpl"
+		name="Application.Specification">
 		<requires field="ciliaContext" />
 		<requires field="listenerFramework" />
 		<provides
-			specification="fr.liglab.adele.cilia.Application" />
+			specification="fr.liglab.adele.cilia.ApplicationSpecification" />
 		<callback transition="validate" method="start" />
 		<callback transition="invalidate" method="stop" />
 	</component>
-	<instance component="ModelRuntime_Core.Application" />
+	<instance component="Application.Specification" />
 	
 	<component
-		classname="fr.liglab.adele.cilia.runtime.dynamic.DynamicPropertiesImpl"
-		name="ModelRuntime_Core.NodesRuntime">
+		classname="fr.liglab.adele.cilia.runtime.dynamic.ApplicationRuntimeImpl"
+		name="Application.Runtime">
 		<provides
-			specification="fr.liglab.adele.cilia.runtime.DynamicProperties" />
+			specification="fr.liglab.adele.cilia.runtime.ApplicationRuntime" />
 		<requires field="registry" />
 		<requires field="ciliaContext" />
 		<callback transition="validate" method="start" />
 		<callback transition="invalidate" method="stop" />
 	</component>
-	   <instance component="ModelRuntime_Core.NodesRuntime" /> 
+	   <instance component="Application.Runtime" /> 
 </ipojo>

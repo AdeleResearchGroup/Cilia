@@ -60,7 +60,7 @@ public class MonitorHandler extends PrimitiveHandler implements IProcessorMonito
 			PojoMetadata pojoMeta = getPojoMetadata();
 			FieldMetadata fm = pojoMeta.getField(field);
 			if (fm != null) {
-				// Then check that the field is a ProcessorNotifier field
+				/* Then check that the field is a ProcessorNotifier field */
 				if (!fm.getFieldType().equals(ProcessorNotifier.class.getName())) {
 					field = null;
 				}
@@ -70,15 +70,12 @@ public class MonitorHandler extends PrimitiveHandler implements IProcessorMonito
 	}
 
 	public void stop() {
-		removeListeners();
+		listeners.clear();
 	}
 
 	public void start() {
 	}
 
-	private void removeListeners() {
-			listeners.clear();
-	}
 
 	public void addListener(IMonitor listener) {
 		listeners.addIfAbsent(listener);
@@ -145,19 +142,16 @@ public class MonitorHandler extends PrimitiveHandler implements IProcessorMonito
 				} catch (IllegalAccessException e) {
 				}
 			} catch (SecurityException e) {
-
 			} catch (NoSuchFieldException e) {
 			}
 		}
 	}
-
 
 	public void onServiceArrival(Map info) {
 		Iterator it= listeners.listIterator() ;
 		while (it.hasNext())
 			((IMonitor )it.next()).onServiceArrival(info);
 	}
-
 
 	public void onServiceDeparture(Map info) {
 		Iterator it= listeners.listIterator() ;
@@ -176,5 +170,4 @@ public class MonitorHandler extends PrimitiveHandler implements IProcessorMonito
 		while (it.hasNext())
 			((IMonitor )it.next()).onFieldSet(field, o);		
 	}
-	
 }

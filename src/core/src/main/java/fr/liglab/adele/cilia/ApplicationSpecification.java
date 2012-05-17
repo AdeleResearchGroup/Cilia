@@ -27,7 +27,7 @@ import fr.liglab.adele.cilia.exceptions.CiliaIllegalStateException;
  * 
  */
 @SuppressWarnings({ "rawtypes" })
-public interface Application extends Topology, NodeRegistration, ChainRegistration {
+public interface ApplicationSpecification extends Topology, NodeRegistration, ChainRegistration {
 
 	/**
 	 * @return list of chain Id

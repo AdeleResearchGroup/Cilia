@@ -26,20 +26,18 @@ import java.util.Set;
 
 import org.apache.felix.ipojo.ConfigurationException;
 import org.apache.felix.ipojo.metadata.Element;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import fr.liglab.adele.cilia.Data;
-import fr.liglab.adele.cilia.runtime.Const;
 import fr.liglab.adele.cilia.runtime.WorkQueue;
 import fr.liglab.adele.cilia.util.Watch;
 
 public class MonitorHandlerStateVar extends AbstractStateVariable {
-	private static Logger logger = LoggerFactory.getLogger(Const.LOGGER_CORE);
+
 	/* TAG for storing message history */
 	private static final String PROPERTY_MSG_HISTORY = "cilia.message.history";
 	private static final String PROPERTY_BINDING_TIME = "cilia.message.time.bind";
 	/* Liste of state var */
+
 	private static final Set setStateVar, setDependencyCall, setEventing, setSystemCall,
 			setFunctionnalCall;
 

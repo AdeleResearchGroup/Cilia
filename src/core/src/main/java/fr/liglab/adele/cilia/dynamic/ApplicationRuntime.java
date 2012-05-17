@@ -31,7 +31,7 @@ import fr.liglab.adele.cilia.exceptions.CiliaInvalidSyntaxException;
  *         Team</a>
  * 
  */
-public interface DynamicProperties extends Topology, NodeRegistration,
+public interface ApplicationRuntime extends Topology, NodeRegistration,
 		MeasuresRegistration {
 	/**
 	 * @return list of chain Id

@@ -39,8 +39,8 @@ public class Condition {
 	public static final String TIME_PREVIOUS = "time.previous";
 
 	private Filter filter;
-	private final Dictionary dico;
-	private final Object synchro;
+	private final Dictionary dico = new Hashtable(7);
+	private final Object synchro = new Object();
 
 	/**
 	 * Contructor
@@ -53,16 +53,12 @@ public class Condition {
 	 */
 	public Condition(BundleContext bc, String ldapfilter)
 			throws CiliaInvalidSyntaxException {
-		synchro = new Object();
-		dico = new Hashtable(7);
 		dico.put(VALUE_CURRENT, new Double(Double.NaN));
 		dico.put(TIME_CURRENT, new Long(0));
 		setCondition(bc, ldapfilter);
 	}
 
 	public Condition(Filter filter) {
-		synchro = new Object();
-		dico = new Hashtable(7);
 		dico.put(VALUE_CURRENT, new Double(Double.NaN));
 		dico.put(TIME_CURRENT, new Long(0));
 		setCondition(filter);

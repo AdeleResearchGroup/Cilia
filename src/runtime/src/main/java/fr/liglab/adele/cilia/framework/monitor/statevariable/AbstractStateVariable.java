@@ -16,6 +16,7 @@
 package fr.liglab.adele.cilia.framework.monitor.statevariable;
 
 import java.util.Dictionary;
+
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Hashtable;
@@ -43,6 +44,7 @@ import fr.liglab.adele.cilia.util.Watch;
 import fr.liglab.adele.cilia.util.concurrent.ReadWriteLock;
 import fr.liglab.adele.cilia.util.concurrent.WriterPreferenceReadWriteLock;
 
+
 public abstract class AbstractStateVariable extends AbstractMonitor implements
 		ComponentStateVarService, ComponentStateVarProperties {
 
@@ -61,6 +63,7 @@ public abstract class AbstractStateVariable extends AbstractMonitor implements
 	/**
 	 * Primitive Handler implementation
 	 */
+
 	public void configure(Element metadata, Dictionary configuration)
 			throws ConfigurationException {
 		String chainId, componentId, uuid;

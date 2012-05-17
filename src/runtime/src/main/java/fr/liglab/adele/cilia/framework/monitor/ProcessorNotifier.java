@@ -25,7 +25,6 @@ public class ProcessorNotifier implements INotifier {
 	}
 	
 	public void fireEvent(Map info) {
-		System.out.println(">>>>>>>PROCESSOR NOTFIER ");
 		if (monitor != null)
 			monitor.fireEvent(info);
 	}

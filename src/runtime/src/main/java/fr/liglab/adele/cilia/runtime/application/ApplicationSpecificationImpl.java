@@ -27,7 +27,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import fr.liglab.adele.cilia.Adapter;
-import fr.liglab.adele.cilia.Application;
+import fr.liglab.adele.cilia.ApplicationSpecification;
 import fr.liglab.adele.cilia.Chain;
 import fr.liglab.adele.cilia.ChainCallback;
 import fr.liglab.adele.cilia.CiliaContext;
@@ -54,7 +54,7 @@ import fr.liglab.adele.cilia.util.UnModifiableDictionary;
  * 
  */
 @SuppressWarnings({ "rawtypes", "unchecked" })
-public class ApplicationImpl  extends AbstractTopology implements Application,
+public class ApplicationSpecificationImpl  extends AbstractTopology implements ApplicationSpecification,
 		CiliaEvent, CiliaFrameworkEvent {
 
 	private final Logger logger = LoggerFactory.getLogger(ConstRuntime.LOG_NAME);
@@ -63,7 +63,7 @@ public class ApplicationImpl  extends AbstractTopology implements Application,
 	private CiliaFrameworkListener listenerFramework;
 	private ApplicationListenerSupport listenerSupport ;
 	
-	public ApplicationImpl(BundleContext bc) {
+	public ApplicationSpecificationImpl(BundleContext bc) {
 		listenerSupport = new ApplicationListenerSupport(bc);
 	}
 

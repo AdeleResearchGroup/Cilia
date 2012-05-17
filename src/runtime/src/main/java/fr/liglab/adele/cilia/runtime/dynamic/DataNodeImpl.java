@@ -29,7 +29,7 @@ import fr.liglab.adele.cilia.runtime.ConstRuntime;
  * 
  */
 @SuppressWarnings({"unchecked"})
-public class DataNodeImpl extends AbstractDataNode {
+public class DataNodeImpl extends DataNode {
 
 	private ComponentStateVarService mediatorHandler;
 	

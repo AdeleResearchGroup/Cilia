@@ -47,7 +47,7 @@ public final class AdminDataImpl implements AdminData {
 			}
 		} catch (InterruptedException e) {
 			Thread.currentThread().interrupt();
-			throw new UnsupportedOperationException();
+			throw new RuntimeException(e.getMessage());
 		}
 	}
 
@@ -70,7 +70,7 @@ public final class AdminDataImpl implements AdminData {
 			}
 		} catch (InterruptedException e) {
 			Thread.currentThread().interrupt();
-			throw new UnsupportedOperationException();
+			throw new RuntimeException(e.getMessage());
 		}
 		return dataMediator;
 	}
@@ -120,7 +120,7 @@ public final class AdminDataImpl implements AdminData {
 				}
 			} catch (InterruptedException e) {
 				Thread.currentThread().interrupt();
-				throw new UnsupportedOperationException();
+				throw new RuntimeException(e.getMessage());
 			}
 		}
 	}
@@ -137,7 +137,7 @@ public final class AdminDataImpl implements AdminData {
 				}
 			} catch (InterruptedException e) {
 				Thread.currentThread().interrupt();
-				throw new UnsupportedOperationException();
+				throw new RuntimeException(e.getMessage());
 			}
 		}
 	}
@@ -157,8 +157,7 @@ public final class AdminDataImpl implements AdminData {
 			}
 		} catch (InterruptedException e) {
 			Thread.currentThread().interrupt();
-			throw new UnsupportedOperationException();
+			throw new RuntimeException(e.getMessage());
 		}
-
 	}
 }

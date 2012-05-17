@@ -91,6 +91,5 @@ public interface ComponentStateVarService extends IMonitor{
 	 */
 	public String[] getStateVarIdCategory(String category) ;
 	
-	
-	
+
 }

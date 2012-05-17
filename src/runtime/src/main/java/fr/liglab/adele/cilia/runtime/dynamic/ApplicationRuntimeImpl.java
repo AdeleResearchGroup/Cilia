@@ -28,7 +28,7 @@ import fr.liglab.adele.cilia.CiliaContext;
 import fr.liglab.adele.cilia.Mediator;
 import fr.liglab.adele.cilia.Node;
 import fr.liglab.adele.cilia.NodeCallback;
-import fr.liglab.adele.cilia.dynamic.DynamicProperties;
+import fr.liglab.adele.cilia.dynamic.ApplicationRuntime;
 import fr.liglab.adele.cilia.dynamic.MeasureCallback;
 import fr.liglab.adele.cilia.dynamic.RawData;
 import fr.liglab.adele.cilia.dynamic.SetUp;
@@ -52,7 +52,7 @@ import fr.liglab.adele.cilia.util.concurrent.WriterPreferenceReadWriteLock;
  *         Team</a>
  */
 @SuppressWarnings({ "rawtypes", "unchecked" })
-public class DynamicPropertiesImpl extends AbstractTopology implements DynamicProperties,
+public class ApplicationRuntimeImpl extends AbstractTopology implements ApplicationRuntime,
 		NodeCallback {
 
 	private final Logger logger = LoggerFactory.getLogger(ConstRuntime.LOG_NAME);
@@ -68,8 +68,7 @@ public class DynamicPropertiesImpl extends AbstractTopology implements DynamicPr
 	private ReadWriteLock mutex;
 	private NodeListenerSupport nodeListenerSupport;
 
-	public DynamicPropertiesImpl(BundleContext bc) {
-
+	public ApplicationRuntimeImpl(BundleContext bc) {
 		discovery = new NodeDiscoveryImpl(bc, this);
 		mutex = new WriterPreferenceReadWriteLock();
 		nodeListenerSupport = new NodeListenerSupport(bc);

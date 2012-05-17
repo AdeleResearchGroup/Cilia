@@ -16,7 +16,6 @@
 package fr.liglab.adele.cilia.runtime.dynamic;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -39,8 +38,7 @@ import fr.liglab.adele.cilia.exceptions.CiliaIllegalParameterException;
 import fr.liglab.adele.cilia.exceptions.CiliaInvalidSyntaxException;
 import fr.liglab.adele.cilia.runtime.ConstRuntime;
 import fr.liglab.adele.cilia.util.SwingWorker;
-import fr.liglab.adele.cilia.util.concurrent.ReentrantWriterPreferenceReadWriteLock;
-import fr.liglab.adele.cilia.util.concurrent.SyncMap;
+import fr.liglab.adele.cilia.util.concurrent.ConcurrentReaderHashMap;
 
 /**
  * 
@@ -48,7 +46,7 @@ import fr.liglab.adele.cilia.util.concurrent.SyncMap;
  *         Team</a>
  * 
  */
-@SuppressWarnings({"rawtypes", "unchecked"})
+@SuppressWarnings({ "rawtypes", "unchecked" })
 public class NodeListenerSupport implements TrackerCustomizer, NodeRegistration,
 		MeasuresRegistration {
 	protected final Logger logger = LoggerFactory.getLogger(ConstRuntime.LOG_NAME);
@@ -58,36 +56,39 @@ public class NodeListenerSupport implements TrackerCustomizer, NodeRegistration,
 	private static final String NODE_DATA_THRESHOLD = "cilia.node.data.threshold";
 	private static final String FILTER = "(|(cilia.runtime.node=*)(cilia.node.data=*)(cilia.node.data.threshold=*))";
 
-	private SyncMap nodeListeners;
-	private SyncMap thresholdListeners;
-	private SyncMap measureListeners;
+	private Map nodeListeners;
+	private Map thresholdListeners;
+	private Map measureListeners;
 
 	private Tracker tracker;
 	private BundleContext bundleContext;
 
 	public NodeListenerSupport(BundleContext bc) {
 		bundleContext = bc;
-		nodeListeners = new SyncMap(new HashMap(),
-				new ReentrantWriterPreferenceReadWriteLock());
-		thresholdListeners = new SyncMap(new HashMap(),
-				new ReentrantWriterPreferenceReadWriteLock());
-		measureListeners = new SyncMap(new HashMap(),
-				new ReentrantWriterPreferenceReadWriteLock());
+		nodeListeners = new ConcurrentReaderHashMap();
+		thresholdListeners = new ConcurrentReaderHashMap();
+		measureListeners = new ConcurrentReaderHashMap();
 	}
 
 	/* insert a new listener ,associated to a ldap filter */
-	protected void addFilterListener(Map map, String filter, Object listener)
+	private void addFilterListener(Map map, String filter, Object listener)
 			throws CiliaIllegalParameterException, CiliaInvalidSyntaxException {
+		ArrayList old,array ;
+		
 		if (listener == null)
 			throw new CiliaIllegalParameterException("listener is null");
-		if (!map.containsKey(listener)) {
-			map.put(listener, new ArrayList());
+		/* mostly length = 1 */
+		array =new ArrayList(1);
+		array.add(ConstRuntime.createFilter(filter)) ;
+		/* Efficient with ConcurrentReaderHashMap */
+		old = (ArrayList)map.put(listener,array);
+		if (old !=null) {
+			array.addAll(old) ;
 		}
-		((ArrayList) map.get(listener)).add(ConstRuntime.createFilter(filter));
 	}
 
 	/* Remove a listener */
-	protected void removeFilterListener(Map map, Object listener)
+	private void removeFilterListener(Map map, Object listener)
 			throws CiliaIllegalParameterException {
 		if (listener == null)
 			throw new CiliaIllegalParameterException("listener is null");
@@ -140,6 +141,7 @@ public class NodeListenerSupport implements TrackerCustomizer, NodeRegistration,
 		}
 
 		protected Object construct() throws Exception {
+			/* No needs to synchronize */
 			Iterator it = nodeListeners.entrySet().iterator();
 			while (it.hasNext()) {
 				Map.Entry pairs = (Map.Entry) it.next();
@@ -159,7 +161,6 @@ public class NodeListenerSupport implements TrackerCustomizer, NodeRegistration,
 						((NodeCallback) pairs.getKey()).departure(node);
 				}
 			}
-
 			return null;
 		}
 	}
@@ -235,7 +236,7 @@ public class NodeListenerSupport implements TrackerCustomizer, NodeRegistration,
 	}
 
 	/*
-	 * Remove a thrshold listener (non-Javadoc)
+	 * Remove a threshold listener (non-Javadoc)
 	 * 
 	 * @see
 	 * fr.liglab.adele.cilia.knowledge.runtime.MeasuresRegistration#removeListener
@@ -264,6 +265,7 @@ public class NodeListenerSupport implements TrackerCustomizer, NodeRegistration,
 		}
 
 		protected Object construct() throws Exception {
+
 			Iterator it = thresholdListeners.entrySet().iterator();
 			while (it.hasNext()) {
 				Map.Entry pairs = (Map.Entry) it.next();
@@ -304,7 +306,6 @@ public class NodeListenerSupport implements TrackerCustomizer, NodeRegistration,
 				/* never happens */
 			}
 		}
-
 	}
 
 	private void unRegisterTracker() {
@@ -325,7 +326,7 @@ public class NodeListenerSupport implements TrackerCustomizer, NodeRegistration,
 				if (service instanceof NodeCallback) {
 					addFilterListener(nodeListeners, property, service);
 				}
-			} catch (Exception e) {
+			} catch (Throwable e) {
 				logger.error("Cannot add a listener ");
 			}
 		}
@@ -336,7 +337,7 @@ public class NodeListenerSupport implements TrackerCustomizer, NodeRegistration,
 				if (service instanceof MeasureCallback) {
 					addFilterListener(measureListeners, property, service);
 				}
-			} catch (Exception e) {
+			} catch (Throwable e) {
 				logger.error("Cannot add a listener ");
 			}
 		}
@@ -347,7 +348,7 @@ public class NodeListenerSupport implements TrackerCustomizer, NodeRegistration,
 				if (service instanceof ThresholdsCallback) {
 					addFilterListener(thresholdListeners, property, service);
 				}
-			} catch (Exception e) {
+			} catch (Throwable e) {
 				logger.error("Cannot add a listener ");
 			}
 		}
