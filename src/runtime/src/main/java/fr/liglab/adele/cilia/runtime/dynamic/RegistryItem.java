@@ -65,11 +65,10 @@ public interface RegistryItem extends Node {
 	 * 
 	 * @return reference to objects storing data received at runtime
 	 */
-	DataNode dataRuntimeReference();
+	DynamicNode dataRuntimeReference();
 
 	/**
 	 * @return Specification model 
 	 */
 	MediatorComponent specificationReference();
-
 }

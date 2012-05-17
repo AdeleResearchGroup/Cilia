@@ -71,15 +71,15 @@ public class RegistryItemImpl implements RegistryItem {
 		return (ComponentStateVarService) props.get("registry.object.runtime.reference");
 	}
 
-	public DataNode dataRuntimeReference() {
-		return  (DataNode) props.get("registry.node.data.reference");
+	public DynamicNode dataRuntimeReference() {
+		return  (DynamicNode) props.get("registry.node.data.reference");
 	}
 
 	public void setRuntimeReference(ComponentStateVarService o) {
 		props.put("registry.object.runtime.reference", o);
 	}
 
-	public void setDataRuntimeReference(DataNode o) {
+	public void setDataRuntimeReference(DynamicNode o) {
 		props.put("registry.node.data.reference", o);
 	}
 	

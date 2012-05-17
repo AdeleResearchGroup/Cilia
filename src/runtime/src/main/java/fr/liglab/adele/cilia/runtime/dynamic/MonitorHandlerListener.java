@@ -127,7 +127,7 @@ public class MonitorHandlerListener implements ComponentStateVarProperties, Even
 		/* Retrieve the node and insert a new measure */
 		RegistryItem item = registry.findByUuid(uuid);
 		if (item != null) {
-			DataNodeImpl node = (DataNodeImpl) item.dataRuntimeReference();
+			DynamicNode node = item.dataRuntimeReference();
 			if (node != null) {
 				int evt = node.addMeasure(stateVariable, new MeasureImpl(value,
 						ticksCount));
@@ -142,9 +142,9 @@ public class MonitorHandlerListener implements ComponentStateVarProperties, Even
 	public void addNode(String uuid) {
 		/* retreive the uuid in the registry */
 		RegistryItem item = registry.findByUuid(uuid);
-		DataNodeImpl c;
+		DynamicNode c;
 		/* construct a node -> hold data fired by the mediator-adapter */
-		c = new DataNodeImpl(uuid, registry);
+		c = new DynamicNode(uuid, registry);
 		/* Store in the registry the previous Data node instancied */
 		((RegistryItemImpl) item).setDataRuntimeReference(c);
 		/* informs all listeners 'node arrival' */

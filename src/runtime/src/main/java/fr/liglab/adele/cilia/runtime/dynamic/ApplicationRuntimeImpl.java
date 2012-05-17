@@ -357,6 +357,7 @@ public class ApplicationRuntimeImpl extends AbstractTopology implements Applicat
 
 		if (node == null)
 			return new Node[0];
+		
 		if (registry.findByUuid(node.uuid()) == null)
 			throw new CiliaIllegalStateException("node disappears");
 		/* retreive the chain hosting the mediator/component */

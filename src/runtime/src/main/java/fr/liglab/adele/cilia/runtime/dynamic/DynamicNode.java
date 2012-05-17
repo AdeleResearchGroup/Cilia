@@ -40,7 +40,7 @@ import fr.liglab.adele.cilia.util.concurrent.SyncMap;
  *         Team</a>
  * 
  */
-@SuppressWarnings({ "unchecked" })
+@SuppressWarnings({ "unchecked","rawtypes" })
 public class DynamicNode implements SetUp, RawData, Thresholds {
 
 	private final Logger logger = LoggerFactory.getLogger(ConstRuntime.LOG_NAME);
@@ -157,7 +157,11 @@ public class DynamicNode implements SetUp, RawData, Thresholds {
 		return evt;
 	}
 
-	protected class Observations {
+	/**
+	 * Observation store measures from runtime
+	 *
+	 */
+	private class Observations {
 
 		public int queueSize;
 		public SyncList measures;
@@ -173,6 +177,7 @@ public class DynamicNode implements SetUp, RawData, Thresholds {
 			}
 		}
 
+		/* circular fifo management */
 		public int addMeasure(Measure m) {
 			try {
 				measures.writerSync().acquire();
