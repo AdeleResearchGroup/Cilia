@@ -21,6 +21,7 @@ import java.util.LinkedList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import fr.liglab.adele.cilia.exceptions.CiliaIllegalParameterException;
 import fr.liglab.adele.cilia.runtime.WorkQueue;
 
 /**
@@ -42,14 +43,6 @@ public class WorkQueueImpl implements WorkQueue {
 
 	private static final Logger logger = LoggerFactory.getLogger("cilia.ipojo.runtime");
 
-	public void WorkQueue() {
-	}
-
-	public WorkQueueImpl(String name, int nThread) {
-		this.m_name = name;
-		this.m_size = nThread;
-		start();
-	}
 
 	/*
 	 * (non-Javadoc)
@@ -59,7 +52,6 @@ public class WorkQueueImpl implements WorkQueue {
 	public synchronized void start() {
 		this.queue = new LinkedList();
 		this.threads = new ArrayList(m_size);
-		this.m_priority = Thread.NORM_PRIORITY;
 		this.maxJobQueued = 0;
 		for (int i = 0; i < m_size; i++) {
 			addThread(i);
@@ -107,12 +99,12 @@ public class WorkQueueImpl implements WorkQueue {
 	 * 
 	 * @see fr.liglab.adele.cilia.framework.utils.WorkQueue#setPriority(int)
 	 */
-	public void setPriority(int newPriority) {
+	public void setPriority(int newPriority) throws CiliaIllegalParameterException{
 
 		if ((m_priority < Thread.NORM_PRIORITY) || (m_priority > Thread.MAX_PRIORITY)) {
 			String msg = "priority out of bounds =" + m_priority;
 			logger.error(msg);
-			throw new IllegalArgumentException(msg);
+			throw new CiliaIllegalParameterException(msg);
 		}
 
 		for (int i = 0; i < threads.size(); i++) {
@@ -146,7 +138,8 @@ public class WorkQueueImpl implements WorkQueue {
 	 * 
 	 * @see fr.liglab.adele.cilia.framework.utils.WorkQueue#size(int)
 	 */
-	public int size(int newSize) {
+	public int size(int newSize) throws CiliaIllegalParameterException{
+		if (newSize<0) throw new CiliaIllegalParameterException("size cannot be a negative value" );
 		synchronized (threads) {
 			if (newSize > threads.size()) {
 				for (int i = threads.size(); i < newSize; i++) {

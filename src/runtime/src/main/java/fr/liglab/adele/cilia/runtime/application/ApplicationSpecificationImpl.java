@@ -44,6 +44,7 @@ import fr.liglab.adele.cilia.exceptions.CiliaInvalidSyntaxException;
 import fr.liglab.adele.cilia.model.PatternType;
 import fr.liglab.adele.cilia.runtime.AbstractTopology;
 import fr.liglab.adele.cilia.runtime.ConstRuntime;
+import fr.liglab.adele.cilia.runtime.WorkQueue;
 import fr.liglab.adele.cilia.util.UnModifiableDictionary;
 
 /**
@@ -62,6 +63,8 @@ public class ApplicationSpecificationImpl  extends AbstractTopology implements A
 	private CiliaContext ciliaContext;
 	private CiliaFrameworkListener listenerFramework;
 	private ApplicationListenerSupport listenerSupport ;
+	/* Reference injected by ipojo */
+	private WorkQueue workQueue; 
 	
 	public ApplicationSpecificationImpl(BundleContext bc) {
 		listenerSupport = new ApplicationListenerSupport(bc);
@@ -70,7 +73,8 @@ public class ApplicationSpecificationImpl  extends AbstractTopology implements A
 	public void start() {
 		logger.info("ModelS@RunTime 'Specification components' - started");
 		super.setContext(ciliaContext);
-		listenerSupport.start();
+
+		listenerSupport.start(workQueue);
 		listenerFramework.register(this, ALL_EVENTS);
 	}
 

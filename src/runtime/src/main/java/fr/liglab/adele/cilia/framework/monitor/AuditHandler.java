@@ -79,7 +79,6 @@ public class AuditHandler extends PrimitiveHandler {
 	}
 
 	public void start() {
-
 	}
 
 	public void stop() {

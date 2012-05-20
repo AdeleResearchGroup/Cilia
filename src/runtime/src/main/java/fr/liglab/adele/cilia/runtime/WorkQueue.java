@@ -15,14 +15,17 @@
 
 package fr.liglab.adele.cilia.runtime;
 
+import fr.liglab.adele.cilia.exceptions.CiliaIllegalParameterException;
+
 public interface WorkQueue {
 
 	/**
 	 * Change the piority for all threads
 	 * 
 	 * @param newPriority
+	 * @throws CiliaIllegalParameterException 
 	 */
-	public void setPriority(int newPriority);
+	public void setPriority(int newPriority) throws CiliaIllegalParameterException;
 
 	/**
 	 * 
@@ -41,8 +44,9 @@ public interface WorkQueue {
 	 * 
 	 * @param newSize
 	 * @return the new current size of the pool of thread
+	 * @throws CiliaIllegalParameterException 
 	 */
-	public int size(int newSize);
+	public int size(int newSize) throws CiliaIllegalParameterException;
 
 	/**
 	 * 

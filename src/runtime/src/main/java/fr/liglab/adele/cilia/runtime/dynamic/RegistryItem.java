@@ -61,14 +61,21 @@ public interface RegistryItem extends Node {
 	 */
 	ComponentStateVarService runtimeReference();
 
+	void setRuntimeReference(ComponentStateVarService o);
+
 	/**
 	 * 
 	 * @return reference to objects storing data received at runtime
 	 */
 	DynamicNode dataRuntimeReference();
 
+	void setDataRuntimeReference(DynamicNode o);
+
 	/**
-	 * @return Specification model 
+	 * @return Specification model
 	 */
 	MediatorComponent specificationReference();
+
+	void setSpecificationReference(MediatorComponent mc);
+
 }

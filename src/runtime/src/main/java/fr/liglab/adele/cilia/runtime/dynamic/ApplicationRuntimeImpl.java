@@ -41,6 +41,7 @@ import fr.liglab.adele.cilia.model.ChainRuntime;
 import fr.liglab.adele.cilia.model.PatternType;
 import fr.liglab.adele.cilia.runtime.AbstractTopology;
 import fr.liglab.adele.cilia.runtime.ConstRuntime;
+import fr.liglab.adele.cilia.runtime.WorkQueue;
 import fr.liglab.adele.cilia.util.concurrent.ReadWriteLock;
 import fr.liglab.adele.cilia.util.concurrent.WriterPreferenceReadWriteLock;
 
@@ -67,6 +68,9 @@ public class ApplicationRuntimeImpl extends AbstractTopology implements Applicat
 	private MonitorHandlerListener chainRt;
 	private ReadWriteLock mutex;
 	private NodeListenerSupport nodeListenerSupport;
+	/* Reference injected by ipojo */
+	private WorkQueue workQueue; 
+	
 
 	public ApplicationRuntimeImpl(BundleContext bc) {
 		discovery = new NodeDiscoveryImpl(bc, this);
@@ -79,8 +83,8 @@ public class ApplicationRuntimeImpl extends AbstractTopology implements Applicat
 	 * Start the service
 	 */
 	public void start() {
-		super.setContext(ciliaContext);
-		nodeListenerSupport.start();
+		setContext(ciliaContext);
+		nodeListenerSupport.start(workQueue);
 		discovery.setRegistry(registry);
 		chainRt.setRegistry(registry);
 		/* Start listening state variables */
@@ -106,7 +110,7 @@ public class ApplicationRuntimeImpl extends AbstractTopology implements Applicat
 			try {
 				RegistryItem item = registry.findByUuid(uuid);
 				/* Store in the registry the specification reference */
-				((RegistryItemImpl) item).setSpecificationReference(getModel(item));
+				item.setSpecificationReference(getModel(item));
 				chainRt.addNode(uuid);
 			} catch (Exception e) {
 				logger.error("Internal error, cannot retrieve mediatorComponent reference");
@@ -268,80 +272,6 @@ public class ApplicationRuntimeImpl extends AbstractTopology implements Applicat
 		return (Node[]) adapterSet.toArray(new Node[adapterSet.size()]);
 	}
 
-	// /*
-	// * retreives all adapter in ( entries of mediation chain ) (non-Javadoc)
-	// *
-	// * @see
-	// *
-	// fr.liglab.adele.cilia.knowledge.core.execution.DynamicProperties#endpointIn
-	// * (java.lang.String)
-	// */
-	// public Node[] endpointIn(String ldapFilter) throws
-	// CiliaInvalidSyntaxException,
-	// CiliaIllegalParameterException {
-	// return getEndpoints(ldapFilter, PatternType.IN_ONLY);
-	// }
-	//
-	// /*
-	// * retreives all adapter out ( exit of mediation chain ) (non-Javadoc)
-	// *
-	// * @see
-	// *
-	// fr.liglab.adele.cilia.knowledge.core.execution.DynamicProperties#endpointOut
-	// * (java.lang.String)
-	// */
-	// public Node[] endpointOut(String ldapFilter) throws
-	// CiliaInvalidSyntaxException,
-	// CiliaIllegalParameterException {
-	// return getEndpoints(ldapFilter, PatternType.OUT_ONLY);
-	//
-	// }
-
-	// /*
-	// * build the ldap filter for retreiving a specific nodes
-	// */
-	// private static String makefilter(String chain, String node) {
-	// StringBuffer sb = new StringBuffer("(&(");
-	// sb.append(ConstRuntime.CHAIN_ID).append("=").append(chain);
-	// sb.append(")(").append(ConstRuntime.NODE_ID).append("=").append(node);
-	// sb.append("))");
-	// return sb.toString();
-	// }
-
-	// /*
-	// * using the binding retreives nodes connected to
-	// */
-	// private Node[] getNextNodes(Binding[] bindings, Node node) {
-	// if (bindings == null)
-	// return new Node[0];
-	//
-	// Set nodeSet = new HashSet();
-	// Set set = new HashSet();
-	// /* Retreive the mediators name in the cilia context (model) */
-	// for (int i = 0; i < bindings.length; i++) {
-	// set.add(bindings[i].getTargetMediator().getId());
-	// }
-	// Iterator it = set.iterator();
-	// /* Retreives real mediators connected */
-	// while (it.hasNext()) {
-	// String name = (String) it.next();
-	// /* construct the ldap filter */
-	// String filter = makefilter(node.chainId(), name);
-	// Node item[];
-	// try {
-	// item = findNodeByFilter(filter);
-	// for (int i = 0; i < item.length; i++) {
-	// nodeSet.add(item[i]);
-	// }
-	// } catch (CiliaInvalidSyntaxException e) {
-	// logger.error("Internal ldap syntax error !, should never happens");
-	// } catch (CiliaIllegalParameterException e) {
-	// logger.error("Internal parameter ! null");
-	// }
-	// }
-	// return (Node[]) nodeSet.toArray(new Node[nodeSet.size()]);
-	// }
-
 	/*
 	 * Return the list of nodes connected at runtime (non-Javadoc)
 	 * 
@@ -382,33 +312,6 @@ public class ApplicationRuntimeImpl extends AbstractTopology implements Applicat
 			nodes = new Node[0];
 		return nodes;
 	}
-
-	// /*
-	// * retreive the list of nodes connected ( at runtime ) (non-Javadoc)
-	// *
-	// * @see
-	// *
-	// fr.liglab.adele.cilia.knowledge.core.execution.DynamicProperties#connectedTo
-	// * (java.lang.String)
-	// */
-	//
-	// public Node[] connectedTo(String ldapFilter) throws
-	// CiliaInvalidSyntaxException,
-	// CiliaIllegalParameterException {
-	// Node[] item = findNodeByFilter(ldapFilter);
-	// Node[] nodes = new Node[0];
-	//
-	// if (item.length > 0) {
-	// try {
-	// for (int i = 0; i < item.length; i++) {
-	// nodes = ConstRuntime.concat(nodes, connectedTo(item[i]));
-	// }
-	// } catch (CiliaIllegalStateException e) {
-	//
-	// }
-	// }
-	// return nodes;
-	// }
 
 	/*
 	 * return a proxy to the node Setup (non-Javadoc)

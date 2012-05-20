@@ -38,7 +38,7 @@ import fr.liglab.adele.cilia.NodeRegistration;
 import fr.liglab.adele.cilia.exceptions.CiliaIllegalParameterException;
 import fr.liglab.adele.cilia.exceptions.CiliaInvalidSyntaxException;
 import fr.liglab.adele.cilia.runtime.ConstRuntime;
-import fr.liglab.adele.cilia.util.SwingWorker;
+import fr.liglab.adele.cilia.runtime.WorkQueue;
 import fr.liglab.adele.cilia.util.concurrent.ConcurrentReaderHashMap;
 
 /**
@@ -61,6 +61,7 @@ public class ApplicationListenerSupport implements TrackerCustomizer, ChainRegis
 	private Map listenerChain;
 	private BundleContext bundleContext;
 	private Tracker tracker;
+	private WorkQueue workQueue;
 
 	public ApplicationListenerSupport(BundleContext bc) {
 		bundleContext = bc;
@@ -68,8 +69,9 @@ public class ApplicationListenerSupport implements TrackerCustomizer, ChainRegis
 		listenerChain = new ConcurrentReaderHashMap();
 	}
 
-	public void start() {
+	public void start(WorkQueue wq) {
 		registerTracker();
+		workQueue =wq ;
 	}
 
 	public void stop() {
@@ -141,12 +143,10 @@ public class ApplicationListenerSupport implements TrackerCustomizer, ChainRegis
 	}
 
 	public void fireEventNode(boolean arrival, Node component) {
-		if (!listenerNode.isEmpty())
-			new NodeFirer(arrival, component).start();
+		if (!listenerNode.isEmpty()) workQueue.execute(new NodeFirer(arrival, component));
 	}
 
-	/* Run in a thread MIN_PRIORITY+1 */
-	private class NodeFirer extends SwingWorker {
+	private class NodeFirer implements Runnable {
 		private boolean arrival;
 		private Node node;
 
@@ -155,7 +155,7 @@ public class ApplicationListenerSupport implements TrackerCustomizer, ChainRegis
 			this.node = node;
 		}
 
-		protected Object construct() throws Exception {
+		public void run() {
 			/* iterates over listeners */
 			Iterator it = listenerNode.entrySet().iterator();
 			while (it.hasNext()) {
@@ -176,7 +176,6 @@ public class ApplicationListenerSupport implements TrackerCustomizer, ChainRegis
 						((NodeCallback) pairs.getKey()).departure(node);
 				}
 			}
-			return null;
 		}
 	}
 
@@ -198,11 +197,11 @@ public class ApplicationListenerSupport implements TrackerCustomizer, ChainRegis
 
 	public void fireEventChain(int evt, String name) {
 		if ((!listenerChain.isEmpty()) && name != null)
-			new FirerChainEvent(evt, name);
+			workQueue.execute(new FirerChainEvent(evt, name));
 	}
 
 	/* Run in a thread MIN_PRIORITY+1 */
-	private class FirerChainEvent extends SwingWorker {
+	private class FirerChainEvent implements Runnable {
 		private int evt;
 		private Dictionary dico = new Hashtable(1);
 
@@ -211,7 +210,7 @@ public class ApplicationListenerSupport implements TrackerCustomizer, ChainRegis
 			dico.put(ConstRuntime.CHAIN_ID, name);
 		}
 
-		protected Object construct() throws Exception {
+		public void run() {
 
 			Iterator it = listenerChain.keySet().iterator();
 			while (it.hasNext()) {
@@ -243,7 +242,6 @@ public class ApplicationListenerSupport implements TrackerCustomizer, ChainRegis
 					}
 				}
 			}
-			return null;
 		}
 
 	}

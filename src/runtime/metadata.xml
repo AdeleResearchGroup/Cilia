@@ -189,6 +189,7 @@
 		<properties>
 			<property name="system.thread.pool.size" field="m_size" />
 			<property name="thread.pool.name" field="m_name" />
+			<property name="thread.pool.priority" field="m_priority" />
 		</properties>
 		<provides specification="fr.liglab.adele.cilia.runtime.WorkQueue">
 			<property name="cilia.pool.scope" type="String" />
@@ -199,16 +200,16 @@
 
 	<instance component="WorkQueue" name="workqueue-system">
 		<property name="cilia.pool.scope" value="system" />
-		<property name="m_size" value="1" />
-		<property name="m_priority" method="setPriority" value="5" />
-		<property name="m_name" value="system.threadPool" />
+		<property name="system.thread.pool.size" value="4" />
+		<property name="thread.pool.priority" value="5" />
+		<property name="thread.pool.name" value="system.threadPool" />
 	</instance>
 
 	<instance component="WorkQueue" name="workqueue-application">
 		<property name="cilia.pool.scope" value="application" />
-		<property name="m_size" value="1" />
-		<property name="m_priority" method="setPriority" value="3" />
-		<property name="m_name" value="application.threadPool" />
+		<property name="system.thread.pool.size" value="4" />
+		<property name="thread.pool.priority" value="2" />
+		<property name="thread.pool.name" value="application.threadPool" />
 	</instance>
 
 	<!-- Component Admin Data 'Global data storage per chain -->
@@ -433,6 +434,8 @@
 		name="Application.Specification">
 		<requires field="ciliaContext" />
 		<requires field="listenerFramework" />
+		<requires field="workQueue" specification="fr.liglab.adele.cilia.runtime.WorkQueue"
+			filter="(cilia.pool.scope=application)" />
 		<provides
 			specification="fr.liglab.adele.cilia.ApplicationSpecification" />
 		<callback transition="validate" method="start" />
@@ -447,6 +450,8 @@
 			specification="fr.liglab.adele.cilia.runtime.ApplicationRuntime" />
 		<requires field="registry" />
 		<requires field="ciliaContext" />
+		<requires field="workQueue" specification="fr.liglab.adele.cilia.runtime.WorkQueue"
+			filter="(cilia.pool.scope=application)" />
 		<callback transition="validate" method="start" />
 		<callback transition="invalidate" method="stop" />
 	</component>

@@ -37,7 +37,7 @@ import fr.liglab.adele.cilia.dynamic.ThresholdsCallback;
 import fr.liglab.adele.cilia.exceptions.CiliaIllegalParameterException;
 import fr.liglab.adele.cilia.exceptions.CiliaInvalidSyntaxException;
 import fr.liglab.adele.cilia.runtime.ConstRuntime;
-import fr.liglab.adele.cilia.util.SwingWorker;
+import fr.liglab.adele.cilia.runtime.WorkQueue;
 import fr.liglab.adele.cilia.util.concurrent.ConcurrentReaderHashMap;
 
 /**
@@ -59,6 +59,8 @@ public class NodeListenerSupport implements TrackerCustomizer, NodeRegistration,
 	private Map nodeListeners;
 	private Map thresholdListeners;
 	private Map measureListeners;
+	private WorkQueue workQueue; 
+	
 
 	private Tracker tracker;
 	private BundleContext bundleContext;
@@ -126,11 +128,10 @@ public class NodeListenerSupport implements TrackerCustomizer, NodeRegistration,
 	 */
 	public void fireNodeEvent(boolean arrival, Node source) {
 		if (!nodeListeners.isEmpty())
-			new NodeFirer(arrival, source).start();
+			workQueue.execute(new NodeFirer(arrival, source));
 	}
 
-	/* Run in a thread MIN_PRIORITY+1 */
-	private class NodeFirer extends SwingWorker {
+	private class NodeFirer implements Runnable {
 
 		private boolean arrival;
 		private Node node;
@@ -140,10 +141,12 @@ public class NodeListenerSupport implements TrackerCustomizer, NodeRegistration,
 			this.node = node;
 		}
 
-		protected Object construct() throws Exception {
-			/* No needs to synchronize */
+		public void run()  {
+			/* No need to synchronize ! */
+			/* Iterator over all listener */
 			Iterator it = nodeListeners.entrySet().iterator();
 			while (it.hasNext()) {
+				/* iterator over all filter per listener */
 				Map.Entry pairs = (Map.Entry) it.next();
 				ArrayList filters = (ArrayList) pairs.getValue();
 				boolean toFire = false;
@@ -153,7 +156,7 @@ public class NodeListenerSupport implements TrackerCustomizer, NodeRegistration,
 						break;
 					}
 				}
-				/* call only one time the same subsriber */
+				/* call only once the same subscriber */
 				if (toFire) {
 					if (arrival)
 						((NodeCallback) pairs.getKey()).arrival(node);
@@ -161,7 +164,6 @@ public class NodeListenerSupport implements TrackerCustomizer, NodeRegistration,
 						((NodeCallback) pairs.getKey()).departure(node);
 				}
 			}
-			return null;
 		}
 	}
 
@@ -191,10 +193,10 @@ public class NodeListenerSupport implements TrackerCustomizer, NodeRegistration,
 	 */
 	public void fireMeasureReceived(Node node, String variableId) {
 		if (!measureListeners.isEmpty())
-			new MeasureFirer(node, variableId).start();
+			workQueue.execute(new MeasureFirer(node, variableId));
 	}
 
-	public class MeasureFirer extends SwingWorker {
+	public class MeasureFirer implements Runnable {
 		private Node node;
 		private String variableId;
 
@@ -203,7 +205,7 @@ public class NodeListenerSupport implements TrackerCustomizer, NodeRegistration,
 			this.variableId = variableId;
 		}
 
-		protected Object construct() throws Exception {
+		public void run() {
 			Iterator it = measureListeners.entrySet().iterator();
 			while (it.hasNext()) {
 				Map.Entry pairs = (Map.Entry) it.next();
@@ -218,7 +220,6 @@ public class NodeListenerSupport implements TrackerCustomizer, NodeRegistration,
 				if (tofire)
 					((MeasureCallback) pairs.getKey()).onUpdate(node, variableId);
 			}
-			return null;
 		}
 	}
 
@@ -249,11 +250,11 @@ public class NodeListenerSupport implements TrackerCustomizer, NodeRegistration,
 
 	public void fireThresholdEvent(Node node, String variableId, int evt) {
 		if (!thresholdListeners.isEmpty())
-			new ThresholdFirer(node, variableId, evt).start();
+			workQueue.execute(new ThresholdFirer(node, variableId, evt));
 	}
 
 	/* Run in a thread MIN_PRIORITY+1 */
-	private class ThresholdFirer extends SwingWorker {
+	private class ThresholdFirer implements Runnable {
 		private int evt;
 		private String variable;
 		private Node node;
@@ -264,7 +265,7 @@ public class NodeListenerSupport implements TrackerCustomizer, NodeRegistration,
 			this.node = node;
 		}
 
-		protected Object construct() throws Exception {
+		public void run() {
 
 			Iterator it = thresholdListeners.entrySet().iterator();
 			while (it.hasNext()) {
@@ -281,12 +282,12 @@ public class NodeListenerSupport implements TrackerCustomizer, NodeRegistration,
 					((ThresholdsCallback) pairs.getKey())
 							.onThreshold(node, variable, evt);
 			}
-			return null;
 		}
 	}
 
-	protected void start() {
+	protected void start(WorkQueue wq) {
 		registerTracker();
+		workQueue = wq ;
 	}
 
 	protected void stop() {

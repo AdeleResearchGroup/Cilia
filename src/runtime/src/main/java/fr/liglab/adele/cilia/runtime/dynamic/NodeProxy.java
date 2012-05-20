@@ -61,7 +61,7 @@ public class NodeProxy {
 					return method.invoke(resource, args);
 				} catch (InvocationTargetException e) {
 					throw e.getTargetException(); 
-				} catch (Exception e) {	
+				} catch (Throwable e) {	
 					throw new RuntimeException(e.getMessage());
 				}
 			}

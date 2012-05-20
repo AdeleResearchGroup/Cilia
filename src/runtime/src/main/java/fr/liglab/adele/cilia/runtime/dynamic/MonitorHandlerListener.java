@@ -51,11 +51,11 @@ public class MonitorHandlerListener implements ComponentStateVarProperties, Even
 	private RuntimeRegistry registry;
 	private NodeProxy weakProxy;
 
-	private final NodeListenerSupport evtSupport;
+	private final NodeListenerSupport nodeListeners;
 
-	public MonitorHandlerListener(BundleContext bc, NodeListenerSupport evtSupport) {
+	public MonitorHandlerListener(BundleContext bc, NodeListenerSupport nodeListenerSupport) {
 		this.bundleContext = bc;
-		this.evtSupport = evtSupport;
+		this.nodeListeners = nodeListenerSupport;
 		this.weakProxy = new NodeProxy();
 	}
 
@@ -132,9 +132,9 @@ public class MonitorHandlerListener implements ComponentStateVarProperties, Even
 				int evt = node.addMeasure(stateVariable, new MeasureImpl(value,
 						ticksCount));
 				if (evt == 0)
-					evtSupport.fireMeasureReceived(node, stateVariable);
+					nodeListeners.fireMeasureReceived(node, stateVariable);
 				else if (evt > 0)
-					evtSupport.fireThresholdEvent(node, stateVariable, evt);
+					nodeListeners.fireThresholdEvent(node, stateVariable, evt);
 			}
 		}
 	}
@@ -142,21 +142,20 @@ public class MonitorHandlerListener implements ComponentStateVarProperties, Even
 	public void addNode(String uuid) {
 		/* retreive the uuid in the registry */
 		RegistryItem item = registry.findByUuid(uuid);
-		DynamicNode c;
 		/* construct a node -> hold data fired by the mediator-adapter */
-		c = new DynamicNode(uuid, registry);
+		DynamicNode node = new DynamicNode(uuid, registry);
 		/* Store in the registry the previous Data node instancied */
-		((RegistryItemImpl) item).setDataRuntimeReference(c);
+		item.setDataRuntimeReference(node);
 		/* informs all listeners 'node arrival' */
-		evtSupport.fireNodeEvent(true, c);
-		logger.debug("Listen data published by [{}]", c.toString());
+		nodeListeners.fireNodeEvent(true, node);
+		logger.debug("Listen data published by [{}]", node.toString());
 	}
 
 	public void removeNode(String uuid) {
 		Node item = registry.findByUuid(uuid);
 		if (item != null) {
 			/* informs all listeners 'node departure' */
-			evtSupport.fireNodeEvent(false, item);
+			nodeListeners.fireNodeEvent(false, item);
 			logger.debug("Remove listening data from [{}]", item.toString());
 		}
 	}

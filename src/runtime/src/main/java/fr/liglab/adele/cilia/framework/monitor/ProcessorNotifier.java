@@ -28,5 +28,4 @@ public class ProcessorNotifier implements INotifier {
 		if (monitor != null)
 			monitor.fireEvent(info);
 	}
-
 }
