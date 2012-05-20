@@ -101,7 +101,7 @@ public class WorkQueueImpl implements WorkQueue {
 	 */
 	public void setPriority(int newPriority) throws CiliaIllegalParameterException{
 
-		if ((m_priority < Thread.NORM_PRIORITY) || (m_priority > Thread.MAX_PRIORITY)) {
+		if ((m_priority < Thread.MIN_PRIORITY) || (m_priority > Thread.MAX_PRIORITY)) {
 			String msg = "priority out of bounds =" + m_priority;
 			logger.error(msg);
 			throw new CiliaIllegalParameterException(msg);
