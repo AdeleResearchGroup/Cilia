@@ -30,12 +30,12 @@ public interface NodeCallback {
 	 * @param node
 	 *            , node arrival
 	 */
-	void arrival(Node node);
+	void onArrival(Node node);
 
 	/**
 	 * 
 	 * @param node
 	 *            , node departure
 	 */
-	void departure(Node node);
+	void onDeparture(Node node);
 }

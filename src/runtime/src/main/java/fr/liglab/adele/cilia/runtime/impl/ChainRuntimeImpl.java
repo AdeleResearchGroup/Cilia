@@ -20,7 +20,6 @@ import java.util.Date;
 import fr.liglab.adele.cilia.model.ChainRuntime;
 /**
  * 
- *
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project Team</a>
  *
  */

@@ -63,7 +63,7 @@ public class NodeDiscoveryImpl implements TrackerCustomizer, ComponentStateVarPr
 	 */
 	public synchronized void start() {
 		registerTracker();
-		logger.info("ModelS@RunTime'Node discovery' - started");
+		logger.info("ModelS@RunTime 'Node discovery' - started");
 	}
 
 	public synchronized void stop() {
@@ -112,7 +112,7 @@ public class NodeDiscoveryImpl implements TrackerCustomizer, ComponentStateVarPr
 		String uuid = (String) mediatorHandler.getProperty(MONITOR_UUID);
 		RegistryItem item = (RegistryItem) registry.findByUuid(uuid);
 		if (item != null) {
-			callback.departure(item) ;
+			callback.onDeparture(item) ;
 			logger.debug("Node [{}] disappear", item.toString());
 		}
 	}
@@ -127,7 +127,7 @@ public class NodeDiscoveryImpl implements TrackerCustomizer, ComponentStateVarPr
 		RegistryItemImpl item = new RegistryItemImpl(uuid, chainId, mediatorId);
 		item.setRuntimeReference(mediatorHandler);
 		registry.register(item);
-		callback.arrival(item) ;
+		callback.onArrival(item) ;
 		logger.debug("Node [{}] discovered", item.toString());
 	}
 }

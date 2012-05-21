@@ -171,9 +171,9 @@ public class ApplicationListenerSupport implements TrackerCustomizer, ChainRegis
 				}
 				if (tofire) {
 					if (arrival)
-						((NodeCallback) pairs.getKey()).arrival(node);
+						((NodeCallback) pairs.getKey()).onArrival(node);
 					else
-						((NodeCallback) pairs.getKey()).departure(node);
+						((NodeCallback) pairs.getKey()).onDeparture(node);
 				}
 			}
 		}
@@ -228,16 +228,16 @@ public class ApplicationListenerSupport implements TrackerCustomizer, ChainRegis
 					String chainId = (String) dico.get(ConstRuntime.CHAIN_ID);
 					switch (evt) {
 					case 0:
-						cb.arrival(chainId);
+						cb.onArrival(chainId);
 						break;
 					case 1:
-						cb.departure(chainId);
+						cb.onDeparture(chainId);
 						break;
 					case 2:
-						cb.started(chainId);
+						cb.onStarted(chainId);
 						break;
 					case 3:
-						cb.stopped(chainId);
+						cb.onStopped(chainId);
 						break;
 					}
 				}

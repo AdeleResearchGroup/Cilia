@@ -15,7 +15,7 @@ public interface ChainCallback {
 	 * @param chaindId
 	 *            chain identificator
 	 */
-	void arrival(String chainId);
+	void onArrival(String chainId);
 
 	/**
 	 * Callback upon chain departure
@@ -23,7 +23,7 @@ public interface ChainCallback {
 	 * @param chaindId
 	 *            chain identificator
 	 */
-	void departure(String chainId);
+	void onDeparture(String chainId);
 
 	/**
 	 * Chain started
@@ -31,7 +31,7 @@ public interface ChainCallback {
 	 * @param chaindId
 	 *            chain identificator
 	 */
-	void started(String chainId);
+	void onStarted(String chainId);
 
 	/**
 	 * Chain stopped
@@ -39,6 +39,6 @@ public interface ChainCallback {
 	 * @param chaindId
 	 *            chain identificator
 	 */
-	void stopped(String chainId);
+	void onStopped(String chainId);
 
 }

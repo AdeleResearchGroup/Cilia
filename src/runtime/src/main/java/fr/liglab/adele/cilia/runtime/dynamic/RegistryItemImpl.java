@@ -109,9 +109,9 @@ public class RegistryItemImpl implements RegistryItem {
 
 	public String toString() {
 		StringBuffer sb = new StringBuffer();
-		sb.append("uuid [").append(uuid()).append("] ");
 		sb.append("qualified name [").append(chainId()).append("/").append(nodeId())
 				.append("]");
+		sb.append(", uuid [").append(uuid()).append("] ");
 		return sb.toString();
 	}
 

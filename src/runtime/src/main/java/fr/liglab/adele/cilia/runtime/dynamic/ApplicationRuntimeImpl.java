@@ -91,7 +91,7 @@ public class ApplicationRuntimeImpl extends AbstractTopology implements Applicat
 		chainRt.start();
 		/* Start runtime discovery */
 		discovery.start();
-		logger.info("ModelS@RunTime 'Dynamic properties' - started");
+		logger.info("ModelS@RunTime 'Application Runtime' - started");
 	}
 
 	/*
@@ -101,7 +101,7 @@ public class ApplicationRuntimeImpl extends AbstractTopology implements Applicat
 		nodeListenerSupport.stop();
 		chainRt.stop();
 		discovery.stop();
-		logger.info("ModelS@RunTime 'Dynamic properties' - stopped");
+		logger.info("ModelS@RunTime 'Application Runtime' - stopped");
 	}
 
 	private void addNode(String uuid) {
@@ -138,11 +138,11 @@ public class ApplicationRuntimeImpl extends AbstractTopology implements Applicat
 		}
 	}
 
-	public void arrival(Node node) {
+	public void onArrival(Node node) {
 		addNode(node.uuid());
 	}
 
-	public void departure(Node node) {
+	public void onDeparture(Node node) {
 		removeNode(node.uuid());
 	}
 

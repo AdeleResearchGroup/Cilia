@@ -447,7 +447,7 @@
 		classname="fr.liglab.adele.cilia.runtime.dynamic.ApplicationRuntimeImpl"
 		name="Application.Runtime">
 		<provides
-			specification="fr.liglab.adele.cilia.runtime.ApplicationRuntime" />
+			specification="fr.liglab.adele.cilia.dynamic.ApplicationRuntime" />
 		<requires field="registry" />
 		<requires field="ciliaContext" />
 		<requires field="workQueue" specification="fr.liglab.adele.cilia.runtime.WorkQueue"
@@ -456,4 +456,5 @@
 		<callback transition="invalidate" method="stop" />
 	</component>
 	   <instance component="Application.Runtime" /> 
+		  
 </ipojo>

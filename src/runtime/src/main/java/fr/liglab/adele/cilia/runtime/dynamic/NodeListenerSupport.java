@@ -52,9 +52,9 @@ public class NodeListenerSupport implements TrackerCustomizer, NodeRegistration,
 	protected final Logger logger = LoggerFactory.getLogger(ConstRuntime.LOG_NAME);
 
 	private static final String NODE_LISTENER = "cilia.runtime.node";
-	private static final String NODE_DATA = "cilia.node.data";
-	private static final String NODE_DATA_THRESHOLD = "cilia.node.data.threshold";
-	private static final String FILTER = "(|(cilia.runtime.node=*)(cilia.node.data=*)(cilia.node.data.threshold=*))";
+	private static final String NODE_DATA = "cilia.runtime.node.data";
+	private static final String NODE_DATA_THRESHOLD = "cilia.runtime.node.threshold";
+	private static final String FILTER = "(|(cilia.runtime.node=*)(cilia.runtime.node.data=*)(cilia.runtime.node.threshold=*))";
 
 	private Map nodeListeners;
 	private Map thresholdListeners;
@@ -159,9 +159,9 @@ public class NodeListenerSupport implements TrackerCustomizer, NodeRegistration,
 				/* call only once the same subscriber */
 				if (toFire) {
 					if (arrival)
-						((NodeCallback) pairs.getKey()).arrival(node);
+						((NodeCallback) pairs.getKey()).onArrival(node);
 					else
-						((NodeCallback) pairs.getKey()).departure(node);
+						((NodeCallback) pairs.getKey()).onDeparture(node);
 				}
 			}
 		}
@@ -381,5 +381,4 @@ public class NodeListenerSupport implements TrackerCustomizer, NodeRegistration,
 	public void removedService(ServiceReference reference, Object service) {
 		extractService(service);
 	}
-
 }

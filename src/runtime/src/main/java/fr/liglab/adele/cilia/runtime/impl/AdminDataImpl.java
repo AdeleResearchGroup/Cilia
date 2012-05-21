@@ -56,15 +56,12 @@ public final class AdminDataImpl implements AdminData {
 		Map dataContainer;
 		try {
 			_lock.readLock().acquire();
-
 			try {
 				if (isRegular)
 					dataContainer = m_dataChain;
 				else
 					dataContainer = m_dataChainLocked;
-
 				dataMediator = (Map) dataContainer.get(mediatorId);
-
 			} finally {
 				_lock.readLock().release();
 			}

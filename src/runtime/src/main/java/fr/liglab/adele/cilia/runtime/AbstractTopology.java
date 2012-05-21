@@ -130,6 +130,7 @@ public abstract class AbstractTopology implements Topology {
 				if (mc == null)
 					throw new CiliaIllegalStateException(chainId + "/" + component
 							+ " not existing !");
+				return mc;
 			} finally {
 				ciliaContext.getMutex().readLock().release();
 			}
@@ -137,7 +138,7 @@ public abstract class AbstractTopology implements Topology {
 			Thread.currentThread().interrupt();
 			throw new RuntimeException(e.getMessage());
 		}
-		return mc;
+
 	}
 
 	/*
