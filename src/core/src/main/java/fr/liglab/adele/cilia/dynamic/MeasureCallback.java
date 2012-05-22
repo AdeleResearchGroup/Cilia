@@ -31,6 +31,7 @@ public interface MeasureCallback {
 	 * 
 	 * @param node 
 	 * @param variable , variable id updated
+	 * @param Measure measure received :
 	 */
-	void onUpdate(Node node, String variable);
+	void onUpdate(Node node, String variable,Measure m);
 }

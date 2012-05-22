@@ -129,7 +129,6 @@ public class ApplicationSpecificationImpl extends AbstractTopology implements
 			Thread.currentThread().interrupt();
 			throw new RuntimeException();
 		}
-
 	}
 
 	/* callback event fired by the cilia framework */
@@ -152,28 +151,40 @@ public class ApplicationSpecificationImpl extends AbstractTopology implements
 
 		if ((evtNumber & EVENT_MEDIATOR_ADDED) == EVENT_MEDIATOR_ADDED) {
 			try {
-				listenerSupport.fireEventNode(true, getModel(chainId, mediatorId));
+				listenerSupport.fireEventNode(ApplicationListenerSupport.EVT_ARRIVAL,
+						getModel(chainId, mediatorId));
 			} catch (CiliaIllegalStateException e) {
 			}
 		}
 
 		if ((evtNumber & EVENT_MEDIATOR_REMOVED) == EVENT_MEDIATOR_REMOVED) {
 			try {
-				listenerSupport.fireEventNode(false, getModel(chainId, mediatorId));
+				listenerSupport.fireEventNode(ApplicationListenerSupport.EVT_DEPARTURE,
+						getModel(chainId, mediatorId));
 			} catch (CiliaIllegalStateException e) {
 			}
 		}
 
 		if ((evtNumber & EVENT_ADAPTER_ADDED) == EVENT_ADAPTER_ADDED) {
 			try {
-				listenerSupport.fireEventNode(true, getModel(chainId, mediatorId));
+				listenerSupport.fireEventNode(ApplicationListenerSupport.EVT_ARRIVAL,
+						getModel(chainId, mediatorId));
 			} catch (CiliaIllegalStateException e) {
 			}
 		}
 
 		if ((evtNumber & EVENT_ADAPTER_REMOVED) == EVENT_ADAPTER_REMOVED) {
 			try {
-				listenerSupport.fireEventNode(false, getModel(chainId, mediatorId));
+				listenerSupport.fireEventNode(ApplicationListenerSupport.EVT_DEPARTURE,
+						getModel(chainId, mediatorId));
+			} catch (CiliaIllegalStateException e) {
+			}
+		}
+
+		if ((evtNumber & EVENT_MEDIATOR_PROPERTIES_UPDATED) == EVENT_MEDIATOR_PROPERTIES_UPDATED) {
+			try {
+				listenerSupport.fireEventNode(ApplicationListenerSupport.EVT_MODIFIED,
+						getModel(chainId, mediatorId));
 			} catch (CiliaIllegalStateException e) {
 			}
 		}
@@ -270,7 +281,7 @@ public class ApplicationSpecificationImpl extends AbstractTopology implements
 				} else
 					/* chain no found */
 					nodes = new Node[0];
-				return nodes;	
+				return nodes;
 			} finally {
 				ciliaContext.getMutex().readLock().release();
 			}
@@ -278,7 +289,6 @@ public class ApplicationSpecificationImpl extends AbstractTopology implements
 			Thread.currentThread().interrupt();
 			throw new RuntimeException(e.getMessage());
 		}
-
 	}
 
 	public void addListener(String ldapFilter, NodeCallback listener)

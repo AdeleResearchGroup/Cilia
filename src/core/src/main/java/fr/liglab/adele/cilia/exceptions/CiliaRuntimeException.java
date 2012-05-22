@@ -18,7 +18,7 @@ package fr.liglab.adele.cilia.exceptions;
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project Team</a>
  *
  */
-public class CiliaRuntimeException extends Exception {
+public class CiliaRuntimeException extends CiliaException {
 
 	/**
 	 * 

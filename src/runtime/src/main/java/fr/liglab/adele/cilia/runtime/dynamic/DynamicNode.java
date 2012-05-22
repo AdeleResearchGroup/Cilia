@@ -40,7 +40,7 @@ import fr.liglab.adele.cilia.util.concurrent.SyncMap;
  *         Team</a>
  * 
  */
-@SuppressWarnings({ "unchecked","rawtypes" })
+@SuppressWarnings({ "unchecked", "rawtypes" })
 public class DynamicNode implements SetUp, RawData, Thresholds {
 
 	private final Logger logger = LoggerFactory.getLogger(ConstRuntime.LOG_NAME);
@@ -48,21 +48,24 @@ public class DynamicNode implements SetUp, RawData, Thresholds {
 
 	private static final int NB_THRESHOLD = 4;
 
+	private final NodeListenerSupport nodeListeners;
 	/* unique identifier */
-	private String uuid;
-	private String chainId;
-	private String nodeId;
+	private final String uuid;
+	private final String chainId;
+	private final String nodeId;
 
 	/* list of variables managed by this component */
 	private SyncMap variablesId = new SyncMap(new HashMap(),
 			new ReentrantWriterPreferenceReadWriteLock());
 
-	public DynamicNode(String uuid, RuntimeRegistry registry) {
+	public DynamicNode(final String uuid, final RuntimeRegistry registry,
+			final NodeListenerSupport nodeListeners) {
 		RegistryItem item = registry.findByUuid(uuid);
 		this.chainId = item.chainId();
 		this.nodeId = item.nodeId();
 		this.uuid = uuid;
 		mediatorHandler = item.runtimeReference();
+		this.nodeListeners = nodeListeners;
 	}
 
 	public String uuid() {
@@ -87,6 +90,8 @@ public class DynamicNode implements SetUp, RawData, Thresholds {
 					"Monitoring has not been set for this variable " + variableId);
 		measures.setLow(low);
 		measures.setVeryLow(verylow);
+		/* notify on modification all listeners */
+		nodeListeners.fireNodeEvent(NodeListenerSupport.EVT_MODIFIED, this);
 	}
 
 	public void setHigh(String variableId, double high, double veryhigh)
@@ -97,6 +102,8 @@ public class DynamicNode implements SetUp, RawData, Thresholds {
 					"Monitoring has not been set for this variable " + variableId);
 		measures.setHigh(high);
 		measures.setVeryHigh(veryhigh);
+		/* notify on modification all listeners */
+		nodeListeners.fireNodeEvent(NodeListenerSupport.EVT_MODIFIED, this);
 	}
 
 	public double getLow(String variableId) throws CiliaIllegalParameterException {
@@ -144,22 +151,26 @@ public class DynamicNode implements SetUp, RawData, Thresholds {
 		return m;
 	}
 
-	public int addMeasure(String variableId, Measure obj) {
-		int evt = -1;
+	public void addMeasure(String variableId, Measure obj) {
+		int evt;
 		/* retreive the component */
 		Observations measures = (Observations) variablesId.get(variableId);
 		if (measures != null) {
 			/* insert a new measure */
 			evt = measures.addMeasure(obj);
+			if (evt == 0) {
+				nodeListeners.fireMeasureReceived(this, variableId, obj);
+			} else {
+				nodeListeners.fireThresholdEvent(this, variableId, obj, evt);
+			}
 			logger.info("Received variable [{}], value [{}]", this.toString(),
 					obj.toString());
 		}
-		return evt;
 	}
 
 	/**
 	 * Observation store measures from runtime
-	 *
+	 * 
 	 */
 	private class Observations {
 
@@ -309,6 +320,8 @@ public class DynamicNode implements SetUp, RawData, Thresholds {
 					mediatorHandler.enableStateVar(variableId);
 				else
 					mediatorHandler.disableStateVar(variableId);
+				/* notify on modification all listeners */
+				nodeListeners.fireNodeEvent(NodeListenerSupport.EVT_MODIFIED, this);
 			} finally {
 				variablesId.writerSync().release();
 			}
@@ -341,10 +354,11 @@ public class DynamicNode implements SetUp, RawData, Thresholds {
 						/* never happens! */
 					}
 				} else {
-
 					Observations observation = (Observations) variablesId.get(variableId);
 					observation.setQueueSize(queueSize);
 				}
+				/* notify on modification all listeners */
+				nodeListeners.fireNodeEvent(NodeListenerSupport.EVT_MODIFIED, this);
 			} finally {
 				variablesId.writerSync().release();
 			}
@@ -371,6 +385,8 @@ public class DynamicNode implements SetUp, RawData, Thresholds {
 					mediatorHandler.disableStateVar(variableId);
 				}
 				mediatorHandler.setCondition(variableId, ldapFilter);
+				/* notify on modification all listeners */
+				nodeListeners.fireNodeEvent(NodeListenerSupport.EVT_MODIFIED, this);
 			} finally {
 				variablesId.writerSync().release();
 			}
@@ -410,6 +426,8 @@ public class DynamicNode implements SetUp, RawData, Thresholds {
 					mediatorHandler.enableStateVar(variableId);
 				else
 					mediatorHandler.disableStateVar(variableId);
+
+				nodeListeners.fireNodeEvent(NodeListenerSupport.EVT_MODIFIED, this);
 			} finally {
 				variablesId.writerSync().release();
 			}
@@ -435,7 +453,6 @@ public class DynamicNode implements SetUp, RawData, Thresholds {
 		if (observations == null)
 			throw new CiliaIllegalParameterException(toString()
 					+ " missing configuration !");
-
 		return observations.queueSize;
 	}
 
@@ -459,9 +476,9 @@ public class DynamicNode implements SetUp, RawData, Thresholds {
 
 	public String toString() {
 		StringBuffer sb = new StringBuffer();
-		sb.append("uuid [").append(uuid()).append("] ");
 		sb.append("qualified name [").append(chainId()).append("/").append(nodeId())
 				.append("]");
+		sb.append(", uuid [").append(uuid()).append("] ");
 		return sb.toString();
 	}
 

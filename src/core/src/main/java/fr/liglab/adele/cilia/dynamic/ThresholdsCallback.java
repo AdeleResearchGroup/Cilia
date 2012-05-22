@@ -36,8 +36,9 @@ public interface ThresholdsCallback {
 	 *            event threshold number
 	 *            {VERY_LOW,LOW,HIGH,VERY_HIGH}
 	 * @param variable
-	 *            urn:uuid:state-variable
+	 *            variable name 
+	 * @param measure measure received         
 	 */
-	void onThreshold(Node node, String variable,int thresholdType);
+	void onThreshold(Node node, String variable,Measure measure,int thresholdType);
 
 }

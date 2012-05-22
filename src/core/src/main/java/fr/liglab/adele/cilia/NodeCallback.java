@@ -38,4 +38,11 @@ public interface NodeCallback {
 	 *            , node departure
 	 */
 	void onDeparture(Node node);
+
+	/**
+	 * 
+	 * @param node
+	 *            node property updated
+	 */
+	void onModified(Node node);
 }

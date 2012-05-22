@@ -53,7 +53,8 @@ public class MonitorHandlerListener implements ComponentStateVarProperties, Even
 
 	private final NodeListenerSupport nodeListeners;
 
-	public MonitorHandlerListener(BundleContext bc, NodeListenerSupport nodeListenerSupport) {
+	public MonitorHandlerListener(BundleContext bc,
+			NodeListenerSupport nodeListenerSupport) {
 		this.bundleContext = bc;
 		this.nodeListeners = nodeListenerSupport;
 		this.weakProxy = new NodeProxy();
@@ -129,12 +130,7 @@ public class MonitorHandlerListener implements ComponentStateVarProperties, Even
 		if (item != null) {
 			DynamicNode node = item.dataRuntimeReference();
 			if (node != null) {
-				int evt = node.addMeasure(stateVariable, new MeasureImpl(value,
-						ticksCount));
-				if (evt == 0)
-					nodeListeners.fireMeasureReceived(node, stateVariable);
-				else if (evt > 0)
-					nodeListeners.fireThresholdEvent(node, stateVariable, evt);
+				node.addMeasure(stateVariable, new MeasureImpl(value, ticksCount));
 			}
 		}
 	}
@@ -143,11 +139,11 @@ public class MonitorHandlerListener implements ComponentStateVarProperties, Even
 		/* retreive the uuid in the registry */
 		RegistryItem item = registry.findByUuid(uuid);
 		/* construct a node -> hold data fired by the mediator-adapter */
-		DynamicNode node = new DynamicNode(uuid, registry);
+		DynamicNode node = new DynamicNode(uuid, registry, nodeListeners);
 		/* Store in the registry the previous Data node instancied */
 		item.setDataRuntimeReference(node);
 		/* informs all listeners 'node arrival' */
-		nodeListeners.fireNodeEvent(true, node);
+		nodeListeners.fireNodeEvent(NodeListenerSupport.EVT_ARRIVAL, node);
 		logger.debug("Listen data published by [{}]", node.toString());
 	}
 
@@ -155,7 +151,7 @@ public class MonitorHandlerListener implements ComponentStateVarProperties, Even
 		Node item = registry.findByUuid(uuid);
 		if (item != null) {
 			/* informs all listeners 'node departure' */
-			nodeListeners.fireNodeEvent(false, item);
+			nodeListeners.fireNodeEvent(NodeListenerSupport.EVT_DEPARTURE, item);
 			logger.debug("Remove listening data from [{}]", item.toString());
 		}
 	}

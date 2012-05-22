@@ -137,4 +137,12 @@ public interface ApplicationRuntime extends Topology, NodeRegistration,
 	Thresholds nodeMonitoring(Node node) throws CiliaIllegalParameterException,
 			CiliaIllegalStateException;
 
+	/** 
+	 * Retrieve a node knowing its uuid (faster access) 
+	 * @param uuid
+	 * @return Node matching the uuid
+	 * @throws CiliaIllegalParameterException
+	 */
+	Node findNodeByUUID(String uuid) throws CiliaIllegalParameterException;
+
 }

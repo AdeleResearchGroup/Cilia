@@ -50,6 +50,9 @@ import fr.liglab.adele.cilia.util.concurrent.ConcurrentReaderHashMap;
 @SuppressWarnings({ "rawtypes", "unchecked" })
 public class ApplicationListenerSupport implements TrackerCustomizer, ChainRegistration,
 		NodeRegistration {
+	public static final int EVT_ARRIVAL = 1;
+	public static final int EVT_DEPARTURE = 2;
+	public static final int EVT_MODIFIED = 3;
 
 	private final Logger logger = LoggerFactory.getLogger(ConstRuntime.LOG_NAME);
 
@@ -71,7 +74,7 @@ public class ApplicationListenerSupport implements TrackerCustomizer, ChainRegis
 
 	public void start(WorkQueue wq) {
 		registerTracker();
-		workQueue =wq ;
+		workQueue = wq;
 	}
 
 	public void stop() {
@@ -105,13 +108,13 @@ public class ApplicationListenerSupport implements TrackerCustomizer, ChainRegis
 			throws CiliaIllegalParameterException, CiliaInvalidSyntaxException {
 		if (listener == null)
 			throw new CiliaIllegalParameterException("listener is null");
-		ArrayList array =new ArrayList(1);
-		ArrayList old ;
-		array.add(ConstRuntime.createFilter(filter)) ;
+		ArrayList array = new ArrayList(1);
+		ArrayList old;
+		array.add(ConstRuntime.createFilter(filter));
 		/* Efficient with ConcurrentReaderHashMap */
-		old = (ArrayList)map.put(listener,array);
-		if (old !=null) {
-			array.addAll(old) ;
+		old = (ArrayList) map.put(listener, array);
+		if (old != null) {
+			array.addAll(old);
 		}
 	}
 
@@ -142,16 +145,17 @@ public class ApplicationListenerSupport implements TrackerCustomizer, ChainRegis
 		removeFilterListener(listenerNode, listener);
 	}
 
-	public void fireEventNode(boolean arrival, Node component) {
-		if (!listenerNode.isEmpty()) workQueue.execute(new NodeFirer(arrival, component));
+	public void fireEventNode(int event, Node component) {
+		if (!listenerNode.isEmpty())
+			workQueue.execute(new NodeFirer(event, component));
 	}
 
 	private class NodeFirer implements Runnable {
-		private boolean arrival;
+		private int event;
 		private Node node;
 
-		public NodeFirer(boolean arrival, Node node) {
-			this.arrival = arrival;
+		public NodeFirer(int event, Node node) {
+			this.event = event;
 			this.node = node;
 		}
 
@@ -170,10 +174,17 @@ public class ApplicationListenerSupport implements TrackerCustomizer, ChainRegis
 					}
 				}
 				if (tofire) {
-					if (arrival)
+					switch (event) {
+					case EVT_ARRIVAL:
 						((NodeCallback) pairs.getKey()).onArrival(node);
-					else
+						break;
+					case EVT_DEPARTURE:
 						((NodeCallback) pairs.getKey()).onDeparture(node);
+						break;
+					case EVT_MODIFIED:
+						((NodeCallback) pairs.getKey()).onModified(node);
+						break;
+					}
 				}
 			}
 		}

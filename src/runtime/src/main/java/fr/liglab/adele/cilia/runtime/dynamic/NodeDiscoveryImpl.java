@@ -46,7 +46,7 @@ public class NodeDiscoveryImpl implements TrackerCustomizer, ComponentStateVarPr
 	private Tracker tracker;
 
 
-	public NodeDiscoveryImpl(BundleContext bc,NodeCallback cb) {
+	public NodeDiscoveryImpl(final BundleContext bc,final NodeCallback cb) {
 		this.bundleContext = bc;
 		this.callback=cb;
 	}

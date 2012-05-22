@@ -53,8 +53,8 @@ import fr.liglab.adele.cilia.util.concurrent.WriterPreferenceReadWriteLock;
  *         Team</a>
  */
 @SuppressWarnings({ "rawtypes", "unchecked" })
-public class ApplicationRuntimeImpl extends AbstractTopology implements ApplicationRuntime,
-		NodeCallback {
+public class ApplicationRuntimeImpl extends AbstractTopology implements
+		ApplicationRuntime, NodeCallback {
 
 	private final Logger logger = LoggerFactory.getLogger(ConstRuntime.LOG_NAME);
 
@@ -69,8 +69,7 @@ public class ApplicationRuntimeImpl extends AbstractTopology implements Applicat
 	private ReadWriteLock mutex;
 	private NodeListenerSupport nodeListenerSupport;
 	/* Reference injected by ipojo */
-	private WorkQueue workQueue; 
-	
+	private WorkQueue workQueue;
 
 	public ApplicationRuntimeImpl(BundleContext bc) {
 		discovery = new NodeDiscoveryImpl(bc, this);
@@ -144,6 +143,9 @@ public class ApplicationRuntimeImpl extends AbstractTopology implements Applicat
 
 	public void onDeparture(Node node) {
 		removeNode(node.uuid());
+	}
+
+	public void onModified(Node node) {
 	}
 
 	/*
@@ -287,7 +289,7 @@ public class ApplicationRuntimeImpl extends AbstractTopology implements Applicat
 
 		if (node == null)
 			return new Node[0];
-		
+
 		if (registry.findByUuid(node.uuid()) == null)
 			throw new CiliaIllegalStateException("node disappears");
 		/* retreive the chain hosting the mediator/component */

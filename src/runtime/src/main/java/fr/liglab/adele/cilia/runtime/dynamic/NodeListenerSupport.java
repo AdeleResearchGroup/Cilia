@@ -31,6 +31,7 @@ import org.slf4j.LoggerFactory;
 import fr.liglab.adele.cilia.Node;
 import fr.liglab.adele.cilia.NodeCallback;
 import fr.liglab.adele.cilia.NodeRegistration;
+import fr.liglab.adele.cilia.dynamic.Measure;
 import fr.liglab.adele.cilia.dynamic.MeasureCallback;
 import fr.liglab.adele.cilia.dynamic.MeasuresRegistration;
 import fr.liglab.adele.cilia.dynamic.ThresholdsCallback;
@@ -50,6 +51,9 @@ import fr.liglab.adele.cilia.util.concurrent.ConcurrentReaderHashMap;
 public class NodeListenerSupport implements TrackerCustomizer, NodeRegistration,
 		MeasuresRegistration {
 	protected final Logger logger = LoggerFactory.getLogger(ConstRuntime.LOG_NAME);
+	public static final int EVT_ARRIVAL = 1;
+	public static final int EVT_DEPARTURE = 2;
+	public static final int EVT_MODIFIED = 3;
 
 	private static final String NODE_LISTENER = "cilia.runtime.node";
 	private static final String NODE_DATA = "cilia.runtime.node.data";
@@ -59,8 +63,7 @@ public class NodeListenerSupport implements TrackerCustomizer, NodeRegistration,
 	private Map nodeListeners;
 	private Map thresholdListeners;
 	private Map measureListeners;
-	private WorkQueue workQueue; 
-	
+	private WorkQueue workQueue;
 
 	private Tracker tracker;
 	private BundleContext bundleContext;
@@ -75,17 +78,17 @@ public class NodeListenerSupport implements TrackerCustomizer, NodeRegistration,
 	/* insert a new listener ,associated to a ldap filter */
 	private void addFilterListener(Map map, String filter, Object listener)
 			throws CiliaIllegalParameterException, CiliaInvalidSyntaxException {
-		ArrayList old,array ;
-		
+		ArrayList old, array;
+
 		if (listener == null)
 			throw new CiliaIllegalParameterException("listener is null");
 		/* mostly length = 1 */
-		array =new ArrayList(1);
-		array.add(ConstRuntime.createFilter(filter)) ;
+		array = new ArrayList(1);
+		array.add(ConstRuntime.createFilter(filter));
 		/* Efficient with ConcurrentReaderHashMap */
-		old = (ArrayList)map.put(listener,array);
-		if (old !=null) {
-			array.addAll(old) ;
+		old = (ArrayList) map.put(listener, array);
+		if (old != null) {
+			array.addAll(old);
 		}
 	}
 
@@ -126,22 +129,22 @@ public class NodeListenerSupport implements TrackerCustomizer, NodeRegistration,
 	 * 
 	 * @param source
 	 */
-	public void fireNodeEvent(boolean arrival, Node source) {
+	public void fireNodeEvent(int event, Node source) {
 		if (!nodeListeners.isEmpty())
-			workQueue.execute(new NodeFirer(arrival, source));
+			workQueue.execute(new NodeFirer(event, source));
 	}
 
 	private class NodeFirer implements Runnable {
 
-		private boolean arrival;
+		private int event;
 		private Node node;
 
-		public NodeFirer(boolean arrival, Node node) {
-			this.arrival = arrival;
+		public NodeFirer(int event, Node node) {
+			this.event = event;
 			this.node = node;
 		}
 
-		public void run()  {
+		public void run() {
 			/* No need to synchronize ! */
 			/* Iterator over all listener */
 			Iterator it = nodeListeners.entrySet().iterator();
@@ -158,10 +161,16 @@ public class NodeListenerSupport implements TrackerCustomizer, NodeRegistration,
 				}
 				/* call only once the same subscriber */
 				if (toFire) {
-					if (arrival)
+					switch (event) {
+					case EVT_ARRIVAL:
 						((NodeCallback) pairs.getKey()).onArrival(node);
-					else
+						break;
+					case EVT_DEPARTURE:
 						((NodeCallback) pairs.getKey()).onDeparture(node);
+						break;
+					case EVT_MODIFIED:
+						((NodeCallback) pairs.getKey()).onModified(node);
+					}
 				}
 			}
 		}
@@ -191,18 +200,20 @@ public class NodeListenerSupport implements TrackerCustomizer, NodeRegistration,
 	 * @param node
 	 * @param variableId
 	 */
-	public void fireMeasureReceived(Node node, String variableId) {
+	public void fireMeasureReceived(Node node, String variableId, Measure m) {
 		if (!measureListeners.isEmpty())
-			workQueue.execute(new MeasureFirer(node, variableId));
+			workQueue.execute(new MeasureFirer(node, variableId, m));
 	}
 
 	public class MeasureFirer implements Runnable {
 		private Node node;
 		private String variableId;
+		private Measure measure;
 
-		public MeasureFirer(Node node, String variableId) {
+		public MeasureFirer(Node node, String variableId, Measure m) {
 			this.node = node;
 			this.variableId = variableId;
+			this.measure = m;
 		}
 
 		public void run() {
@@ -218,7 +229,8 @@ public class NodeListenerSupport implements TrackerCustomizer, NodeRegistration,
 					}
 				}
 				if (tofire)
-					((MeasureCallback) pairs.getKey()).onUpdate(node, variableId);
+					((MeasureCallback) pairs.getKey())
+							.onUpdate(node, variableId, measure);
 			}
 		}
 	}
@@ -248,9 +260,9 @@ public class NodeListenerSupport implements TrackerCustomizer, NodeRegistration,
 		removeFilterListener(thresholdListeners, listener);
 	}
 
-	public void fireThresholdEvent(Node node, String variableId, int evt) {
+	public void fireThresholdEvent(Node node, String variableId, Measure measure, int evt) {
 		if (!thresholdListeners.isEmpty())
-			workQueue.execute(new ThresholdFirer(node, variableId, evt));
+			workQueue.execute(new ThresholdFirer(node, variableId, measure, evt));
 	}
 
 	/* Run in a thread MIN_PRIORITY+1 */
@@ -258,11 +270,13 @@ public class NodeListenerSupport implements TrackerCustomizer, NodeRegistration,
 		private int evt;
 		private String variable;
 		private Node node;
+		private Measure measure;
 
-		public ThresholdFirer(Node node, String variable, int evt) {
+		public ThresholdFirer(Node node, String variable, Measure measure, int evt) {
 			this.evt = evt;
 			this.variable = variable;
 			this.node = node;
+			this.measure = measure;
 		}
 
 		public void run() {
@@ -279,15 +293,15 @@ public class NodeListenerSupport implements TrackerCustomizer, NodeRegistration,
 					}
 				}
 				if (tofire)
-					((ThresholdsCallback) pairs.getKey())
-							.onThreshold(node, variable, evt);
+					((ThresholdsCallback) pairs.getKey()).onThreshold(node, variable,
+							measure, evt);
 			}
 		}
 	}
 
 	protected void start(WorkQueue wq) {
 		registerTracker();
-		workQueue = wq ;
+		workQueue = wq;
 	}
 
 	protected void stop() {
