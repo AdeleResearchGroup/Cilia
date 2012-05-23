@@ -443,11 +443,18 @@ public abstract class MediatorComponentImpl extends ComponentImpl implements Med
 		return uuid ;
 	}
 	 
+	public String nodeName() {
+		StringBuffer sb = new StringBuffer("qname=");
+		sb.append(chainId()).append("/").append(nodeId());
+		sb.append(",uuid=");
+		sb.append(uuid());
+		return sb.toString();
+	}
+	
+	/* to display at least the node identification */
 	public String toString() {
-		StringBuffer sb = new StringBuffer();
-		sb.append("qualified name [").append(chainId()).append("/").append(nodeId())
-				.append("]");
-		sb.append(", uuid [").append(uuid()).append("] ");
+		StringBuffer sb = new StringBuffer(nodeName());
+		sb.append("properties :").append(super.getProperties());
 		return sb.toString();
 	}
 }

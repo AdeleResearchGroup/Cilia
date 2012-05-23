@@ -29,7 +29,7 @@ public interface Node {
 	String chainId();
 
 	/**
-	 * @return node name ( adapter or mediator )
+	 * @return node name ( adapter id or mediator id )
 	 */
 	String nodeId();
 
@@ -37,4 +37,10 @@ public interface Node {
 	 * @return unique Identifier 
 	 */
 	String uuid();
+	
+	/**
+	 * 
+	 * @return Return the full node name in string format "{chainId/nodeId,uuid}"
+	 */
+	String nodeName() ;
 }

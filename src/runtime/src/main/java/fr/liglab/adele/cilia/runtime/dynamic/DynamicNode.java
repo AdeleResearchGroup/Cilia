@@ -474,12 +474,17 @@ public class DynamicNode implements SetUp, RawData, Thresholds {
 		return mediatorHandler.getCondition(variableId);
 	}
 
-	public String toString() {
-		StringBuffer sb = new StringBuffer();
-		sb.append("qualified name [").append(chainId()).append("/").append(nodeId())
-				.append("]");
-		sb.append(", uuid [").append(uuid()).append("] ");
+	public String nodeName() {
+		StringBuffer sb = new StringBuffer("qname=");
+		sb.append(chainId()).append("/").append(nodeId());
+		sb.append(",uuid=");
+		sb.append(uuid());
 		return sb.toString();
 	}
-
+	
+	public String toString() {
+		StringBuffer sb= new StringBuffer("dynamic node ");
+		sb.append(nodeName());
+		return sb.toString() ;
+	}
 }

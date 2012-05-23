@@ -107,12 +107,17 @@ public class RegistryItemImpl implements RegistryItem {
 		return props.get(key);
 	}
 
-	public String toString() {
-		StringBuffer sb = new StringBuffer();
-		sb.append("qualified name [").append(chainId()).append("/").append(nodeId())
-				.append("]");
-		sb.append(", uuid [").append(uuid()).append("] ");
+	public String nodeName() {
+		StringBuffer sb = new StringBuffer("qname=");
+		sb.append(chainId()).append("/").append(nodeId());
+		sb.append(",uuid=");
+		sb.append(uuid());
 		return sb.toString();
 	}
 
+	public String toString() {
+		StringBuffer sb = new StringBuffer(nodeName()) ;
+		sb.append("properties =").append(props);
+		return sb.toString();
+	}
 }
