@@ -40,7 +40,7 @@ public interface Node {
 	
 	/**
 	 * 
-	 * @return Return the full node name in string format "{chainId/nodeId,uuid}"
+	 * @return Return the urn for a node urn:chaineId/mediatorId:uuid
 	 */
-	String nodeName() ;
+	String getURN() ;
 }

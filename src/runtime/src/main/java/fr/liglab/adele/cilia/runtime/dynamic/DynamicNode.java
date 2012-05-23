@@ -29,6 +29,7 @@ import fr.liglab.adele.cilia.exceptions.CiliaIllegalParameterException;
 import fr.liglab.adele.cilia.exceptions.CiliaInvalidSyntaxException;
 import fr.liglab.adele.cilia.framework.monitor.statevariable.ComponentStateVarService;
 import fr.liglab.adele.cilia.runtime.ConstRuntime;
+import fr.liglab.adele.cilia.util.FrameworkUtils;
 import fr.liglab.adele.cilia.util.concurrent.ReentrantWriterPreferenceReadWriteLock;
 import fr.liglab.adele.cilia.util.concurrent.SyncList;
 import fr.liglab.adele.cilia.util.concurrent.SyncMap;
@@ -474,17 +475,13 @@ public class DynamicNode implements SetUp, RawData, Thresholds {
 		return mediatorHandler.getCondition(variableId);
 	}
 
-	public String nodeName() {
-		StringBuffer sb = new StringBuffer("qname=");
-		sb.append(chainId()).append("/").append(nodeId());
-		sb.append(",uuid=");
-		sb.append(uuid());
-		return sb.toString();
+	public String getURN() {
+		return FrameworkUtils.makeURN(chainId(), nodeId(), uuid());
 	}
 	
 	public String toString() {
-		StringBuffer sb= new StringBuffer("dynamic node ");
-		sb.append(nodeName());
+		StringBuffer sb= new StringBuffer(getURN());
+		sb.append(", variables:"+variablesId.entrySet().toString());
 		return sb.toString() ;
 	}
 }

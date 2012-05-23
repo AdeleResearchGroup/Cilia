@@ -24,6 +24,7 @@ import java.util.regex.Pattern;
 
 import fr.liglab.adele.cilia.Component;
 import fr.liglab.adele.cilia.exceptions.CiliaIllegalParameterException;
+import fr.liglab.adele.cilia.util.FrameworkUtils;
 
 /**
  * This class is the basic representation model, which contains the information
@@ -56,7 +57,7 @@ public class ComponentImpl extends Observable implements Component {
 	private volatile Hashtable /* <CiliaProperty> */properties = new Hashtable();
 
 	public static final void checkID(String id)  {
-		Pattern p = Pattern.compile("(\\w-*\\.*:*)+");
+		Pattern p = Pattern.compile(FrameworkUtils.ID_STRING_PATTTERN);
 		if (!p.matcher(id).matches()) {
 			throw new IllegalArgumentException(
 					"id must be a word character + optionnal characters = {'.' ,'-' ,':' } id=" + id);

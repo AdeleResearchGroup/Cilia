@@ -22,6 +22,7 @@ import java.util.Map;
 import fr.liglab.adele.cilia.MediatorComponent;
 import fr.liglab.adele.cilia.framework.monitor.statevariable.ComponentStateVarService;
 import fr.liglab.adele.cilia.runtime.ConstRuntime;
+import fr.liglab.adele.cilia.util.FrameworkUtils;
 
 /**
  * Object stored in the registry
@@ -107,17 +108,13 @@ public class RegistryItemImpl implements RegistryItem {
 		return props.get(key);
 	}
 
-	public String nodeName() {
-		StringBuffer sb = new StringBuffer("qname=");
-		sb.append(chainId()).append("/").append(nodeId());
-		sb.append(",uuid=");
-		sb.append(uuid());
-		return sb.toString();
+	public String getURN() {
+		return FrameworkUtils.makeURN(chainId(), nodeId(), uuid());
 	}
 
 	public String toString() {
-		StringBuffer sb = new StringBuffer(nodeName()) ;
-		sb.append("properties =").append(props);
+		StringBuffer sb = new StringBuffer(getURN()) ;
+		sb.append(", properties:").append(props);
 		return sb.toString();
 	}
 }

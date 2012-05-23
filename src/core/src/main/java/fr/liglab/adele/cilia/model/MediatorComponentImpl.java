@@ -27,14 +27,17 @@ import fr.liglab.adele.cilia.Binding;
 import fr.liglab.adele.cilia.Chain;
 import fr.liglab.adele.cilia.MediatorComponent;
 import fr.liglab.adele.cilia.Port;
+import fr.liglab.adele.cilia.util.FrameworkUtils;
 import fr.liglab.adele.cilia.util.Uuid;
 
 /**
- * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project Team</a>
- *
+ * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project
+ *         Team</a>
+ * 
  */
-public abstract class MediatorComponentImpl extends ComponentImpl implements MediatorComponent{
-	
+public abstract class MediatorComponentImpl extends ComponentImpl implements
+		MediatorComponent {
+
 	/**
 	 * Reference to the parent chain which contains this mediator representation
 	 * model.
@@ -68,10 +71,10 @@ public abstract class MediatorComponentImpl extends ComponentImpl implements Med
 
 	protected final Object lockObject = new Object();
 
-	private String qualifiedId ;
-	
+	private String qualifiedId;
+
 	private String version = null;
-	
+
 	private final String uuid = Uuid.generate().toString();
 
 	/**
@@ -90,8 +93,8 @@ public abstract class MediatorComponentImpl extends ComponentImpl implements Med
 	 *            ChainImpl where this mediator will be.
 	 */
 
-	public MediatorComponentImpl(String id, String type, String nspace, String catego, String version,
-			Dictionary properties, Chain chain) {
+	public MediatorComponentImpl(String id, String type, String nspace, String catego,
+			String version, Dictionary properties, Chain chain) {
 		super(id, type, nspace, properties);
 		this.category = catego;
 		this.version = version;
@@ -118,7 +121,7 @@ public abstract class MediatorComponentImpl extends ComponentImpl implements Med
 	 * @param chain
 	 *            chain which will contain this mediator.
 	 */
-	public abstract void setChain(Chain chain) ;
+	public abstract void setChain(Chain chain);
 
 	/**
 	 * Get the chain representation model which contains this mediator.
@@ -193,9 +196,9 @@ public abstract class MediatorComponentImpl extends ComponentImpl implements Med
 	}
 
 	/**
-	 * Create a port in the MediatorImpl with the given name. If there exist a port
-	 * with the given name, it will not create a new one, it will return the one
-	 * which exist.
+	 * Create a port in the MediatorImpl with the given name. If there exist a
+	 * port with the given name, it will not create a new one, it will return
+	 * the one which exist.
 	 * 
 	 * @param name
 	 *            PortImpl Name to create.
@@ -233,8 +236,8 @@ public abstract class MediatorComponentImpl extends ComponentImpl implements Med
 	}
 
 	/**
-	 * Create an In port in the MediatorImpl with the given name. If there exist a
-	 * port with the given name, it will not create a new one, it will return
+	 * Create an In port in the MediatorImpl with the given name. If there exist
+	 * a port with the given name, it will not create a new one, it will return
 	 * the one which exist.
 	 * 
 	 * @param name
@@ -255,9 +258,9 @@ public abstract class MediatorComponentImpl extends ComponentImpl implements Med
 	}
 
 	/**
-	 * Create an out port in the MediatorImpl with the given name. If there exist a
-	 * port with the given name, it will not create a new one, it will return
-	 * the one which exist.
+	 * Create an out port in the MediatorImpl with the given name. If there
+	 * exist a port with the given name, it will not create a new one, it will
+	 * return the one which exist.
 	 * 
 	 * @param name
 	 *            PortImpl Name to create.
@@ -332,7 +335,7 @@ public abstract class MediatorComponentImpl extends ComponentImpl implements Med
 			entryBindings.add(bindingToAdd);
 		}
 	}
-	
+
 	public boolean removeInBinding(Binding binding) {
 		boolean isRemoved = false;
 		synchronized (entryBindings) {
@@ -340,7 +343,7 @@ public abstract class MediatorComponentImpl extends ComponentImpl implements Med
 		}
 		return isRemoved;
 	}
-	
+
 	public boolean removeOutBinding(Binding binding) {
 		boolean isRemoved = false;
 		synchronized (exitBindings) {
@@ -370,14 +373,13 @@ public abstract class MediatorComponentImpl extends ComponentImpl implements Med
 
 	public void lockRuntime() {
 		this.setProperty(ConstModel.PROPERTY_LOCK_UNLOCK, ConstModel.SET_LOCK);
-		
+
 	}
 
 	public void unLockRuntime() {
 		this.setProperty(ConstModel.PROPERTY_LOCK_UNLOCK, ConstModel.SET_UNLOCK);
 	}
 
-	
 	public synchronized boolean isLocked() {
 		boolean isLocked = false;
 		String lock = (String) this.getProperty(ConstModel.PROPERTY_LOCK_UNLOCK);
@@ -386,34 +388,33 @@ public abstract class MediatorComponentImpl extends ComponentImpl implements Med
 		}
 		return isLocked;
 	}
-	
+
 	public void setQualifiedId(String id) {
 		this.qualifiedId = id;
 	}
-	
+
 	public String getQualifiedId() {
-	   	return qualifiedId;
+		return qualifiedId;
 	}
-	
-	
-	public void dispose(){
+
+	public void dispose() {
 		super.dispose();
 		this.category = null;
 		this.chain = null;
 		this.dispatcher = null;
 		this.scheduler = null;
-		
+
 		this.entryBindings.clear();
 		this.entryBindings = null;
-		
+
 		this.exitBindings.clear();
 		this.exitBindings = null;
-		
+
 		this.inPorts.clear();
 		this.outPorts.clear();
-		
+
 		this.qualifiedId = null;
-		
+
 	}
 
 	/**
@@ -424,37 +425,33 @@ public abstract class MediatorComponentImpl extends ComponentImpl implements Med
 	}
 
 	/**
-	 * @param version the version to set
+	 * @param version
+	 *            the version to set
 	 */
 	public void setVersion(String version) {
 		this.version = version;
 	}
-	
-	
+
 	public String nodeId() {
 		return getId();
 	}
-	
+
 	public String chainId() {
 		return getChain().getId();
 	}
-	
+
 	public String uuid() {
-		return uuid ;
+		return uuid;
 	}
-	 
-	public String nodeName() {
-		StringBuffer sb = new StringBuffer("qname=");
-		sb.append(chainId()).append("/").append(nodeId());
-		sb.append(",uuid=");
-		sb.append(uuid());
-		return sb.toString();
+
+	public String getURN() {
+		return FrameworkUtils.makeURN(chainId(), nodeId(), uuid());
 	}
-	
+
 	/* to display at least the node identification */
 	public String toString() {
-		StringBuffer sb = new StringBuffer(nodeName());
-		sb.append("properties :").append(super.getProperties());
+		StringBuffer sb = new StringBuffer(getURN());
+		sb.append(",properties:").append(super.getProperties());
 		return sb.toString();
 	}
 }
