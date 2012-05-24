@@ -114,7 +114,7 @@ public class CiliaCopierProcessor {
 				properties, chain);
 
 		logger.info("Command 'copy mediator' [{}] to [{}] ",
-				mediatorSource.getQualifiedId(), mediatorDest.getQualifiedId());
+				mediatorSource.getURN(), mediatorDest.getURN());
 
 	}
 
@@ -165,7 +165,7 @@ public class CiliaCopierProcessor {
 				adapterSource.getPattern());
 
 		logger.info("Command 'copy adapter' [{}] to [{}] ",
-				adapterSource.getQualifiedId(), adapterDest.getQualifiedId());
+				adapterSource.getURN(), adapterDest.getURN());
 
 	}
 }

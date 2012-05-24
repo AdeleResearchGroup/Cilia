@@ -56,13 +56,7 @@ public class ComponentImpl extends Observable implements Component {
 	 */
 	private volatile Hashtable /* <CiliaProperty> */properties = new Hashtable();
 
-	public static final void checkID(String id)  {
-		Pattern p = Pattern.compile(FrameworkUtils.ID_STRING_PATTTERN);
-		if (!p.matcher(id).matches()) {
-			throw new IllegalArgumentException(
-					"id must be a word character + optionnal characters = {'.' ,'-' ,':' } id=" + id);
-		}
-	}
+
 
 	public static final String buildQualifiedId(String chainId, String componentId) {
 		StringBuffer sb = new StringBuffer();
@@ -93,7 +87,7 @@ public class ComponentImpl extends Observable implements Component {
 		if (id == null || id.length() == 0) {
 			id = String.valueOf(this.hashCode());
 		}
-		else checkID(id);
+		else FrameworkUtils.checkIdentifier(id);
 		
 		this.id = id;
 		this.type = type;

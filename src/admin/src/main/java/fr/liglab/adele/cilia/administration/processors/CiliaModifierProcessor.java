@@ -131,7 +131,7 @@ public class CiliaModifierProcessor {
 			logger.error("ComponentImpl [{}] not found in chain [{}]",mediatorId,chainId);
 			return;
 		}
-		logger.info ("Command 'modify property mediator' [{}]",mediator.getQualifiedId());
+		logger.info ("Command 'modify property mediator' [{}]",mediator.getURN());
 		mediator.setProperties(props);
 	}
 
@@ -166,7 +166,7 @@ public class CiliaModifierProcessor {
 			logger.error("ComponentImpl [{}] not found in chain [{}]",adapterId,chainId);
 			return;
 		}
-		logger.info ("Command 'modify property adapter' [{}]",adapter.getQualifiedId());
+		logger.info ("Command 'modify property adapter' [{}]",adapter.getURN());
 		adapter.setProperties(props);
 	}
 

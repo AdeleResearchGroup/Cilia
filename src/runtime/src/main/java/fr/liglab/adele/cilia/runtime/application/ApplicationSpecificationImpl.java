@@ -240,7 +240,6 @@ public class ApplicationSpecificationImpl extends AbstractTopology implements
 						}
 					}
 				}
-
 				return (Node[]) componentSet.toArray(new Node[componentSet.size()]);
 			} finally {
 				ciliaContext.getMutex().readLock().release();

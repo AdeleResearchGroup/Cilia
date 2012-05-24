@@ -41,16 +41,4 @@ public interface RawData extends Node {
 	 */
 	public String[] enabledVariable() throws CiliaIllegalParameterException;
 
-	/**
-	 * 
-	 * @param variableId
-	 * @return number of objects stored
-	 */
-	public int queueSize(String variableId) throws CiliaIllegalParameterException;
-
-	/**
-	 * @param variableId
-	 * @return ldap filter for the flow control
-	 */
-	public String flowControl(String variableId) throws CiliaIllegalParameterException;
 }

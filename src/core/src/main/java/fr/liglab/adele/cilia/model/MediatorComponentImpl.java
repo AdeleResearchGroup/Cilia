@@ -71,8 +71,6 @@ public abstract class MediatorComponentImpl extends ComponentImpl implements
 
 	protected final Object lockObject = new Object();
 
-	private String qualifiedId;
-
 	private String version = null;
 
 	private final String uuid = Uuid.generate().toString();
@@ -389,14 +387,6 @@ public abstract class MediatorComponentImpl extends ComponentImpl implements
 		return isLocked;
 	}
 
-	public void setQualifiedId(String id) {
-		this.qualifiedId = id;
-	}
-
-	public String getQualifiedId() {
-		return qualifiedId;
-	}
-
 	public void dispose() {
 		super.dispose();
 		this.category = null;
@@ -412,8 +402,6 @@ public abstract class MediatorComponentImpl extends ComponentImpl implements
 
 		this.inPorts.clear();
 		this.outPorts.clear();
-
-		this.qualifiedId = null;
 
 	}
 

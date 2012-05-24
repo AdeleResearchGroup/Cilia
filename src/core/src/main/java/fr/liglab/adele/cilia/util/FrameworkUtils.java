@@ -26,12 +26,25 @@ import java.util.regex.Pattern;
  */
 public final class FrameworkUtils {
 
-	public static final String ID_STRING_PATTTERN ="(\\w-*\\.*:*)+" ;
+	private static final String ID_STRING_PATTTERN ="(\\w-*\\.*:*)+" ;
 	
+
 	private static final Pattern IDENTIFIER = Pattern.compile(
 			"^urn:"+ID_STRING_PATTTERN+":"+ID_STRING_PATTTERN,
 			Pattern.CASE_INSENSITIVE);
 
+	/**
+	 * Ientifier composed by  a-zA-Z_0-9 allowed characters are -_:. 
+	 * @param id
+	 */
+	public static final void checkIdentifier(String id)  {
+		Pattern p = Pattern.compile(FrameworkUtils.ID_STRING_PATTTERN);
+		if (!p.matcher(id).matches()) {
+			throw new IllegalArgumentException(
+					"id must be a word character + optionnal characters = {'.' ,'-' ,':' } id=" + id);
+		}
+	}
+	
 	/**
 	 * @param aUrn
 	 *            URN <URN> ::= "urn:" <NID> ":" <NSS>

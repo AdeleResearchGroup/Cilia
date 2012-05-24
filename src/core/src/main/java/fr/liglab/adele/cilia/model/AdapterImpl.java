@@ -63,10 +63,6 @@ public class AdapterImpl  extends MediatorComponentImpl implements Adapter{
 	 */
 	public void setChain(Chain chain) {
 		synchronized (lockObject) {
-			if (chain != null) {
-				//chain.add(this);
-				setQualifiedId(ComponentImpl.buildQualifiedId(getId(),chain.getId()));
-			}
 			this.chain = chain;
 		}
 	}

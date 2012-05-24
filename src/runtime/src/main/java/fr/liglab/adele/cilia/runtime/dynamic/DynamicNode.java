@@ -16,6 +16,8 @@ package fr.liglab.adele.cilia.runtime.dynamic;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -164,8 +166,7 @@ public class DynamicNode implements SetUp, RawData, Thresholds {
 			} else {
 				nodeListeners.fireThresholdEvent(this, variableId, obj, evt);
 			}
-			logger.info("Received variable [{}], value [{}]", this.toString(),
-					obj.toString());
+			logger.info("Received variable [{},{}]", variableId,obj.toString());
 		}
 	}
 
@@ -480,8 +481,13 @@ public class DynamicNode implements SetUp, RawData, Thresholds {
 	}
 	
 	public String toString() {
-		StringBuffer sb= new StringBuffer(getURN());
-		sb.append(", variables:"+variablesId.entrySet().toString());
+		StringBuffer sb= new StringBuffer(getURN()).append("{");
+		Iterator it = variablesId.entrySet().iterator();
+		while (it.hasNext()) {
+			Map.Entry pairs = (Map.Entry) it.next();
+			sb.append(pairs.getKey()).append(",");		
+		}
+		sb.append("}");
 		return sb.toString() ;
 	}
 }

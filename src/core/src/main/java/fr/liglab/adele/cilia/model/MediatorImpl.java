@@ -72,11 +72,6 @@ public class MediatorImpl extends MediatorComponentImpl implements Mediator {
 	 */
 	public void setChain(Chain chain) {
 		synchronized (lockObject) {
-			if (chain != null) {
-				// chain.add(this);
-				setQualifiedId(ComponentImpl.buildQualifiedId(getId(),
-						chain.getId()));
-			}
 			super.chain = chain;
 		}
 	}

@@ -21,12 +21,6 @@ package fr.liglab.adele.cilia;
 public interface MediatorComponent extends Node,Component { 
 	
 	/**
-	 * get the qualified id 'chainId/mediatorId'
-	 * @return
-	 */
-	String getQualifiedId() ;
-
-	/**
 	 * 
 	 * @return
 	 */
