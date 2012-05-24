@@ -62,7 +62,6 @@ public final class FrameworkUtils {
 	 * @return Suffixe part <NID> or aURN if it is not an URN
 	 */
 	public static final String getURNNameSpace(String aUrn) {
-		String uuid;
 		if ((aUrn == null) || (aUrn.length() == 0)) {
 			return aUrn;
 		}

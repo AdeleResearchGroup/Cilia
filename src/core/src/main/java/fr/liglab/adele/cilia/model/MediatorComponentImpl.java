@@ -436,7 +436,6 @@ public abstract class MediatorComponentImpl extends ComponentImpl implements
 		return FrameworkUtils.makeURN(chainId(), nodeId(), uuid());
 	}
 
-	/* to display at least the node identification */
 	public String toString() {
 		StringBuffer sb = new StringBuffer(getURN());
 		sb.append(",properties:").append(super.getProperties());
