@@ -476,12 +476,12 @@ public class DynamicNode implements SetUp, RawData, Thresholds {
 		return mediatorHandler.getCondition(variableId);
 	}
 
-	public String getURN() {
-		return FrameworkUtils.makeURN(chainId(), nodeId(), uuid());
+	public String getQualifiedId() {
+		return FrameworkUtils.makeQualifiedId(chainId(), nodeId(), uuid());
 	}
 	
 	public String toString() {
-		StringBuffer sb= new StringBuffer(getURN()).append("{");
+		StringBuffer sb= new StringBuffer(getQualifiedId()).append("{");
 		Iterator it = variablesId.entrySet().iterator();
 		while (it.hasNext()) {
 			Map.Entry pairs = (Map.Entry) it.next();

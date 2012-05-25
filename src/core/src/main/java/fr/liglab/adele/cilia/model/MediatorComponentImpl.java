@@ -432,12 +432,12 @@ public abstract class MediatorComponentImpl extends ComponentImpl implements
 		return uuid;
 	}
 
-	public String getURN() {
-		return FrameworkUtils.makeURN(chainId(), nodeId(), uuid());
+	public String getQualifiedId() {
+		return FrameworkUtils.makeQualifiedId(chainId(), nodeId(), uuid());
 	}
 
 	public String toString() {
-		StringBuffer sb = new StringBuffer(getURN());
+		StringBuffer sb = new StringBuffer(getQualifiedId());
 		sb.append(",properties:").append(super.getProperties());
 		return sb.toString();
 	}

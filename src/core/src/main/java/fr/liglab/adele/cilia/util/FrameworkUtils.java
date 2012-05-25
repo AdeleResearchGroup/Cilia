@@ -28,11 +28,6 @@ public final class FrameworkUtils {
 
 	private static final String ID_STRING_PATTTERN ="(\\w-*\\.*:*)+" ;
 	
-
-	private static final Pattern IDENTIFIER = Pattern.compile(
-			"^urn:"+ID_STRING_PATTTERN+":"+ID_STRING_PATTTERN,
-			Pattern.CASE_INSENSITIVE);
-
 	/**
 	 * Ientifier composed by  a-zA-Z_0-9 allowed characters are -_:. 
 	 * @param id
@@ -41,70 +36,26 @@ public final class FrameworkUtils {
 		Pattern p = Pattern.compile(FrameworkUtils.ID_STRING_PATTTERN);
 		if (!p.matcher(id).matches()) {
 			throw new IllegalArgumentException(
-					"id must be a word character + optionnal characters = {'.' ,'-' ,':' } id=" + id);
+					"id must be a word character + optionnal characters = {'_','.' ,'-' ,':' } id=" + id);
 		}
 	}
 	
 	/**
-	 * @param aUrn
-	 *            URN <URN> ::= "urn:" <NID> ":" <NSS>
-	 * @return true if aUrn is an URN
-	 */
-	public static final boolean isUrn(String aUrn) {
-		if (aUrn == null)
-			throw new NullPointerException("urn is null !");
-		return IDENTIFIER.matcher(aUrn).matches();
-	}
-
-	/**
-	 * @param aUrn
-	 *            an URN <URN> ::= "urn:" <NID> ":" <NSS>
-	 * @return Suffixe part <NID> or aURN if it is not an URN
-	 */
-	public static final String getURNNameSpace(String aUrn) {
-		if ((aUrn == null) || (aUrn.length() == 0)) {
-			return aUrn;
-		}
-		if (!isUrn(aUrn))
-			return aUrn;
-		String[] substring = aUrn.split(":");
-		return substring[1];
-	}
-
-	/**
-	 * @param aUrn
-	 *            an URN <URN> ::= "urn:" <NID> ":" <NSS>
-	 * @return Suffixe part <NSS> or aURN if it is not an URN
-	 */
-	public static final String getURNSuffixe(String aUrn) {
-		String suffixe;
-		if ((aUrn == null) || (aUrn.length() == 0)) {
-			return aUrn;
-		}
-		if (!isUrn(aUrn))
-			return aUrn;
-		String[] substring = aUrn.split(":");
-		if (substring.length > 2)
-			suffixe = substring[substring.length-1];
-		else
-			suffixe = "";
-		return suffixe;
-	}
-
-	/**
-	 * 
 	 * @param chainId
 	 * @param mediatorId
 	 * @param uuid
 	 * @return String urn:chainId/mediatorId:uuid
 	 */
-	public static final String makeURN(String chainId,String mediatorId, String uuid)  {
-		StringBuffer sb = new StringBuffer("urn:").append(chainId);
+	public static final String makeQualifiedId(String chainId,String mediatorId, String uuid)  {
+		//if ((chainId==null) || (mediatorId==null) ) {
+		//	return "";
+		//}
+		StringBuffer sb = new StringBuffer(chainId);
 		sb.append("/").append(mediatorId);
 		if ((uuid != null) && (uuid.length() > 0)) {
-			sb.append(":").append(uuid);
+			sb.append("/").append(uuid);
 		}
 		return sb.toString();
 	}
-
 }
+

@@ -134,7 +134,7 @@ public class CiliaReplacerProcessor {
 			return;
 		}
 		logger.info("Command 'replace mediator' [{}] by [{}]",
-				mediatorSource.getURN(), mediatorDest.getURN());
+				mediatorSource.getQualifiedId(), mediatorDest.getQualifiedId());
 
 		bindings = mediatorSource.getInBindings();
 
@@ -191,7 +191,7 @@ public class CiliaReplacerProcessor {
 		}
 
 		logger.info("Command 'replace adapter' [{}] by [{}]",
-				adapter.getURN(), adapterNew.getURN());
+				adapter.getQualifiedId(), adapterNew.getQualifiedId());
 
 		bindings = adapter.getInBindings();
 

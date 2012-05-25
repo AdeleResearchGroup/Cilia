@@ -40,7 +40,7 @@ public interface Node {
 	
 	/**
 	 * 
-	 * @return Return the urn for a node urn:chaineId/mediatorId:uuid
+	 * @return Return the urn for a node chaineId/mediatorId:uuid
 	 */
-	String getURN() ;
+	String getQualifiedId() ;
 }

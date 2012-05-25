@@ -180,7 +180,7 @@ public class CiliaRemoverProcessor {
 		mediatorTo = getMediator(chain, to);
 		mediatorFrom = getMediator(chain, from);
 		logger.info("Command 'remove binding' from [{}] to [{}]",
-				mediatorFrom.getURN(), mediatorTo.getURN());
+				mediatorFrom.getQualifiedId(), mediatorTo.getQualifiedId());
 
 		if (mediatorTo == null) {
 			logger.error("ComponentImpl [{}] not found in chain [{}]",to,chainId);

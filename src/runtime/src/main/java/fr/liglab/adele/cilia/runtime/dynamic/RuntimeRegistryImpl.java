@@ -101,7 +101,6 @@ public class RuntimeRegistryImpl implements RuntimeRegistry {
 			}
 			RegistryItemImpl item = (RegistryItemImpl) registry.remove(uuid);
 			if (item != null) {
-				item.clear();
 				logger.debug("Object [{}] unRegistered", item.toString());
 			}
 
