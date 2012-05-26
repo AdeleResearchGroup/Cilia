@@ -26,19 +26,19 @@ import fr.liglab.adele.cilia.Node;
  * 
  */
 public interface ThresholdsCallback {
-	static int VERY_LOW = 1 ;
-	static int LOW = 2 ; 
-	static int HIGH = 3 ; 
-	static int VERY_HIGH = 4 ;
+	static int VERY_LOW = 1;
+	static int LOW = 2;
+	static int HIGH = 3;
+	static int VERY_HIGH = 4;
+
 	/**
-	 * 
 	 * @param evt
-	 *            event threshold number
-	 *            {VERY_LOW,LOW,HIGH,VERY_HIGH}
+	 *            event threshold number {VERY_LOW,LOW,HIGH,VERY_HIGH}
 	 * @param variable
-	 *            variable name 
-	 * @param measure measure received         
+	 *            variable name
+	 * @param measure
+	 *            measure received
 	 */
-	void onThreshold(Node node, String variable,Measure measure,int thresholdType);
+	void onThreshold(Node node, String variable, Measure measure, int thresholdType);
 
 }

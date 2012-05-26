@@ -31,7 +31,7 @@ public interface MeasuresRegistration {
 	 * inserts a listener
 	 * 
 	 * @param ldapfilter
-	 *            , ( uuid,chainId, nodeId)
+	 *            ldap keywords :uuid, chain, node,variable
 	 * @param listener
 	 *            ,
 	 * @throws CiliaIllegalParameterException
@@ -44,7 +44,7 @@ public interface MeasuresRegistration {
 	/**
 	 * 
 	 * @param ldapfilter
-	 *            ( uuid,chainId, nodeId)
+ 	 *            ldap keywords :uuid,chain, node,variable
 	 * @param listener
 	 * @throws CiliaIllegalParameterException
 	 * @throws InvalidSyntaxException

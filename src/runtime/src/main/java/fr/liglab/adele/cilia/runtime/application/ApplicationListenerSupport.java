@@ -168,7 +168,7 @@ public class ApplicationListenerSupport implements TrackerCustomizer, ChainRegis
 				ArrayList filters = (ArrayList) pairs.getValue();
 				boolean tofire = false;
 				for (int i = 0; i < filters.size(); i++) {
-					if (ConstRuntime.isNodeMatching((Filter) filters.get(i), node)) {
+					if (ConstRuntime.isFilterMatching((Filter) filters.get(i), node)) {
 						tofire = true;
 						break;
 					}

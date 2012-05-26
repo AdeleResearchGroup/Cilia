@@ -28,6 +28,8 @@ import fr.liglab.adele.cilia.exceptions.CiliaInvalidSyntaxException;
 public interface NodeRegistration {
 
 	/**
+	 * @param ldapfilter
+	 *            ldap keywords :uuid,chain, node
 	 * @param listener
 	 *            , listener to add
 	 * @throws CiliaIllegalParameterException
@@ -42,7 +44,7 @@ public interface NodeRegistration {
 	/**
 	 * @param listener
 	 *            , listener to remove
-     * @throws CiliaIllegalParameterException
+	 * @throws CiliaIllegalParameterException
 	 *             , null parameter
 	 */
 	void removeListener(NodeCallback listener) throws CiliaIllegalParameterException;

@@ -62,7 +62,10 @@ public class NodeProxy {
 				} catch (InvocationTargetException e) {
 					throw e.getTargetException(); 
 				} catch (Throwable e) {	
-					throw new RuntimeException(e.getMessage());
+					if (e instanceof NullPointerException) {
+						throw new CiliaIllegalStateException(uuid +" no longer exists");
+					}
+					else throw new RuntimeException(e.getMessage());
 				}
 			}
 		}

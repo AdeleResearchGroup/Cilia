@@ -131,7 +131,6 @@ public class RuntimeRegistryImpl implements RuntimeRegistry {
 			logger.error("uuid is null , cannot lock uuid");
 			return;
 		}
-
 		if (!locked_uuid.containsKey(uuid)) {
 			try {
 				Mutex mutex = new Mutex();

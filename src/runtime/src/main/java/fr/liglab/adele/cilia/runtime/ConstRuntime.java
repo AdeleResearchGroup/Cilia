@@ -40,19 +40,23 @@ import fr.liglab.adele.cilia.exceptions.CiliaInvalidSyntaxException;
  */
 @SuppressWarnings({ "rawtypes", "unchecked" })
 public final class ConstRuntime {
-	/**
+	/*
 	 * Unique ID identifier 
 	 */
 	public static final String UUID = "uuid";
-	/**
+	/*
 	 * chain
 	 */
 	public static final String CHAIN_ID = "chain";
-	/**
+	/*
 	 * Cilia components (adapters, mediators)
 	 */
 	public static final String NODE_ID = "node";
 
+	/* 
+	 * Variable 
+	 */
+	public static final String VARIABLE_ID ="variable" ;
 	/*
 	 * logger name
 	 */
@@ -87,6 +91,7 @@ public final class ConstRuntime {
 		set.add(UUID);
 		set.add(CHAIN_ID);
 		set.add(NODE_ID);
+		set.add(VARIABLE_ID) ;
 		ldapKeys = Collections.unmodifiableSet(set);
 	}
 
@@ -114,11 +119,19 @@ public final class ConstRuntime {
 		}
 	}
 
-	public static final boolean isNodeMatching(Filter filter, Node node) {
+	public static final boolean isFilterMatching(Filter filter, Node node) {
 		Dictionary dico = new Hashtable(3);
 		dico.put(UUID, node.uuid());
 		dico.put(CHAIN_ID, node.chainId());
 		dico.put(NODE_ID, node.nodeId());
+		return filter.match(dico);
+	}
+	public static final boolean isFilterMatching(Filter filter, Node node,String variable) {
+		Dictionary dico = new Hashtable(4);
+		dico.put(UUID, node.uuid());
+		dico.put(CHAIN_ID, node.chainId());
+		dico.put(NODE_ID, node.nodeId());
+		dico.put(VARIABLE_ID, variable) ;
 		return filter.match(dico);
 	}
 	

@@ -79,7 +79,6 @@ public class NodeListenerSupport implements TrackerCustomizer, NodeRegistration,
 	private void addFilterListener(Map map, String filter, Object listener)
 			throws CiliaIllegalParameterException, CiliaInvalidSyntaxException {
 		ArrayList old, array;
-
 		if (listener == null)
 			throw new CiliaIllegalParameterException("listener is null");
 		/* mostly length = 1 */
@@ -154,7 +153,7 @@ public class NodeListenerSupport implements TrackerCustomizer, NodeRegistration,
 				ArrayList filters = (ArrayList) pairs.getValue();
 				boolean toFire = false;
 				for (int i = 0; i < filters.size(); i++) {
-					if (ConstRuntime.isNodeMatching((Filter) filters.get(i), node)) {
+					if (ConstRuntime.isFilterMatching((Filter) filters.get(i), node)) {
 						toFire = true;
 						break;
 					}
@@ -223,7 +222,7 @@ public class NodeListenerSupport implements TrackerCustomizer, NodeRegistration,
 				ArrayList filters = (ArrayList) pairs.getValue();
 				boolean tofire = false;
 				for (int i = 0; i < filters.size(); i++) {
-					if (ConstRuntime.isNodeMatching((Filter) filters.get(i), node)) {
+					if (ConstRuntime.isFilterMatching((Filter) filters.get(i), node,variableId)) {
 						tofire = true;
 						break;
 					}
@@ -287,7 +286,7 @@ public class NodeListenerSupport implements TrackerCustomizer, NodeRegistration,
 				ArrayList filters = (ArrayList) pairs.getValue();
 				boolean tofire = false;
 				for (int i = 0; i < filters.size(); i++) {
-					if (ConstRuntime.isNodeMatching((Filter) filters.get(i), node)) {
+					if (ConstRuntime.isFilterMatching((Filter) filters.get(i), node,variable)) {
 						tofire = true;
 						break;
 					}
