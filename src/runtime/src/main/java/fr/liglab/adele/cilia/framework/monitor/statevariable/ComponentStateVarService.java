@@ -20,7 +20,7 @@ import java.util.Dictionary;
 import fr.liglab.adele.cilia.exceptions.CiliaInvalidSyntaxException;
 import fr.liglab.adele.cilia.framework.monitor.IMonitor;
 
-public interface ComponentStateVarService extends IMonitor{
+public interface ComponentStateVarService extends IMonitor {
 
 	void setProperty(String key, Object value);
 
@@ -35,10 +35,11 @@ public interface ComponentStateVarService extends IMonitor{
 	 *            , state var identification
 	 * @param ldapCondition
 	 *            ldap condition string format, null if no condition associated
-	 * @throws InvalidSyntaxException 
-	 * @throws CiliaInvalidSyntaxException 
+	 * @throws InvalidSyntaxException
+	 * @throws CiliaInvalidSyntaxException
 	 */
-	public void setCondition(String stateVarId, String ldapCondition) throws CiliaInvalidSyntaxException ;
+	void setCondition(String stateVarId, String ldapCondition)
+			throws CiliaInvalidSyntaxException;
 
 	/**
 	 * Gives the current condition associated to the state var
@@ -53,7 +54,7 @@ public interface ComponentStateVarService extends IMonitor{
 	 * 
 	 * @return null if no state var id
 	 */
-	public String[] getStateVariableId();
+	String[] getStateVariableId();
 
 	/**
 	 * Enable a state var (value are published according the condition )
@@ -61,35 +62,35 @@ public interface ComponentStateVarService extends IMonitor{
 	 * @param stateVarId
 	 *            state var id
 	 */
-	public void enableStateVar(String stateVarId);
+	void enableStateVar(String stateVarId);
 
 	/**
 	 * disable a state var , nor value are now published
 	 * 
 	 * @param stateVarId
 	 */
-	public void disableStateVar(String stateVarId);
+	void disableStateVar(String stateVarId);
 
 	/**
 	 * Gives the list of state var enabled
 	 * 
 	 * @return array of state var id , null if no state var
 	 */
-	public String[] getEnabledId();
+	String[] getEnabledId();
 
-	
-	/** 
-	 * Gives the list of categories 
-	 * @return String categories 
+	/**
+	 * Gives the list of categories
+	 * 
+	 * @return String categories
 	 */
-	public String[] getCategories() ;
-	
+	String[] getCategories();
+
 	/**
 	 * return a list of state variable given a category
+	 * 
 	 * @param category
 	 * @return list of state var id.
 	 */
-	public String[] getStateVarIdCategory(String category) ;
-	
+	String[] getStateVarIdCategory(String category);
 
 }

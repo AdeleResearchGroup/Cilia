@@ -49,8 +49,7 @@ public interface RuntimeRegistry {
 
 	/**
 	 * Return an array of entries matching the filter <br>
-	 * keywords = {uuid, chain, node} <br>
-	 * exmple (findByFilter("&(application.id=chain1)(component.id=adapt*))");
+	 * keywords = uuid, chain, node <br>
 	 * 
 	 * @param ldapFilter
 	 *            , LDAP filter

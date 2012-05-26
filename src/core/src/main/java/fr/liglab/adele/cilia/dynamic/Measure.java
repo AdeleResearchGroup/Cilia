@@ -27,12 +27,13 @@ public interface Measure {
 	 * 
 	 * @return value
 	 */
-	public Object value();
+	Object value();
 
 	/**
 	 * timestamp at source level
+	 * 
 	 * @return time in ms
 	 */
-	public long timeStampMs();
+	long timeStampMs();
 
 }

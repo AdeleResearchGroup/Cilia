@@ -33,12 +33,12 @@ public interface RawData extends Node {
 	 * @return list of measures stored
 	 * @throws CiliaRuntimeException
 	 */
-	public Measure[] measures(String variableId) throws CiliaIllegalParameterException;
+	Measure[] measures(String variableId) throws CiliaIllegalParameterException;
 
 	/**
 	 * 
 	 * @return list of state variable enabled
 	 */
-	public String[] enabledVariable() throws CiliaIllegalParameterException;
+	String[] enabledVariable() throws CiliaIllegalParameterException;
 
 }

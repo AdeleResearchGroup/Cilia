@@ -20,9 +20,10 @@ import fr.liglab.adele.cilia.exceptions.CiliaIllegalParameterException;
 
 /**
  * thresolds on runtime data
+ * 
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project
  *         Team</a>
- *
+ * 
  */
 public interface Thresholds extends Node {
 
@@ -37,7 +38,7 @@ public interface Thresholds extends Node {
 	 * @throws CiliaIllegalParameterException
 	 *             if variable name is null
 	 */
-	public void setLow(String variableId, double low, double veryLow)
+	void setLow(String variableId, double low, double veryLow)
 			throws CiliaIllegalParameterException;
 
 	/**
@@ -50,7 +51,7 @@ public interface Thresholds extends Node {
 	 *            Double.Na if for no threshold very high
 	 * @throws CiliaIllegalParameterException
 	 */
-	public void setHigh(String variableId, double high, double veryhigh)
+	void setHigh(String variableId, double high, double veryhigh)
 			throws CiliaIllegalParameterException;
 
 	/**
@@ -62,7 +63,7 @@ public interface Thresholds extends Node {
 	 * @throws CiliaIllegalParameterException
 	 *             if variable name is null
 	 */
-	public double getLow(String variableId) throws CiliaIllegalParameterException;
+	double getLow(String variableId) throws CiliaIllegalParameterException;
 
 	/**
 	 * 
@@ -72,7 +73,7 @@ public interface Thresholds extends Node {
 	 *         thresolhold
 	 * @throws CiliaIllegalParameterException
 	 */
-	public double getVeryLow(String variableId) throws CiliaIllegalParameterException;
+	double getVeryLow(String variableId) throws CiliaIllegalParameterException;
 
 	/**
 	 * 
@@ -82,7 +83,8 @@ public interface Thresholds extends Node {
 	 *         thresolhold
 	 * @throws CiliaIllegalParameterException
 	 */
-	public double getHigh(String variableId) throws CiliaIllegalParameterException;
+	double getHigh(String variableId) throws CiliaIllegalParameterException;
+
 	/**
 	 * 
 	 * @param variableId
@@ -91,5 +93,5 @@ public interface Thresholds extends Node {
 	 *         thresolhold
 	 * @throws CiliaIllegalParameterException
 	 */
-	public double getVeryHigh(String variableId) throws CiliaIllegalParameterException;
+	double getVeryHigh(String variableId) throws CiliaIllegalParameterException;
 }

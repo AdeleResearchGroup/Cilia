@@ -65,7 +65,6 @@ public class AuditHandler extends PrimitiveHandler {
 							fieldsSet.add(field);
 						}
 					}
-
 				}
 			}
 		}

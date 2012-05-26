@@ -222,8 +222,8 @@ public class MonitorHandlerStateVar extends AbstractStateVariable {
 		}
 		if (isEnabled("process.msg.treated")) {
 			/* # number of messages treated */
-			if (data != null)
-				m_counters[8] += data.size();
+			if (data != null) 
+				m_counters[8] = data.size();
 			m_systemQueue.execute(new AsynchronousExec("process.msg.treated", new Long(
 					m_counters[8])));
 		}
@@ -263,7 +263,7 @@ public class MonitorHandlerStateVar extends AbstractStateVariable {
 		}
 		if (isEnabled("dispatch.msg.treated")) {
 			if (data != null)
-				m_counters[9] += data.size();
+				m_counters[9] = data.size();
 			m_systemQueue.execute(new AsynchronousExec("dispatch.msg.treated", new Long(
 					m_counters[9])));
 		}

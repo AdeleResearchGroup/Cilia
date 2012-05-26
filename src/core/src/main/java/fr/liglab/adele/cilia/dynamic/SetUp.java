@@ -33,12 +33,12 @@ public interface SetUp extends Node {
 	 * 
 	 * @return Categories of variables
 	 */
-	public String [] getCategories() ;
+	 String [] getCategories() ;
 	/**
 	 * 
 	 * @return Array of variable name by category
 	 */
-	public String[] variablesByCategory(String category) ;
+	 String[] variablesByCategory(String category) ;
 	
 	/**
 	 * Configure the monitoring on this object
@@ -54,7 +54,7 @@ public interface SetUp extends Node {
 	 * @return true if action done , false otherwhise
 	 * @throws CiliaInvalidSyntaxException 
 	 */
-	public void setMonitoring(String variableId, int queueSize, String LdapFilter,
+	 void setMonitoring(String variableId, int queueSize, String LdapFilter,
 			boolean enable) throws CiliaIllegalParameterException, CiliaInvalidSyntaxException;
 
 	/**
@@ -67,7 +67,7 @@ public interface SetUp extends Node {
 	 *            , number of monitored values stored ( circular queue)
 	 * @return true if action done , false otherwhise
 	 */
-	public void setMonitoring(String variableId, int queueSize)
+	 void setMonitoring(String variableId, int queueSize)
 			throws CiliaIllegalParameterException;
 
 	/**
@@ -80,7 +80,7 @@ public interface SetUp extends Node {
 	 * @return true if action done , false otherwhise
 	 * @throws CiliaInvalidSyntaxException 
 	 */
-	public void setMonitoring(String variableId, String LdapFilter)
+	 void setMonitoring(String variableId, String LdapFilter)
 			throws CiliaIllegalParameterException,CiliaInvalidSyntaxException;
 
 	/**
@@ -92,28 +92,26 @@ public interface SetUp extends Node {
 	 *            , true values are published
 	 * @return true if action done , false otherwhise
 	 */
-	public void setMonitoring(String variableId, boolean enable)
+	 void setMonitoring(String variableId, boolean enable)
 			throws CiliaIllegalParameterException;
 
 	/**
 	 * 
 	 * @return list of state variable enabled
 	 */
-	public String[] enabledVariable() ;
+	 String[] enabledVariable() ;
 
 	/**
 	 * 
 	 * @param variableId
 	 * @return number of objects stored
 	 */
-	public int queueSize(String variableId) throws CiliaIllegalParameterException;
+	 int queueSize(String variableId) throws CiliaIllegalParameterException;
 
 	/**
 	 * @param variableId
 	 * @return ldap filter for the flow control
 	 * @throws CiliaIllegalParameterException 
 	 */
-	public String flowControl(String variableId) throws  CiliaIllegalParameterException;
-	
-
+	 String flowControl(String variableId) throws  CiliaIllegalParameterException;
 }
