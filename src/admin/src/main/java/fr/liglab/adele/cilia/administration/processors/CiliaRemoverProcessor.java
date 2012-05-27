@@ -27,6 +27,7 @@ import fr.liglab.adele.cilia.administration.util.ParserUtils;
 import fr.liglab.adele.cilia.model.ChainImpl;
 import fr.liglab.adele.cilia.model.ComponentImpl;
 import fr.liglab.adele.cilia.runtime.Const;
+import fr.liglab.adele.cilia.util.FrameworkUtils;
 
 /**
  * CiliaRemoverProcessor: The processor class. Remove cilia chain instances,
@@ -114,10 +115,10 @@ public class CiliaRemoverProcessor {
 		}
 		if (ch.removeMediator(mediatorId)) {
 			logger.info("Command 'remove mediator' [{}]",
-					ComponentImpl.buildQualifiedId(chainId, mediatorId));
+					FrameworkUtils.makeQualifiedId(chainId, mediatorId,null));
 		} else {
 			logger.error("Command 'remove mediator' [{}], mediator not removed",
-					ComponentImpl.buildQualifiedId(chainId, mediatorId));
+					FrameworkUtils.makeQualifiedId(chainId, mediatorId,null));
 		}
 	}
 
@@ -143,10 +144,10 @@ public class CiliaRemoverProcessor {
 		}
 		if (ch.removeAdapter(mediatorId)) {
 			logger.info("Command 'remove adapter' [{}]",
-					ComponentImpl.buildQualifiedId(chainId, mediatorId));
+					FrameworkUtils.makeQualifiedId(chainId, mediatorId,null));
 		} else {
 			logger.error("Command 'remove adapter' [{}], adapter not removed",
-					ComponentImpl.buildQualifiedId(chainId, mediatorId));
+					FrameworkUtils.makeQualifiedId(chainId, mediatorId,null));
 		}
 	}
 

@@ -26,31 +26,35 @@ import java.util.regex.Pattern;
  */
 public final class FrameworkUtils {
 
-	private static final String ID_STRING_PATTTERN ="(\\w-*\\.*:*)+" ;
-	
+	private static final String ID_STRING_PATTTERN = "(\\w-*\\.*:*)+";
+
 	/**
-	 * Ientifier composed by  a-zA-Z_0-9 allowed characters are -_:. 
+	 * Ientifier composed by a-zA-Z_0-9 allowed characters are -_:.
+	 * 
 	 * @param id
 	 */
-	public static final void checkIdentifier(String id)  {
+	public static final void checkIdentifier(String id) {
 		Pattern p = Pattern.compile(FrameworkUtils.ID_STRING_PATTTERN);
 		if (!p.matcher(id).matches()) {
 			throw new IllegalArgumentException(
-					"id must be a word character + optionnal characters = {'_','.' ,'-' ,':' } id=" + id);
+					"id must be a word character + optionnal characters = {'_','.' ,'-' ,':' } id="
+							+ id);
 		}
 	}
-	
+
 	/**
 	 * @param chainId
 	 * @param mediatorId
 	 * @param uuid
 	 * @return String chainId/mediatorId/uuid
 	 */
-	public static final String makeQualifiedId(String chainId,String mediatorId, String uuid)  {
+	public static final String makeQualifiedId(String chainId, String mediatorId,
+			String uuid) {
 		StringBuffer sb = new StringBuffer(chainId);
 		sb.append("/").append(mediatorId);
-		sb.append("/").append(uuid);
+		if (uuid != null) {
+			sb.append("/").append(uuid);
+		}
 		return sb.toString();
 	}
 }
-
