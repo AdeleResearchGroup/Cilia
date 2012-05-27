@@ -44,17 +44,12 @@ public final class FrameworkUtils {
 	 * @param chainId
 	 * @param mediatorId
 	 * @param uuid
-	 * @return String urn:chainId/mediatorId:uuid
+	 * @return String chainId/mediatorId/uuid
 	 */
 	public static final String makeQualifiedId(String chainId,String mediatorId, String uuid)  {
-		//if ((chainId==null) || (mediatorId==null) ) {
-		//	return "";
-		//}
 		StringBuffer sb = new StringBuffer(chainId);
 		sb.append("/").append(mediatorId);
-		if ((uuid != null) && (uuid.length() > 0)) {
-			sb.append("/").append(uuid);
-		}
+		sb.append("/").append(uuid);
 		return sb.toString();
 	}
 }

@@ -57,19 +57,6 @@ public class ComponentImpl extends Observable implements Component {
 	private volatile Hashtable /* <CiliaProperty> */properties = new Hashtable();
 
 
-
-	public static final String buildQualifiedId(String chainId, String componentId) {
-		StringBuffer sb = new StringBuffer();
-		if ((chainId == null) || (chainId.length() == 0)) {
-			throw new IllegalArgumentException("chainId must not be null)");
-		}
-		sb.append(chainId);
-		if ((componentId != null) && (componentId.length() > 0)) {
-			sb.append("/").append(componentId);
-		}
-		return sb.toString();
-	}
-
 	/**
 	 * Model representation basic constructor.
 	 * 

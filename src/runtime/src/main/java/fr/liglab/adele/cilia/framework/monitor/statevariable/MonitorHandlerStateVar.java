@@ -222,7 +222,7 @@ public class MonitorHandlerStateVar extends AbstractStateVariable {
 		}
 		if (isEnabled("process.msg.treated")) {
 			/* # number of messages treated */
-			if (data != null) 
+			if (data != null)
 				m_counters[8] = data.size();
 			m_systemQueue.execute(new AsynchronousExec("process.msg.treated", new Long(
 					m_counters[8])));
@@ -338,7 +338,6 @@ public class MonitorHandlerStateVar extends AbstractStateVariable {
 	}
 
 	public void onFieldGet(String field, Object o) {
-		System.out.println(">>> Mediator Handler ON GET "+field) ;
 		if (m_listStateVarEnable.isEmpty())
 			return;
 		if (isEnabled("field.get")) {
@@ -354,8 +353,6 @@ public class MonitorHandlerStateVar extends AbstractStateVariable {
 	}
 
 	public void onFieldSet(String field, Object o) {
-		System.out.println(">>> Mediator Handler ON SET "+field) ;
-
 		if (m_listStateVarEnable.isEmpty())
 			return;
 		if (isEnabled("field.set")) {
@@ -378,17 +375,23 @@ public class MonitorHandlerStateVar extends AbstractStateVariable {
 	@SuppressWarnings("unchecked")
 	public String[] getStateVarIdCategory(String category) {
 		String[] array;
-		if (category.equalsIgnoreCase("SystemCall"))
-			array = (String[]) setSystemCall.toArray(new String[setSystemCall.size()]);
-		else if (category.equalsIgnoreCase("DependencyCall")) {
-			array = (String[]) setDependencyCall.toArray(new String[setDependencyCall
-					.size()]);
-		} else if (category.equalsIgnoreCase("EventingCall")) {
-			array = (String[]) setEventing.toArray(new String[setEventing.size()]);
-		} else if (category.equalsIgnoreCase("FunctionnalCall")) {
-			array = (String[]) setEventing.toArray(new String[setFunctionnalCall.size()]);
-		} else
-			array = new String[0];
+		if (category == null) {
+			array = (String[]) setStateVar.toArray(new String[setStateVar.size()]);
+		} else {
+			if (category.equalsIgnoreCase("SystemCall"))
+				array = (String[]) setSystemCall
+						.toArray(new String[setSystemCall.size()]);
+			else if (category.equalsIgnoreCase("DependencyCall")) {
+				array = (String[]) setDependencyCall.toArray(new String[setDependencyCall
+						.size()]);
+			} else if (category.equalsIgnoreCase("EventingCall")) {
+				array = (String[]) setEventing.toArray(new String[setEventing.size()]);
+			} else if (category.equalsIgnoreCase("FunctionnalCall")) {
+				array = (String[]) setEventing.toArray(new String[setFunctionnalCall
+						.size()]);
+			} else
+				array = new String[0];
+		}
 		return array;
 	}
 

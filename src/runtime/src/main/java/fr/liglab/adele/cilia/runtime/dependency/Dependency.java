@@ -655,17 +655,15 @@ public class Dependency extends DependencyModel implements FieldInterceptor,
 	 * @see org.apache.felix.ipojo.util.DependencyModel#onServiceArrival(org.osgi.framework.ServiceReference)
 	 */
 	public void onServiceArrival(ServiceReference reference) {
-		StringBuffer sb = new StringBuffer().append("Service arrival");
 		IServiceMonitor mon = getMonitor();
 		if (mon != null) {
-			sb.append(" notifed to monitor handler");
 			/* call the monitor handler to raise event 'service arrival' */
 			mon.onServiceArrival(Collections.EMPTY_MAP);
+			logger.debug("Service arrival notifed to monitor handler");
 		}
 		callBindMethod(reference);
 		// The method is only called when a new service arrives, or when the
 		// used one is replaced.
-		logger.debug(sb.toString());
 	}
 
 	/**
@@ -692,15 +690,13 @@ public class Dependency extends DependencyModel implements FieldInterceptor,
 	 * @see org.apache.felix.ipojo.util.DependencyModel#onServiceDeparture(org.osgi.framework.ServiceReference)
 	 */
 	public void onServiceDeparture(ServiceReference ref) {
-		StringBuffer sb = new StringBuffer().append("Service departure");
 		IServiceMonitor mon = getMonitor() ;
 		if (mon != null) {
-			sb.append(" notified to monitor handler");
 			/* call the monitor handler to raise event 'service arrival' */
 			mon.onServiceDeparture(Collections.EMPTY_MAP);
+			logger.debug("Service departure notified to monitor handler");
 		}
 		callUnbindMethod(ref);
-		logger.debug(sb.toString());
 	}
 
 	/**

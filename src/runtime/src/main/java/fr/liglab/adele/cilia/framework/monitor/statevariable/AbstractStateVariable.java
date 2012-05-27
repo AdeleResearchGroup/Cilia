@@ -37,9 +37,9 @@ import org.slf4j.LoggerFactory;
 import fr.liglab.adele.cilia.exceptions.CiliaInvalidSyntaxException;
 import fr.liglab.adele.cilia.exceptions.CiliaRuntimeException;
 import fr.liglab.adele.cilia.framework.monitor.AbstractMonitor;
-import fr.liglab.adele.cilia.model.ComponentImpl;
 import fr.liglab.adele.cilia.model.ConstModel;
 import fr.liglab.adele.cilia.runtime.Const;
+import fr.liglab.adele.cilia.util.FrameworkUtils;
 import fr.liglab.adele.cilia.util.Watch;
 import fr.liglab.adele.cilia.util.concurrent.ReadWriteLock;
 import fr.liglab.adele.cilia.util.concurrent.WriterPreferenceReadWriteLock;
@@ -74,7 +74,7 @@ public abstract class AbstractStateVariable extends AbstractMonitor implements
 		m_properties.put(MONITOR_NODE_ID, componentId);
 		m_properties.put(MONITOR_UUID, uuid);
 		topic = TOPIC_HEADER + chainId;
-		m_qualifiedId = ComponentImpl.buildQualifiedId(chainId, componentId);
+		m_qualifiedId = FrameworkUtils.makeQualifiedId(chainId,componentId,uuid);
 	}
 
 	public void validate() {

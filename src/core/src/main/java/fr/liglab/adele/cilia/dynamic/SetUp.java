@@ -15,7 +15,6 @@
 
 package fr.liglab.adele.cilia.dynamic;
 
-
 import fr.liglab.adele.cilia.Node;
 import fr.liglab.adele.cilia.exceptions.CiliaIllegalParameterException;
 import fr.liglab.adele.cilia.exceptions.CiliaInvalidSyntaxException;
@@ -33,13 +32,15 @@ public interface SetUp extends Node {
 	 * 
 	 * @return Categories of variables
 	 */
-	 String [] getCategories() ;
+	String[] getCategories();
+
 	/**
 	 * 
-	 * @return Array of variable name by category
+	 * @param category , if null return all variables name
+	 * @return array of variables name
 	 */
-	 String[] variablesByCategory(String category) ;
-	
+	String[] variablesByCategory(String category);
+
 	/**
 	 * Configure the monitoring on this object
 	 * 
@@ -52,10 +53,10 @@ public interface SetUp extends Node {
 	 * @param enable
 	 *            , true values are published
 	 * @return true if action done , false otherwhise
-	 * @throws CiliaInvalidSyntaxException 
+	 * @throws CiliaInvalidSyntaxException
 	 */
-	 void setMonitoring(String variableId, int queueSize, String LdapFilter,
-			boolean enable) throws CiliaIllegalParameterException, CiliaInvalidSyntaxException;
+	void setMonitoring(String variableId, int queueSize, String LdapFilter, boolean enable)
+			throws CiliaIllegalParameterException, CiliaInvalidSyntaxException;
 
 	/**
 	 * Configure the monitoring on this object ( others parameters are not
@@ -67,7 +68,7 @@ public interface SetUp extends Node {
 	 *            , number of monitored values stored ( circular queue)
 	 * @return true if action done , false otherwhise
 	 */
-	 void setMonitoring(String variableId, int queueSize)
+	void setMonitoring(String variableId, int queueSize)
 			throws CiliaIllegalParameterException;
 
 	/**
@@ -78,10 +79,10 @@ public interface SetUp extends Node {
 	 * @param LdapFilter
 	 *            , data control flow management
 	 * @return true if action done , false otherwhise
-	 * @throws CiliaInvalidSyntaxException 
+	 * @throws CiliaInvalidSyntaxException
 	 */
-	 void setMonitoring(String variableId, String LdapFilter)
-			throws CiliaIllegalParameterException,CiliaInvalidSyntaxException;
+	void setMonitoring(String variableId, String LdapFilter)
+			throws CiliaIllegalParameterException, CiliaInvalidSyntaxException;
 
 	/**
 	 * Configure the monitoring on this object
@@ -92,26 +93,26 @@ public interface SetUp extends Node {
 	 *            , true values are published
 	 * @return true if action done , false otherwhise
 	 */
-	 void setMonitoring(String variableId, boolean enable)
+	void setMonitoring(String variableId, boolean enable)
 			throws CiliaIllegalParameterException;
 
 	/**
 	 * 
 	 * @return list of state variable enabled
 	 */
-	 String[] enabledVariable() ;
+	String[] enabledVariable();
 
 	/**
 	 * 
 	 * @param variableId
 	 * @return number of objects stored
 	 */
-	 int queueSize(String variableId) throws CiliaIllegalParameterException;
+	int queueSize(String variableId) throws CiliaIllegalParameterException;
 
 	/**
 	 * @param variableId
 	 * @return ldap filter for the flow control
-	 * @throws CiliaIllegalParameterException 
+	 * @throws CiliaIllegalParameterException
 	 */
-	 String flowControl(String variableId) throws  CiliaIllegalParameterException;
+	String flowControl(String variableId) throws CiliaIllegalParameterException;
 }
