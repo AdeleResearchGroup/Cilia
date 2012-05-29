@@ -7,7 +7,7 @@
 	OR CONDITIONS OF ANY KIND, either express or implied. See the License for 
 	the specific language governing permissions and limitations under the License. -->
 
-<cilia xmlns:cilia="fr.liglab.adele.cilia">
+<cilia xmlns:cilia="fr.liglab.adele.cilia" xmlns:jmx="org.apache.felix.ipojo.handlers.jmx">
 	<!-- Processors to add cilia elements -->
 	<processor name="ciliaCreatorProcessor"
 		classname="fr.liglab.adele.cilia.administration.processors.CiliaCreatorProcessor"
@@ -199,11 +199,93 @@
 		<callback transition="invalidate" method="stop" />
 
 	</component>
+	
+	<!--  Gogo commands : monitoring specification and runtime  -->
+	<component classname="fr.liglab.adele.cilia.administration.command.GogoMonitoringCommands"
+		name="Monitoring_Commands.gogo">
+		<provides specifications="fr.liglab.adele.cilia.administration.command.GogoMonitoringCommands">
+			<property name="osgi.command.scope" type="String" value="cilia" />
+			<property name="osgi.command.function" type="String[]"
+				value="{
+				        runtime_endpoints_in,runtime_endpoints_out,runtime_connected_to,
+				        runtime_find_node,
+				        runtime_chain_state,runtime_chains,
+				        node_setup,node_rawdata,node_monitoring,node_dump,
+				        app_chains,app_endpoints_in,app_endpoints_out,app_connected_to,
+				        app_find_node,
+				        imported_services,
+				        my_entry
+				        }" />
+		</provides>
+		<requires field="runtime" />
+		<requires field="application" />
+	</component>
 
+	<!--  JMX interface : ApplicatioRuntime  -->
+	<component classname="fr.liglab.adele.cilia.administration.jmx.ApplRuntime"
+	  name ="ApplicationRuntime.jmx">
+	  	<provides specifications="fr.liglab.adele.cilia.dynamic.MeasureCallback" />
+	  	<provides specifications="fr.liglab.adele.cilia.dynamic.ThresholdsCallback" />
+	  	<provides specifications="fr.liglab.adele.cilia.NodeCallback" />
+		<provides>
+			<property name="cilia.runtime.node.data" type="java.lang.String" value="(node=*)" />
+			<property name="cilia.runtime.node.threshold" type="java.lang.String" value="(node=*)" />
+			<property name="cilia.runtime.node" type="java.lang.String" value="(node=*)" />		
+		</provides>
+		<requires field="runtime" />
+		<jmx:config domain="cilia.application" name="runtime" >
+		  	<jmx:method name="getChainIDs" description="Get chains ID"/>
+		  	<jmx:method name="getEndpointsIn" description="Get all endpoints matching the ldap filter"/>
+		  	<jmx:method name="getEndpointsOut" description="Get all endpoints out matching the ldap filter"/>
+		  	<jmx:method name="getConnectedTo" description="Get all nodes connected to the matching the ldap filter"/>	
+		  	<jmx:method name="getNodeByFilter" description="Get all nodes the matching the ldap filter"/>	
+		  	<jmx:method name="nodeSetUp" description="Configure the monitoring level node"/>	
+		  	<jmx:method name="nodeRawData" description="Get Data received by the node"/>	
+		  	<jmx:method name="getQueueSize" description="Get queue size (#data stored)"/>	
+		  	<jmx:method name="getFlowControl" description="Get the ldap data flow control"/>	
+		  	
+		  	<jmx:property field ="nodes_arrival" name="Node arrival" notification="true" rights="r"/>
+		  	<jmx:property field ="nodes_departure" name="Node departure" notification="true" rights="r"/>
+		  	<jmx:property field ="nodes_modified" name="Node modified" notification="true" rights="r"/>	  
+		  	<jmx:property field ="variable_updated" name="Variable" notification="true" rights="r" />	
+		  	<jmx:property field ="variable_outOfBounds" name="Variable out of viability area" notification="true" rights="r" />	   
+		</jmx:config>
+	</component>
+	<instance component="Runtime.listeners" name="Runtime.listeners"/> 
+	
+	<!--  JMX interface : ApplicatioSpecification  -->
+	<component classname="fr.liglab.adele.cilia.administration.jmx.ApplSpecification"
+	  name ="ApplicationSpecification.jmx">
+	  	<provides specifications="fr.liglab.adele.cilia.NodeCallback" />
+	  	<provides specifications="fr.liglab.adele.cilia.ChainCallback" />
+		<provides>
+			<property name="cilia.application.node" type="java.lang.String" value="(node=*)" />
+			<property name="cilia.application.chain" type="java.lang.String" value="(chain=*)" />
+		</provides>
+		<requires field="application" />
+		<jmx:config domain="cilia.application" name="specification">
+		  <jmx:method name="getChainIDs" description="Get chains ID"/>
+		  <jmx:method name="getEndpointsIn" description="Get all endpoints matching the ldap filter"/>
+		  <jmx:method name="getEndpointsOut" description="Get all endpoints out matching the ldap filter"/>
+		  <jmx:method name="getConnectedTo" description="Get all nodes connected to the matching the ldap filter"/>	
+		  <jmx:method name="getNodeByFilter" description="Get all nodes the matching the ldap filter"/>	
+		  	
+		  <jmx:property field ="nodes_arrival" name="Node arrival" notification="true" rights="r"/>
+		  <jmx:property field ="nodes_departure" name="Node departure" notification="true" rights="r"/>
+		  <jmx:property field ="nodes_modified" name="Node modified" notification="true" rights="r"/>	  
+		  <jmx:property field ="chain_arrival" name="Chain arrival" notification="true" rights="r" />	
+		  <jmx:property field ="chain_departure" name="Chain departure" notification="true" rights="r" />	   
+		  <jmx:property field ="chain_started" name="Chain Started" notification="true" rights="r" />
+		  <jmx:property field ="chain_stopped" name="Chain Stopped" notification="true" rights="r" />
+		</jmx:config>
+	</component>
+	
+	
 	<!-- INSTANCES -->
 
 	<instance component="Cilia-Deployer" name="Cilia-Deployer" />
-
-
+	<instance component="Monitoring_Commands.gogo" name="Monitoring_Commands.gogo"/>
+	<instance component="ApplicationSpecification.jmx" name="ApplicationSpecification.jmx" />
+	<instance component="ApplicationRuntime.jmx" name="ApplicationRuntime.jmx" />
 
 </cilia>

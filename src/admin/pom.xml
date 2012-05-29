@@ -48,6 +48,11 @@
 			<artifactId>org.apache.felix.fileinstall</artifactId>
 			<version>3.2.0</version>
 		</dependency>
+		<dependency>
+			<groupId>org.osgi</groupId>
+			<artifactId>org.osgi.enterprise</artifactId>
+			<version>4.2.0</version>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -68,13 +73,14 @@
 							fr.liglab.adele.cilia.administration.activator,
 							fr.liglab.adele.cilia.administration.processors,
 							fr.liglab.adele.cilia.administration.fileinstall, 
-							fr.liglab.adele.cilia.administration.adapter
+							fr.liglab.adele.cilia.administration.adapter,
+							fr.liglab.adele.cilia.administration.jmx						
 						</Private-Package>
 						<Include-Resource>
 							{maven-resources},
 							META-INF/LICENSE = LICENSE,
 							META-INF/NOTICE = NOTICE
-           	 				</Include-Resource>
+           	 			</Include-Resource>
 					</instructions>
 				</configuration>
 			</plugin>
