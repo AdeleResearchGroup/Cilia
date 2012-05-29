@@ -45,7 +45,7 @@ public class MeasureImpl implements Measure {
 	public String toString() {
 		StringBuffer sb = new StringBuffer();
 		sb.append("value=").append(value.toString());
-		sb.append(",Date=").append(Watch.formatDateIso8601(tickCounts));
+		sb.append(",Timestamp=").append(Watch.formatDateIso8601(tickCounts));
 		return sb.toString();
 	}
 
