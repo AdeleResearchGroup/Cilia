@@ -149,11 +149,11 @@ public class AuditHandler extends PrimitiveHandler {
 		}
 	}
 
-	public synchronized void reconfigure(Dictionary configuration) {
-		if (configuration != null) {
-			logger.debug("reconfiguration called");
-			Object ref = configuration.get("cilia.monitor.handler");
-			monitor = (IFieldMonitor) ref;
-		}
-	}
+//	public synchronized void reconfigure(Dictionary configuration) {
+//		if (configuration != null) {
+//			logger.debug("reconfiguration called");
+//			Object ref = configuration.get("cilia.monitor.handler");
+//			monitor = (IFieldMonitor) ref;
+//		}
+//	}
 }
