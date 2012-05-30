@@ -14,6 +14,8 @@
  */
 package fr.liglab.adele.cilia.internals;
 
+import java.util.Date;
+
 import org.osgi.framework.BundleContext;
 
 import fr.liglab.adele.cilia.ApplicationRuntime;
@@ -47,6 +49,8 @@ public class CiliaContextImpl implements CiliaContext {
 
 	private final static String version = "2.0.1";
 
+	private final static Date startup= new Date() ;
+
 
 	public CiliaContextImpl(BundleContext bc) {
 		bcontext = bc;
@@ -78,6 +82,9 @@ public class CiliaContextImpl implements CiliaContext {
 		return version;
 	}
 
+	public Date getDateStartUp() {
+		return startup ;
+	}
 
 	public Builder getBuilder() {
 		return new BuilderImpl(container);
