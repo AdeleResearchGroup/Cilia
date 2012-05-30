@@ -365,8 +365,6 @@ public class GogoMonitoringCommands {
 				}
 			}
 		} catch (Throwable e) {
-			System.out
-					.println("Syntax \n\tnode_setup ldap variable queueSize flow enable");
 			e.printStackTrace();
 		}
 	}
@@ -393,14 +391,16 @@ public class GogoMonitoringCommands {
 
 	public EndpointService[] importedEndpoints() {
 		Set set = new HashSet();
-		Collection registry = adminService.getImportedEndpoints();
-		if (registry != null) {
-			ImportReference reference;
-			Iterator it = registry.iterator();
-			while (it.hasNext()) {
-				reference = ((ImportReference) it.next());
-				set.add(new EndpointService(reference.getImportedEndpoint().getId(),
-						reference.getImportedEndpoint().getProperties()));
+		if (adminService != null) {
+			Collection registry = adminService.getImportedEndpoints();
+			if (registry != null) {
+				ImportReference reference;
+				Iterator it = registry.iterator();
+				while (it.hasNext()) {
+					reference = ((ImportReference) it.next());
+					set.add(new EndpointService(reference.getImportedEndpoint().getId(),
+							reference.getImportedEndpoint().getProperties()));
+				}
 			}
 		}
 		return (EndpointService[]) set.toArray(new EndpointService[set.size()]);
