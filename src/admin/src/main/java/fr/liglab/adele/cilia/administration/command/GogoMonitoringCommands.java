@@ -23,8 +23,8 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.felix.service.command.Descriptor;
-import org.osgi.service.remoteserviceadmin.ImportReference;
-import org.osgi.service.remoteserviceadmin.RemoteServiceAdmin;
+//import org.osgi.service.remoteserviceadmin.ImportReference;
+//import org.osgi.service.remoteserviceadmin.RemoteServiceAdmin;
 
 import fr.liglab.adele.cilia.ApplicationSpecification;
 import fr.liglab.adele.cilia.MediatorComponent;
@@ -50,7 +50,7 @@ public class GogoMonitoringCommands {
 			+ "------------------------------------------------------";
 	private ApplicationRuntime runtime;
 	private ApplicationSpecification application;
-	private RemoteServiceAdmin adminService;
+//	private RemoteServiceAdmin adminService;
 	private CallbackSystems callbacks = new CallbackSystems();
 
 	private void printSuccessor(Node[] nodes) {
@@ -391,18 +391,18 @@ public class GogoMonitoringCommands {
 
 	public EndpointService[] importedEndpoints() {
 		Set set = new HashSet();
-		if (adminService != null) {
-			Collection registry = adminService.getImportedEndpoints();
-			if (registry != null) {
-				ImportReference reference;
-				Iterator it = registry.iterator();
-				while (it.hasNext()) {
-					reference = ((ImportReference) it.next());
-					set.add(new EndpointService(reference.getImportedEndpoint().getId(),
-							reference.getImportedEndpoint().getProperties()));
-				}
-			}
-		}
+//		if (adminService != null) {
+//			Collection registry = adminService.getImportedEndpoints();
+//			if (registry != null) {
+//				ImportReference reference;
+//				Iterator it = registry.iterator();
+//				while (it.hasNext()) {
+//					reference = ((ImportReference) it.next());
+//					set.add(new EndpointService(reference.getImportedEndpoint().getId(),
+//							reference.getImportedEndpoint().getProperties()));
+//				}
+//			}
+//		}
 		return (EndpointService[]) set.toArray(new EndpointService[set.size()]);
 	}
 

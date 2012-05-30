@@ -220,7 +220,7 @@
 		</provides>
 		<requires field="runtime" />
 		<requires field="application" />
-		<requires field="adminService" optional="true" />
+		<!-- <requires field="adminService" optional="true" /> -->
 	</component>
 
 	<!--  JMX interface : ApplicatioRuntime  -->
