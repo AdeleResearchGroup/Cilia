@@ -1,13 +1,13 @@
 package fr.liglab.adele.cilia.administration.jmx;
 
 import fr.liglab.adele.cilia.CiliaContext;
+import fr.liglab.adele.cilia.Measure;
+import fr.liglab.adele.cilia.MeasureCallback;
 import fr.liglab.adele.cilia.Node;
 import fr.liglab.adele.cilia.NodeCallback;
-import fr.liglab.adele.cilia.dynamic.Measure;
-import fr.liglab.adele.cilia.dynamic.MeasureCallback;
-import fr.liglab.adele.cilia.dynamic.RawData;
-import fr.liglab.adele.cilia.dynamic.SetUp;
-import fr.liglab.adele.cilia.dynamic.ThresholdsCallback;
+import fr.liglab.adele.cilia.RawData;
+import fr.liglab.adele.cilia.SetUp;
+import fr.liglab.adele.cilia.ThresholdsCallback;
 import fr.liglab.adele.cilia.exceptions.CiliaIllegalParameterException;
 import fr.liglab.adele.cilia.exceptions.CiliaInvalidSyntaxException;
 

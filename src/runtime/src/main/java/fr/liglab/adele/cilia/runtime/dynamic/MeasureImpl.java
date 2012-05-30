@@ -14,7 +14,7 @@
 
 package fr.liglab.adele.cilia.runtime.dynamic;
 
-import fr.liglab.adele.cilia.dynamic.Measure;
+import fr.liglab.adele.cilia.Measure;
 import fr.liglab.adele.cilia.util.Watch;
 
 /**

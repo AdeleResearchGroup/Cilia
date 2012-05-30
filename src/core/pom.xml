@@ -52,8 +52,7 @@
 							fr.liglab.adele.cilia.builder,
 							fr.liglab.adele.cilia.builder.impl,
 							fr.liglab.adele.cilia.exceptions,
-							fr.liglab.adele.cilia.specification,
-                            fr.liglab.adele.cilia.dynamic,
+							fr.liglab.adele.cilia.specification
 						</Export-Package>
 						<Private-Package>
 						</Private-Package>

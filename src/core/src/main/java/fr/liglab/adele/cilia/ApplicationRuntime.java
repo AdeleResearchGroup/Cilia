@@ -13,13 +13,10 @@
  * limitations under the License.
  */
 
-package fr.liglab.adele.cilia.dynamic;
+package fr.liglab.adele.cilia;
 
 import java.util.Date;
 
-import fr.liglab.adele.cilia.Node;
-import fr.liglab.adele.cilia.NodeRegistration;
-import fr.liglab.adele.cilia.Topology;
 import fr.liglab.adele.cilia.exceptions.CiliaIllegalParameterException;
 import fr.liglab.adele.cilia.exceptions.CiliaIllegalStateException;
 import fr.liglab.adele.cilia.exceptions.CiliaInvalidSyntaxException;

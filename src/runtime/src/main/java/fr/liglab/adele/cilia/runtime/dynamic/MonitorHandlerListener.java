@@ -26,9 +26,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import fr.liglab.adele.cilia.Node;
-import fr.liglab.adele.cilia.dynamic.RawData;
-import fr.liglab.adele.cilia.dynamic.SetUp;
-import fr.liglab.adele.cilia.dynamic.Thresholds;
+import fr.liglab.adele.cilia.RawData;
+import fr.liglab.adele.cilia.SetUp;
+import fr.liglab.adele.cilia.Thresholds;
 import fr.liglab.adele.cilia.framework.monitor.statevariable.ComponentStateVarProperties;
 import fr.liglab.adele.cilia.runtime.ConstRuntime;
 

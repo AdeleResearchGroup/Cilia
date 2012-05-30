@@ -13,25 +13,27 @@
  * limitations under the License.
  */
 
-package fr.liglab.adele.cilia.dynamic;
-
-import fr.liglab.adele.cilia.Node;
+package fr.liglab.adele.cilia;
 
 /**
- * Callback on data received from the monitoring
+ * Interface data recevied from the monitoring
  * 
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project
  *         Team</a>
  * 
- * 
  */
-public interface MeasureCallback {
-
+public interface Measure {
 	/**
 	 * 
-	 * @param node 
-	 * @param variable , variable id updated
-	 * @param Measure measure received :
+	 * @return value
 	 */
-	void onUpdate(Node node, String variable,Measure m);
+	Object value();
+
+	/**
+	 * timestamp at source level
+	 * 
+	 * @return time in ms
+	 */
+	long timeStampMs();
+
 }

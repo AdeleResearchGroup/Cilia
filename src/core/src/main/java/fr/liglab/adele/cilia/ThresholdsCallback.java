@@ -13,9 +13,8 @@
  * limitations under the License.
  */
 
-package fr.liglab.adele.cilia.dynamic;
+package fr.liglab.adele.cilia;
 
-import fr.liglab.adele.cilia.Node;
 
 /**
  * Callback variable out of viability area veryLow < Low < value < High <

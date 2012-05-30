@@ -15,7 +15,6 @@
 package fr.liglab.adele.cilia;
 
 import fr.liglab.adele.cilia.builder.Builder;
-import fr.liglab.adele.cilia.dynamic.ApplicationRuntime;
 import fr.liglab.adele.cilia.model.impl.ChainRuntime;
 
 /**

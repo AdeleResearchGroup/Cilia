@@ -16,11 +16,11 @@ package fr.liglab.adele.cilia.internals;
 
 import org.osgi.framework.BundleContext;
 
+import fr.liglab.adele.cilia.ApplicationRuntime;
 import fr.liglab.adele.cilia.ApplicationSpecification;
 import fr.liglab.adele.cilia.CiliaContext;
 import fr.liglab.adele.cilia.builder.Builder;
 import fr.liglab.adele.cilia.builder.impl.BuilderImpl;
-import fr.liglab.adele.cilia.dynamic.ApplicationRuntime;
 import fr.liglab.adele.cilia.runtime.application.ApplicationSpecificationImpl;
 import fr.liglab.adele.cilia.runtime.dynamic.ApplicationRuntimeImpl;
 

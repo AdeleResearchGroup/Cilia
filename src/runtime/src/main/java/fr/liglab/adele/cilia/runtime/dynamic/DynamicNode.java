@@ -22,11 +22,11 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import fr.liglab.adele.cilia.dynamic.Measure;
-import fr.liglab.adele.cilia.dynamic.RawData;
-import fr.liglab.adele.cilia.dynamic.SetUp;
-import fr.liglab.adele.cilia.dynamic.Thresholds;
-import fr.liglab.adele.cilia.dynamic.ThresholdsCallback;
+import fr.liglab.adele.cilia.Measure;
+import fr.liglab.adele.cilia.RawData;
+import fr.liglab.adele.cilia.SetUp;
+import fr.liglab.adele.cilia.Thresholds;
+import fr.liglab.adele.cilia.ThresholdsCallback;
 import fr.liglab.adele.cilia.exceptions.CiliaIllegalParameterException;
 import fr.liglab.adele.cilia.exceptions.CiliaInvalidSyntaxException;
 import fr.liglab.adele.cilia.framework.monitor.statevariable.ComponentStateVarService;

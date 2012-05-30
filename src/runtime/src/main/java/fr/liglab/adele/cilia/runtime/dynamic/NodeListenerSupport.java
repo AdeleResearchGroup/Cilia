@@ -28,13 +28,13 @@ import org.osgi.framework.ServiceReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import fr.liglab.adele.cilia.Measure;
+import fr.liglab.adele.cilia.MeasureCallback;
+import fr.liglab.adele.cilia.MeasuresRegistration;
 import fr.liglab.adele.cilia.Node;
 import fr.liglab.adele.cilia.NodeCallback;
 import fr.liglab.adele.cilia.NodeRegistration;
-import fr.liglab.adele.cilia.dynamic.Measure;
-import fr.liglab.adele.cilia.dynamic.MeasureCallback;
-import fr.liglab.adele.cilia.dynamic.MeasuresRegistration;
-import fr.liglab.adele.cilia.dynamic.ThresholdsCallback;
+import fr.liglab.adele.cilia.ThresholdsCallback;
 import fr.liglab.adele.cilia.exceptions.CiliaIllegalParameterException;
 import fr.liglab.adele.cilia.exceptions.CiliaInvalidSyntaxException;
 import fr.liglab.adele.cilia.runtime.ConstRuntime;

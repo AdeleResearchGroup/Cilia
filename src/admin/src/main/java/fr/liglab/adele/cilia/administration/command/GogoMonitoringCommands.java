@@ -22,17 +22,17 @@ import java.util.Set;
 
 import org.apache.felix.service.command.Descriptor;
 
+import fr.liglab.adele.cilia.ApplicationRuntime;
 import fr.liglab.adele.cilia.ApplicationSpecification;
 import fr.liglab.adele.cilia.CiliaContext;
+import fr.liglab.adele.cilia.Measure;
+import fr.liglab.adele.cilia.MeasureCallback;
 import fr.liglab.adele.cilia.Node;
 import fr.liglab.adele.cilia.NodeCallback;
+import fr.liglab.adele.cilia.RawData;
+import fr.liglab.adele.cilia.SetUp;
+import fr.liglab.adele.cilia.ThresholdsCallback;
 import fr.liglab.adele.cilia.Topology;
-import fr.liglab.adele.cilia.dynamic.ApplicationRuntime;
-import fr.liglab.adele.cilia.dynamic.Measure;
-import fr.liglab.adele.cilia.dynamic.MeasureCallback;
-import fr.liglab.adele.cilia.dynamic.RawData;
-import fr.liglab.adele.cilia.dynamic.SetUp;
-import fr.liglab.adele.cilia.dynamic.ThresholdsCallback;
 import fr.liglab.adele.cilia.model.MediatorComponent;
 
 /**
