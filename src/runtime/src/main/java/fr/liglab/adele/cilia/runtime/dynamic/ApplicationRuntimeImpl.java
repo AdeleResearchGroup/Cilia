@@ -69,8 +69,6 @@ public class ApplicationRuntimeImpl extends AbstractTopology implements
 	private MonitorHandlerListener chainRt;
 	private ReadWriteLock mutex;
 	private NodeListenerSupport nodeListenerSupport;
-	/* Reference injected by ipojo */
-	private WorkQueue workQueue;
 
 	public ApplicationRuntimeImpl(BundleContext bc, CiliaContainer cc) {
 

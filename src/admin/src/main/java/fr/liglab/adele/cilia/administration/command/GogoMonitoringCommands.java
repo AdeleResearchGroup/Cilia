@@ -23,6 +23,7 @@ import java.util.Set;
 import org.apache.felix.service.command.Descriptor;
 
 import fr.liglab.adele.cilia.ApplicationSpecification;
+import fr.liglab.adele.cilia.CiliaContext;
 import fr.liglab.adele.cilia.Node;
 import fr.liglab.adele.cilia.NodeCallback;
 import fr.liglab.adele.cilia.Topology;
@@ -44,6 +45,7 @@ public class GogoMonitoringCommands {
 
 	private static final String HEADER = "+------------------------------------------------------"
 			+ "------------------------------------------------------";
+	private CiliaContext ciliaContext ;
 	private ApplicationRuntime runtime;
 	private ApplicationSpecification application;
 //	private RemoteServiceAdmin adminService;
@@ -58,6 +60,14 @@ public class GogoMonitoringCommands {
 		}
 	}
 
+	public void start() {
+		runtime=ciliaContext.getApplicationRuntime();
+		application = ciliaContext.getApplicationSpecification() ;
+	}
+	
+	public void stop () {
+	}
+	
 	@Descriptor("Dump all successors to the node defined by ldapfiter")
 	public void runtime_connected_to(String ldap) {
 		try {

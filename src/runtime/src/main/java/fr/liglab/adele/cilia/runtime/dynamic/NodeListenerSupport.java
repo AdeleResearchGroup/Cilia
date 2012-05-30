@@ -63,7 +63,6 @@ public class NodeListenerSupport implements TrackerCustomizer, NodeRegistration,
 	private Map nodeListeners;
 	private Map thresholdListeners;
 	private Map measureListeners;
-	//private WorkQueue workQueue;
 
 	private Tracker tracker;
 	private BundleContext bundleContext;
@@ -132,21 +131,24 @@ public class NodeListenerSupport implements TrackerCustomizer, NodeRegistration,
 		if (!nodeListeners.isEmpty())
 			runEvent(new NodeFirer(event, source));
 	}
+
 	private void runEvent(Runnable event) {
 		ServiceReference refs[] = null;
 		try {
-			refs = bundleContext.getServiceReferences(WorkQueue.class.getName(), "(cilia.pool.scope=application)");
+			refs = bundleContext.getServiceReferences(WorkQueue.class.getName(),
+					"(cilia.pool.scope=application)");
 		} catch (InvalidSyntaxException e) {
 			logger.error("Unable to get WorkQueue Service");
 			return;
 		}
-		if (refs != null && refs.length > 0 ) {
-			WorkQueue worker = (WorkQueue)bundleContext.getService(refs[0]);
+		if (refs != null && refs.length > 0) {
+			WorkQueue worker = (WorkQueue) bundleContext.getService(refs[0]);
 			worker.execute(event);
 			bundleContext.ungetService(refs[0]);
 		}
 
 	}
+
 	private class NodeFirer implements Runnable {
 
 		private int event;
@@ -236,7 +238,8 @@ public class NodeListenerSupport implements TrackerCustomizer, NodeRegistration,
 				ArrayList filters = (ArrayList) pairs.getValue();
 				boolean tofire = false;
 				for (int i = 0; i < filters.size(); i++) {
-					if (ConstRuntime.isFilterMatching((Filter) filters.get(i), node,variableId)) {
+					if (ConstRuntime.isFilterMatching((Filter) filters.get(i), node,
+							variableId)) {
 						tofire = true;
 						break;
 					}
@@ -300,7 +303,8 @@ public class NodeListenerSupport implements TrackerCustomizer, NodeRegistration,
 				ArrayList filters = (ArrayList) pairs.getValue();
 				boolean tofire = false;
 				for (int i = 0; i < filters.size(); i++) {
-					if (ConstRuntime.isFilterMatching((Filter) filters.get(i), node,variable)) {
+					if (ConstRuntime.isFilterMatching((Filter) filters.get(i), node,
+							variable)) {
 						tofire = true;
 						break;
 					}

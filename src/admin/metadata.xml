@@ -214,9 +214,10 @@
 				        my_entry
 				        }" />
 		</provides>
-		<requires field="runtime" />
-		<requires field="application" />
+		<requires field="ciliaContext" />
 		<!-- <requires field="adminService" optional="true" /> -->
+		<callback transition="validate" method="start" />
+		<callback transition="invalidate" method="stop" />
 	</component>
 
 	<!--  JMX interface : ApplicatioRuntime  -->

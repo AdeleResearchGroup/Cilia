@@ -49,7 +49,7 @@ import fr.liglab.adele.cilia.util.concurrent.ConcurrentReaderHashMap;
  */
 @SuppressWarnings({ "rawtypes", "unchecked" })
 public class ApplicationListenerSupport implements TrackerCustomizer, ChainRegistration,
-NodeRegistration {
+		NodeRegistration {
 	public static final int EVT_ARRIVAL = 1;
 	public static final int EVT_DEPARTURE = 2;
 	public static final int EVT_MODIFIED = 3;
@@ -213,13 +213,14 @@ NodeRegistration {
 	private void runEvent(Runnable event) {
 		ServiceReference refs[] = null;
 		try {
-			refs = bundleContext.getServiceReferences(WorkQueue.class.getName(), "(cilia.pool.scope=application)");
+			refs = bundleContext.getServiceReferences(WorkQueue.class.getName(),
+					"(cilia.pool.scope=application)");
 		} catch (InvalidSyntaxException e) {
 			logger.error("Unable to get WorkQueue Service");
 			return;
 		}
-		if (refs != null && refs.length > 0 ) {
-			WorkQueue worker = (WorkQueue)bundleContext.getService(refs[0]);
+		if (refs != null && refs.length > 0) {
+			WorkQueue worker = (WorkQueue) bundleContext.getService(refs[0]);
 			worker.execute(event);
 			bundleContext.ungetService(refs[0]);
 		}
