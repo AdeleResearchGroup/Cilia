@@ -35,7 +35,9 @@ public interface ApplicationSpecification extends Topology, NodeRegistration, Ch
 	/**
 	 * @return list of chain Id
 	 */
-	String[] getChains();
+	String[] getChainId();
+	
+	
 	
 	/**
 	 * Unmodifiable properties
@@ -64,5 +66,12 @@ public interface ApplicationSpecification extends Topology, NodeRegistration, Ch
 	MediatorComponent getModel(Node node) throws CiliaIllegalParameterException,
 			CiliaIllegalStateException;
 	
-	Chain get(String chainId);
+	/**
+	 * 
+	 * @param chainId
+	 * @return Chain model
+	 * @throws CiliaIllegalParameterException
+	 */
+	Chain getChain(String chainId) throws CiliaIllegalParameterException;
+	
 }

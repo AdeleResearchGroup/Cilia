@@ -105,7 +105,7 @@ public class ApplicationSpecificationImpl  extends AbstractTopology implements A
 		Filter filter = ConstRuntime.createFilter(ldapFilter);
 
 		Dictionary dico = new Hashtable();
-		String chainId[] = getChains();
+		String chainId[] = getChainId();
 		try {
 			container.getMutex().readLock().acquire();
 			try {
@@ -219,7 +219,7 @@ public class ApplicationSpecificationImpl  extends AbstractTopology implements A
 		Dictionary dico = new Hashtable();
 		Set componentSet = new HashSet();
 
-		String chainId[] = getChains();
+		String chainId[] = getChainId();
 		try {
 			container.getMutex().readLock().acquire();
 			try {
@@ -321,8 +321,17 @@ public class ApplicationSpecificationImpl  extends AbstractTopology implements A
 	/* (non-Javadoc)
 	 * @see fr.liglab.adele.cilia.ApplicationSpecification#get(java.lang.String)
 	 */
-	public Chain get(String chainId) {
+	public Chain getChain(String chainId) throws CiliaIllegalParameterException {
+		if (chainId==null) throw new CiliaIllegalParameterException("Chain id is null !") ;
+		try {
+			container.getMutex().readLock().acquire();
 		return container.getChain(chainId);
+		} catch (InterruptedException e) {
+			throw new RuntimeException(e.getMessage());
+		} 
+		finally {
+			container.getMutex().readLock().release();
+		}
 	}
 
 }

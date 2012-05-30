@@ -1,6 +1,5 @@
 package fr.liglab.adele.cilia.administration.jmx;
 
-import fr.liglab.adele.cilia.ApplicationSpecification;
 import fr.liglab.adele.cilia.ChainCallback;
 import fr.liglab.adele.cilia.CiliaContext;
 import fr.liglab.adele.cilia.Node;
@@ -28,7 +27,7 @@ public class ApplSpecification implements ChainCallback, NodeCallback {
 	}
 
 	public String[] getChainIDs() {
-		return ciliaContext.getApplicationSpecification().getChains();
+		return ciliaContext.getApplicationSpecification().getChainId();
 	}
 
 	public String[] getEndpointsIn(String ldapFilter)

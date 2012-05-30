@@ -36,7 +36,7 @@ public interface ApplicationRuntime extends Topology, NodeRegistration,
 	/**
 	 * @return list of chain Id
 	 */
-	String[] getChains();
+	String[] getChainId();
 
 	/**
 	 * 

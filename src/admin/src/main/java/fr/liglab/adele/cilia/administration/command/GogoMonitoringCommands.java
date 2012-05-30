@@ -219,7 +219,7 @@ public class GogoMonitoringCommands {
 
 	@Descriptor("Dump all chainID at runtime")
 	public void runtime_chains() {
-		String[] chains = runtime.getChains();
+		String[] chains = runtime.getChainId();
 		System.out.println(HEADER);
 		for (int i = 0; i < chains.length; i++) {
 			System.out.println("ChainID =" + chains[i]);
@@ -289,7 +289,7 @@ public class GogoMonitoringCommands {
 	@Descriptor("Dump all chainId")
 	public void app_chains() {
 		try {
-			String[] chains = application.getChains();
+			String[] chains = application.getChainId();
 			System.out.println(HEADER);
 			for (int i = 0; i < chains.length; i++) {
 				System.out.println("ChainID =" + chains[i]);
@@ -342,7 +342,7 @@ public class GogoMonitoringCommands {
 	}
 
 	public void testApplication() {
-		String[] array = application.getChains();
+		String[] array = application.getChainId();
 		for (int i = 0; i < array.length; i++) {
 			System.out.println("Chain ID :" + array[i]);
 		}

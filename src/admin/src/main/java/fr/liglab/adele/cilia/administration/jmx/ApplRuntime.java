@@ -3,7 +3,6 @@ package fr.liglab.adele.cilia.administration.jmx;
 import fr.liglab.adele.cilia.CiliaContext;
 import fr.liglab.adele.cilia.Node;
 import fr.liglab.adele.cilia.NodeCallback;
-import fr.liglab.adele.cilia.dynamic.ApplicationRuntime;
 import fr.liglab.adele.cilia.dynamic.Measure;
 import fr.liglab.adele.cilia.dynamic.MeasureCallback;
 import fr.liglab.adele.cilia.dynamic.RawData;
@@ -40,7 +39,7 @@ public class ApplRuntime implements NodeCallback, MeasureCallback, ThresholdsCal
 	}
 
 	public String[] getChainIDs() {
-		return ciliaContext.getApplicationRuntime().getChains();
+		return ciliaContext.getApplicationRuntime().getChainId();
 	}
 
 	public String[] getEndpointsIn(String ldapFilter) {

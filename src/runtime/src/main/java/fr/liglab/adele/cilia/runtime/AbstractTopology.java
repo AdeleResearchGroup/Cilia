@@ -200,7 +200,7 @@ public abstract class AbstractTopology implements Topology {
 	 * 
 	 * @return array of chain identification
 	 */
-	public String[] getChains() {
+	public String[] getChainId() {
 		Set chainSet;
 		chainSet = ciliaContext.getAllChains();
 
