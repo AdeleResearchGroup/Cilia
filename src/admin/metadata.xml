@@ -231,7 +231,7 @@
 			<property name="cilia.runtime.node.threshold" type="java.lang.String" value="(node=*)" />
 			<property name="cilia.runtime.node" type="java.lang.String" value="(node=*)" />		
 		</provides>
-		<requires field="runtime" />
+		<requires field="ciliaContext" />
 		<jmx:config domain="cilia.application" name="runtime" >
 		  	<jmx:method name="getChainIDs" description="Get chains ID"/>
 		  	<jmx:method name="getEndpointsIn" description="Get all endpoints matching the ldap filter"/>
@@ -261,7 +261,7 @@
 			<property name="cilia.application.node" type="java.lang.String" value="(node=*)" />
 			<property name="cilia.application.chain" type="java.lang.String" value="(chain=*)" />
 		</provides>
-		<requires field="application" />
+		<requires field="ciliaContext" />
 		<jmx:config domain="cilia.application" name="specification">
 		  <jmx:method name="getChainIDs" description="Get chains ID"/>
 		  <jmx:method name="getEndpointsIn" description="Get all endpoints matching the ldap filter"/>

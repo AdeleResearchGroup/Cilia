@@ -2,13 +2,14 @@ package fr.liglab.adele.cilia.administration.jmx;
 
 import fr.liglab.adele.cilia.ApplicationSpecification;
 import fr.liglab.adele.cilia.ChainCallback;
+import fr.liglab.adele.cilia.CiliaContext;
 import fr.liglab.adele.cilia.Node;
 import fr.liglab.adele.cilia.NodeCallback;
 import fr.liglab.adele.cilia.exceptions.CiliaIllegalParameterException;
 import fr.liglab.adele.cilia.exceptions.CiliaInvalidSyntaxException;
 
 public class ApplSpecification implements ChainCallback, NodeCallback {
-	private ApplicationSpecification application;
+	private CiliaContext ciliaContext ;
 
 	private String nodes_arrival;
 	private String nodes_departure;
@@ -27,27 +28,27 @@ public class ApplSpecification implements ChainCallback, NodeCallback {
 	}
 
 	public String[] getChainIDs() {
-		return application.getChains();
+		return ciliaContext.getApplicationSpecification().getChains();
 	}
 
 	public String[] getEndpointsIn(String ldapFilter)
 			throws CiliaIllegalParameterException, CiliaInvalidSyntaxException {
-		return convertNodeToString(application.endpointIn(ldapFilter));
+		return convertNodeToString(ciliaContext.getApplicationSpecification().endpointIn(ldapFilter));
 	}
 
 	public String[] getEndpointsOut(String ldapFilter)
 			throws CiliaIllegalParameterException, CiliaInvalidSyntaxException {
-		return convertNodeToString(application.endpointOut(ldapFilter));
+		return convertNodeToString(ciliaContext.getApplicationSpecification().endpointOut(ldapFilter));
 	}
 
 	public String[] getConnectedTo(String ldapFilter)
 			throws CiliaIllegalParameterException, CiliaInvalidSyntaxException {
-		return convertNodeToString(application.connectedTo(ldapFilter));
+		return convertNodeToString(ciliaContext.getApplicationSpecification().connectedTo(ldapFilter));
 	}
 
 	public String[] getNodeByFilter(String ldapfilter)
 			throws CiliaIllegalParameterException, CiliaInvalidSyntaxException {
-		return convertNodeToString(application.findNodeByFilter(ldapfilter));
+		return convertNodeToString(ciliaContext.getApplicationSpecification().findNodeByFilter(ldapfilter));
 	}
 
 	public void onArrival(Node node) {

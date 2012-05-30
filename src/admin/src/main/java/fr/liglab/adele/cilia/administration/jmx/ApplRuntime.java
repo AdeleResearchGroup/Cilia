@@ -1,5 +1,6 @@
 package fr.liglab.adele.cilia.administration.jmx;
 
+import fr.liglab.adele.cilia.CiliaContext;
 import fr.liglab.adele.cilia.Node;
 import fr.liglab.adele.cilia.NodeCallback;
 import fr.liglab.adele.cilia.dynamic.ApplicationRuntime;
@@ -12,7 +13,7 @@ import fr.liglab.adele.cilia.exceptions.CiliaIllegalParameterException;
 import fr.liglab.adele.cilia.exceptions.CiliaInvalidSyntaxException;
 
 public class ApplRuntime implements NodeCallback, MeasureCallback, ThresholdsCallback {
-	private ApplicationRuntime runtime;
+	private CiliaContext ciliaContext ;
 
 	private volatile String nodes_arrival;
 	private volatile String nodes_departure;
@@ -39,12 +40,12 @@ public class ApplRuntime implements NodeCallback, MeasureCallback, ThresholdsCal
 	}
 
 	public String[] getChainIDs() {
-		return runtime.getChains();
+		return ciliaContext.getApplicationRuntime().getChains();
 	}
 
 	public String[] getEndpointsIn(String ldapFilter) {
 		try {
-			return convertNodeToString(runtime.endpointIn(ldapFilter));
+			return convertNodeToString(ciliaContext.getApplicationRuntime().endpointIn(ldapFilter));
 		} catch (CiliaIllegalParameterException e) {
 			return new String[] { "CiliaIllegalParameterException " + e.getMessage() };
 		} catch (CiliaInvalidSyntaxException e) {
@@ -54,7 +55,7 @@ public class ApplRuntime implements NodeCallback, MeasureCallback, ThresholdsCal
 
 	public String[] getEndpointsOut(String ldapFilter) {
 		try {
-			return convertNodeToString(runtime.endpointOut(ldapFilter));
+			return convertNodeToString(ciliaContext.getApplicationRuntime().endpointOut(ldapFilter));
 		} catch (CiliaIllegalParameterException e) {
 			return new String[] { "CiliaIllegalParameterException " + e.getMessage() };
 		} catch (CiliaInvalidSyntaxException e) {
@@ -64,7 +65,7 @@ public class ApplRuntime implements NodeCallback, MeasureCallback, ThresholdsCal
 
 	public String[] getConnectedTo(String ldapFilter) {
 		try {
-			return convertNodeToString(runtime.connectedTo(ldapFilter));
+			return convertNodeToString(ciliaContext.getApplicationRuntime().connectedTo(ldapFilter));
 		} catch (CiliaIllegalParameterException e) {
 			return new String[] { "CiliaIllegalParameterException " + e.getMessage() };
 		} catch (CiliaInvalidSyntaxException e) {
@@ -74,7 +75,7 @@ public class ApplRuntime implements NodeCallback, MeasureCallback, ThresholdsCal
 
 	public String[] getNodeByFilter(String ldapfilter) {
 		try {
-			return convertNodeToString(runtime.findNodeByFilter(ldapfilter));
+			return convertNodeToString(ciliaContext.getApplicationRuntime().findNodeByFilter(ldapfilter));
 		} catch (CiliaIllegalParameterException e) {
 			return new String[] { "CiliaIllegalParameterException " + e.getMessage() };
 		} catch (CiliaInvalidSyntaxException e) {
@@ -87,7 +88,7 @@ public class ApplRuntime implements NodeCallback, MeasureCallback, ThresholdsCal
 		SetUp[] nodes;
 		String[] result;
 		try {
-			nodes = runtime.nodeSetup(nodeLdap);
+			nodes = ciliaContext.getApplicationRuntime().nodeSetup(nodeLdap);
 		} catch (CiliaIllegalParameterException e) {
 			return new String[] { "CiliaIllegalParameterException " + e.getMessage() };
 		} catch (CiliaInvalidSyntaxException e) {
@@ -115,7 +116,7 @@ public class ApplRuntime implements NodeCallback, MeasureCallback, ThresholdsCal
 	public String[] getQueueSize(String ldapFilter, String variable) {
 		SetUp[] nodes;
 		try {
-			nodes = runtime.nodeSetup(ldapFilter);
+			nodes = ciliaContext.getApplicationRuntime().nodeSetup(ldapFilter);
 		} catch (CiliaIllegalParameterException e) {
 			return new String[] { "CiliaIllegalParameterException " + e.getMessage() };
 		} catch (CiliaInvalidSyntaxException e) {
@@ -142,7 +143,7 @@ public class ApplRuntime implements NodeCallback, MeasureCallback, ThresholdsCal
 	public String[] getFlowControl(String ldapFilter, String variable) {
 		SetUp[] nodes;
 		try {
-			nodes = runtime.nodeSetup(ldapFilter);
+			nodes = ciliaContext.getApplicationRuntime().nodeSetup(ldapFilter);
 		} catch (CiliaIllegalParameterException e) {
 			return new String[] { "CiliaIllegalParameterException " + e.getMessage() };
 		} catch (CiliaInvalidSyntaxException e) {
@@ -169,7 +170,7 @@ public class ApplRuntime implements NodeCallback, MeasureCallback, ThresholdsCal
 	public String[] nodeRawData(String nodeLdap, String variable) {
 		RawData[] nodes;
 		try {
-			nodes = runtime.nodeRawData(nodeLdap);
+			nodes = ciliaContext.getApplicationRuntime().nodeRawData(nodeLdap);
 		} catch (CiliaIllegalParameterException e) {
 			return new String[] { "CiliaIllegalParameterException " + e.getMessage() };
 
