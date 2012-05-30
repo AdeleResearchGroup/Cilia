@@ -26,25 +26,29 @@ import org.osgi.framework.Filter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import fr.liglab.adele.cilia.Adapter;
 import fr.liglab.adele.cilia.ApplicationSpecification;
-import fr.liglab.adele.cilia.Chain;
+
 import fr.liglab.adele.cilia.ChainCallback;
-import fr.liglab.adele.cilia.CiliaContext;
-import fr.liglab.adele.cilia.Mediator;
-import fr.liglab.adele.cilia.MediatorComponent;
 import fr.liglab.adele.cilia.Node;
 import fr.liglab.adele.cilia.NodeCallback;
 import fr.liglab.adele.cilia.event.CiliaEvent;
 import fr.liglab.adele.cilia.event.CiliaFrameworkEvent;
-import fr.liglab.adele.cilia.event.CiliaFrameworkListener;
 import fr.liglab.adele.cilia.exceptions.CiliaIllegalParameterException;
 import fr.liglab.adele.cilia.exceptions.CiliaIllegalStateException;
 import fr.liglab.adele.cilia.exceptions.CiliaInvalidSyntaxException;
-import fr.liglab.adele.cilia.model.PatternType;
+import fr.liglab.adele.cilia.internals.CiliaContainerImpl;
+import fr.liglab.adele.cilia.model.Adapter;
+import fr.liglab.adele.cilia.model.Chain;
+import fr.liglab.adele.cilia.model.Mediator;
+import fr.liglab.adele.cilia.model.MediatorComponent;
+import fr.liglab.adele.cilia.model.impl.PatternType;
 import fr.liglab.adele.cilia.runtime.AbstractTopology;
 import fr.liglab.adele.cilia.runtime.ConstRuntime;
+
 import fr.liglab.adele.cilia.runtime.WorkQueue;
+
+import fr.liglab.adele.cilia.runtime.impl.CiliaFrameworkEventListenerImpl;
+
 import fr.liglab.adele.cilia.util.UnModifiableDictionary;
 
 /**
@@ -55,26 +59,30 @@ import fr.liglab.adele.cilia.util.UnModifiableDictionary;
  * 
  */
 @SuppressWarnings({ "rawtypes", "unchecked" })
-public class ApplicationSpecificationImpl extends AbstractTopology implements
-		ApplicationSpecification, CiliaEvent, CiliaFrameworkEvent {
+
+public class ApplicationSpecificationImpl  extends AbstractTopology implements ApplicationSpecification,
+		CiliaEvent, CiliaFrameworkEvent {
 
 	private final Logger logger = LoggerFactory.getLogger(ConstRuntime.LOG_NAME);
 
-	private CiliaContext ciliaContext;
-	private CiliaFrameworkListener listenerFramework;
-	private ApplicationListenerSupport listenerSupport;
-	/* Reference injected by ipojo */
-	private WorkQueue workQueue;
+	private CiliaContainerImpl container;
+	private CiliaFrameworkEventListenerImpl listenerFramework;
+	private ApplicationListenerSupport listenerSupport ;
+	
+	public ApplicationSpecificationImpl(BundleContext bc, CiliaContainerImpl container) {
 
-	public ApplicationSpecificationImpl(BundleContext bc) {
 		listenerSupport = new ApplicationListenerSupport(bc);
+		listenerFramework = new CiliaFrameworkEventListenerImpl(bc);
+		this.container = container;
 	}
 
 	public void start() {
-		logger.info("ModelS@RunTime 'Application specification' - started");
-		super.setContext(ciliaContext);
 
-		listenerSupport.start(workQueue);
+		logger.info("ModelS@RunTime 'Specification components' - started");
+		super.setContext(container);
+		listenerSupport.start();
+		listenerFramework.start();
+
 		listenerFramework.register(this, ALL_EVENTS);
 	}
 
@@ -99,13 +107,13 @@ public class ApplicationSpecificationImpl extends AbstractTopology implements
 		Dictionary dico = new Hashtable();
 		String chainId[] = getChains();
 		try {
-			ciliaContext.getMutex().readLock().acquire();
+			container.getMutex().readLock().acquire();
 			try {
 				for (int i = 0; i < chainId.length; i++) {
 					/* retreive all adapters per all chain */
 					dico.put(ConstRuntime.CHAIN_ID, chainId[i]);
 					/* Iterate over all adapters per chain */
-					Iterator it = ciliaContext.getChain(chainId[i]).getAdapters()
+					Iterator it = container.getChain(chainId[i]).getAdapters()
 							.iterator();
 					while (it.hasNext()) {
 						adapter = (Adapter) it.next();
@@ -123,7 +131,7 @@ public class ApplicationSpecificationImpl extends AbstractTopology implements
 				}
 				return (Node[]) adapterResult.toArray(new Node[adapterResult.size()]);
 			} finally {
-				ciliaContext.getMutex().readLock().release();
+				container.getMutex().readLock().release();
 			}
 		} catch (InterruptedException e) {
 			Thread.currentThread().interrupt();
@@ -213,14 +221,14 @@ public class ApplicationSpecificationImpl extends AbstractTopology implements
 
 		String chainId[] = getChains();
 		try {
-			ciliaContext.getMutex().readLock().acquire();
+			container.getMutex().readLock().acquire();
 			try {
 				for (int i = 0; i < chainId.length; i++) {
 
 					/* retreive all adapters per chain */
 					dico.put(ConstRuntime.CHAIN_ID, chainId[i]);
 					/* Iterate over all adapters */
-					Iterator it = ciliaContext.getChain(chainId[i]).getAdapters()
+					Iterator it = container.getChain(chainId[i]).getAdapters()
 							.iterator();
 					while (it.hasNext()) {
 						component = (MediatorComponent) it.next();
@@ -230,7 +238,7 @@ public class ApplicationSpecificationImpl extends AbstractTopology implements
 						}
 					}
 					/* Iterate over all mediators */
-					it = ciliaContext.getChain(chainId[i]).getMediators().iterator();
+					it = container.getChain(chainId[i]).getMediators().iterator();
 					while (it.hasNext()) {
 						component = (MediatorComponent) it.next();
 
@@ -242,7 +250,7 @@ public class ApplicationSpecificationImpl extends AbstractTopology implements
 				}
 				return (Node[]) componentSet.toArray(new Node[componentSet.size()]);
 			} finally {
-				ciliaContext.getMutex().readLock().release();
+				container.getMutex().readLock().release();
 			}
 		} catch (InterruptedException e) {
 			Thread.currentThread().interrupt();
@@ -259,10 +267,10 @@ public class ApplicationSpecificationImpl extends AbstractTopology implements
 		if (node == null)
 			return new Node[0];
 		try {
-			ciliaContext.getMutex().readLock().acquire();
+			container.getMutex().readLock().acquire();
 			try {
 				/* retreive the chain hosting the mediator/component */
-				chain = ciliaContext.getChain(node.chainId());
+				chain = container.getChain(node.chainId());
 				if (chain != null) {
 					/* checks if the node is an adapter */
 					adapter = chain.getAdapter(node.nodeId());
@@ -282,7 +290,7 @@ public class ApplicationSpecificationImpl extends AbstractTopology implements
 					nodes = new Node[0];
 				return nodes;
 			} finally {
-				ciliaContext.getMutex().readLock().release();
+				container.getMutex().readLock().release();
 			}
 		} catch (InterruptedException e) {
 			Thread.currentThread().interrupt();
@@ -308,6 +316,13 @@ public class ApplicationSpecificationImpl extends AbstractTopology implements
 	public void removeListener(ChainCallback listener)
 			throws CiliaIllegalParameterException {
 		listenerSupport.removeListener(listener);
+	}
+
+	/* (non-Javadoc)
+	 * @see fr.liglab.adele.cilia.ApplicationSpecification#get(java.lang.String)
+	 */
+	public Chain get(String chainId) {
+		return container.getChain(chainId);
 	}
 
 }

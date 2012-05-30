@@ -21,16 +21,16 @@ import org.ops4j.pax.exam.junit.JUnitOptions;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 
-import fr.liglab.adele.cilia.Adapter;
-import fr.liglab.adele.cilia.Binding;
-import fr.liglab.adele.cilia.Chain;
-import fr.liglab.adele.cilia.CiliaContext;
-import fr.liglab.adele.cilia.Mediator;
 import fr.liglab.adele.cilia.core.tests.tools.CiliaTools;
-import fr.liglab.adele.cilia.model.AdapterImpl;
-import fr.liglab.adele.cilia.model.ChainImpl;
-import fr.liglab.adele.cilia.model.ComponentImpl;
-import fr.liglab.adele.cilia.model.MediatorImpl;
+import fr.liglab.adele.cilia.model.Adapter;
+import fr.liglab.adele.cilia.model.Binding;
+import fr.liglab.adele.cilia.model.Chain;
+import fr.liglab.adele.cilia.model.CiliaContainer;
+import fr.liglab.adele.cilia.model.Mediator;
+import fr.liglab.adele.cilia.model.impl.AdapterImpl;
+import fr.liglab.adele.cilia.model.impl.ChainImpl;
+import fr.liglab.adele.cilia.model.impl.ComponentImpl;
+import fr.liglab.adele.cilia.model.impl.MediatorImpl;
 
 
 @RunWith(JUnit4TestRunner.class)
@@ -83,17 +83,17 @@ public class CiliaContextTester {
 	public void validateService() {
 		CiliaTools.waitToInitialize();
 		ServiceReference sr[] = null;
-		sr = osgi.getServiceReferences (CiliaContext.class.getName(), null);
+		sr = osgi.getServiceReferences (CiliaContainer.class.getName(), null);
 		assertNotNull(sr[0]);
-		CiliaContext ccontext = (CiliaContext) context.getService(sr[0]);
+		CiliaContainer ccontext = (CiliaContainer) context.getService(sr[0]);
 		assertNotNull(ccontext);
 	}
 
-	public CiliaContext getCiliaContextService() {
+	public CiliaContainer getCiliaContextService() {
 		ServiceReference sr[] = null;
-		sr = osgi.getServiceReferences (CiliaContext.class.getName(), null);
+		sr = osgi.getServiceReferences (CiliaContainer.class.getName(), null);
 		assertNotNull(sr[0]);
-		CiliaContext ccontext = (CiliaContext) context.getService(sr[0]);
+		CiliaContainer ccontext = (CiliaContainer) context.getService(sr[0]);
 		assertNotNull(ccontext);
 		return ccontext;
 	}
@@ -118,7 +118,7 @@ public class CiliaContextTester {
 	public void chainCreation() {
 		CiliaTools.waitToInitialize();
 		String chainId = "chainId";
-		CiliaContext ccontext = getCiliaContextService();
+		CiliaContainer ccontext = getCiliaContextService();
 		Chain chain = new ChainImpl(chainId, "type", "", null);
 
 		ccontext.addChain(chain);

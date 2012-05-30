@@ -19,8 +19,8 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
 
-import fr.liglab.adele.cilia.MediatorComponent;
 import fr.liglab.adele.cilia.framework.monitor.statevariable.ComponentStateVarService;
+import fr.liglab.adele.cilia.model.MediatorComponent;
 import fr.liglab.adele.cilia.runtime.ConstRuntime;
 import fr.liglab.adele.cilia.util.FrameworkUtils;
 

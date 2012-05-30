@@ -13,10 +13,8 @@
  * limitations under the License.
  */
 
-package fr.liglab.adele.cilia;
+package fr.liglab.adele.cilia.model;
 
-import fr.liglab.adele.cilia.model.PatternType;
+public interface Mediator extends MediatorComponent{ 
 
-public interface Adapter extends MediatorComponent {
-	PatternType getPattern() ;
 }

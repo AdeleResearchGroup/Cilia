@@ -14,12 +14,9 @@
  */
 package fr.liglab.adele.cilia.administration;
 
-import fr.liglab.adele.cilia.Adapter;
-import fr.liglab.adele.cilia.Chain;
-import fr.liglab.adele.cilia.Mediator;
-import fr.liglab.adele.cilia.model.AdapterImpl;
-import fr.liglab.adele.cilia.model.ChainImpl;
-import fr.liglab.adele.cilia.model.MediatorImpl;
+import fr.liglab.adele.cilia.model.Adapter;
+import fr.liglab.adele.cilia.model.Chain;
+import fr.liglab.adele.cilia.model.Mediator;
 
 /**
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project

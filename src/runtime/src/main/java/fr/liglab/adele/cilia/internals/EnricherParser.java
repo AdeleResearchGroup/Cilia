@@ -16,10 +16,10 @@ package fr.liglab.adele.cilia.internals;
 
 import org.w3c.dom.Node;
 
-import fr.liglab.adele.cilia.Component;
-import fr.liglab.adele.cilia.Mediator;
 import fr.liglab.adele.cilia.exceptions.CiliaParserException;
 import fr.liglab.adele.cilia.ext.SimpleEnricher;
+import fr.liglab.adele.cilia.model.Component;
+import fr.liglab.adele.cilia.model.Mediator;
 import fr.liglab.adele.cilia.util.CiliaExtenderParser;
 
 /**
@@ -31,7 +31,7 @@ public class EnricherParser extends DomExtenderParser implements CiliaExtenderPa
 	private static final String CONTENT = "name";
 	private static final String VALUE = "value";
 	/* (non-Javadoc)
-	 * @see fr.liglab.adele.cilia.model.parser.CiliaExtenderParser#getComponent(java.lang.Object, fr.liglab.adele.cilia.model.IComponent)
+	 * @see fr.liglab.adele.cilia.model.impl.parser.CiliaExtenderParser#getComponent(java.lang.Object, fr.liglab.adele.cilia.model.impl.IComponent)
 	 */
 	public EnricherParser() {
 		NAMESPACE = "fr.imag.adele.cilia.processor.enricher";
@@ -57,7 +57,7 @@ public class EnricherParser extends DomExtenderParser implements CiliaExtenderPa
 	}
 
 	/* (non-Javadoc)
-	 * @see fr.liglab.adele.cilia.model.parser.CiliaExtenderParser#canHandle(java.lang.Object)
+	 * @see fr.liglab.adele.cilia.model.impl.parser.CiliaExtenderParser#canHandle(java.lang.Object)
 	 */
 	public boolean canHandle(Object mediatorDescription) {
 		Node disp = getNode("processor",mediatorDescription);

@@ -19,7 +19,7 @@ import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import fr.liglab.adele.cilia.model.PatternType;
+import fr.liglab.adele.cilia.model.impl.PatternType;
 import fr.liglab.adele.cilia.runtime.Const;
 import fr.liglab.adele.cilia.runtime.impl.DispatcherHandler;
 import fr.liglab.adele.cilia.runtime.impl.SchedulerHandler;

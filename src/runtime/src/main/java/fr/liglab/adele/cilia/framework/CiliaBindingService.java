@@ -17,9 +17,9 @@ package fr.liglab.adele.cilia.framework;
 
 import java.util.Dictionary;
 
-import fr.liglab.adele.cilia.Binding;
 import fr.liglab.adele.cilia.exceptions.CiliaException;
-import fr.liglab.adele.cilia.Component;
+import fr.liglab.adele.cilia.model.Binding;
+import fr.liglab.adele.cilia.model.Component;
 
 
 

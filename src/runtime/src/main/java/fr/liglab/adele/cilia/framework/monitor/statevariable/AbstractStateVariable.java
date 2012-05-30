@@ -37,7 +37,10 @@ import org.slf4j.LoggerFactory;
 import fr.liglab.adele.cilia.exceptions.CiliaInvalidSyntaxException;
 import fr.liglab.adele.cilia.exceptions.CiliaRuntimeException;
 import fr.liglab.adele.cilia.framework.monitor.AbstractMonitor;
-import fr.liglab.adele.cilia.model.ConstModel;
+
+import fr.liglab.adele.cilia.model.impl.ComponentImpl;
+import fr.liglab.adele.cilia.model.impl.ConstModel;
+
 import fr.liglab.adele.cilia.runtime.Const;
 import fr.liglab.adele.cilia.util.FrameworkUtils;
 import fr.liglab.adele.cilia.util.Watch;

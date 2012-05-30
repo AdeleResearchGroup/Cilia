@@ -14,8 +14,8 @@
  */
 package fr.liglab.adele.cilia.util;
 
-import fr.liglab.adele.cilia.Component;
 import fr.liglab.adele.cilia.exceptions.CiliaParserException;
+import fr.liglab.adele.cilia.model.Component;
 
 /**
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project Team</a>

@@ -43,13 +43,13 @@ import org.osgi.framework.ServiceReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import fr.liglab.adele.cilia.Component;
 import fr.liglab.adele.cilia.Data;
 import fr.liglab.adele.cilia.framework.AbstractScheduler;
 import fr.liglab.adele.cilia.framework.ICollector;
 import fr.liglab.adele.cilia.framework.IScheduler;
-import fr.liglab.adele.cilia.model.ConstModel;
-import fr.liglab.adele.cilia.model.Scheduler;
+import fr.liglab.adele.cilia.model.Component;
+import fr.liglab.adele.cilia.model.impl.ConstModel;
+import fr.liglab.adele.cilia.model.impl.Scheduler;
 import fr.liglab.adele.cilia.runtime.AdminData;
 import fr.liglab.adele.cilia.runtime.CiliaInstance;
 import fr.liglab.adele.cilia.runtime.CiliaInstanceManager;
@@ -70,7 +70,7 @@ import fr.liglab.adele.cilia.util.concurrent.WriterPreferenceReadWriteLock;
  */
 @SuppressWarnings({ "rawtypes", "unchecked" })
 public class SchedulerHandler extends PrimitiveHandler implements ISchedulerHandler,
-		InstanceStateListener, Observer, Runnable {
+InstanceStateListener, Observer, Runnable {
 
 	protected Logger logger;
 
@@ -120,29 +120,27 @@ public class SchedulerHandler extends PrimitiveHandler implements ISchedulerHand
 		Element[] schedulerHanlerMetadata = metadata.getElements(HANDLER_NAME,
 				Const.CILIA_NAMESPACE);
 
-		if (schedulerHanlerMetadata != null && schedulerHanlerMetadata.length == 1) {
+		if (schedulerHanlerMetadata != null ) {
 
-			for (int i = 0; i < schedulerHanlerMetadata.length; i++) {
-				Element procesorMetadata = null;
-				if (metadata.containsElement("method", Const.CILIA_NAMESPACE)) {
-					procesorMetadata = metadata.getElements("method",
-							Const.CILIA_NAMESPACE)[0];
-				} else if (metadata.containsElement("method")) {
-					procesorMetadata = metadata.getElements("method")[0];
-				} else {
-					procesorMetadata = schedulerHanlerMetadata[0];
-				}
-				ProcessorMetadata cm = new ProcessorMetadata(procesorMetadata);
-				PojoMetadata pojometadata = getPojoMetadata();
-				MethodMetadata methodMetadata;
-				methodMetadata = pojometadata.getMethod(cm.getMethod(),
-						cm.getParameterDataType());
+			Element procesorMetadata = null;
+			if (metadata.containsElement("method", Const.CILIA_NAMESPACE)) {
+				procesorMetadata = metadata.getElements("method",
+						Const.CILIA_NAMESPACE)[0];
+			} else if (metadata.containsElement("method")) {
+				procesorMetadata = metadata.getElements("method")[0];
+			} else {
+				procesorMetadata = schedulerHanlerMetadata[0];
+			}
+			ProcessorMetadata cm = new ProcessorMetadata(procesorMetadata);
+			PojoMetadata pojometadata = getPojoMetadata();
+			MethodMetadata methodMetadata;
+			methodMetadata = pojometadata.getMethod(cm.getMethod(),
+					cm.getParameterDataType());
 
-				if (methodMetadata == null) {
-					throw new ConfigurationException("Method " + cm.getMethod()
-							+ " in pojo should " + "receive "
-							+ cm.getReturnedDataType()[0]);
-				}
+			if (methodMetadata == null) {
+				throw new ConfigurationException("Method " + cm.getMethod()
+						+ " in pojo should " + "receive "
+						+ cm.getReturnedDataType()[0]);
 			}
 			// Add properties to component.
 			PropertyDescription[] phd1 = getHandlerManager().getFactory()
@@ -309,6 +307,7 @@ public class SchedulerHandler extends PrimitiveHandler implements ISchedulerHand
 				collectorsManager.addInstance(portname, ciliaCollector);
 			}
 			ciliaCollector.start();
+
 
 			ICollector col = (ICollector) ciliaCollector.getObject();
 			if (col != null) {
@@ -566,7 +565,7 @@ public class SchedulerHandler extends PrimitiveHandler implements ISchedulerHand
 
 	private Dictionary getSchedulerProperties(Dictionary dictionary) {
 		Dictionary dispatcherProperties;
-		Object properties = dictionary.get("dispatcher");
+		Object properties = dictionary.get("scheduler.properties");
 		if (properties != null && properties instanceof Dictionary) {
 			dispatcherProperties = (Dictionary) properties;
 		} else {
@@ -611,7 +610,7 @@ public class SchedulerHandler extends PrimitiveHandler implements ISchedulerHand
 		}
 		logger.debug("Scheduler is now valid, updating references");
 		AbstractScheduler im = (AbstractScheduler) ref; // all scheduleres must
-														// be
+		// be
 		// extend CiliaScheduler
 		im.setConnectedScheduler(this);
 	}

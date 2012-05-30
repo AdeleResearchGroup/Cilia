@@ -15,6 +15,8 @@
 
 package fr.liglab.adele.cilia;
 
+import fr.liglab.adele.cilia.model.Chain;
+
 
 public interface ChainListener {
 	

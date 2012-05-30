@@ -12,483 +12,98 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package fr.liglab.adele.cilia.internals;
 
-import java.util.HashSet;
-import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
-
 import org.osgi.framework.BundleContext;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import fr.liglab.adele.cilia.Chain;
-import fr.liglab.adele.cilia.ChainListener;
+import fr.liglab.adele.cilia.ApplicationSpecification;
 import fr.liglab.adele.cilia.CiliaContext;
 import fr.liglab.adele.cilia.builder.Builder;
 import fr.liglab.adele.cilia.builder.impl.BuilderImpl;
-import fr.liglab.adele.cilia.event.CiliaEvent;
-import fr.liglab.adele.cilia.internals.controller.ChainControllerImpl;
-import fr.liglab.adele.cilia.internals.controller.CreatorThread;
-import fr.liglab.adele.cilia.model.ChainImpl;
-import fr.liglab.adele.cilia.model.ChainRuntime;
-import fr.liglab.adele.cilia.runtime.Const;
-import fr.liglab.adele.cilia.runtime.impl.ChainRuntimeImpl;
-import fr.liglab.adele.cilia.runtime.impl.CiliaFrameworkEventPublisher;
-import fr.liglab.adele.cilia.runtime.impl.MediatorRuntimeSpecification;
-import fr.liglab.adele.cilia.specification.MediatorSpecification;
-import fr.liglab.adele.cilia.util.concurrent.ReadWriteLock;
-import fr.liglab.adele.cilia.util.concurrent.ReentrantWriterPreferenceReadWriteLock;
+import fr.liglab.adele.cilia.dynamic.ApplicationRuntime;
+import fr.liglab.adele.cilia.runtime.application.ApplicationSpecificationImpl;
+import fr.liglab.adele.cilia.runtime.dynamic.ApplicationRuntimeImpl;
 
 /**
- * This class is the entry point to Cilia, CiliaContextImpl is in charge de
- * handle the life cycle of a set of chains.
+ * Main Cilia Service implementation. It contains methods to retrieve information of mediation
+ * applications and also to modify Chains. It allows to modify mediation chains
+ * by using a retrieved builder and to inspect applications in both: Structural
+ * information and Executing Information.
  * 
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project
- *         Team</a> NA:ST
+ *         Team</a>
  * 
  */
 public class CiliaContextImpl implements CiliaContext {
-	private static final Logger logger = LoggerFactory.getLogger(Const.LOGGER_CORE);
-	/**
-	 * The creatorThread creates pojo instances using a given model.
-	 */
-	private final CreatorThread creator;
 
-	/* Model */
-	private final Map /* <ChainInstance> */chainInstances;
-	/* Run time information */
-	private final Map chainRuntime;
+	private BundleContext bcontext = null;
 
-	private final BundleContext bcontext;
+	private CiliaContainerImpl container = null;
 
-	private static final Logger log = LoggerFactory.getLogger("cilia.ipojo.runtime");
+	private ApplicationSpecificationImpl application = null;
 
-	private final Map listeners;
 
-	private final Object lockObject = new Object();
+	private ApplicationRuntimeImpl dynamicProperties = null;
 
-	private CiliaFrameworkEventPublisher eventNotifier;
+	private final static String version = "2.0.1";
 
-	private final ReadWriteLock mutex;
 
-	/**
-	 * Get the cilia version.
-	 */
-	public String getCiliaVersion() {
-		return CILIA_VERSION;
+	public CiliaContextImpl(BundleContext bc) {
+		bcontext = bc;
+		container = new CiliaContainerImpl(bcontext);
+		application = new ApplicationSpecificationImpl(bcontext, container);
+		dynamicProperties = new ApplicationRuntimeImpl(bcontext, container);
+	}
+
+	private void start() {
+		container.start();
+		application.start();
+		dynamicProperties.start();
+	}
+
+
+	private void stop() {
+		container.stop();
+		application.stop();
+		dynamicProperties.stop();
+
 	}
 
 	/**
-	 * Create a CiliaContext instance. This instance is created by iPOJO.
+	 * Get the version of the executing Cilia.
 	 * 
-	 * @param context
-	 *            OSGi Bundle Context.
+	 * @return the version as an String.
 	 */
-	public CiliaContextImpl(BundleContext context) {
-		bcontext = context;
-		creator = new CreatorThread();
-		chainInstances = new Hashtable();
-		listeners = new Hashtable();
-		chainRuntime = new Hashtable();
-		mutex = new ReentrantWriterPreferenceReadWriteLock();
+	public String getVersion() {
+		return version;
 	}
 
-	/**
-	 * Add a chain to the CiliaContext. If a chain with the same id is in the
-	 * context, it will not be created.
-	 * 
-	 * @return the added chain.
-	 */
-	public Chain addChain(Chain chain) {
-		String chainName;
-		String msg;
-		boolean state = false;
-
-		if (chain == null) {
-			msg = "Chain must not be Null";
-			log.error(msg);
-			throw new NullPointerException(msg);
-		}
-		chainName = chain.getId();
-		synchronized (lockObject) {
-			if (!chainInstances.containsKey(chain.getId())) {
-				ChainControllerImpl chainInstance = new ChainControllerImpl(bcontext,
-						chain, creator);
-				chainInstances.put(chainName, chainInstance);
-				chainRuntime.put(chainName, new ChainRuntimeImpl());
-				eventNotifier.publish(chainName, CiliaEvent.EVENT_CHAIN_ADDED);
-				logger.info("Chain [{}] added", chainName);
-
-			} else {
-				msg = "Chain with the same id already in the CiliaContext";
-				log.error(msg);
-				throw new IllegalArgumentException(msg);
-			}
-		}
-		notifyAdd(chain);
-		log.debug("chain [" + chainName + "] created OK");
-		return chain;
-	}
-
-	/**
-	 * Get a chain contained in the CiliaContext.
-	 * 
-	 * @param chainId
-	 *            The chain identificator to localize.
-	 * @return the localised chain.
-	 */
-	public Chain getChain(String chainId) {
-		Chain returningChain = null;
-		synchronized (lockObject) {
-			if (chainInstances.containsKey(chainId)) {
-				ChainControllerImpl chaininstance = getChainInstance(chainId);
-				returningChain = chaininstance.getChain();
-			}
-		}
-		return returningChain;
-	}
-
-	/**
-	 * Get the chainController of the given chain Id.
-	 * 
-	 * @param chainId
-	 * @return
-	 */
-	private ChainControllerImpl getChainInstance(String chainId) {
-		synchronized (lockObject) {
-			ChainControllerImpl chi = null;
-			chi = (ChainControllerImpl) chainInstances.get(chainId);
-			return chi;
-		}
-	}
-
-	/**
-	 * Get a set of all the chains contained in the CiliaContext.
-	 * 
-	 * @return the Set of chains.
-	 */
-	public Set getAllChains() {
-		Set chainModels = null;
-		Set tchainInstances = null;
-		try {
-			try {
-				mutex.readLock().acquire();
-				synchronized (lockObject) {
-					chainModels = new HashSet(chainInstances.size());
-					tchainInstances = chainInstances.keySet();
-				}
-				Iterator it = tchainInstances.iterator();
-				while (it != null && it.hasNext()) {
-					String chid = (String) it.next();
-					chainModels.add(getChain(chid));
-				}
-			} finally {
-				mutex.readLock().release();
-			}
-		} catch (InterruptedException e) {
-			Thread.currentThread().interrupt();
-			throw new RuntimeException();
-		}
-		return chainModels;
-	}
-
-	/**
-	 * Initialize a chain. Initialize the chain controllers to create the
-	 * executing mediator instances.
-	 * 
-	 * @param chain
-	 *            the chain to initialize.
-	 * @deprecated Use instead void startChain(String chainId).
-	 */
-	public void startChain(Chain chain) {
-		if (chain != null) {
-			startChain(chain.getId());
-		}
-	}
-
-	/**
-	 * Initialize a chain. Initialize the chain controllers to create the
-	 * executing mediator instances.
-	 * 
-	 * @param chainId
-	 *            the chain Id to initialize.
-	 */
-	public void startChain(String chainId) {
-		ChainControllerImpl cinstance = null;
-		try {
-			mutex.writeLock().acquire();
-			try {
-				synchronized (lockObject) {
-					if (chainInstances.containsKey(chainId)) {
-						cinstance = (ChainControllerImpl) chainInstances.get(chainId);
-					}
-				}
-				if (cinstance != null) {
-					cinstance.start();
-					ChainRuntimeImpl chainRt = (ChainRuntimeImpl) chainRuntime
-							.get(chainId);
-					chainRt.setState(ChainRuntime.STATE_STARTED);
-					chainRt.setLastDate();
-					eventNotifier.publish(chainId, CiliaEvent.EVENT_CHAIN_STARTED);
-					logger.info("Chain [{}] started", chainId);
-				}
-			} finally {
-				mutex.writeLock().release();
-			}
-		} catch (InterruptedException e) {
-			Thread.currentThread().interrupt();
-			throw new RuntimeException();
-		}
-	}
-
-	/**
-	 * Remove a chain from the Cilia Context.
-	 * 
-	 * @param chain
-	 *            the chain model to remove.
-	 * @deprecated Use instead void removeChain(String chainId).
-	 */
-	public void removeChain(Chain chain) {
-		if (chain != null) {
-			removeChain(chain.getId());
-		}
-	}
-
-	/**
-	 * Remove a chain from the Cilia Context.
-	 * 
-	 * @param chainId
-	 *            the chainId model to remove.
-	 */
-	public void removeChain(String chainId) {
-		ChainControllerImpl toBeRemoved = null;
-		Chain chain = null;
-		try {
-			mutex.writeLock().acquire();
-			try {
-				if (chainId != null) {
-					synchronized (lockObject) {
-						if (chainInstances.containsKey(chainId)) {
-							toBeRemoved = (ChainControllerImpl) chainInstances
-									.remove(chainId);
-						}
-					}
-					if (toBeRemoved != null) {
-						chain = toBeRemoved.getChain();
-						notifyRemove(chain);
-						toBeRemoved.dispose();
-						toBeRemoved = null;
-						ChainImpl.class.cast(chain).dispose();
-						chain = null;
-						eventNotifier.publish(chainId, CiliaEvent.EVENT_CHAIN_REMOVED);
-						logger.info("Chain [{}] removed", chainId);
-					}
-				} else {
-					log.error("remove chain", new NullPointerException(
-							"ChainId must not be null."));
-				}
-			} finally {
-				mutex.writeLock().release();
-			}
-		} catch (InterruptedException e) {
-			Thread.currentThread().interrupt();
-			throw new RuntimeException();
-		}
-	}
-
-	/**
-	 * Stop a chain.
-	 * 
-	 * @param chain
-	 *            The chain to stop.
-	 * @deprecated Use instead stopChain(String chainId).
-	 */
-	public void stopChain(Chain chain) {
-		if (chain != null) {
-			stopChain(chain.getId());
-		}
-	}
-
-	/**
-	 * Stop a chain.
-	 * 
-	 * @param chainId
-	 *            The id of the chain to stop.
-	 */
-	public void stopChain(String chainId) {
-		String msg;
-		ChainControllerImpl ci = null;
-		try {
-			mutex.writeLock().acquire();
-			try {
-				if (chainId != null) {
-					synchronized (lockObject) {
-						if (chainInstances.containsKey(chainId)) {
-							ci = (ChainControllerImpl) chainInstances.get(chainId);
-						}
-					}
-					if (ci != null) {
-						ci.stop();
-						ChainRuntimeImpl chainRt = (ChainRuntimeImpl) chainRuntime
-								.get(chainId);
-						chainRt.setState(ChainRuntime.STATE_STOPPED);
-						chainRt.setLastDate();
-						eventNotifier.publish(chainId, CiliaEvent.EVENT_CHAIN_STOPPED);
-						logger.info("Chain [{}] stopped", chainId);
-					} else {
-						msg = "There is any chain with the given id " + chainId;
-						log.error(msg);
-						throw new NullPointerException(msg);
-					}
-				} else {
-					msg = "ChainId must not be null";
-					log.error(msg);
-					throw new NullPointerException(msg);
-				}
-			} finally {
-				mutex.writeLock().release();
-			}
-		} catch (InterruptedException e) {
-			Thread.currentThread().interrupt();
-			throw new RuntimeException();
-		}
-	}
-
-	/**
-	 * 
-	 */
-	public void stop() {
-		creator.shutdown();
-		try {
-			mutex.writeLock().acquire();
-			try {
-				disposeChains();
-			} catch (Exception e) {
-			} finally {
-				mutex.writeLock().release();
-			}
-		} catch (InterruptedException ex) {
-			Thread.currentThread().interrupt();
-			throw new RuntimeException();
-		}
-	}
-
-	private void disposeChains() {
-		Set tchainInstances = null;
-		synchronized (lockObject) {
-			// this method is called when the ciliaContext is stoped, so there
-			// is not possible to add chains.
-			tchainInstances = new HashSet(chainInstances.keySet());
-		}
-		Iterator it = tchainInstances.iterator();
-		while (it != null && it.hasNext()) {
-			String chid = (String) it.next();
-			ChainControllerImpl cc = getChainInstance(chid);
-			cc.dispose();
-		}
-	}
-
-	public void start() {
-		eventNotifier = new CiliaFrameworkEventPublisher(bcontext);
-		creator.initialize();
-	}
-
-	public MediatorSpecification createMediatorSpecification(String name,
-			String namespace, String category) {
-		MediatorRuntimeSpecification ms = new MediatorRuntimeSpecification(name,
-				namespace, category, bcontext);
-		return ms;
-	}
-
-	public void addChainListener(String chainId, ChainListener listener) {
-		Chain chain = null;
-		if (listener == null) {
-			return;
-		}
-		Set listListeners = null;
-		synchronized (lockObject) {
-			chain = getChain(chainId);
-			if (listeners.containsKey(chainId)) {
-				listListeners = (Set) listeners.get(chainId);
-			} else {
-				listListeners = new HashSet();
-				listeners.put(chainId, listListeners);
-			}
-			listListeners.add(listener);
-		}
-		if (chain != null) {
-			listener.onAddingChain(chain);
-		}
-	}
-
-	public void removeChainListener(String chainId, ChainListener listener) {
-		if (listener == null) {
-			return;
-		}
-		Set listListeners = null;
-		synchronized (lockObject) {
-			if (listeners.containsKey(chainId)) {
-				listListeners = (Set) listeners.get(chainId);
-				listListeners.remove(listener);
-			}
-		}
-	}
-
-	private Set getSetListener(String chainId) {
-		Set copyListeners = null;
-		Set listListeners = null;
-		// Obtain the list of listeners.
-		synchronized (lockObject) {
-			if (listeners.containsKey(chainId)) {
-				listListeners = (Set) listeners.get(chainId);
-				copyListeners = new HashSet(listListeners);
-			}
-		}
-		return copyListeners;
-	}
-
-	private void notifyAdd(Chain chain) {
-		Set list = getSetListener(chain.getId());
-		if (list != null) {
-			Iterator it = list.iterator();
-			while (it.hasNext()) {
-				ChainListener listener = (ChainListener) it.next();
-				listener.onAddingChain(chain);
-			}
-		}
-		eventNotifier.publish(chain, CiliaEvent.EVENT_CHAIN_ADDED);
-	}
-
-	private void notifyRemove(Chain chain) {
-		Set list = getSetListener(chain.getId());
-		if (list == null) {
-			return;
-		}
-		Iterator it = list.iterator();
-		while (it.hasNext()) {
-			ChainListener listener = (ChainListener) it.next();
-			listener.onRemovingChain(chain);
-		}
-		eventNotifier.publish(chain, CiliaEvent.EVENT_CHAIN_REMOVED);
-	}
-
-	public ReadWriteLock getMutex() {
-		return mutex;
-	}
-
-	public ChainRuntime getChainRuntime(String chainId) {
-		ChainRuntime chain = null;
-		if (chainId != null) {
-			chain = (ChainRuntime) chainRuntime.get(chainId);
-		}
-		return chain;
-	}
 
 	public Builder getBuilder() {
-		return new BuilderImpl(this);
+		return new BuilderImpl(container);
+
 	}
+
+	/**
+	 * Retrieve the ApplicationRuntime instance which allows to inspect the
+	 * runtime information of mediation chains.
+	 * 
+	 * @return the ApplicationSpecification instance.
+	 * */
+	public ApplicationRuntime getApplicationRuntime() {
+		return dynamicProperties;
+	}
+
+	/**
+	 * Retrieve the ApplicationSpecification instance which allows to inspect
+	 * the structure of mediation chains and its properties.
+	 * 
+	 * @return the ApplicationSpecification instance.
+	 */
+
+	public ApplicationSpecification getApplicationSpecification() {
+		return application;
+	}
+
+
 }

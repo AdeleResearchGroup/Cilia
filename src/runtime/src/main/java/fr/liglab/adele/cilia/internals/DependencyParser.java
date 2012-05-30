@@ -20,9 +20,9 @@ import java.util.Properties;
 
 import org.w3c.dom.Node;
 
-import fr.liglab.adele.cilia.Component;
 import fr.liglab.adele.cilia.exceptions.CiliaParserException;
-import fr.liglab.adele.cilia.model.ComponentImpl;
+import fr.liglab.adele.cilia.model.Component;
+import fr.liglab.adele.cilia.model.impl.ComponentImpl;
 import fr.liglab.adele.cilia.util.CiliaExtenderParser;
 
 /**

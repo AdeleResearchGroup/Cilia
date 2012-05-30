@@ -3,9 +3,9 @@ package fr.liglab.adele.cilia.internals.controller;
 import java.util.ArrayList;
 import java.util.List;
 
-import fr.liglab.adele.cilia.Component;
-import fr.liglab.adele.cilia.model.CollectorImpl;
-import fr.liglab.adele.cilia.model.SenderImpl;
+import fr.liglab.adele.cilia.model.Component;
+import fr.liglab.adele.cilia.model.impl.CollectorImpl;
+import fr.liglab.adele.cilia.model.impl.SenderImpl;
 
 
 

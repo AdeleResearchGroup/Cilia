@@ -13,28 +13,27 @@
  * limitations under the License.
  */
 
-package fr.liglab.adele.cilia;
+package fr.liglab.adele.cilia.model.impl;
 
-import fr.liglab.adele.cilia.model.PortType;
+import fr.liglab.adele.cilia.model.Component;
 
-public interface Port {
 
-	/**
-	 * Get the port Tyoe.
-	 * @return
-	 */
-	public PortType getType();
+public class UpdateEvent {
 
-	/**
-	 * Get the port name.
-	 * @return
-	 */
-	public String getName();
-
-	/**
-	 * Get the mediator reference which contain this port.
-	 * @return
-	 */
-	public MediatorComponent getMediator();
-
+	
+	private int updateAction;
+	private Component source;
+	
+	public UpdateEvent(int updateAction, Component source) {
+		this.updateAction = updateAction;
+		this.source = source;
+	}
+	
+	public int getUpdateAction() {
+		return this.updateAction;
+	}
+	
+	public Component getSource() {
+		return this.source;
+	}
 }

@@ -19,16 +19,18 @@ import java.util.Hashtable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import fr.liglab.adele.cilia.Adapter;
-import fr.liglab.adele.cilia.Binding;
-import fr.liglab.adele.cilia.Chain;
 import fr.liglab.adele.cilia.CiliaContext;
 import fr.liglab.adele.cilia.Data;
-import fr.liglab.adele.cilia.Mediator;
-import fr.liglab.adele.cilia.MediatorComponent;
-import fr.liglab.adele.cilia.Port;
 import fr.liglab.adele.cilia.administration.util.ParserUtils;
-import fr.liglab.adele.cilia.model.ChainImpl;
+import fr.liglab.adele.cilia.builder.Architecture;
+import fr.liglab.adele.cilia.builder.Builder;
+import fr.liglab.adele.cilia.exceptions.CiliaException;
+import fr.liglab.adele.cilia.model.Adapter;
+import fr.liglab.adele.cilia.model.Binding;
+import fr.liglab.adele.cilia.model.Chain;
+import fr.liglab.adele.cilia.model.MediatorComponent;
+import fr.liglab.adele.cilia.model.Port;
+import fr.liglab.adele.cilia.model.impl.ChainImpl;
 import fr.liglab.adele.cilia.runtime.Const;
 
 /**
@@ -54,26 +56,20 @@ public class CiliaModifierProcessor {
 	 * @return the same unchanged data.
 	 */
 	protected Data modify(Data data) {
-		try {
-			ccontext.getMutex().writeLock().acquire();
-		} catch (InterruptedException e) {
+
+		if ("chain".compareToIgnoreCase(String.valueOf(data.getProperty("element"))) == 0) {
+			modifyChain(data);
+		} else if ("mediator".compareToIgnoreCase(String.valueOf(data
+				.getProperty("element"))) == 0) {
+			modifyMediator(data);
+		} else if ("adapter".compareToIgnoreCase(String.valueOf(data
+				.getProperty("element"))) == 0) {
+			modifyAdapter(data);
+		} else if ("binding".compareToIgnoreCase(String.valueOf(data
+				.getProperty("element"))) == 0) {
+			modifyBinding(data);
 		}
-		try {
-			if ("chain".compareToIgnoreCase(String.valueOf(data.getProperty("element"))) == 0) {
-				modifyChain(data);
-			} else if ("mediator".compareToIgnoreCase(String.valueOf(data
-					.getProperty("element"))) == 0) {
-				modifyMediator(data);
-			} else if ("adapter".compareToIgnoreCase(String.valueOf(data
-					.getProperty("element"))) == 0) {
-				modifyAdapter(data);
-			} else if ("binding".compareToIgnoreCase(String.valueOf(data
-					.getProperty("element"))) == 0) {
-				modifyBinding(data);
-			}
-		} finally {
-			ccontext.getMutex().writeLock().release();
-		}
+
 		return data;
 	}
 
@@ -85,19 +81,7 @@ public class CiliaModifierProcessor {
 	 *            property "element" in data must be chain.
 	 */
 	private void modifyChain(Data data) {
-		Chain ch = null;
-		String chainId = String.valueOf(data.getProperty("id"));
-		ch = ccontext.getChain(chainId);
-		Hashtable prop = (Hashtable) getProperties(data);
-		if (ch == null) {
-			logger.error("ChainImpl [{}] not found." + chainId);
-			return;
-		}
-		if (prop == null) {
-			logger.error("Properties not found.");
-			return;
-		}
-		ch.setProperties(prop);
+		logger.error("Unsupported operation: Modify chain");
 	}
 
 	/**
@@ -108,31 +92,24 @@ public class CiliaModifierProcessor {
 	 *            chain). The property "element" in data must be mediator.
 	 */
 	private void modifyMediator(Data data) {
-		Chain ch = null;
 		String mediatorId = String.valueOf(data.getProperty("id"));
 		String chainId = String.valueOf(data.getProperty("chain"));
-		Mediator mediator;
 		Hashtable props = getProperties(data);
-		ch = ccontext.getChain(chainId);
 		if (props == null) {
 			logger.error("Properties not found");
 			return;
 		}
-		if (ch == null) {
-			logger.error("ChainImpl [{}] not found." + chainId);
-			return;
+		Builder builder = ccontext.getBuilder();
+		Architecture chain;
+		try {
+			chain = builder.get(chainId);
+			chain.configure().mediator().id(mediatorId).set(props);
+			builder.done();
+		} catch (CiliaException e) {
+			logger.error("Command Error 'modify property mediator' [{}]",mediatorId);
+			e.printStackTrace();
 		}
-		if (mediatorId == null) {
-			logger.error("Parameter 'id' must not be null");
-			return;
-		}
-		mediator = ch.getMediator(mediatorId);
-		if (mediator == null) {
-			logger.error("ComponentImpl [{}] not found in chain [{}]",mediatorId,chainId);
-			return;
-		}
-		logger.info ("Command 'modify property mediator' [{}]",mediator.getQualifiedId());
-		mediator.setProperties(props);
+		logger.info("Command 'modify property mediator' [{}]",mediatorId);
 	}
 
 	/**
@@ -143,31 +120,24 @@ public class CiliaModifierProcessor {
 	 *            chain). The property "element" in data must be adapter.
 	 */
 	private void modifyAdapter(Data data) {
-		Chain ch = null;
+		Builder builder = ccontext.getBuilder();
+		Architecture chain;
 		String adapterId = String.valueOf(data.getProperty("id"));
 		String chainId = String.valueOf(data.getProperty("chain"));
-		Adapter adapter;
 		Hashtable props = getProperties(data);
-		ch = ccontext.getChain(chainId);
 		if (props == null) {
 			logger.error("Properties not found");
 			return;
 		}
-		if (ch == null) {
-			logger.error("ChainImpl [{}] not found." + chainId);
-			return;
+		try {
+			chain = builder.get(chainId);
+			chain.configure().adapter().id(adapterId).set(props);
+			builder.done();
+		} catch (CiliaException e) {
+			logger.error("Command Error 'modify property mediator' [{}]",adapterId);
+			e.printStackTrace();
 		}
-		if (adapterId == null) {
-			logger.error("Parameter id must not be null");
-			return;
-		}
-		adapter = ch.getAdapter(adapterId);
-		if (adapter == null) {
-			logger.error("ComponentImpl [{}] not found in chain [{}]",adapterId,chainId);
-			return;
-		}
-		logger.info ("Command 'modify property adapter' [{}]",adapter.getQualifiedId());
-		adapter.setProperties(props);
+		logger.info ("Command 'modify property adapter' [{}]",adapterId);
 	}
 
 	/**
@@ -178,78 +148,14 @@ public class CiliaModifierProcessor {
 	 *            from, to). The property "element" in data must be binding.
 	 */
 	private void modifyBinding(Data data) {
-		ChainImpl chain = null;
-		MediatorComponent mediatorTo = null;
-		MediatorComponent mediatorFrom = null;
 		String to = String.valueOf(data.getProperty("to"));
 		String from = String.valueOf(data.getProperty("from"));
 		String chainId = String.valueOf(data.getProperty("chain"));
 		Hashtable props = getProperties(data);
-		chain = (ChainImpl)ccontext.getChain(chainId);
-		if (chain == null) {
-			logger.error("ChainImpl [{}] not found" + chainId);
-			return;
-		}
-		if (to == null) {
-			logger.error("BindingImpl must have receiver component (to)");
-			return;
-		}
-		if (from == null) {
-			logger.error("BindingImpl must have sender component (from)");
-			return;
-		}
+		logger.error("Unsupported operation: Modify bind");
 
-		mediatorTo = getMediator(chain, to);
-		mediatorFrom = getMediator(chain, from);
-		if (mediatorTo == null) {
-			logger.error("ComponentImpl " + to + " not found in " + chainId);
-			return;
-		}
-		if (mediatorFrom == null) {
-			logger.error("MediatorImpl [{}] not found.",mediatorFrom );
-			return;
-		}
-		Binding bindings[] = mediatorFrom.getBinding(mediatorFrom
-				.getOutPort(getPortName(from)));
-
-		Port inport = mediatorFrom.getInPort(getPortName(to));
-
-		for (int i = 0; bindings != null && i < bindings.length; i++) {
-			Binding binding = bindings[i];
-			if (binding.getTargetMediator().getId().compareTo(mediatorTo.getId()) == 0
-					&& binding.getTargetPort().getName().compareTo(getPortName(to)) == 0) {
-				chain.unbind(binding);
-				binding.setProperties(props);
-			}
-		}
 	}
 
-	private MediatorComponent getMediator(Chain ch, String info) {
-		MediatorComponent mediator;
-		String sinfo[] = ParserUtils.split(info, ":");
-		String fromMediatorId = null;
-		if (sinfo.length == 2) {
-			fromMediatorId = sinfo[0];
-		} else {
-			fromMediatorId = info;
-		}
-		mediator = ch.getMediator(fromMediatorId);
-		if (mediator == null) { // see if there is an adapter with the same id.
-			mediator = ch.getAdapter(fromMediatorId);
-		}
-		return mediator;
-	}
-
-	private String getPortName(String info) {
-		String sinfo[] = ParserUtils.split(info, ":");
-		String port = null;
-		if (sinfo.length == 2) {
-			port = sinfo[1];
-		} else {
-			port = "std";
-		}
-		return port;
-	}
 
 	private Hashtable getProperties(Data data) {
 		Hashtable props = new Hashtable();

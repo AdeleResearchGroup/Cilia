@@ -17,17 +17,15 @@ package fr.liglab.adele.cilia.administration.processors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import fr.liglab.adele.cilia.Adapter;
-import fr.liglab.adele.cilia.Chain;
 import fr.liglab.adele.cilia.CiliaContext;
 import fr.liglab.adele.cilia.Data;
-import fr.liglab.adele.cilia.Mediator;
-import fr.liglab.adele.cilia.MediatorComponent;
 import fr.liglab.adele.cilia.administration.util.ParserUtils;
-import fr.liglab.adele.cilia.model.AdapterImpl;
-import fr.liglab.adele.cilia.model.ChainImpl;
-import fr.liglab.adele.cilia.model.MediatorImpl;
-import fr.liglab.adele.cilia.model.PatternType;
+import fr.liglab.adele.cilia.builder.Architecture;
+import fr.liglab.adele.cilia.builder.Builder;
+import fr.liglab.adele.cilia.exceptions.BuilderConfigurationException;
+import fr.liglab.adele.cilia.exceptions.BuilderException;
+import fr.liglab.adele.cilia.exceptions.BuilderPerformerException;
+import fr.liglab.adele.cilia.exceptions.CiliaException;
 import fr.liglab.adele.cilia.runtime.Const;
 
 /**
@@ -38,8 +36,9 @@ import fr.liglab.adele.cilia.runtime.Const;
  *         Team</a>
  */
 public class CiliaCreatorProcessor {
-	private static final Logger logger = LoggerFactory.getLogger(Const.LOGGER_ADAPTATION);
-	
+	private static final Logger logger = LoggerFactory
+			.getLogger(Const.LOGGER_ADAPTATION);
+
 	/**
 	 * The Cilia Context to interact with the framework.
 	 */
@@ -54,29 +53,21 @@ public class CiliaCreatorProcessor {
 	 * @return the same unchanged data.
 	 */
 	protected Data create(Data data) {
-		
-		try {
-			ccontext.getMutex().writeLock().acquire();
-		} catch (InterruptedException e) {
-		}
-		try {
-			if ("chain".compareToIgnoreCase(String.valueOf(data.getProperty("element"))) == 0) {
-				createChain(String.valueOf(data.getProperty("id")));
-			} else if ("mediator".compareToIgnoreCase(String.valueOf(data
-					.getProperty("element"))) == 0) {
-				createMediator(data);
-			} else if ("adapter".compareToIgnoreCase(String.valueOf(data
-					.getProperty("element"))) == 0) {
-				createAdapter(data);
-			} else if ("binding".compareToIgnoreCase(String.valueOf(data
-					.getProperty("element"))) == 0) {
-				createBinding(data);
-			}
-			else {
-				System.out.println("Any available options" + data);		
-			}
-		} finally {
-			ccontext.getMutex().writeLock().release();
+
+		if ("chain".compareToIgnoreCase(String.valueOf(data
+				.getProperty("element"))) == 0) {
+			createChain(String.valueOf(data.getProperty("id")));
+		} else if ("mediator".compareToIgnoreCase(String.valueOf(data
+				.getProperty("element"))) == 0) {
+			createMediator(data);
+		} else if ("adapter".compareToIgnoreCase(String.valueOf(data
+				.getProperty("element"))) == 0) {
+			createAdapter(data);
+		} else if ("binding".compareToIgnoreCase(String.valueOf(data
+				.getProperty("element"))) == 0) {
+			createBinding(data);
+		} else {
+			System.out.println("Any available options" + data);
 		}
 		return data;
 	}
@@ -88,8 +79,14 @@ public class CiliaCreatorProcessor {
 	 *            The chain identifier.
 	 */
 	private void createChain(String chainId) {
-		ChainImpl ch = new ChainImpl(chainId, null, null, null);
-		ccontext.addChain(ch);
+		Builder builder = ccontext.getBuilder();
+		try {
+			builder.done();
+		} catch (BuilderException e) {
+			e.printStackTrace();
+		} catch (BuilderPerformerException e) {
+			e.printStackTrace();
+		}
 	}
 
 	/**
@@ -100,16 +97,12 @@ public class CiliaCreatorProcessor {
 	 *            type, chain). The property "element" in data must be mediator.
 	 */
 	private void createMediator(Data data) {
-		ChainImpl ch = null;
-		Mediator med = null;
-		String mediatorId = (String)data.getProperty("id");
-		String mediatorType = (String)data.getProperty("type");
-		String chainId = (String)data.getProperty("chain");
-		ch = (ChainImpl)ccontext.getChain(chainId);
-		if (ch == null) {
-			logger.error("ChainImpl [{}] not found." + chainId);
-			return;
-		}
+		
+		String mediatorId = (String) data.getProperty("id");
+		String mediatorType = (String) data.getProperty("type");
+		String chainId = (String) data.getProperty("chain");
+		
+		
 		if (mediatorId == null) {
 			logger.error("Parameter 'id' must not be null");
 			return;
@@ -118,7 +111,7 @@ public class CiliaCreatorProcessor {
 			logger.error("Parameter 'type' must not be null");
 			return;
 		}
-		String mediatorInfo[] = ParserUtils.split(mediatorType, ":"); 
+		String mediatorInfo[] = ParserUtils.split(mediatorType, ":");
 		String type = null;
 		String namespace = null;
 		if (mediatorInfo.length == 2) {
@@ -127,9 +120,22 @@ public class CiliaCreatorProcessor {
 		} else {
 			type = mediatorType;
 		}
-		med = new MediatorImpl(mediatorId, type, namespace, null, null, null, ch);
-		ch.add(med);
-		logger.info ("Command 'create mediator ' [{}]",med.getQualifiedId());
+
+		Builder builder = ccontext.getBuilder();
+		try {
+			Architecture chain = builder.get(chainId);
+			chain.create().mediator().type(type).namespace(namespace).id(mediatorId);
+			builder.done();
+		} catch (BuilderConfigurationException e) {
+			logger.error("Command Error 'create mediator ' [{}]", mediatorId);
+			e.printStackTrace();
+		} catch (BuilderException e) {
+			e.printStackTrace();
+		} catch (BuilderPerformerException e) {
+			e.printStackTrace();
+		}
+
+		logger.info("Command 'create mediator ' [{}]", mediatorId);
 	}
 
 	/**
@@ -140,16 +146,11 @@ public class CiliaCreatorProcessor {
 	 *            chain). The property "element" in data must be adapter.
 	 */
 	private void createAdapter(Data data) {
-		ChainImpl chain = null;
-		Adapter adapter = null;
-		String adapterId = (String)data.getProperty("id");
-		String adapterType = (String)data.getProperty("type");
-		String chainId = (String)data.getProperty("chain");
-		chain = (ChainImpl)ccontext.getChain(chainId);
-		if (chain == null) {
-			logger.error("ChainImpl [{}] not found." + chainId);
-			return;
-		}
+		
+		String adapterId = (String) data.getProperty("id");
+		String adapterType = (String) data.getProperty("type");
+		String chainId = (String) data.getProperty("chain");
+		
 		if (adapterId == null) {
 			logger.error("Parameter 'id' must not be null");
 			return;
@@ -167,9 +168,24 @@ public class CiliaCreatorProcessor {
 		} else {
 			type = adapterType;
 		}
-		adapter = new AdapterImpl(adapterId, type, namespace,null, null,chain, PatternType.UNASSIGNED);
-		chain.add(adapter);
-		logger.info ("Command 'create mediator ' [{}]",adapter.getQualifiedId());
+		Builder builder = ccontext.getBuilder();
+		
+		Architecture chain;
+		try {
+			chain = builder.get(chainId);
+			chain.create().adapter().type(type).namespace(namespace).id(adapterId);
+			builder.done();
+		} catch (BuilderException e) {
+			logger.error("Command Error 'create adapter ' [{}]", adapterId);
+			e.printStackTrace();
+		} catch (BuilderConfigurationException e) {
+			logger.error("Command Error 'create adapter ' [{}]", adapterId);
+			e.printStackTrace();
+		} catch (BuilderPerformerException e) {
+			logger.info("Command Error 'create adapter ' [{}]", adapterId);
+			e.printStackTrace();
+		}
+		logger.info("Command 'create mediator ' [{}]", adapterId);
 	}
 
 	/**
@@ -180,67 +196,22 @@ public class CiliaCreatorProcessor {
 	 *            from, to). The property "element" in data must be binding.
 	 */
 	private void createBinding(Data data) {
-		ChainImpl chain = null;
-		MediatorComponent mediatorTo = null;
-
-		MediatorComponent mediatorFrom = null;
+		
 		String to = String.valueOf(data.getProperty("to"));
 		String from = String.valueOf(data.getProperty("from"));
 		String chainId = String.valueOf(data.getProperty("chain"));
-		chain = (ChainImpl)ccontext.getChain(chainId);
-		if (chain == null) {
-			logger.error("ChainImpl [{}] not found." + chainId);
-			return;
-		}
-		if (to == null) {
-			logger.error("BindingImpl must have receiver component (to)");
-			return;
-		}
-		if (from == null) {
-			logger.error("BindingImpl must have sender component (from)");
-			return;
-		}
-		mediatorTo = getMediator(chain, to);
-		mediatorFrom = getMediator(chain, from);
-		if (mediatorTo == null) {
-			logger.error("ComponentImpl [{}] not found in chain [{}]",mediatorTo,chainId);
-			return;
-		}
-		if (mediatorFrom == null) {
-			logger.error("ComponentImpl [{}] not found in chain [{}]",mediatorFrom,chainId);
-			return;
-		}
-		chain.bind(mediatorFrom.getOutPort(getPortName(from)),
-				mediatorTo.getInPort(getPortName(to)));
-		logger.info ("Command 'create binding ' from [{}] to [{}]",to,from);
+		
+		Builder builder = ccontext.getBuilder();
+		try {
+			Architecture chain = builder.get(chainId);
+			chain.bind().from(from).to(to);
+			builder.done();
+		} catch (CiliaException e) {
+			logger.error("Command Erro 'create binding ' from [{}] to [{}]", to, from);
+			e.printStackTrace();
+		} 
+		
+		logger.info("Command 'create binding ' from [{}] to [{}]", to, from);
 
 	}
-
-	private MediatorComponent getMediator(Chain ch, String info) {
-		MediatorComponent mediator;
-		String sinfo[] = ParserUtils.split(info, ":");
-		String fromMediatorId = null;
-		if (sinfo.length == 2) {
-			fromMediatorId = sinfo[0];
-		} else {
-			fromMediatorId = info;
-		}
-		mediator = ch.getMediator(fromMediatorId);
-		if (mediator == null) { // see if there is an adapter with the same id.
-			mediator = ch.getAdapter(fromMediatorId);
-		}
-		return mediator;
-	}
-
-	private String getPortName(String info) {
-		String sinfo[] = ParserUtils.split(info, ":");
-		String port = null;
-		if (sinfo.length == 2) {
-			port = sinfo[1];
-		} else {
-			port = "std";
-		}
-		return port;
-	}
-
 }

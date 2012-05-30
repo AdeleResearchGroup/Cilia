@@ -17,7 +17,6 @@ package fr.liglab.adele.cilia.builder.impl;
 import java.util.ArrayList;
 import java.util.List;
 
-import fr.liglab.adele.cilia.CiliaContext;
 import fr.liglab.adele.cilia.builder.Architecture;
 import fr.liglab.adele.cilia.builder.Binder;
 import fr.liglab.adele.cilia.builder.Builder;
@@ -27,6 +26,7 @@ import fr.liglab.adele.cilia.builder.Remover;
 import fr.liglab.adele.cilia.exceptions.BuilderConfigurationException;
 import fr.liglab.adele.cilia.exceptions.BuilderException;
 import fr.liglab.adele.cilia.exceptions.BuilderPerformerException;
+import fr.liglab.adele.cilia.model.CiliaContainer;
 
 /**
  * 
@@ -36,8 +36,9 @@ import fr.liglab.adele.cilia.exceptions.BuilderPerformerException;
  */
 public class ArchitectureImpl implements Architecture {
 
-	private CiliaContext ccontext;
-	private boolean creatingChain = false;
+	private CiliaContainer ccontext;
+
+	private int action = Architecture.CREATE;
 	private String chainId = null;
 	private volatile boolean isValid = false;
 	private Builder builder = null;
@@ -54,11 +55,11 @@ public class ArchitectureImpl implements Architecture {
 	 * @param chainid
 	 * @param creating
 	 */
-	protected ArchitectureImpl(CiliaContext cc, Builder builder, String chainid,
-			boolean creating) {
+	protected ArchitectureImpl(CiliaContainer cc, Builder builder, String chainid,
+			int creating) {
 		ccontext = cc;
 		setChainId(chainid);
-		setCreatingChain(creating);
+		action = creating;
 		isValid = true;
 		this.builder = builder;
 	}
@@ -137,23 +138,15 @@ public class ArchitectureImpl implements Architecture {
 	private void checkValidation() throws BuilderException {
 		if (!isValid) {
 			throw new BuilderException(
-					"Unable to build in an invalid builder configuration");
+					"Unable to build in an invalid builder configuration in " + getChainId());
+		}
+		if (action != Architecture.CREATE && action != Architecture.REMOVE && action != Architecture.MODIFY){
+			throw new BuilderException(
+					"Unable to build in an invalid builder configuration. unknown Action in " + getChainId());
 		}
 	}
 
-	/**
-	 * @return the creatingChain
-	 */
-	public boolean isCreatingChain() {
-		return creatingChain;
-	}
 
-	/**
-	 * @param creatingChain the creatingChain to set
-	 */
-	public void setCreatingChain(boolean creatingChain) {
-		this.creatingChain = creatingChain;
-	}
 
 	/**
 	 * @return the chainId
@@ -204,5 +197,19 @@ public class ArchitectureImpl implements Architecture {
 		return modified;
 	}
 
+	protected boolean toRemove() {
+		if (action == Architecture.REMOVE)
+			return true;
+		return false;
+	}
+
+	/**
+	 * @return the creatingChain
+	 */
+	protected boolean toCreate() {
+		if (action == Architecture.CREATE)
+			return true;
+		return false;
+	}
 
 }

@@ -20,17 +20,17 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
-import fr.liglab.adele.cilia.Binding;
-import fr.liglab.adele.cilia.Chain;
-import fr.liglab.adele.cilia.CiliaContext;
-import fr.liglab.adele.cilia.MediatorComponent;
 import fr.liglab.adele.cilia.Node;
 import fr.liglab.adele.cilia.Topology;
 import fr.liglab.adele.cilia.exceptions.CiliaIllegalParameterException;
 import fr.liglab.adele.cilia.exceptions.CiliaIllegalStateException;
 import fr.liglab.adele.cilia.exceptions.CiliaInvalidSyntaxException;
 
-import fr.liglab.adele.cilia.model.PatternType;
+import fr.liglab.adele.cilia.model.Binding;
+import fr.liglab.adele.cilia.model.Chain;
+import fr.liglab.adele.cilia.model.CiliaContainer;
+import fr.liglab.adele.cilia.model.MediatorComponent;
+import fr.liglab.adele.cilia.model.impl.PatternType;
 
 /**
  * topological access to node
@@ -42,14 +42,30 @@ import fr.liglab.adele.cilia.model.PatternType;
 @SuppressWarnings({ "rawtypes", "unchecked" })
 public abstract class AbstractTopology implements Topology {
 
-	private CiliaContext ciliaContext;
+	private CiliaContainer ciliaContext;
 
 	public AbstractTopology() {
 	}
 
-	protected void setContext(CiliaContext cc) {
+	protected void setContext(CiliaContainer cc) {
 		ciliaContext = cc;
 	}
+
+
+	/**
+	 * Retreives all nodes matching the filter
+	 * 
+	 * @param ldapFilter
+	 *            , keywords = chain, node
+	 * 
+	 * @return array of node matching the filter, array size 0 if no node
+	 *         matching the filter�
+	 * @throws CiliaInvalidSyntaxException
+	 *             , ldap syntax error
+	 */
+	public abstract Node[] findNodeByFilter(String ldapFilter)
+			throws CiliaIllegalParameterException, CiliaInvalidSyntaxException;
+
 
 	/*
 	 * Return the list of endpoints matching the filter

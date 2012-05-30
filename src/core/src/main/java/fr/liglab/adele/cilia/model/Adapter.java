@@ -15,20 +15,8 @@
 
 package fr.liglab.adele.cilia.model;
 
-import java.util.Date;
+import fr.liglab.adele.cilia.model.impl.PatternType;
 
-public interface ChainRuntime {
-	/* The ChainImpl has never received a start or a stop command */
-	public static final int STATE_IDLE = 0;
-	/* the chain has received a command 'startChain' */
-	public static final int STATE_STARTED =1 ;
-	/* the chain has received a command 'stopChain' */
-	public static final int STATE_STOPPED =2 ;
-	
-	/* return the current state of the ChainImpl */
-	public int getState() ;
-	
-	/* date for the last run command  */
-	public Date lastCommand() ;
-
+public interface Adapter extends MediatorComponent {
+	PatternType getPattern() ;
 }

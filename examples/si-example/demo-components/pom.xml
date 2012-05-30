@@ -21,7 +21,7 @@
 			<artifactId>cilia-runtime</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>fr.liglab.adele.cilia.demo.split-aggregate</groupId>
+			<groupId>cilia.demo.split-aggregate</groupId>
 			<artifactId>demo-services-interfaces</artifactId>
 			<version>${demo.version}</version>
 		</dependency>

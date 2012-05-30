@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-package fr.liglab.adele.cilia.model;
+package fr.liglab.adele.cilia.model.impl;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -24,12 +24,12 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import fr.liglab.adele.cilia.Adapter;
-import fr.liglab.adele.cilia.Binding;
-import fr.liglab.adele.cilia.Chain;
-import fr.liglab.adele.cilia.Mediator;
-import fr.liglab.adele.cilia.MediatorComponent;
-import fr.liglab.adele.cilia.Port;
+import fr.liglab.adele.cilia.model.Adapter;
+import fr.liglab.adele.cilia.model.Binding;
+import fr.liglab.adele.cilia.model.Chain;
+import fr.liglab.adele.cilia.model.Mediator;
+import fr.liglab.adele.cilia.model.MediatorComponent;
+import fr.liglab.adele.cilia.model.Port;
 
 /**
  * 

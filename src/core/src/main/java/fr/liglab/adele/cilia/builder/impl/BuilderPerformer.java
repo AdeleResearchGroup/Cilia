@@ -17,19 +17,18 @@ package fr.liglab.adele.cilia.builder.impl;
 import java.util.Iterator;
 import java.util.List;
 
-import fr.liglab.adele.cilia.Binding;
-import fr.liglab.adele.cilia.Chain;
-import fr.liglab.adele.cilia.CiliaContext;
-import fr.liglab.adele.cilia.MediatorComponent;
 import fr.liglab.adele.cilia.builder.Architecture;
 import fr.liglab.adele.cilia.exceptions.BuilderException;
 import fr.liglab.adele.cilia.exceptions.BuilderPerformerException;
-import fr.liglab.adele.cilia.model.AdapterImpl;
-import fr.liglab.adele.cilia.model.BindingImpl;
-import fr.liglab.adele.cilia.model.ChainImpl;
-import fr.liglab.adele.cilia.model.MediatorComponentImpl;
-import fr.liglab.adele.cilia.model.MediatorImpl;
-import fr.liglab.adele.cilia.model.PatternType;
+import fr.liglab.adele.cilia.model.Binding;
+import fr.liglab.adele.cilia.model.CiliaContainer;
+import fr.liglab.adele.cilia.model.MediatorComponent;
+import fr.liglab.adele.cilia.model.impl.AdapterImpl;
+import fr.liglab.adele.cilia.model.impl.BindingImpl;
+import fr.liglab.adele.cilia.model.impl.ChainImpl;
+import fr.liglab.adele.cilia.model.impl.MediatorComponentImpl;
+import fr.liglab.adele.cilia.model.impl.MediatorImpl;
+import fr.liglab.adele.cilia.model.impl.PatternType;
 
 /**
  * 
@@ -39,14 +38,14 @@ import fr.liglab.adele.cilia.model.PatternType;
  */
 public class BuilderPerformer {
 
-	private CiliaContext ccontext;
+	private CiliaContainer ccontext;
 	private ArchitectureImpl architecture;
 	private ChainImpl chain;
 
 	/**
 	 * @param architectureImpl
 	 */
-	protected BuilderPerformer(ArchitectureImpl arch, CiliaContext context) {
+	protected BuilderPerformer(ArchitectureImpl arch, CiliaContainer context) {
 		ccontext = context;
 		architecture = arch;
 	}
@@ -57,20 +56,23 @@ public class BuilderPerformer {
 	 */
 	public void perform() throws BuilderPerformerException {
 		chain = getChain();
+		if (architecture.toRemove()) {
+			ccontext.removeChain(chain.getId());
+		}
 		verifyOperations();
 		doCreate();
 		doRemove();
 		doModify();
 		doBind();
 		doUnbind();
-		if (architecture.isCreatingChain()) {
+		if (architecture.toCreate()) {
 			ccontext.addChain(chain);
 		}
 	}
 
 	private ChainImpl getChain() throws BuilderPerformerException {
 		ChainImpl chain = null;
-		if (architecture.isCreatingChain()) {
+		if (architecture.toCreate()) {
 			if (ccontext.getChain(architecture.getChainId()) != null) {
 				throw new BuilderPerformerException(
 						"Chain with the same ID already exist: "
@@ -106,15 +108,17 @@ public class BuilderPerformer {
 	}
 
 	private void createMediator(CreatorImpl creator) {
-		new MediatorImpl(creator.getId(), creator.getType(),
+		MediatorImpl mediator = new MediatorImpl(creator.getId(), creator.getType(),
 				creator.getNamespace(), creator.getCategory(),
-				creator.getVersion(), creator.getProperties(), chain);
+				creator.getVersion(), creator.getConfiguration(), chain);
+		chain.add(mediator);
 	}
 
 	private void createAdapter(CreatorImpl creator) {
-		new AdapterImpl(creator.getId(), creator.getType(),
+		AdapterImpl adapter = new AdapterImpl(creator.getId(), creator.getType(),
 				creator.getNamespace(), creator.getVersion(),
-				creator.getProperties(), chain, PatternType.UNASSIGNED);
+				creator.getConfiguration(), chain, PatternType.UNASSIGNED);
+		chain.add(adapter);
 	}
 
 	private void doRemove() throws BuilderPerformerException {
@@ -218,13 +222,13 @@ public class BuilderPerformer {
 				switch (creat.getInstanceType()) {
 				case Architecture.ADAPTER:
 					throw new BuilderPerformerException(
-							"Impossible to create an adapter with ID"
+							"Impossible to create an adapter with ID "
 									+ id
 									+ "; Another instance with the same ID exists in chain "
 									+ chain.getId());
 				case Architecture.MEDIATOR:
 					throw new BuilderPerformerException(
-							"Impossible to create a mediator with ID"
+							"Impossible to create a mediator with ID "
 									+ id
 									+ "; Another instance with the same ID exists in chain "
 									+ chain.getId());
@@ -239,17 +243,16 @@ public class BuilderPerformer {
 		while (it.hasNext()) {
 			RemoverImpl toRemove = (RemoverImpl) it.next();
 			String id = toRemove.getId();
-			if ((chain.getMediator(id) == null)
-					&& (chain.getAdapter(id) == null)) { //
+			if (!isRealComponent(id)) { //
 				switch (toRemove.getType()) {
 				case Architecture.ADAPTER:
 					throw new BuilderPerformerException(
-							"Impossible to remove an adapter with ID" + id
+							"Impossible to remove an adapter with ID " + id
 									+ "; Unexistant adapterin chain "
 									+ chain.getId());
 				case Architecture.MEDIATOR:
 					throw new BuilderPerformerException(
-							"Impossible to remove a mediator with ID" + id
+							"Impossible to remove a mediator with ID " + id
 									+ "; Unexistant mediator in chain "
 									+ chain.getId());
 				}
@@ -262,16 +265,16 @@ public class BuilderPerformer {
 		while (it.hasNext()) {
 			InstanceModifierImpl toModify = (InstanceModifierImpl) it.next();
 			String id = toModify.getId();
-			if ((chain.getMediator(id) == null) && chain.getAdapter(id) == null) { //
+			if (!isRealComponent(id) ) { //
 				switch (toModify.getType()) {
 				case Architecture.ADAPTER:
 					throw new BuilderPerformerException(
-							"Impossible to remove an adapter with ID" + id
+							"Impossible to modify an adapter with ID" + id
 									+ "; Unexistant adapterin chain "
 									+ chain.getId());
 				case Architecture.MEDIATOR:
 					throw new BuilderPerformerException(
-							"Impossible to remove a mediator with ID" + id
+							"Impossible to modify a mediator with ID" + id
 									+ "; Unexistant mediator in chain "
 									+ chain.getId());
 				}

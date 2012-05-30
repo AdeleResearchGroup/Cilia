@@ -16,10 +16,10 @@ package fr.liglab.adele.cilia.internals;
 
 import org.w3c.dom.Node;
 
-import fr.liglab.adele.cilia.Component;
 import fr.liglab.adele.cilia.exceptions.CiliaParserException;
 import fr.liglab.adele.cilia.ext.ErrorHandler;
-import fr.liglab.adele.cilia.model.MediatorComponentImpl;
+import fr.liglab.adele.cilia.model.Component;
+import fr.liglab.adele.cilia.model.impl.MediatorComponentImpl;
 import fr.liglab.adele.cilia.util.CiliaExtenderParser;
 
 /**
@@ -39,7 +39,7 @@ public class MonitorErrorHandlerParser extends DomExtenderParser implements
 	}
 	
 	/* (non-Javadoc)
-	 * @see fr.liglab.adele.cilia.model.parser.CiliaExtenderParser#getComponent(java.lang.Object, fr.liglab.adele.cilia.model.IComponent)
+	 * @see fr.liglab.adele.cilia.model.impl.parser.CiliaExtenderParser#getComponent(java.lang.Object, fr.liglab.adele.cilia.model.impl.IComponent)
 	 */
 	public Component getComponent(Object componentDescription,
 			Component currentComponent) throws CiliaParserException {
@@ -62,7 +62,7 @@ public class MonitorErrorHandlerParser extends DomExtenderParser implements
 	}
 
 	/* (non-Javadoc)
-	 * @see fr.liglab.adele.cilia.model.parser.CiliaExtenderParser#canHandle(java.lang.Object)
+	 * @see fr.liglab.adele.cilia.model.impl.parser.CiliaExtenderParser#canHandle(java.lang.Object)
 	 */
 	public boolean canHandle(Object mediatorDescription) {
 		Node disp = getNode("monitor",mediatorDescription);

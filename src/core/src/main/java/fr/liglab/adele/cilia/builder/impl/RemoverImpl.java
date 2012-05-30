@@ -38,7 +38,6 @@ public class RemoverImpl implements Remover, InstanceRemover {
 	/* (non-Javadoc)
 	 * @see fr.liglab.adele.cilia.builder.Remover#mediator()
 	 */
-	@Override
 	public InstanceRemover mediator() {
 		type = Architecture.MEDIATOR;
 		return this;
@@ -47,7 +46,6 @@ public class RemoverImpl implements Remover, InstanceRemover {
 	/* (non-Javadoc)
 	 * @see fr.liglab.adele.cilia.builder.Remover#adapter()
 	 */
-	@Override
 	public InstanceRemover adapter() {
 		type = Architecture.ADAPTER;
 		return this;
@@ -57,7 +55,6 @@ public class RemoverImpl implements Remover, InstanceRemover {
 	/* (non-Javadoc)
 	 * @see fr.liglab.adele.cilia.builder.RemoverMediator#id(java.lang.String)
 	 */
-	@Override
 	public Architecture id(String id) {
 		this.id = id;
 		return architecture;

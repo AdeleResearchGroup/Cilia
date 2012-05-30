@@ -1,9 +1,9 @@
 package fr.liglab.adele.cilia.specification;
 
 
-import fr.liglab.adele.cilia.Mediator;
-import fr.liglab.adele.cilia.model.ComponentImpl;
-import fr.liglab.adele.cilia.model.MediatorImpl;
+import fr.liglab.adele.cilia.model.Mediator;
+import fr.liglab.adele.cilia.model.impl.ComponentImpl;
+import fr.liglab.adele.cilia.model.impl.MediatorImpl;
 
 public abstract class AbstractMediatorSpecification implements MediatorSpecification{
 

@@ -23,7 +23,7 @@ import org.osgi.framework.ServiceReference;
 import org.osgi.util.tracker.ServiceTracker;
 import org.osgi.util.tracker.ServiceTrackerCustomizer;
 
-import fr.liglab.adele.cilia.CiliaContext;
+import fr.liglab.adele.cilia.model.CiliaContainer;
 
 
 public class CiliaInstructionsServiceTracker  extends ServiceTracker implements ServiceTrackerCustomizer {
@@ -32,7 +32,7 @@ public class CiliaInstructionsServiceTracker  extends ServiceTracker implements 
 	
 	Map trackedServices = new Hashtable(); 
 	
-	CiliaContext ccontext;
+	CiliaContainer ccontext;
 	
 	CiliaInstructionsAdapter adapter;
 	

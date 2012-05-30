@@ -12,13 +12,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package fr.liglab.adele.cilia.model;
+package fr.liglab.adele.cilia.model.impl;
 
 import java.util.Dictionary;
-import java.util.Hashtable;
 
-import fr.liglab.adele.cilia.Adapter;
-import fr.liglab.adele.cilia.Chain;
+import fr.liglab.adele.cilia.model.Adapter;
+import fr.liglab.adele.cilia.model.Chain;
 
 /**
  * This class represent the adapter in the model at execution.

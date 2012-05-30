@@ -19,7 +19,7 @@ import java.util.Hashtable;
 import java.util.Map;
 
 import fr.liglab.adele.cilia.builder.CustomBuilderConfigurator;
-import fr.liglab.adele.cilia.model.MediatorComponentImpl;
+import fr.liglab.adele.cilia.model.impl.MediatorComponentImpl;
 
 /**
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project Team</a>
@@ -32,13 +32,13 @@ public class ContentBasedRouting  implements CustomBuilderConfigurator{
 
 	private final static String LANGUAGE = "language";
 
-	private MediatorComponentImpl mediator;
+	//private MediatorComponentImpl mediator;
 
 	private final Object lockObject = new Object();
 
 	private RouteConfigurationImpl currentConfiguration;
 	
-	private Hashtable configurations;
+	private Hashtable configurations = new Hashtable();
 	
 	/**
 	 * @param id
@@ -48,13 +48,12 @@ public class ContentBasedRouting  implements CustomBuilderConfigurator{
 	 * @param properties
 	 * @param chain
 	 */
-	public ContentBasedRouting(MediatorComponentImpl mediator) {
-		this.mediator = mediator;
+	public ContentBasedRouting() {
 	}
 
 
 	public ContentBasedRouting evaluator(String evaluator){
-		mediator.setProperty(LANGUAGE, evaluator);
+		configurations.put(LANGUAGE, evaluator);
 		return this;
 	}
 
@@ -83,12 +82,12 @@ public class ContentBasedRouting  implements CustomBuilderConfigurator{
 	}
 
 	private ContentBasedRouting done(){
-		Map configurations = null;
+		Map localConfig = null;
 		boolean modified = false;
 		synchronized (lockObject) {
-			configurations = configurations();
+			localConfig = configurations();
 			if (currentConfiguration != null && currentConfiguration.getCondition() != null && currentConfiguration.getPort() != null) {
-				configurations.put(currentConfiguration.getCondition(),currentConfiguration.getPort());
+				localConfig.put(currentConfiguration.getCondition(),currentConfiguration.getPort());
 				modified = true;
 			}
 			if (modified) {
@@ -96,7 +95,7 @@ public class ContentBasedRouting  implements CustomBuilderConfigurator{
 			}
 		}
 		if (modified) { // it is tested outside the sync block.
-			mediator.setProperty(ROUTE, new HashMap(configurations));
+			this.configurations.put(ROUTE, new HashMap(localConfig));
 		}
 		return this;
 	}
@@ -116,27 +115,26 @@ public class ContentBasedRouting  implements CustomBuilderConfigurator{
 		return this;
 	}
 
-	public Map configurations(){
-		Map configurations = null;
+	private Map configurations(){
+		Map local;
 		synchronized (lockObject) {
-			Object prop = mediator.getProperty(ROUTE);
+			Object prop = configurations.get(ROUTE);
 			if (prop != null && prop instanceof Map) {
-				configurations = (Map)prop;
+				local = (Map)prop;
 			} else {
-				configurations = new HashMap();
+				local = new HashMap();
 			}
 		}
-		return configurations;
+		return local;
 	}
 
 
 	/* (non-Javadoc)
 	 * @see fr.liglab.adele.cilia.builder.CustomBuilderConfigurator#getProperties()
 	 */
-	@Override
-	public Hashtable getProperties() {
-		// TODO Auto-generated method stub
-		return null;
+
+	public Hashtable properties() {
+		return configurations;
 	}
 
 

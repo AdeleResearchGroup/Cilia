@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package fr.liglab.adele.cilia.model;
+package fr.liglab.adele.cilia.model.impl;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -22,12 +22,11 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import fr.liglab.adele.cilia.Binding;
-import fr.liglab.adele.cilia.Chain;
-import fr.liglab.adele.cilia.MediatorComponent;
-import fr.liglab.adele.cilia.Port;
 import fr.liglab.adele.cilia.util.FrameworkUtils;
+import fr.liglab.adele.cilia.model.Binding;
+import fr.liglab.adele.cilia.model.Chain;
+import fr.liglab.adele.cilia.model.MediatorComponent;
+import fr.liglab.adele.cilia.model.Port;
 import fr.liglab.adele.cilia.util.Uuid;
 
 /**

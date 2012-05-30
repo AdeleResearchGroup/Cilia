@@ -49,7 +49,7 @@ import fr.liglab.adele.cilia.util.concurrent.ConcurrentReaderHashMap;
  */
 @SuppressWarnings({ "rawtypes", "unchecked" })
 public class ApplicationListenerSupport implements TrackerCustomizer, ChainRegistration,
-		NodeRegistration {
+NodeRegistration {
 	public static final int EVT_ARRIVAL = 1;
 	public static final int EVT_DEPARTURE = 2;
 	public static final int EVT_MODIFIED = 3;
@@ -64,7 +64,6 @@ public class ApplicationListenerSupport implements TrackerCustomizer, ChainRegis
 	private Map listenerChain;
 	private BundleContext bundleContext;
 	private Tracker tracker;
-	private WorkQueue workQueue;
 
 	public ApplicationListenerSupport(BundleContext bc) {
 		bundleContext = bc;
@@ -72,9 +71,8 @@ public class ApplicationListenerSupport implements TrackerCustomizer, ChainRegis
 		listenerChain = new ConcurrentReaderHashMap();
 	}
 
-	public void start(WorkQueue wq) {
+	public void start() {
 		registerTracker();
-		workQueue = wq;
 	}
 
 	public void stop() {
@@ -147,7 +145,7 @@ public class ApplicationListenerSupport implements TrackerCustomizer, ChainRegis
 
 	public void fireEventNode(int event, Node component) {
 		if (!listenerNode.isEmpty())
-			workQueue.execute(new NodeFirer(event, component));
+			runEvent(new NodeFirer(event, component));
 	}
 
 	private class NodeFirer implements Runnable {
@@ -207,8 +205,25 @@ public class ApplicationListenerSupport implements TrackerCustomizer, ChainRegis
 	}
 
 	public void fireEventChain(int evt, String name) {
-		if ((!listenerChain.isEmpty()) && name != null)
-			workQueue.execute(new FirerChainEvent(evt, name));
+		if ((!listenerChain.isEmpty()) && name != null) {
+			runEvent(new FirerChainEvent(evt, name));
+		}
+	}
+
+	private void runEvent(Runnable event) {
+		ServiceReference refs[] = null;
+		try {
+			refs = bundleContext.getServiceReferences(WorkQueue.class.getName(), "(cilia.pool.scope=application)");
+		} catch (InvalidSyntaxException e) {
+			logger.error("Unable to get WorkQueue Service");
+			return;
+		}
+		if (refs != null && refs.length > 0 ) {
+			WorkQueue worker = (WorkQueue)bundleContext.getService(refs[0]);
+			worker.execute(event);
+			bundleContext.ungetService(refs[0]);
+		}
+
 	}
 
 	/* Run in a thread MIN_PRIORITY+1 */

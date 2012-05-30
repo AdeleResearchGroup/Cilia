@@ -15,19 +15,14 @@
 
 package fr.liglab.adele.cilia.administration.command;
 
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
 import org.apache.felix.service.command.Descriptor;
-//import org.osgi.service.remoteserviceadmin.ImportReference;
-//import org.osgi.service.remoteserviceadmin.RemoteServiceAdmin;
 
 import fr.liglab.adele.cilia.ApplicationSpecification;
-import fr.liglab.adele.cilia.MediatorComponent;
 import fr.liglab.adele.cilia.Node;
 import fr.liglab.adele.cilia.NodeCallback;
 import fr.liglab.adele.cilia.Topology;
@@ -37,6 +32,7 @@ import fr.liglab.adele.cilia.dynamic.MeasureCallback;
 import fr.liglab.adele.cilia.dynamic.RawData;
 import fr.liglab.adele.cilia.dynamic.SetUp;
 import fr.liglab.adele.cilia.dynamic.ThresholdsCallback;
+import fr.liglab.adele.cilia.model.MediatorComponent;
 
 /**
  * Simple gogo commands for debug purpose

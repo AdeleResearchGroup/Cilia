@@ -13,15 +13,15 @@
  * limitations under the License.
  */
 
-package fr.liglab.adele.cilia.model;
+package fr.liglab.adele.cilia.model.impl;
 
 import java.util.Dictionary;
 
-import fr.liglab.adele.cilia.Binding;
-import fr.liglab.adele.cilia.Chain;
-import fr.liglab.adele.cilia.Component;
-import fr.liglab.adele.cilia.MediatorComponent;
-import fr.liglab.adele.cilia.Port;
+import fr.liglab.adele.cilia.model.Binding;
+import fr.liglab.adele.cilia.model.Chain;
+import fr.liglab.adele.cilia.model.Component;
+import fr.liglab.adele.cilia.model.MediatorComponent;
+import fr.liglab.adele.cilia.model.Port;
 
 /**
  * This class represent the relation between two mediators in the Cilia Model.

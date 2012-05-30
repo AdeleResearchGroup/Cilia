@@ -34,7 +34,7 @@ public abstract class AbstractScheduler implements IScheduler {
 
 	IScheduler scheduler;
 
-	protected Map dataMap = new HashMap();
+
 
 	protected static Logger logger = LoggerFactory.getLogger("cilia.ipojo.runtime");
 

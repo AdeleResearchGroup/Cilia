@@ -13,10 +13,10 @@
  * limitations under the License.
  */
 
-package fr.liglab.adele.cilia.model;
+package fr.liglab.adele.cilia.model.impl;
 
-import fr.liglab.adele.cilia.MediatorComponent;
-import fr.liglab.adele.cilia.Port;
+import fr.liglab.adele.cilia.model.MediatorComponent;
+import fr.liglab.adele.cilia.model.Port;
 
 /**
  * 

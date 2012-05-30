@@ -42,7 +42,7 @@ public class BinderImpl implements Binder {
 
 	private String using;
 
-	protected Hashtable properties;
+	protected Hashtable properties = new Hashtable();
 
 	
 
@@ -52,7 +52,6 @@ public class BinderImpl implements Binder {
 	/* (non-Javadoc)
 	 * @see fr.liglab.adele.cilia.builder.From#to(java.lang.String)
 	 */
-	@Override
 	public BinderConfigurator to(String to) throws  BuilderConfigurationException {
 		if (to == null) {
 			throw new BuilderConfigurationException ("to parameter must not be null");
@@ -65,7 +64,6 @@ public class BinderImpl implements Binder {
 	/* (non-Javadoc)
 	 * @see fr.liglab.adele.cilia.builder.Binder#from(java.lang.String)
 	 */
-	@Override
 	public BinderToSetter from(String from) throws BuilderConfigurationException {
 		if (from == null) {
 			throw new BuilderConfigurationException ("<from> parameter in bind must not be null");
@@ -95,7 +93,6 @@ public class BinderImpl implements Binder {
 	/* (non-Javadoc)
 	 * @see fr.liglab.adele.cilia.builder.To#using(java.lang.String)
 	 */
-	@Override
 	public Binder using(String using) {
 		this.using = using;
 		return this;

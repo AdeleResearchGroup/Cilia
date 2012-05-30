@@ -1,6 +1,6 @@
 package fr.liglab.adele.cilia.specification;
 
-import fr.liglab.adele.cilia.Mediator;
+import fr.liglab.adele.cilia.model.Mediator;
 /**
  * 
  * This interface is the api to specify new mediators specifications.

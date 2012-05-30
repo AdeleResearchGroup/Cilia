@@ -17,15 +17,21 @@ package fr.liglab.adele.cilia.administration.processors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import fr.liglab.adele.cilia.Binding;
-import fr.liglab.adele.cilia.Chain;
 import fr.liglab.adele.cilia.CiliaContext;
 import fr.liglab.adele.cilia.Data;
-import fr.liglab.adele.cilia.MediatorComponent;
-import fr.liglab.adele.cilia.Port;
 import fr.liglab.adele.cilia.administration.util.ParserUtils;
-import fr.liglab.adele.cilia.model.ChainImpl;
-import fr.liglab.adele.cilia.model.ComponentImpl;
+import fr.liglab.adele.cilia.builder.Architecture;
+import fr.liglab.adele.cilia.builder.Builder;
+import fr.liglab.adele.cilia.exceptions.BuilderConfigurationException;
+import fr.liglab.adele.cilia.exceptions.BuilderException;
+import fr.liglab.adele.cilia.exceptions.BuilderPerformerException;
+import fr.liglab.adele.cilia.exceptions.CiliaException;
+import fr.liglab.adele.cilia.model.Binding;
+import fr.liglab.adele.cilia.model.Chain;
+import fr.liglab.adele.cilia.model.MediatorComponent;
+import fr.liglab.adele.cilia.model.Port;
+import fr.liglab.adele.cilia.model.impl.ChainImpl;
+import fr.liglab.adele.cilia.model.impl.ComponentImpl;
 import fr.liglab.adele.cilia.runtime.Const;
 import fr.liglab.adele.cilia.util.FrameworkUtils;
 
@@ -54,25 +60,17 @@ public class CiliaRemoverProcessor {
 	 * @return the same unchanged data.
 	 */
 	protected Data remove(Data data) {
-		try {
-			ccontext.getMutex().writeLock().acquire();
-		} catch (InterruptedException e) {
-		}
-		try {
-			if ("chain".compareToIgnoreCase(String.valueOf(data.getProperty("element"))) == 0) {
-				removeChain(String.valueOf(data.getProperty("id")));
-			} else if ("mediator".compareToIgnoreCase(String.valueOf(data
-					.getProperty("element"))) == 0) {
-				removeMediator(data);
-			} else if ("adapter".compareToIgnoreCase(String.valueOf(data
-					.getProperty("element"))) == 0) {
-				removeAdapter(data);
-			} else if ("binding".compareToIgnoreCase(String.valueOf(data
-					.getProperty("element"))) == 0) {
-				removeBinding(data);
-			}
-		} finally {
-			ccontext.getMutex().writeLock().release();
+		if ("chain".compareToIgnoreCase(String.valueOf(data.getProperty("element"))) == 0) {
+			removeChain(String.valueOf(data.getProperty("id")));
+		} else if ("mediator".compareToIgnoreCase(String.valueOf(data
+				.getProperty("element"))) == 0) {
+			removeMediator(data);
+		} else if ("adapter".compareToIgnoreCase(String.valueOf(data
+				.getProperty("element"))) == 0) {
+			removeAdapter(data);
+		} else if ("binding".compareToIgnoreCase(String.valueOf(data
+				.getProperty("element"))) == 0) {
+			removeBinding(data);
 		}
 		return data;
 	}
@@ -84,13 +82,15 @@ public class CiliaRemoverProcessor {
 	 *            The chain identifier.
 	 */
 	private void removeChain(String chainId) {
-		Chain ch = ccontext.getChain(chainId);
-		if (ch == null) {
-			logger.error("ChainImpl [{}] not found.", chainId);
-			return;
+		Builder builder = ccontext.getBuilder();
+		try {
+			builder.remove(chainId);
+			builder.done();
+		} catch (CiliaException e) {
+			logger.error("Command Error 'remove chain' [{}]", chainId);
+			e.printStackTrace();
 		}
 		logger.info("Command 'remove chain' [{}]", chainId);
-		ccontext.removeChain(chainId);
 	}
 
 	/**
@@ -101,25 +101,25 @@ public class CiliaRemoverProcessor {
 	 *            chain). The property "element" in data must be mediator.
 	 */
 	private void removeMediator(Data data) {
-		ChainImpl ch = null;
 		String mediatorId = String.valueOf(data.getProperty("id"));
 		String chainId = String.valueOf(data.getProperty("chain"));
-		ch = (ChainImpl)ccontext.getChain(chainId);
-		if (ch == null) {
-			logger.error("ChainImpl [{}] not found.", chainId);
-			return;
-		}
 		if (mediatorId == null) {
 			logger.error("MediatorImpl must have an id");
 			return;
 		}
-		if (ch.removeMediator(mediatorId)) {
-			logger.info("Command 'remove mediator' [{}]",
-					FrameworkUtils.makeQualifiedId(chainId, mediatorId,null));
-		} else {
-			logger.error("Command 'remove mediator' [{}], mediator not removed",
-					FrameworkUtils.makeQualifiedId(chainId, mediatorId,null));
+
+		Builder builder = ccontext.getBuilder();
+		try {
+			builder.get(chainId).remove().mediator().id(mediatorId);
+			builder.done();
+		} catch (CiliaException e) {
+			logger.error("Command Error'remove mediator' [{}]",
+					mediatorId);
+			e.printStackTrace();
+			return;
 		}
+		logger.info("Command 'remove mediator' [{}]",
+				mediatorId);
 	}
 
 	/**
@@ -130,25 +130,23 @@ public class CiliaRemoverProcessor {
 	 *            chain). The property "element" in data must be mediator.
 	 */
 	private void removeAdapter(Data data) {
-		ChainImpl ch = null;
-		String mediatorId = String.valueOf(data.getProperty("id"));
+		String adapterId = String.valueOf(data.getProperty("id"));
 		String chainId = String.valueOf(data.getProperty("chain"));
-		ch = (ChainImpl)ccontext.getChain(chainId);
-		if (ch == null) {
-			logger.error("ChainImpl [{}] not found.", chainId);
-			return;
-		}
-		if (mediatorId == null) {
+		if (adapterId == null) {
 			logger.error("AdapterImpl must have an id");
 			return;
 		}
-		if (ch.removeAdapter(mediatorId)) {
-			logger.info("Command 'remove adapter' [{}]",
-					FrameworkUtils.makeQualifiedId(chainId, mediatorId,null));
-		} else {
-			logger.error("Command 'remove adapter' [{}], adapter not removed",
-					FrameworkUtils.makeQualifiedId(chainId, mediatorId,null));
+
+		try{
+			Builder builder = ccontext.getBuilder();
+			builder.get(chainId).remove().adapter().id(adapterId);
+			builder.done();
+		} catch (CiliaException e) {
+			logger.error("Command Error'remove adapter' [{}]",adapterId);
+			e.printStackTrace();
+			return;
 		}
+		logger.info("Command 'remove adapter' [{}]", adapterId);
 	}
 
 	/**
@@ -159,78 +157,19 @@ public class CiliaRemoverProcessor {
 	 *            from, to). The property "element" in data must be binding.
 	 */
 	private void removeBinding(Data data) {
-		ChainImpl chain = null;
-		MediatorComponent mediatorTo = null;
-		MediatorComponent mediatorFrom = null;
 		String to = String.valueOf(data.getProperty("to"));
 		String from = String.valueOf(data.getProperty("from"));
 		String chainId = String.valueOf(data.getProperty("chain"));
-		chain = (ChainImpl)ccontext.getChain(chainId);
-		if (chain == null) {
-			logger.error("ChainImpl [{}] not found.", chainId);
-			return;
-		}
-		if (to == null) {
-			logger.error("BindingImpl must have receiver component (to)");
-			return;
-		}
-		if (from == null) {
-			logger.error("BindingImpl must have sender component (from)");
-			return;
-		}
-		mediatorTo = getMediator(chain, to);
-		mediatorFrom = getMediator(chain, from);
-		logger.info("Command 'remove binding' from [{}] to [{}]",
-				mediatorFrom.getQualifiedId(), mediatorTo.getQualifiedId());
 
-		if (mediatorTo == null) {
-			logger.error("ComponentImpl [{}] not found in chain [{}]",to,chainId);
+		Builder builder = ccontext.getBuilder();
+		try {
+			builder.get(chainId).unbind().from(from).to(to);
+			builder.done();
+		} catch (CiliaException e) {
+			logger.info("Command Error 'remove binding ' from [{}] to [{}]", to, from);
+			e.printStackTrace();
 			return;
-		}
-		if (mediatorFrom == null) {
-			logger.error("ComponentImpl [{}] not found in chain [{}]",from,chainId);
-			return;
-		}
-		Binding bindings[] = mediatorFrom.getBinding(mediatorFrom
-				.getOutPort(getPortName(from)));
-
-		Port inport = mediatorFrom.getInPort(getPortName(to));
-
-		for (int i = 0; bindings != null && i < bindings.length; i++) {
-			Binding binding = bindings[i];
-			if (binding.getTargetMediator().getId().compareTo(mediatorTo.getId()) == 0
-					&& binding.getTargetPort().getName().compareTo(getPortName(to)) == 0) {
-				chain.unbind(binding);
-
-			}
-		}
+		} 
+		logger.info("Command 'remove binding ' from [{}] to [{}]", to, from);	
 	}
-
-	private MediatorComponent getMediator(Chain ch, String info) {
-		MediatorComponent mediator;
-		String sinfo[] = ParserUtils.split(info, ":");
-		String fromMediatorId = null;
-		if (sinfo.length == 2) {
-			fromMediatorId = sinfo[0];
-		} else {
-			fromMediatorId = info;
-		}
-		mediator = ch.getMediator(fromMediatorId);
-		if (mediator == null) {
-			mediator = ch.getAdapter(fromMediatorId);
-		}
-		return mediator;
-	}
-
-	private String getPortName(String info) {
-		String sinfo[] = ParserUtils.split(info, ":");
-		String port = null;
-		if (sinfo.length == 2) {
-			port = sinfo[1];
-		} else {
-			port = "std";
-		}
-		return port;
-	}
-
 }

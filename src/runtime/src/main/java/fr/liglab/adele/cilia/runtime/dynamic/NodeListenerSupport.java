@@ -63,7 +63,7 @@ public class NodeListenerSupport implements TrackerCustomizer, NodeRegistration,
 	private Map nodeListeners;
 	private Map thresholdListeners;
 	private Map measureListeners;
-	private WorkQueue workQueue;
+	//private WorkQueue workQueue;
 
 	private Tracker tracker;
 	private BundleContext bundleContext;
@@ -130,9 +130,23 @@ public class NodeListenerSupport implements TrackerCustomizer, NodeRegistration,
 	 */
 	public void fireNodeEvent(int event, Node source) {
 		if (!nodeListeners.isEmpty())
-			workQueue.execute(new NodeFirer(event, source));
+			runEvent(new NodeFirer(event, source));
 	}
+	private void runEvent(Runnable event) {
+		ServiceReference refs[] = null;
+		try {
+			refs = bundleContext.getServiceReferences(WorkQueue.class.getName(), "(cilia.pool.scope=application)");
+		} catch (InvalidSyntaxException e) {
+			logger.error("Unable to get WorkQueue Service");
+			return;
+		}
+		if (refs != null && refs.length > 0 ) {
+			WorkQueue worker = (WorkQueue)bundleContext.getService(refs[0]);
+			worker.execute(event);
+			bundleContext.ungetService(refs[0]);
+		}
 
+	}
 	private class NodeFirer implements Runnable {
 
 		private int event;
@@ -201,7 +215,7 @@ public class NodeListenerSupport implements TrackerCustomizer, NodeRegistration,
 	 */
 	public void fireMeasureReceived(Node node, String variableId, Measure m) {
 		if (!measureListeners.isEmpty())
-			workQueue.execute(new MeasureFirer(node, variableId, m));
+			runEvent(new MeasureFirer(node, variableId, m));
 	}
 
 	public class MeasureFirer implements Runnable {
@@ -261,7 +275,7 @@ public class NodeListenerSupport implements TrackerCustomizer, NodeRegistration,
 
 	public void fireThresholdEvent(Node node, String variableId, Measure measure, int evt) {
 		if (!thresholdListeners.isEmpty())
-			workQueue.execute(new ThresholdFirer(node, variableId, measure, evt));
+			runEvent(new ThresholdFirer(node, variableId, measure, evt));
 	}
 
 	/* Run in a thread MIN_PRIORITY+1 */
@@ -298,9 +312,8 @@ public class NodeListenerSupport implements TrackerCustomizer, NodeRegistration,
 		}
 	}
 
-	protected void start(WorkQueue wq) {
+	protected void start() {
 		registerTracker();
-		workQueue = wq;
 	}
 
 	protected void stop() {

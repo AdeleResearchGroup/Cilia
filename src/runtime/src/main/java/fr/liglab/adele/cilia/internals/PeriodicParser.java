@@ -16,9 +16,9 @@ package fr.liglab.adele.cilia.internals;
 
 import org.w3c.dom.Node;
 
-import fr.liglab.adele.cilia.Component;
 import fr.liglab.adele.cilia.exceptions.CiliaParserException;
-import fr.liglab.adele.cilia.model.ComponentImpl;
+import fr.liglab.adele.cilia.model.Component;
+import fr.liglab.adele.cilia.model.impl.ComponentImpl;
 import fr.liglab.adele.cilia.util.CiliaExtenderParser;
 
 /**
@@ -33,7 +33,7 @@ CiliaExtenderParser {
 		NAMESPACE="fr.liglab.adele.cilia.scheduler";
 	}
 	/* (non-Javadoc)
-	 * @see fr.liglab.adele.cilia.model.parser.CiliaExtenderParser#getComponent(java.lang.Object, fr.liglab.adele.cilia.model.IComponent)
+	 * @see fr.liglab.adele.cilia.model.impl.parser.CiliaExtenderParser#getComponent(java.lang.Object, fr.liglab.adele.cilia.model.impl.IComponent)
 	 */
 	public Component getComponent(Object componentDescription,
 			Component component) throws CiliaParserException {
@@ -67,7 +67,7 @@ CiliaExtenderParser {
 	}
 
 	/* (non-Javadoc)
-	 * @see fr.liglab.adele.cilia.model.parser.CiliaExtenderParser#canHandle(java.lang.Object)
+	 * @see fr.liglab.adele.cilia.model.impl.parser.CiliaExtenderParser#canHandle(java.lang.Object)
 	 */
 	public boolean canHandle(Object mediatorDescription) {
 		Node disp = getNode("scheduler",mediatorDescription);

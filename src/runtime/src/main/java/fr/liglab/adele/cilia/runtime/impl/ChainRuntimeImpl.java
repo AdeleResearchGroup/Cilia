@@ -16,8 +16,9 @@
 package fr.liglab.adele.cilia.runtime.impl;
 
 import java.util.Date;
+import fr.liglab.adele.cilia.model.impl.ChainRuntime;
+import fr.liglab.adele.cilia.util.Uuid;
 
-import fr.liglab.adele.cilia.model.ChainRuntime;
 /**
  * 
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project Team</a>

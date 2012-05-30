@@ -72,7 +72,6 @@
 							fr.liglab.adele.cilia.framework.monitor.statevariable,
 							fr.liglab.adele.cilia.runtime,
 							fr.liglab.adele.cilia.runtime.dependency,
-							fr.liglab.adele.cilia.framework.monitor.handler,
 							fr.liglab.adele.cilia.runtime.application,
 							fr.liglab.adele.cilia.runtime.dynamic
 						</Export-Package>

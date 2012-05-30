@@ -17,9 +17,8 @@ package fr.liglab.adele.cilia.administration.adapter;
 import java.util.HashSet;
 import java.util.Set;
 
-import fr.liglab.adele.cilia.Chain;
 import fr.liglab.adele.cilia.ChainListener;
-import fr.liglab.adele.cilia.model.ChainImpl;
+import fr.liglab.adele.cilia.model.Chain;
 /**
  * 
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project

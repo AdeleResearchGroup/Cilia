@@ -14,16 +14,16 @@
  */
 package fr.liglab.adele.cilia.administration.adapter;
 
-import fr.liglab.adele.cilia.CiliaContext;
 import fr.liglab.adele.cilia.Data;
 import fr.liglab.adele.cilia.administration.CiliaAdminService;
 import fr.liglab.adele.cilia.administration.util.CiliaInstructionConverter;
 import fr.liglab.adele.cilia.administration.util.ParserUtils;
 import fr.liglab.adele.cilia.framework.AbstractCollector;
-import fr.liglab.adele.cilia.model.ChainImpl;
-import fr.liglab.adele.cilia.Adapter;
-import fr.liglab.adele.cilia.Chain;
-import fr.liglab.adele.cilia.Mediator;
+import fr.liglab.adele.cilia.model.Adapter;
+import fr.liglab.adele.cilia.model.Chain;
+import fr.liglab.adele.cilia.model.CiliaContainer;
+import fr.liglab.adele.cilia.model.Mediator;
+import fr.liglab.adele.cilia.model.impl.ChainImpl;
 
 /**
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project Team</a>
@@ -31,7 +31,7 @@ import fr.liglab.adele.cilia.Mediator;
  */
 public class CiliaAdminServiceImpl extends AbstractCollector implements CiliaAdminService  {
 
-	CiliaContext ccontext;
+	CiliaContainer ccontext;
 	/* (non-Javadoc)
 	 * @see fr.liglab.adele.cilia.administration.CiliaAdminService#getChain(java.lang.String)
 	 */

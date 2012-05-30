@@ -25,15 +25,15 @@ import org.osgi.framework.ServiceReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import fr.liglab.adele.cilia.Binding;
-import fr.liglab.adele.cilia.Component;
-import fr.liglab.adele.cilia.MediatorComponent;
-import fr.liglab.adele.cilia.Port;
 import fr.liglab.adele.cilia.exceptions.CiliaException;
 import fr.liglab.adele.cilia.framework.CiliaBindingService;
-import fr.liglab.adele.cilia.model.BindingImpl;
-import fr.liglab.adele.cilia.model.CollectorImpl;
-import fr.liglab.adele.cilia.model.SenderImpl;
+import fr.liglab.adele.cilia.model.Binding;
+import fr.liglab.adele.cilia.model.Component;
+import fr.liglab.adele.cilia.model.MediatorComponent;
+import fr.liglab.adele.cilia.model.Port;
+import fr.liglab.adele.cilia.model.impl.BindingImpl;
+import fr.liglab.adele.cilia.model.impl.CollectorImpl;
+import fr.liglab.adele.cilia.model.impl.SenderImpl;
 
 /**
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project

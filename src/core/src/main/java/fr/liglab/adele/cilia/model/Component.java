@@ -12,9 +12,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package fr.liglab.adele.cilia;
+package fr.liglab.adele.cilia.model;
 
 import java.util.Dictionary;
+import java.util.Hashtable;
 
 /**
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project Team</a>
@@ -32,7 +33,7 @@ public interface Component {
 	 *Get a copy of the properties.
 	 *@return properties. 
 	 */
-	Dictionary getProperties() ;
+	Hashtable getProperties() ;
 	
 	/**
 	 * get the model representation identificator.
