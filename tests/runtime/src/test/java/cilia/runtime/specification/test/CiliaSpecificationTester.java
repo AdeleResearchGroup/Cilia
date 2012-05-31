@@ -33,16 +33,10 @@ import fr.liglab.adele.cilia.exceptions.BuilderConfigurationException;
 import fr.liglab.adele.cilia.exceptions.BuilderException;
 import fr.liglab.adele.cilia.exceptions.BuilderPerformerException;
 import fr.liglab.adele.cilia.exceptions.CiliaIllegalParameterException;
-import fr.liglab.adele.cilia.exceptions.CiliaIllegalStateException;
 import fr.liglab.adele.cilia.exceptions.CiliaInvalidSyntaxException;
-import fr.liglab.adele.cilia.model.Adapter;
 import fr.liglab.adele.cilia.model.Chain;
 import fr.liglab.adele.cilia.model.CiliaContainer;
-import fr.liglab.adele.cilia.model.Mediator;
 import fr.liglab.adele.cilia.model.MediatorComponent;
-import fr.liglab.adele.cilia.model.impl.AdapterImpl;
-import fr.liglab.adele.cilia.model.impl.ChainImpl;
-import fr.liglab.adele.cilia.model.impl.MediatorImpl;
 
 @RunWith(JUnit4TestRunner.class)
 public class CiliaSpecificationTester {
@@ -346,39 +340,53 @@ public class CiliaSpecificationTester {
 			Assert.fail("Invalid exception thrown " + e.getMessage());
 		}
 
-		Dictionary dico=null ;
+		Dictionary dico = null;
 		try {
-			 dico = application.properties(node[0]);
-			Assert.assertNotNull(dico) ;
+			dico = application.properties(node[0]);
+			Assert.assertNotNull(dico);
 		} catch (Exception e) {
 			Assert.fail("Invalid exception thrown " + e.getMessage());
 		}
-		
+
 		try {
-			dico.put("key", "testValue") ;
+			dico.put("key", "testValue");
 		} catch (UnsupportedOperationException e) {
 			/* OK */
 		} catch (Exception e) {
-			Assert.fail("Invalid exception thrown " + e.getMessage());			
+			Assert.fail("Invalid exception thrown " + e.getMessage());
 		}
 	}
-	
+
 	private void api_endpointsIn(ApplicationSpecification application) {
 		try {
 			Node[] nodes = application.endpointIn("(chain=Chain1)");
 		} catch (Exception e) {
-			Assert.fail("Invalid exception thrown " + e.getMessage());	
-		} 
+			Assert.fail("Invalid exception thrown " + e.getMessage());
+		}
 	}
+
 	private void api_endpointsOut(ApplicationSpecification application) {
+
+	}
+
+	private void api_connectedTo(ApplicationSpecification application) {
+
+	}
+
+	private void illegalStateException(ApplicationSpecification application) {
+	}
+	
+	private void api_registerListener(ApplicationSpecification application) {
 		
 	}
-	private void api_connectedTo(ApplicationSpecification application) {
+	private void api_unregisterListener(ApplicationSpecification application) {
 		
 	}
 	
-	private void illegalStateException(ApplicationSpecification application) {
+	private void callback(ApplicationSpecification application) {
+		
 	}
+	
 	
 
 	@Test
@@ -395,8 +403,11 @@ public class CiliaSpecificationTester {
 		api_getPropertie(application);
 		api_endpointsIn(application);
 		api_endpointsOut(application);
-		api_connectedTo(application) ;
-		/* Tester l'exception IllegalStateException */
+		api_connectedTo(application);
+		api_registerListener(application) ;
+		api_unregisterListener(application) ;
+		callback(application) ;
+		illegalStateException(application);
 	}
 
 }

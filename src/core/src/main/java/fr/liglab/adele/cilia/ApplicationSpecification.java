@@ -44,12 +44,11 @@ public interface ApplicationSpecification extends Topology, NodeRegistration, Ch
 	 * 
 	 * @param node
 	 *            retreive the properties
-	 * @return unmodiable dictionary, or empty dictionary is the node is not
-	 *         found.
+	 * @return unmodiable dictionary, or empty dictionary 
 	 * @throws CiliaIllegalParameterException
 	 *             , wrong parameter
 	 * @throws CiliaIllegalStateException
-	 *             , the node object doesn't 
+	 *             , the node object doesn't exsit           
 	 */
 	Dictionary properties(Node node) throws CiliaIllegalParameterException,
 			CiliaIllegalStateException;
