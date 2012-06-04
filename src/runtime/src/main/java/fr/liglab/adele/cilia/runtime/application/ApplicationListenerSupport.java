@@ -239,7 +239,7 @@ public class ApplicationListenerSupport implements TrackerCustomizer, ChainRegis
 
 		public void run() {
 
-			Iterator it = listenerChain.keySet().iterator();
+			Iterator it = listenerChain.entrySet().iterator();
 			while (it.hasNext()) {
 				Map.Entry pairs = (Map.Entry) it.next();
 				ArrayList filters = (ArrayList) pairs.getValue();
@@ -254,11 +254,12 @@ public class ApplicationListenerSupport implements TrackerCustomizer, ChainRegis
 					ChainCallback cb = (ChainCallback) pairs.getKey();
 					String chainId = (String) dico.get(ConstRuntime.CHAIN_ID);
 					switch (evt) {
+						
 					case 0:
-						cb.onArrival(chainId);
+						cb.onAdded(chainId);
 						break;
 					case 1:
-						cb.onDeparture(chainId);
+						cb.onRemoved(chainId);
 						break;
 					case 2:
 						cb.onStarted(chainId);

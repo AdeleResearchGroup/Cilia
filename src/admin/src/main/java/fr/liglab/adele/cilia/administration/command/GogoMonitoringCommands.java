@@ -15,15 +15,11 @@
 
 package fr.liglab.adele.cilia.administration.command;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-
 import org.apache.felix.service.command.Descriptor;
 
 import fr.liglab.adele.cilia.ApplicationRuntime;
 import fr.liglab.adele.cilia.ApplicationSpecification;
+import fr.liglab.adele.cilia.ChainCallback;
 import fr.liglab.adele.cilia.CiliaContext;
 import fr.liglab.adele.cilia.Measure;
 import fr.liglab.adele.cilia.MeasureCallback;
@@ -33,6 +29,8 @@ import fr.liglab.adele.cilia.RawData;
 import fr.liglab.adele.cilia.SetUp;
 import fr.liglab.adele.cilia.ThresholdsCallback;
 import fr.liglab.adele.cilia.Topology;
+import fr.liglab.adele.cilia.exceptions.CiliaIllegalParameterException;
+import fr.liglab.adele.cilia.exceptions.CiliaInvalidSyntaxException;
 import fr.liglab.adele.cilia.model.MediatorComponent;
 
 /**
@@ -48,8 +46,8 @@ public class GogoMonitoringCommands {
 	private CiliaContext ciliaContext ;
 	private ApplicationRuntime runtime;
 	private ApplicationSpecification application;
-//	private RemoteServiceAdmin adminService;
-	private CallbackSystems callbacks = new CallbackSystems();
+	private CallbackEventBaseLevel callbacks = new CallbackEventBaseLevel();
+	private CallbackEventMetaLevel callbacksMeta = new CallbackEventMetaLevel() ;
 
 	private void printSuccessor(Node[] nodes) {
 		if (nodes.length == 0) {
@@ -63,6 +61,15 @@ public class GogoMonitoringCommands {
 	public void start() {
 		runtime=ciliaContext.getApplicationRuntime();
 		application = ciliaContext.getApplicationSpecification() ;
+		try {
+			application.addListener("(chain=*)", callbacksMeta);
+		} catch (CiliaIllegalParameterException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (CiliaInvalidSyntaxException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	public void stop () {
@@ -350,6 +357,7 @@ public class GogoMonitoringCommands {
 		app_endpoints_out("(chain=Chain1)");
 		/* tester connected to */
 		app_connected_to("(&(chain=Chain1)(node=mediator_1))");
+
 	}
 
 	@Descriptor("Entry for test")
@@ -375,44 +383,8 @@ public class GogoMonitoringCommands {
 		}
 	}
 
-	@Descriptor("Dump service imported")
-	public void imported_services() {
-		try {
-			EndpointService[] exServices = importedEndpoints();
-			System.out.println(HEADER);
-			if (exServices.length != 0) {
-				for (int i = 0; i < exServices.length; i++) {
-					System.out.println("| Service imported #id "
-							+ exServices[i].endpointId());
-					System.out.println("| \tProperties " + exServices[i].properties());
-				}
-			} else {
-				System.out.println("No service imported ");
-			}
-			System.out.println(HEADER);
-		} catch (Throwable e) {
-			e.printStackTrace();
-		}
-	}
 
-	public EndpointService[] importedEndpoints() {
-		Set set = new HashSet();
-//		if (adminService != null) {
-//			Collection registry = adminService.getImportedEndpoints();
-//			if (registry != null) {
-//				ImportReference reference;
-//				Iterator it = registry.iterator();
-//				while (it.hasNext()) {
-//					reference = ((ImportReference) it.next());
-//					set.add(new EndpointService(reference.getImportedEndpoint().getId(),
-//							reference.getImportedEndpoint().getProperties()));
-//				}
-//			}
-//		}
-		return (EndpointService[]) set.toArray(new EndpointService[set.size()]);
-	}
-
-	private class CallbackSystems implements NodeCallback, ThresholdsCallback,
+	private class CallbackEventBaseLevel implements NodeCallback, ThresholdsCallback,
 			MeasureCallback {
 
 		public void onUpdate(Node node, String variable, Measure m) {
@@ -438,24 +410,26 @@ public class GogoMonitoringCommands {
 		}
 	}
 
-	private class EndpointService {
-		private final String id;
-		private final Map props;
+	private class CallbackEventMetaLevel implements ChainCallback {
 
-		public EndpointService(String id, Map props) {
-			this.id = id;
-			if (props == null)
-				this.props = Collections.EMPTY_MAP;
-			else
-				this.props = Collections.unmodifiableMap(props);
+		public void onAdded(String chainId) {
+			System.out.println("GogoCommand-->" + " onArrival " + chainId);
 		}
 
-		public String endpointId() {
-			return id;
+		public void onRemoved(String chainId) {
+			System.out.println("GogoCommand-->" + " onDeparture " + chainId);
 		}
 
-		public Map properties() {
-			return props;
+		public void onStarted(String chainId) {
+			System.out.println("GogoCommand-->" + " onStarted " + chainId);
+			
 		}
+
+		public void onStopped(String chainId) {
+			System.out.println("GogoCommand-->" + " onStopped " + chainId);
+		}
+
+		
+		
 	}
 }

@@ -79,11 +79,8 @@ public interface Topology {
 	 * @return array of successors , size = 0 if no successor
 	 * @throws CiliaIllegalStateException
 	 *             the node doesn't exist
-	 * @throws CiliaIllegalParameterException
-	 *             null parameter
 	 */
-	Node[] connectedTo(Node node) throws CiliaIllegalParameterException,
-			CiliaIllegalStateException;
+	Node[] connectedTo(Node node) throws CiliaIllegalStateException ;
 
 	/**
 	 * 

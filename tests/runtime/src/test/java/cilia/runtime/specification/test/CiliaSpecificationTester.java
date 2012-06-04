@@ -1,3 +1,19 @@
+/*
+ * Copyright  2002-2005 The Apache Software Foundation
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ *
+ */
 package cilia.runtime.specification.test;
 
 import static org.junit.Assert.assertNotNull;
@@ -24,8 +40,10 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 
 import fr.liglab.adele.cilia.ApplicationSpecification;
+import fr.liglab.adele.cilia.ChainCallback;
 import fr.liglab.adele.cilia.CiliaContext;
 import fr.liglab.adele.cilia.Node;
+import fr.liglab.adele.cilia.NodeCallback;
 import fr.liglab.adele.cilia.builder.Architecture;
 import fr.liglab.adele.cilia.builder.Builder;
 import fr.liglab.adele.cilia.core.tests.tools.CiliaTools;
@@ -37,6 +55,7 @@ import fr.liglab.adele.cilia.exceptions.CiliaInvalidSyntaxException;
 import fr.liglab.adele.cilia.model.Chain;
 import fr.liglab.adele.cilia.model.CiliaContainer;
 import fr.liglab.adele.cilia.model.MediatorComponent;
+import fr.liglab.adele.cilia.util.concurrent.Mutex;
 
 @RunWith(JUnit4TestRunner.class)
 public class CiliaSpecificationTester {
@@ -108,15 +127,6 @@ public class CiliaSpecificationTester {
 		return ccontext;
 	}
 
-	public CiliaContainer getCiliaContainerService() {
-		ServiceReference sr[] = null;
-		sr = osgi.getServiceReferences(CiliaContainer.class.getName(), null);
-		assertNotNull(sr[0]);
-		CiliaContainer ccontext = (CiliaContainer) context.getService(sr[0]);
-		assertNotNull(ccontext);
-		return ccontext;
-	}
-
 	private void checkNode(Node[] nodes, int length, String prefix) {
 		if (nodes.length != length) {
 			Assert.fail("Expected length = " + length + " , current=" + nodes.length);
@@ -138,13 +148,13 @@ public class CiliaSpecificationTester {
 		try {
 			Builder builder = ciliaContext.getBuilder();
 			Architecture chain = builder.create("Chain1");
-			chain.create().adapter().type("type").namespace("sample").id("entryAdapter");
-			chain.create().adapter().type("type").namespace("sample").id("exitAdapter");
+			chain.create().adapter().type("type").namespace("sample").id("adapter_in");
+			chain.create().adapter().type("type").namespace("sample").id("adapter_out");
 			chain.create().mediator().type("type").namespace("sample").id("mediator_1");
 			chain.create().mediator().type("type").namespace("sample").id("mediator_2");
-			chain.bind().from("entryAdapter:out").to("mediator_1:in");
+			chain.bind().from("adapter_in:out").to("mediator_1:in");
 			chain.bind().from("mediator_1:out").to("mediator_2:in");
-			chain.bind().from("mediator_2:out").to("exitAdapter:in");
+			chain.bind().from("mediator_2:out").to("adapter_out:in");
 			builder.done();
 		} catch (BuilderConfigurationException e) {
 			Assert.fail(e.getMessage());
@@ -358,36 +368,338 @@ public class CiliaSpecificationTester {
 	}
 
 	private void api_endpointsIn(ApplicationSpecification application) {
+
 		try {
-			Node[] nodes = application.endpointIn("(chain=Chain1)");
+			Node[] nodes = application.endpointIn(null);
+			Assert.fail("Exception not thrown");
+		} catch (CiliaIllegalParameterException e) {
+			/* OK */
+		} catch (CiliaInvalidSyntaxException e) {
+			Assert.fail("Invalid exception thrown " + e.getMessage());
 		} catch (Exception e) {
 			Assert.fail("Invalid exception thrown " + e.getMessage());
 		}
+
+		try {
+			Node[] nodes = application.endpointIn("(chain=Chain))");
+			Assert.fail("Exception not thrown");
+		} catch (CiliaIllegalParameterException e) {
+			Assert.fail("Invalid exception thrown " + e.getMessage());
+		} catch (CiliaInvalidSyntaxException e) {
+			/* OK */
+		} catch (Exception e) {
+			Assert.fail("Invalid exception thrown " + e.getMessage());
+		}
+
+		try {
+			Node[] nodes = application.endpointIn("(chain=Chain2)");
+			Assert.assertNotNull(nodes);
+			if (nodes.length != 0) {
+				Assert.fail("Length expected null");
+			}
+		} catch (Exception e) {
+			Assert.fail("Invalid exception thrown " + e.getMessage());
+		}
+
+		try {
+			Node[] nodes = application.endpointIn("(chain=Chain1)");
+			Assert.assertNotNull(nodes);
+			if (nodes.length != 2) {
+				Assert.fail("Length expected 2 , received=" + nodes.length);
+			}
+			for (int i = 0; i < nodes.length; i++) {
+				if ((!nodes[i].nodeId().startsWith("adapter")))
+					Assert.fail("Adapter not retreived");
+			}
+
+		} catch (Exception e) {
+			Assert.fail("Invalid exception thrown " + e.getMessage());
+		}
+
 	}
 
 	private void api_endpointsOut(ApplicationSpecification application) {
 
+		try {
+			Node[] nodes = application.endpointOut(null);
+			Assert.fail("Exception not thrown");
+		} catch (CiliaIllegalParameterException e) {
+			/* OK */
+		} catch (CiliaInvalidSyntaxException e) {
+			Assert.fail("Invalid exception thrown " + e.getMessage());
+		} catch (Exception e) {
+			Assert.fail("Invalid exception thrown " + e.getMessage());
+		}
+
+		try {
+			Node[] nodes = application.endpointOut("(chain=Chain))");
+			Assert.fail("Exception not thrown");
+		} catch (CiliaIllegalParameterException e) {
+			Assert.fail("Invalid exception thrown " + e.getMessage());
+		} catch (CiliaInvalidSyntaxException e) {
+			/* OK */
+		} catch (Exception e) {
+			Assert.fail("Invalid exception thrown " + e.getMessage());
+		}
+
+		try {
+			Node[] nodes = application.endpointOut("(chain=Chain2)");
+			Assert.assertNotNull(nodes);
+			if (nodes.length != 0) {
+				Assert.fail("Length expected null");
+			}
+		} catch (Exception e) {
+			Assert.fail("Invalid exception thrown " + e.getMessage());
+		}
+
+		try {
+			Node[] nodes = application.endpointOut("(chain=Chain1)");
+			Assert.assertNotNull(nodes);
+			if (nodes.length != 2) {
+				Assert.fail("Length expected 2 , received=" + nodes.length);
+			}
+			for (int i = 0; i < nodes.length; i++) {
+				if ((!nodes[i].nodeId().startsWith("adapter")))
+					Assert.fail("Adapter not retreived");
+			}
+
+		} catch (Exception e) {
+			Assert.fail("Invalid exception thrown " + e.getMessage());
+		}
+
 	}
 
 	private void api_connectedTo(ApplicationSpecification application) {
+		/* connectedTo(ldap) */
+		try {
+			Node node = null;
+			Node[] nodes = application.connectedTo(node);
+			Assert.assertNotNull(nodes);
+			if (nodes.length != 0) {
+				Assert.fail("Length expected =0, recevied = " + nodes.length);
+			}
+		} catch (Exception e) {
+			Assert.fail("Invalid exception thrown " + e.getMessage());
+		}
+
+		try {
+
+			Node[] nodes = application.connectedTo("chain=Chain)");
+			Assert.fail("Exception not thrown");
+		} catch (CiliaInvalidSyntaxException e) {
+			/* OK */
+		} catch (Exception e) {
+			Assert.fail("Invalid exception thrown " + e.getMessage());
+		}
+
+		try {
+			Node[] nodes = application.connectedTo("(&(chain=Chain1)(node=adapter_in))");
+			Assert.assertNotNull(nodes);
+			if (nodes.length != 1) {
+				Assert.fail("Length expected =1, recevied = " + nodes.length);
+			}
+			if (!(nodes[0].nodeId().equals("mediator_1"))) {
+				Assert.fail("Wong mediator retreived");
+			}
+		} catch (CiliaInvalidSyntaxException e) {
+			/* OK */
+		} catch (Exception e) {
+			Assert.fail("Invalid exception thrown " + e.getMessage());
+		}
+
+		try {
+			Node[] nodes = application.connectedTo("(&(chain=Chain1)(node=mediator_1))");
+			Assert.assertNotNull(nodes);
+			if (nodes.length != 1) {
+				Assert.fail("Length expected =1, recevied = " + nodes.length);
+			}
+			if (!(nodes[0].nodeId().equals("mediator_2"))) {
+				Assert.fail("Wong mediator retreived");
+			}
+		} catch (CiliaInvalidSyntaxException e) {
+			/* OK */
+		} catch (Exception e) {
+			Assert.fail("Invalid exception thrown " + e.getMessage());
+		}
+
+		try {
+			Node[] nodes = application.connectedTo("(&(chain=Chain1)(node=mediator_2))");
+			Assert.assertNotNull(nodes);
+			if (nodes.length != 1) {
+				Assert.fail("Length expected =1, recevied = " + nodes.length);
+			}
+			if (!(nodes[0].nodeId().equals("adapter_out"))) {
+				Assert.fail("Wong mediator retreived");
+			}
+		} catch (CiliaInvalidSyntaxException e) {
+			/* OK */
+		} catch (Exception e) {
+			Assert.fail("Invalid exception thrown " + e.getMessage());
+		}
+
+		try {
+			Node[] nodes = application.connectedTo("(&(chain=Chain1)(node=adapter_out))");
+			Assert.assertNotNull(nodes);
+			if (nodes.length != 0) {
+				Assert.fail("Length expected =0, retreived = " + nodes.length);
+			}
+
+		} catch (CiliaInvalidSyntaxException e) {
+			/* OK */
+		} catch (Exception e) {
+			Assert.fail("Invalid exception thrown " + e.getMessage());
+		}
+
+		/* connectedTo(node) */
+		try {
+			Node[] nodes = application.findNodeByFilter("(node=adapter_in)");
+			nodes = application.connectedTo(nodes[0]);
+			Assert.assertNotNull(nodes);
+			if (nodes.length != 1) {
+				Assert.fail("Length expected =0, retreived = " + nodes.length);
+			}
+			if (!(nodes[0].nodeId().equals("mediator_1"))) {
+				Assert.fail("Wong mediator retreived");
+			}
+
+			nodes = application.findNodeByFilter("(node=mediator_1)");
+			nodes = application.connectedTo(nodes[0]);
+			Assert.assertNotNull(nodes);
+			if (nodes.length != 1) {
+				Assert.fail("Length expected =0, retreived = " + nodes.length);
+			}
+			if (!(nodes[0].nodeId().equals("mediator_2"))) {
+				Assert.fail("Wong mediator retreived");
+			}
+
+			nodes = application.findNodeByFilter("(node=mediator_2)");
+			nodes = application.connectedTo(nodes[0]);
+			Assert.assertNotNull(nodes);
+			if (nodes.length != 1) {
+				Assert.fail("Length expected =0, retreived = " + nodes.length);
+			}
+			if (!(nodes[0].nodeId().equals("adapter_out"))) {
+				Assert.fail("Wong mediator retreived");
+			}
+
+			nodes = application.findNodeByFilter("(node=adapter_out)");
+			nodes = application.connectedTo(nodes[0]);
+			Assert.assertNotNull(nodes);
+			if (nodes.length != 0) {
+				Assert.fail("Length expected =0, retreived = " + nodes.length);
+			}
+
+		} catch (Exception e) {
+			Assert.fail("Invalid exception thrown " + e.getMessage());
+		}
+
+	}
+
+	private void api_registerListener(ApplicationSpecification application) {
+		/* Chain Registration */
+		ChainCb cb = new ChainCb();
+		try {
+			application.addListener(null, cb);
+			Assert.fail("Exception not thrown");
+		} catch (CiliaIllegalParameterException e) {
+			/* OK */
+		} catch (Exception e) {
+			Assert.fail("Invalid exception thrown " + e.getMessage());
+		}
+
+		try {
+			application.addListener("(chain=", cb);
+			Assert.fail("Exception not thrown");
+		} catch (CiliaInvalidSyntaxException e) {
+			/* OK */
+		} catch (Exception e) {
+			Assert.fail("Invalid exception thrown " + e.getMessage());
+		}
+
+		try {
+			application.addListener("(chain=*)", cb);
+			Builder builder = getCiliaContextService().getBuilder();
+			cb.start(0) ;
+			Architecture chain = builder.create("Chain2");
+			builder.done();
+			Thread.currentThread().sleep(2000);
+			//synchronized (cb.synchro) {
+			//	cb.synchro.wait(2000);
+			//}
+
+			Assert.fail("error cb=" + cb.result) ;
+				
+			//Assert.assertTrue("Callback no recevied", cb.result);
+
+		} catch (Exception e) {
+			Assert.fail("Invalid exception thrown " + e.getMessage());
+		}
+
+	}
+
+	private void api_unregisterListener(ApplicationSpecification application) {
+
+	}
+
+	private void callback(ApplicationSpecification application) {
 
 	}
 
 	private void illegalStateException(ApplicationSpecification application) {
 	}
-	
-	private void api_registerListener(ApplicationSpecification application) {
-		
+
+	private class ChainCb implements ChainCallback {
+
+		public Object synchro = new Object();
+		public boolean result=false;
+		public int evt ;
+		private Mutex mutex ;
+		public ChainCb() {
+
+		}
+
+		public void start(int evt) {
+			result=false ;
+			this.evt =evt ;
+			mutex =new Mutex();
+		}
+		public void stop() {
+			result = true;
+		}
+
+		public void onAdded(String chainId) {
+			 stop();
+		}
+
+		public void onRemoved(String chainId) {
+			stop();
+		}
+
+		public void onStarted(String chainId) {
+			 stop();
+		}
+
+		public void onStopped(String chainId) {
+			 stop();
+		}
+
+		public void onArrival(Node node) {
+			// TODO Auto-generated method stub		
+		}
+
+		public void onDeparture(Node node) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		public void onModified(Node node) {
+			// TODO Auto-generated method stub
+			
+		}
+
+
+
 	}
-	private void api_unregisterListener(ApplicationSpecification application) {
-		
-	}
-	
-	private void callback(ApplicationSpecification application) {
-		
-	}
-	
-	
 
 	@Test
 	public void all_apis() {
@@ -404,9 +716,9 @@ public class CiliaSpecificationTester {
 		api_endpointsIn(application);
 		api_endpointsOut(application);
 		api_connectedTo(application);
-		api_registerListener(application) ;
-		api_unregisterListener(application) ;
-		callback(application) ;
+		api_registerListener(application);
+		api_unregisterListener(application);
+		callback(application);
 		illegalStateException(application);
 	}
 

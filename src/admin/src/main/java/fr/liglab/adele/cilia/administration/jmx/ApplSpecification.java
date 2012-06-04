@@ -62,11 +62,11 @@ public class ApplSpecification implements ChainCallback, NodeCallback {
 		nodes_modified = node.toString();
 	}
 
-	public void onArrival(String chainId) {
+	public void onAdded(String chainId) {
 		chain_arrival = chainId;
 	}
 
-	public void onDeparture(String chainId) {
+	public void onRemoved(String chainId) {
 		chain_departure = chainId;
 	}
 

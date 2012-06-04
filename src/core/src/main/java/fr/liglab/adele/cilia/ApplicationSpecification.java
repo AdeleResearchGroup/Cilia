@@ -37,8 +37,6 @@ public interface ApplicationSpecification extends Topology, NodeRegistration, Ch
 	 */
 	String[] getChainId();
 	
-	
-	
 	/**
 	 * Unmodifiable properties
 	 * 

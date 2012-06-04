@@ -44,7 +44,6 @@ public interface ApplicationRuntime extends Topology, NodeRegistration,
 	 */
 	int getChainState(String chainId) throws CiliaIllegalParameterException,
 			CiliaIllegalStateException;
-
 	
 	/**
 	 * Return last Command start or stop level chain
@@ -56,7 +55,6 @@ public interface ApplicationRuntime extends Topology, NodeRegistration,
 	 */
 	Date lastCommand(String chainId) throws CiliaIllegalParameterException,
 			CiliaIllegalStateException;
-
 
 	/**
 	 * @throws CiliaInvalidSyntaxException
