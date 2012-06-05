@@ -66,9 +66,9 @@ public interface ApplicationSpecification extends Topology, NodeRegistration, Ch
 	/**
 	 * 
 	 * @param chainId
-	 * @return Chain model
+	 * @return Chain model or null if the chainIs doesn't exist
 	 * @throws CiliaIllegalParameterException
 	 */
-	Chain getChain(String chainId) throws CiliaIllegalParameterException;
+	Chain getChain(String chainId) throws CiliaIllegalParameterException ;
 	
 }

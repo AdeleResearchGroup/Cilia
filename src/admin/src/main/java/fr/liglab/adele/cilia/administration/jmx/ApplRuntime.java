@@ -21,7 +21,7 @@ public class ApplRuntime implements NodeCallback, MeasureCallback, ThresholdsCal
 	private volatile String nodes_modified;
 
 	private static synchronized String convertNodeToString(Node nodes) {
-		return "{" + nodes.getQualifiedId() + "}";
+		return "{" + nodes.qualifiedId() + "}";
 	}
 
 	private static synchronized String[] convertNodeToString(Node[] nodes) {
@@ -197,11 +197,11 @@ public class ApplRuntime implements NodeCallback, MeasureCallback, ThresholdsCal
 	}
 
 	public void onArrival(Node node) {
-		nodes_arrival = node.getQualifiedId();
+		nodes_arrival = node.qualifiedId();
 	}
 
 	public void onDeparture(Node node) {
-		nodes_departure = node.getQualifiedId();
+		nodes_departure = node.qualifiedId();
 	}
 
 	public void onThreshold(Node node, String variable, Measure measure, int thresholdType) {
@@ -210,6 +210,6 @@ public class ApplRuntime implements NodeCallback, MeasureCallback, ThresholdsCal
 	}
 
 	public void onModified(Node node) {
-		nodes_modified = node.getQualifiedId();
+		nodes_modified = node.qualifiedId();
 	}
 }

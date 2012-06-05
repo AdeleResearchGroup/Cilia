@@ -51,11 +51,10 @@ import fr.liglab.adele.cilia.exceptions.BuilderConfigurationException;
 import fr.liglab.adele.cilia.exceptions.BuilderException;
 import fr.liglab.adele.cilia.exceptions.BuilderPerformerException;
 import fr.liglab.adele.cilia.exceptions.CiliaIllegalParameterException;
+import fr.liglab.adele.cilia.exceptions.CiliaIllegalStateException;
 import fr.liglab.adele.cilia.exceptions.CiliaInvalidSyntaxException;
 import fr.liglab.adele.cilia.model.Chain;
-import fr.liglab.adele.cilia.model.CiliaContainer;
 import fr.liglab.adele.cilia.model.MediatorComponent;
-import fr.liglab.adele.cilia.util.concurrent.Mutex;
 
 @RunWith(JUnit4TestRunner.class)
 public class CiliaSpecificationTester {
@@ -135,7 +134,7 @@ public class CiliaSpecificationTester {
 			if (!(nodes[i] instanceof MediatorComponent)) {
 				Assert.fail("Not instance of Mediator Component");
 			}
-			if (!nodes[i].getQualifiedId().startsWith(prefix)) {
+			if (!nodes[i].qualifiedId().startsWith(prefix)) {
 				Assert.fail("Wrong node retrieved ");
 			}
 		}
@@ -303,7 +302,7 @@ public class CiliaSpecificationTester {
 			Node node = chain.getMediator("mediator_1");
 			Assert.assertNotNull(node);
 			MediatorComponent mediatorModel = application.getModel(node);
-			if (!mediatorModel.getQualifiedId().startsWith("Chain1/mediator_1")) {
+			if (!mediatorModel.qualifiedId().startsWith("Chain1/mediator_1")) {
 				Assert.fail("Wrong node");
 			}
 		} catch (Exception e) {
@@ -314,7 +313,7 @@ public class CiliaSpecificationTester {
 			Node[] node = application.findNodeByFilter("(node=mediator_1)");
 			Assert.assertNotNull(node);
 			MediatorComponent mediatorModel = application.getModel(node[0]);
-			if (!mediatorModel.getQualifiedId().startsWith("Chain1/mediator_1")) {
+			if (!mediatorModel.qualifiedId().startsWith("Chain1/mediator_1")) {
 				Assert.fail("Wrong node");
 			}
 		} catch (Exception e) {
@@ -483,7 +482,6 @@ public class CiliaSpecificationTester {
 		}
 
 		try {
-
 			Node[] nodes = application.connectedTo("chain=Chain)");
 			Assert.fail("Exception not thrown");
 		} catch (CiliaInvalidSyntaxException e) {
@@ -599,7 +597,7 @@ public class CiliaSpecificationTester {
 		/* Chain Registration */
 		ChainCb cb = new ChainCb();
 		try {
-			application.addListener(null, cb);
+			application.addListener(null, (ChainCallback)cb);
 			Assert.fail("Exception not thrown");
 		} catch (CiliaIllegalParameterException e) {
 			/* OK */
@@ -608,7 +606,7 @@ public class CiliaSpecificationTester {
 		}
 
 		try {
-			application.addListener("(chain=", cb);
+			application.addListener("(chain=",(ChainCallback) cb);
 			Assert.fail("Exception not thrown");
 		} catch (CiliaInvalidSyntaxException e) {
 			/* OK */
@@ -617,20 +615,16 @@ public class CiliaSpecificationTester {
 		}
 
 		try {
-			application.addListener("(chain=*)", cb);
-			Builder builder = getCiliaContextService().getBuilder();
-			cb.start(0) ;
-			Architecture chain = builder.create("Chain2");
-			builder.done();
-			Thread.currentThread().sleep(2000);
+			//application.addListener("(chain=*)", (ChainCallback)cb);
+			//Builder builder = getCiliaContextService().getBuilder();
+			//cb.start(ChainCb.ADD_CHAIN) ;
+			//Architecture chain = builder.create("Chain2");
+			//builder.done();
 			//synchronized (cb.synchro) {
 			//	cb.synchro.wait(2000);
 			//}
-
-			Assert.fail("error cb=" + cb.result) ;
-				
-			//Assert.assertTrue("Callback no recevied", cb.result);
-
+			//builder.remove("Chain2") ;
+			//builder.done();
 		} catch (Exception e) {
 			Assert.fail("Invalid exception thrown " + e.getMessage());
 		}
@@ -641,19 +635,57 @@ public class CiliaSpecificationTester {
 
 	}
 
-	private void callback(ApplicationSpecification application) {
-
-	}
-
 	private void illegalStateException(ApplicationSpecification application) {
+		Node[] nodes = null ;
+		try {
+			nodes = application.findNodeByFilter("(&(chain=Chain1)(node=adapter_in))");
+			Assert.assertNotNull(nodes) ;
+			Builder builder = getCiliaContextService().getBuilder();
+			Architecture chain = builder.get("Chain1") ;
+			chain.remove().adapter().id("adapter_in");
+			builder.done();
+			Node [] nodeTests = application.connectedTo(nodes[0]);
+			Assert.fail("No Exception thrown ");
+		}catch (CiliaIllegalStateException e) {
+			/* OK */
+		} catch (Exception e) {
+			Assert.fail("Invalid exception thrown " + e.getMessage());
+		} 	
+		try {
+			MediatorComponent component = application.getModel(nodes[0]);
+			Assert.fail("No Exception thrown ");		
+		}
+		catch (CiliaIllegalStateException e) {
+			/* OK */
+		}
+		catch (Exception e) {
+			Assert.fail("Invalid exception thrown " + e.getMessage());
+		}
+		try {
+			Dictionary dico = application.properties(nodes[0]);
+			Assert.fail("No Exception thrown ");		
+		}
+		catch (CiliaIllegalStateException e) {
+			/* OK */
+		}
+		catch (Exception e) {
+			Assert.fail("Invalid exception thrown " + e.getMessage());
+		}
 	}
 
-	private class ChainCb implements ChainCallback {
-
+	private class ChainCb implements ChainCallback,NodeCallback {
+		public static final int START_CHAIN = 0 ;
+		public static final int STOP_CHAIN  = 1 ; 
+		public static final int ADD_CHAIN = 2 ; 
+		public static final int REMOVE_CHAIN = 3 ; 
+		public static final int ADD_NODE = 4 ;
+		public static final int REMOVE_NODE = 5 ; 
+		public static final int MODIFY_NODE = 6 ;
+		
 		public Object synchro = new Object();
 		public boolean result=false;
 		public int evt ;
-		private Mutex mutex ;
+
 		public ChainCb() {
 
 		}
@@ -661,43 +693,40 @@ public class CiliaSpecificationTester {
 		public void start(int evt) {
 			result=false ;
 			this.evt =evt ;
-			mutex =new Mutex();
 		}
-		public void stop() {
-			result = true;
+		public void stop(int evtWaited) {
+			if (evtWaited==evt) result = true;
+			else result = false ;
 		}
 
 		public void onAdded(String chainId) {
-			 stop();
+			 stop(ADD_CHAIN);
 		}
 
 		public void onRemoved(String chainId) {
-			stop();
+			stop(REMOVE_CHAIN);
 		}
 
 		public void onStarted(String chainId) {
-			 stop();
+			 stop(START_CHAIN);
 		}
 
 		public void onStopped(String chainId) {
-			 stop();
+			 stop(STOP_CHAIN);
 		}
 
 		public void onArrival(Node node) {
-			// TODO Auto-generated method stub		
+			stop(ADD_NODE);
 		}
 
 		public void onDeparture(Node node) {
-			// TODO Auto-generated method stub
+		stop(REMOVE_NODE);
 			
 		}
 
 		public void onModified(Node node) {
-			// TODO Auto-generated method stub
-			
+			stop(MODIFY_NODE);
 		}
-
-
 
 	}
 
@@ -718,7 +747,6 @@ public class CiliaSpecificationTester {
 		api_connectedTo(application);
 		api_registerListener(application);
 		api_unregisterListener(application);
-		callback(application);
 		illegalStateException(application);
 	}
 

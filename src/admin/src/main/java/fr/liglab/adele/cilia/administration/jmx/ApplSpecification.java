@@ -21,7 +21,7 @@ public class ApplSpecification implements ChainCallback, NodeCallback {
 	private static synchronized String[] convertNodeToString(Node[] nodes) {
 		String[] results = new String[nodes.length];
 		for (int i = 0; i < nodes.length; i++) {
-			results[i] = "{" + nodes[i].getQualifiedId() + "}";
+			results[i] = "{" + nodes[i].qualifiedId() + "}";
 		}
 		return results;
 	}

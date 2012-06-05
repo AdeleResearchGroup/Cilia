@@ -59,16 +59,15 @@ import fr.liglab.adele.cilia.util.UnModifiableDictionary;
  * 
  */
 @SuppressWarnings({ "rawtypes", "unchecked" })
-
-public class ApplicationSpecificationImpl  extends AbstractTopology implements ApplicationSpecification,
-		CiliaEvent, CiliaFrameworkEvent {
+public class ApplicationSpecificationImpl extends AbstractTopology implements
+		ApplicationSpecification, CiliaEvent, CiliaFrameworkEvent {
 
 	private final Logger logger = LoggerFactory.getLogger(ConstRuntime.LOG_NAME);
 
 	private CiliaContainerImpl container;
 	private CiliaFrameworkEventListenerImpl listenerFramework;
-	private ApplicationListenerSupport listenerSupport ;
-	
+	private ApplicationListenerSupport listenerSupport;
+
 	public ApplicationSpecificationImpl(BundleContext bc, CiliaContainerImpl container) {
 
 		listenerSupport = new ApplicationListenerSupport(bc);
@@ -113,8 +112,7 @@ public class ApplicationSpecificationImpl  extends AbstractTopology implements A
 					/* retreive all adapters per all chain */
 					dico.put(ConstRuntime.CHAIN_ID, chainId[i]);
 					/* Iterate over all adapters per chain */
-					Iterator it = container.getChain(chainId[i]).getAdapters()
-							.iterator();
+					Iterator it = container.getChain(chainId[i]).getAdapters().iterator();
 					while (it.hasNext()) {
 						adapter = (Adapter) it.next();
 						dico.put(ConstRuntime.NODE_ID, adapter.getId());
@@ -228,8 +226,7 @@ public class ApplicationSpecificationImpl  extends AbstractTopology implements A
 					/* retreive all adapters per chain */
 					dico.put(ConstRuntime.CHAIN_ID, chainId[i]);
 					/* Iterate over all adapters */
-					Iterator it = container.getChain(chainId[i]).getAdapters()
-							.iterator();
+					Iterator it = container.getChain(chainId[i]).getAdapters().iterator();
 					while (it.hasNext()) {
 						component = (MediatorComponent) it.next();
 						dico.put(ConstRuntime.NODE_ID, component.getId());
@@ -269,7 +266,6 @@ public class ApplicationSpecificationImpl  extends AbstractTopology implements A
 		try {
 			container.getMutex().readLock().acquire();
 			try {
-				/* retreive the chain hosting the mediator/component */
 				chain = container.getChain(node.chainId());
 				if (chain != null) {
 					/* checks if the node is an adapter */
@@ -289,6 +285,8 @@ public class ApplicationSpecificationImpl  extends AbstractTopology implements A
 					/* chain no found */
 					nodes = new Node[0];
 				return nodes;
+			} catch (NullPointerException e) {
+				throw new CiliaIllegalStateException("Node has disappeared");
 			} finally {
 				container.getMutex().readLock().release();
 			}
@@ -318,18 +316,20 @@ public class ApplicationSpecificationImpl  extends AbstractTopology implements A
 		listenerSupport.removeListener(listener);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see fr.liglab.adele.cilia.ApplicationSpecification#get(java.lang.String)
 	 */
 	public Chain getChain(String chainId) throws CiliaIllegalParameterException {
-		if (chainId==null) throw new CiliaIllegalParameterException("Chain id is null !") ;
+		if (chainId == null)
+			throw new CiliaIllegalParameterException("Chain id is null !");
 		try {
 			container.getMutex().readLock().acquire();
-		return container.getChain(chainId);
+			return container.getChain(chainId);
 		} catch (InterruptedException e) {
 			throw new RuntimeException(e.getMessage());
-		} 
-		finally {
+		} finally {
 			container.getMutex().readLock().release();
 		}
 	}

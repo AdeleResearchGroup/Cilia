@@ -53,6 +53,10 @@ public final class ConstRuntime {
 	 */
 	public static final String NODE_ID = "node";
 
+	/*
+	 * Node creation timeStamp 
+	 */
+	public static final String TIMESTAMP ="timestamp" ;
 	/* 
 	 * Variable 
 	 */
@@ -120,17 +124,19 @@ public final class ConstRuntime {
 	}
 
 	public static final boolean isFilterMatching(Filter filter, Node node) {
-		Dictionary dico = new Hashtable(3);
-		dico.put(UUID, node.uuid());
-		dico.put(CHAIN_ID, node.chainId());
-		dico.put(NODE_ID, node.nodeId());
-		return filter.match(dico);
-	}
-	public static final boolean isFilterMatching(Filter filter, Node node,String variable) {
 		Dictionary dico = new Hashtable(4);
 		dico.put(UUID, node.uuid());
 		dico.put(CHAIN_ID, node.chainId());
 		dico.put(NODE_ID, node.nodeId());
+		dico.put(TIMESTAMP,new Long(node.timeStamp()));
+		return filter.match(dico);
+	}
+	public static final boolean isFilterMatching(Filter filter, Node node,String variable) {
+		Dictionary dico = new Hashtable(5);
+		dico.put(UUID, node.uuid());
+		dico.put(CHAIN_ID, node.chainId());
+		dico.put(NODE_ID, node.nodeId());
+		dico.put(TIMESTAMP,new Long(node.timeStamp()));
 		dico.put(VARIABLE_ID, variable) ;
 		return filter.match(dico);
 	}

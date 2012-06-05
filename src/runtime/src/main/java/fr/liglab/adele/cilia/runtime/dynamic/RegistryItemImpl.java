@@ -14,6 +14,7 @@
 
 package fr.liglab.adele.cilia.runtime.dynamic;
 
+
 import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.Hashtable;
@@ -23,6 +24,7 @@ import fr.liglab.adele.cilia.framework.monitor.statevariable.ComponentStateVarSe
 import fr.liglab.adele.cilia.model.MediatorComponent;
 import fr.liglab.adele.cilia.runtime.ConstRuntime;
 import fr.liglab.adele.cilia.util.FrameworkUtils;
+import fr.liglab.adele.cilia.util.Watch;
 
 /**
  * Object stored in the registry
@@ -35,7 +37,9 @@ import fr.liglab.adele.cilia.util.FrameworkUtils;
 public class RegistryItemImpl implements RegistryItem {
 
 	private final Map props;
-
+	
+	private static final long timeStamp = System.currentTimeMillis();
+	
 	public RegistryItemImpl(String uuid, String appid, String componentId, Map p) {
 
 		if (p != null) {
@@ -49,7 +53,6 @@ public class RegistryItemImpl implements RegistryItem {
 			props.put(ConstRuntime.CHAIN_ID, appid);
 		if (componentId != null)
 			props.put(ConstRuntime.NODE_ID, componentId);
-
 	}
 	
 	public RegistryItemImpl(String uuid, String appid, String componentId) {
@@ -108,13 +111,18 @@ public class RegistryItemImpl implements RegistryItem {
 		return props.get(key);
 	}
 
-	public String getQualifiedId() {
+	public String qualifiedId() {
 		return FrameworkUtils.makeQualifiedId(chainId(), nodeId(), uuid());
 	}
 
 	public String toString() {
-		StringBuffer sb = new StringBuffer(getQualifiedId()) ;
+		StringBuffer sb = new StringBuffer(qualifiedId()) ;
+		sb.append("creation date :"+Watch.formatDateIso8601(timeStamp));
 		sb.append(", properties:").append(props);
 		return sb.toString();
+	}
+
+	public long timeStamp() {
+		return timeStamp;
 	}
 }

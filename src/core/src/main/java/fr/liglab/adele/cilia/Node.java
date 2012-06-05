@@ -34,13 +34,20 @@ public interface Node {
 	String nodeId();
 
 	/**
-	 * @return unique Identifier 
+	 * @return unique Identifier
 	 */
 	String uuid();
-	
+
 	/**
 	 * 
-	 * @return Return the unic name for a node "chaineId/mediatorId/uuid"
+	 * @return Return the single name for a node "chaineId/mediatorId/uuid"
 	 */
-	String getQualifiedId() ;
+	String qualifiedId();
+
+	/**
+	 * 
+	 * @return the the value of System.currentms() at creation time
+	 */
+	long timeStamp();
+
 }

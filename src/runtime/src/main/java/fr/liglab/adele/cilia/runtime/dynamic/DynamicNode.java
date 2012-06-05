@@ -32,6 +32,7 @@ import fr.liglab.adele.cilia.exceptions.CiliaInvalidSyntaxException;
 import fr.liglab.adele.cilia.framework.monitor.statevariable.ComponentStateVarService;
 import fr.liglab.adele.cilia.runtime.ConstRuntime;
 import fr.liglab.adele.cilia.util.FrameworkUtils;
+import fr.liglab.adele.cilia.util.Watch;
 import fr.liglab.adele.cilia.util.concurrent.ReentrantWriterPreferenceReadWriteLock;
 import fr.liglab.adele.cilia.util.concurrent.SyncList;
 import fr.liglab.adele.cilia.util.concurrent.SyncMap;
@@ -47,15 +48,13 @@ import fr.liglab.adele.cilia.util.concurrent.SyncMap;
 public class DynamicNode implements SetUp, RawData, Thresholds {
 
 	private final Logger logger = LoggerFactory.getLogger(ConstRuntime.LOG_NAME);
-	private ComponentStateVarService mediatorHandler;
+	//private ComponentStateVarService mediatorHandler;
 
 	private static final int NB_THRESHOLD = 4;
 
 	private final NodeListenerSupport nodeListeners;
-	/* unique identifier */
-	private final String uuid;
-	private final String chainId;
-	private final String nodeId;
+	/* Object in the registry*/
+	private final RegistryItem item ;
 
 	/* list of variables managed by this component */
 	private SyncMap variablesId = new SyncMap(new HashMap(),
@@ -63,24 +62,26 @@ public class DynamicNode implements SetUp, RawData, Thresholds {
 
 	public DynamicNode(final String uuid, final RuntimeRegistry registry,
 			final NodeListenerSupport nodeListeners) {
-		RegistryItem item = registry.findByUuid(uuid);
-		this.chainId = item.chainId();
-		this.nodeId = item.nodeId();
-		this.uuid = uuid;
-		mediatorHandler = item.runtimeReference();
+
+		item = registry.findByUuid(uuid);
+		//mediatorHandler = item.runtimeReference();
 		this.nodeListeners = nodeListeners;
 	}
 
 	public String uuid() {
-		return uuid;
+		return item.uuid();
 	}
 
 	public String chainId() {
-		return chainId;
+		return  item.chainId();
 	}
 
 	public String nodeId() {
-		return nodeId;
+		return item.nodeId();
+	}
+	
+	public long timeStamp() {
+		return item.timeStamp();
 	}
 
 	public void setLow(String variableId, double low, double verylow)
@@ -290,15 +291,15 @@ public class DynamicNode implements SetUp, RawData, Thresholds {
 	}
 
 	public String[] getCategories() {
-		return mediatorHandler.getCategories();
+		return item.runtimeReference().getCategories();
 	}
 
 	public String[] variablesByCategory(String category) {
-		return mediatorHandler.getStateVarIdCategory(category);
+		return item.runtimeReference().getStateVarIdCategory(category);
 	}
 
 	public String[] enabledVariable() {
-		return mediatorHandler.getEnabledId();
+		return item.runtimeReference().getEnabledId();
 	}
 
 	public void setMonitoring(String variableId, int queueSize, String ldapFilter,
@@ -317,11 +318,11 @@ public class DynamicNode implements SetUp, RawData, Thresholds {
 				if (!variablesId.containsKey(variableId)) {
 					variablesId.put(variableId, new Observations(queueSize));
 				}
-				mediatorHandler.setCondition(variableId, ldapFilter);
+				item.runtimeReference().setCondition(variableId, ldapFilter);
 				if (enable)
-					mediatorHandler.enableStateVar(variableId);
+					item.runtimeReference().enableStateVar(variableId);
 				else
-					mediatorHandler.disableStateVar(variableId);
+					item.runtimeReference().disableStateVar(variableId);
 				/* notify on modification all listeners */
 				nodeListeners.fireNodeEvent(NodeListenerSupport.EVT_MODIFIED, this);
 			} finally {
@@ -349,8 +350,8 @@ public class DynamicNode implements SetUp, RawData, Thresholds {
 					try {
 						/* a variable with defaults configuration is created */
 						variablesId.put(variableId, new Observations(queueSize));
-						mediatorHandler.disableStateVar(variableId);
-						mediatorHandler.setCondition(variableId,
+						item.runtimeReference().disableStateVar(variableId);
+						item.runtimeReference().setCondition(variableId,
 								ConstRuntime.DEFAULT_CONDITION);
 					} catch (CiliaInvalidSyntaxException e) {
 						/* never happens! */
@@ -384,9 +385,9 @@ public class DynamicNode implements SetUp, RawData, Thresholds {
 					/* a variable with defaults configuration is created */
 					variablesId.put(variableId, new Observations(
 							ConstRuntime.DEFAULT_QUEUE_SIZE));
-					mediatorHandler.disableStateVar(variableId);
+					item.runtimeReference().disableStateVar(variableId);
 				}
-				mediatorHandler.setCondition(variableId, ldapFilter);
+				item.runtimeReference().setCondition(variableId, ldapFilter);
 				/* notify on modification all listeners */
 				nodeListeners.fireNodeEvent(NodeListenerSupport.EVT_MODIFIED, this);
 			} finally {
@@ -418,16 +419,16 @@ public class DynamicNode implements SetUp, RawData, Thresholds {
 					variablesId.put(variableId, new Observations(
 							ConstRuntime.DEFAULT_QUEUE_SIZE));
 					try {
-						mediatorHandler.setCondition(variableId,
+						item.runtimeReference().setCondition(variableId,
 								ConstRuntime.DEFAULT_CONDITION);
 					} catch (CiliaInvalidSyntaxException e) {
 						/* never happens */
 					}
 				}
 				if (enable)
-					mediatorHandler.enableStateVar(variableId);
+					item.runtimeReference().enableStateVar(variableId);
 				else
-					mediatorHandler.disableStateVar(variableId);
+					item.runtimeReference().disableStateVar(variableId);
 
 				nodeListeners.fireNodeEvent(NodeListenerSupport.EVT_MODIFIED, this);
 			} finally {
@@ -473,15 +474,17 @@ public class DynamicNode implements SetUp, RawData, Thresholds {
 			throw new CiliaIllegalParameterException(variableId
 					+ " missing configuration !");
 
-		return mediatorHandler.getCondition(variableId);
+		return item.runtimeReference().getCondition(variableId);
 	}
 
-	public String getQualifiedId() {
+	public String qualifiedId() {
 		return FrameworkUtils.makeQualifiedId(chainId(), nodeId(), uuid());
 	}
 	
 	public String toString() {
-		StringBuffer sb= new StringBuffer(getQualifiedId()).append("{");
+		StringBuffer sb= new StringBuffer(qualifiedId());
+		sb.append("creation date :"+Watch.formatDateIso8601(timeStamp()));
+		sb.append("{");
 		Iterator it = variablesId.entrySet().iterator();
 		while (it.hasNext()) {
 			Map.Entry pairs = (Map.Entry) it.next();

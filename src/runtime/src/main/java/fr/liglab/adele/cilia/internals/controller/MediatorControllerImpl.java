@@ -266,7 +266,7 @@ public class MediatorControllerImpl implements Observer {
 			if (mediatorInstance != null) {
 				mediatorInstance.deleteObserver(this);
 				mediatorInstance.stop();
-				logger.info("Component [{}] stopped",mediatorModel.getQualifiedId());
+				logger.info("Component [{}] stopped",mediatorModel.qualifiedId());
 			}
 		}
 	}
@@ -279,7 +279,7 @@ public class MediatorControllerImpl implements Observer {
 		createMediatorInstance();
 		updateMediatorModel();
 		updateMediatorInstance();
-		logger.info("Component [{}] started",mediatorModel.getQualifiedId());
+		logger.info("Component [{}] started",mediatorModel.qualifiedId());
 	}
 
 	/**

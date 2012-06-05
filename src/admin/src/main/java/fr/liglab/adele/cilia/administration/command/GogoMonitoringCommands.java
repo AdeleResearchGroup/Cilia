@@ -43,38 +43,29 @@ public class GogoMonitoringCommands {
 
 	private static final String HEADER = "+------------------------------------------------------"
 			+ "------------------------------------------------------";
-	private CiliaContext ciliaContext ;
+	private CiliaContext ciliaContext;
 	private ApplicationRuntime runtime;
 	private ApplicationSpecification application;
 	private CallbackEventBaseLevel callbacks = new CallbackEventBaseLevel();
-	private CallbackEventMetaLevel callbacksMeta = new CallbackEventMetaLevel() ;
+	private CallbackEventMetaLevel callbacksMeta = new CallbackEventMetaLevel();
 
 	private void printSuccessor(Node[] nodes) {
 		if (nodes.length == 0) {
 			System.out.println("| No node matching the filter");
 		}
 		for (int i = 0; i < nodes.length; i++) {
-			System.out.println("| Successor ->" + nodes[i].getQualifiedId());
+			System.out.println("| Successor ->" + nodes[i].qualifiedId());
 		}
 	}
 
 	public void start() {
-		runtime=ciliaContext.getApplicationRuntime();
-		application = ciliaContext.getApplicationSpecification() ;
-		try {
-			application.addListener("(chain=*)", callbacksMeta);
-		} catch (CiliaIllegalParameterException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (CiliaInvalidSyntaxException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		runtime = ciliaContext.getApplicationRuntime();
+		application = ciliaContext.getApplicationSpecification();
 	}
-	
-	public void stop () {
+
+	public void stop() {
 	}
-	
+
 	@Descriptor("Dump all successors to the node defined by ldapfiter")
 	public void runtime_connected_to(String ldap) {
 		try {
@@ -118,7 +109,7 @@ public class GogoMonitoringCommands {
 				System.out.println("No node matching the filter " + ldapFilter);
 			} else {
 				for (int i = 0; i < nodes.length; i++) {
-					System.out.println("| Node ->" + nodes[i].getQualifiedId());
+					System.out.println("| Node ->" + nodes[i].qualifiedId());
 				}
 			}
 			System.out.println(HEADER);
@@ -157,7 +148,7 @@ public class GogoMonitoringCommands {
 				for (int i = 0; i < nodes.length; i++) {
 					Measure[] measure = nodes[i].measures(variable);
 
-					System.out.println("| Node #" + ((Node) nodes[i]).getQualifiedId());
+					System.out.println("| Node #" + ((Node) nodes[i]).qualifiedId());
 					System.out.println("| Variable '" + variable + "'");
 					for (int j = 0; j < measure.length; j++) {
 						System.out
@@ -239,7 +230,7 @@ public class GogoMonitoringCommands {
 		System.out.println(HEADER);
 		for (int i = 0; i < nodes.length; i++) {
 			System.out.print("| Node #");
-			System.out.println(((Node) nodes[i]).getQualifiedId());
+			System.out.println(((Node) nodes[i]).qualifiedId());
 			System.out.println("| Categories");
 			System.out.println("|    SystemCall variables :");
 			variables = ((SetUp) nodes[i]).variablesByCategory("SystemCall");
@@ -281,7 +272,7 @@ public class GogoMonitoringCommands {
 			if (array.length != 0) {
 				for (int i = 0; i < array.length; i++) {
 					System.out.println(msg + i + " : "
-							+ ((MediatorComponent) array[i]).getQualifiedId());
+							+ ((MediatorComponent) array[i]).qualifiedId());
 				}
 			} else {
 				System.out.println("No endpoint found for the filter " + ldapFilter);
@@ -339,10 +330,42 @@ public class GogoMonitoringCommands {
 				System.out.println("No node matching the filter " + ldapFilter);
 			} else {
 				for (int i = 0; i < nodes.length; i++) {
-					System.out.println("| Node ->" + nodes[i].getQualifiedId());
+					System.out.println("| Node ->" + nodes[i].qualifiedId());
 				}
 			}
 			System.out.println(HEADER);
+		} catch (Throwable e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Descriptor("Regiter/Unregister chain callback")
+	public void app_event_chain(String ldapFilter) {
+		try {
+			if ((ldapFilter !=null) && (ldapFilter.length()>0)) {
+				System.out.println("Registering events level chain, filter=" + ldapFilter);
+				application.addListener(ldapFilter, (ChainCallback) callbacksMeta);
+			}
+			else {
+				System.out.println("UnRegistering events level chain");	
+				application.removeListener((ChainCallback)callbacksMeta);
+			}
+		} catch (Throwable e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Descriptor("Regiter/Unregister chain callback")
+	public void app_callback_node(String ldapFilter) {
+		try {
+			if ((ldapFilter !=null) && (ldapFilter.length()>0)) {
+				System.out.println("Registering events level node, filter=" + ldapFilter);
+				application.addListener(ldapFilter, (ChainCallback) callbacksMeta);
+			}
+			else {
+				System.out.println("UnRegistering events level node");	
+				application.removeListener((ChainCallback)callbacksMeta);
+			}
 		} catch (Throwable e) {
 			e.printStackTrace();
 		}
@@ -383,53 +406,62 @@ public class GogoMonitoringCommands {
 		}
 	}
 
-
 	private class CallbackEventBaseLevel implements NodeCallback, ThresholdsCallback,
 			MeasureCallback {
 
 		public void onUpdate(Node node, String variable, Measure m) {
-			System.out.println("GogoCommand--> onUpdate " + node.getQualifiedId()
+			System.out.println("GogoCommand--> onUpdate " + node.qualifiedId()
 					+ ", variable :" + variable + ", value=" + m.toString());
 		}
 
 		public void onThreshold(Node node, String variable, Measure m, int thresholdType) {
-			System.out.println("GogoCommand--> onThreshold " + node.getQualifiedId()
+			System.out.println("GogoCommand--> onThreshold " + node.qualifiedId()
 					+ ", variable :" + variable + ", measure =" + m.toString());
 		}
 
 		public void onArrival(Node node) {
-			System.out.println("GogoCommand--> onArrival " + node.getQualifiedId());
+			System.out.println("GogoCommand--> onArrival " + node.qualifiedId());
 		}
 
 		public void onDeparture(Node node) {
-			System.out.println("GogoCommand--> onDeparture " + node.getQualifiedId());
+			System.out.println("GogoCommand--> onDeparture " + node.qualifiedId());
 		}
 
 		public void onModified(Node node) {
-			System.out.println("GogoCommand-->" + " onModified " + node.getQualifiedId());
+			System.out.println("GogoCommand-->" + " onModified " + node.qualifiedId());
 		}
 	}
 
-	private class CallbackEventMetaLevel implements ChainCallback {
+	private class CallbackEventMetaLevel implements ChainCallback, NodeCallback {
 
 		public void onAdded(String chainId) {
-			System.out.println("GogoCommand-->" + " onArrival " + chainId);
+			System.out.println("GogoCommand-->" + " onAdded " + chainId);
 		}
 
 		public void onRemoved(String chainId) {
-			System.out.println("GogoCommand-->" + " onDeparture " + chainId);
+			System.out.println("GogoCommand-->" + " onRemoved " + chainId);
 		}
 
 		public void onStarted(String chainId) {
 			System.out.println("GogoCommand-->" + " onStarted " + chainId);
-			
 		}
 
 		public void onStopped(String chainId) {
 			System.out.println("GogoCommand-->" + " onStopped " + chainId);
 		}
 
-		
-		
+		public void onArrival(Node node) {
+			System.out.println("GogoCommand-->" + " onArrival " + node.toString());
+
+		}
+
+		public void onDeparture(Node node) {
+			System.out.println("GogoCommand-->" + " onDeparture " + node.toString());
+		}
+
+		public void onModified(Node node) {
+			System.out.println("GogoCommand-->" + " onModify " + node.toString());
+		}
+
 	}
 }

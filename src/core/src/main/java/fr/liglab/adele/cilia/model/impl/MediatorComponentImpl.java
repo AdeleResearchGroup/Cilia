@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import fr.liglab.adele.cilia.util.FrameworkUtils;
+import fr.liglab.adele.cilia.util.Watch;
 import fr.liglab.adele.cilia.model.Binding;
 import fr.liglab.adele.cilia.model.Chain;
 import fr.liglab.adele.cilia.model.MediatorComponent;
@@ -73,6 +74,8 @@ public abstract class MediatorComponentImpl extends ComponentImpl implements
 	private String version = null;
 
 	private final String uuid = Uuid.generate().toString();
+
+	private final static long creationTimeStamp = System.currentTimeMillis();
 
 	/**
 	 * 
@@ -431,12 +434,17 @@ public abstract class MediatorComponentImpl extends ComponentImpl implements
 		return uuid;
 	}
 
-	public String getQualifiedId() {
+	public long timeStamp() {
+		return creationTimeStamp;
+	}
+
+	public String qualifiedId() {
 		return FrameworkUtils.makeQualifiedId(chainId(), nodeId(), uuid());
 	}
 
 	public String toString() {
-		StringBuffer sb = new StringBuffer(getQualifiedId());
+		StringBuffer sb = new StringBuffer(qualifiedId());
+		sb.append("creation date :"+Watch.formatDateIso8601(creationTimeStamp));
 		sb.append(",properties:").append(super.getProperties());
 		return sb.toString();
 	}

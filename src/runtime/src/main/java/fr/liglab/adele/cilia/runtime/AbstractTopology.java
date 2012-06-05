@@ -168,7 +168,12 @@ public abstract class AbstractTopology implements Topology {
 			CiliaIllegalStateException {
 		if (node == null)
 			throw new CiliaIllegalParameterException("node is null !");
-		return getModel(node.chainId(), node.nodeId());
+		try {
+			return getModel(node.chainId(), node.nodeId());
+		}
+		catch (NullPointerException e) {
+			throw new CiliaIllegalStateException("node has disappeared") ;
+		}
 	}
 
 	/*

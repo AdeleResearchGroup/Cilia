@@ -44,12 +44,11 @@ public class CiliaContextImpl implements CiliaContext {
 
 	private ApplicationSpecificationImpl application = null;
 
-
 	private ApplicationRuntimeImpl dynamicProperties = null;
 
 	private final static String version = "2.0.1";
 
-	private final static Date startup= new Date() ;
+	private final static Date startup=new Date(System.currentTimeMillis()) ;
 
 
 	public CiliaContextImpl(BundleContext bc) {
@@ -70,7 +69,6 @@ public class CiliaContextImpl implements CiliaContext {
 		container.stop();
 		application.stop();
 		dynamicProperties.stop();
-
 	}
 
 	/**

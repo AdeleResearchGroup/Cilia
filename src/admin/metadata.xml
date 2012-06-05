@@ -208,11 +208,11 @@
 				        node_setup,node_rawdata,node_monitoring,node_dump,
 				        app_chains,app_endpoints_in,app_endpoints_out,app_connected_to,
 				        app_find_node,
+				        app_callback_chain,app_callback_node,
 				        my_entry
 				        }" />
 		</provides>
 		<requires field="ciliaContext" />
-		<!-- <requires field="adminService" optional="true" /> -->
 		<callback transition="validate" method="start" />
 		<callback transition="invalidate" method="stop" />
 	</component>
@@ -275,7 +275,6 @@
 		  <jmx:property field ="chain_stopped" name="Chain Stopped" notification="true" rights="r" />
 		</jmx:config>
 	</component>
-	
 	
 	<!-- INSTANCES -->
 
