@@ -12,9 +12,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package fr.liglab.adele.cilia.util;
 
-package fr.liglab.adele.cilia.event;
 
-public interface CiliaFrameworkEvent extends CiliaEvent {
-	void event(String chainId, String mediatorId, int evtNumber);
+public interface Callable {
+  Object call() throws Exception;
 }

@@ -15,8 +15,10 @@
 
 package fr.liglab.adele.cilia.runtime.application;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Dictionary;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Map;
@@ -38,8 +40,10 @@ import fr.liglab.adele.cilia.NodeRegistration;
 import fr.liglab.adele.cilia.exceptions.CiliaIllegalParameterException;
 import fr.liglab.adele.cilia.exceptions.CiliaInvalidSyntaxException;
 import fr.liglab.adele.cilia.runtime.ConstRuntime;
-import fr.liglab.adele.cilia.runtime.WorkQueue;
+import fr.liglab.adele.cilia.util.SwingWorker;
 import fr.liglab.adele.cilia.util.concurrent.ConcurrentReaderHashMap;
+import fr.liglab.adele.cilia.util.concurrent.ReentrantWriterPreferenceReadWriteLock;
+import fr.liglab.adele.cilia.util.concurrent.SyncMap;
 
 /**
  * 
@@ -50,9 +54,17 @@ import fr.liglab.adele.cilia.util.concurrent.ConcurrentReaderHashMap;
 @SuppressWarnings({ "rawtypes", "unchecked" })
 public class ApplicationListenerSupport implements TrackerCustomizer, ChainRegistration,
 		NodeRegistration {
+	private static int TIMEOUT = 1000; /*
+										 * Max time allowed per subscribers : 1
+										 * second
+										 */
 	public static final int EVT_ARRIVAL = 1;
 	public static final int EVT_DEPARTURE = 2;
 	public static final int EVT_MODIFIED = 3;
+	public static final int EVT_STARTED = 4;
+	public static final int EVT_STOPPED = 5;
+	public static final int EVT_BIND = 6;
+	public static final int EVT_UNBIND = 7;
 
 	private final Logger logger = LoggerFactory.getLogger(ConstRuntime.LOG_NAME);
 
@@ -106,14 +118,15 @@ public class ApplicationListenerSupport implements TrackerCustomizer, ChainRegis
 			throws CiliaIllegalParameterException, CiliaInvalidSyntaxException {
 		if (listener == null)
 			throw new CiliaIllegalParameterException("listener is null");
+
 		ArrayList array = new ArrayList(1);
 		ArrayList old;
 		array.add(ConstRuntime.createFilter(filter));
-		/* Efficient with ConcurrentReaderHashMap */
 		old = (ArrayList) map.put(listener, array);
 		if (old != null) {
 			array.addAll(old);
 		}
+
 	}
 
 	/* Remove a listener */
@@ -144,46 +157,92 @@ public class ApplicationListenerSupport implements TrackerCustomizer, ChainRegis
 	}
 
 	public void fireEventNode(int event, Node component) {
-		if (!listenerNode.isEmpty())
-			runEvent(new NodeFirer(event, component));
+		if (listenerNode.isEmpty())
+			return;
+		/* Iterator assumes a valid copy of listeners */
+		Iterator it = listenerNode.entrySet().iterator();
+		while (it.hasNext()) {
+			Map.Entry pairs = (Map.Entry) it.next();
+			new NodeFirerTimed(event, component, (NodeCallback) pairs.getKey(),
+					(ArrayList) pairs.getValue()).start();
+		}
 	}
 
-	private class NodeFirer implements Runnable {
-		private int event;
-		private Node node;
-
-		public NodeFirer(int event, Node node) {
-			this.event = event;
-			this.node = node;
+	public void fireEventNode(int event, Node from, Node to) {
+		if (listenerNode.isEmpty())
+			return;
+		/* Iterator assumes a valid copy of listeners */
+		Iterator it = listenerNode.entrySet().iterator();
+		while (it.hasNext()) {
+			Map.Entry pairs = (Map.Entry) it.next();
+			new NodeFirerTimed(event, from, to, (NodeCallback) pairs.getKey(),
+					(ArrayList) pairs.getValue()).start();
 		}
 
-		public void run() {
-			/* iterates over listeners */
-			Iterator it = listenerNode.entrySet().iterator();
-			while (it.hasNext()) {
+	}
 
-				Map.Entry pairs = (Map.Entry) it.next();
-				ArrayList filters = (ArrayList) pairs.getValue();
-				boolean tofire = false;
-				for (int i = 0; i < filters.size(); i++) {
-					if (ConstRuntime.isFilterMatching((Filter) filters.get(i), node)) {
-						tofire = true;
-						break;
-					}
+	private class NodeFirerTimed extends SwingWorker {
+		private int event;
+		private Node node, dest;
+		private NodeCallback callback;
+		private ArrayList filters;
+
+		public NodeFirerTimed(int event, Node node, NodeCallback callback,
+				ArrayList filters) {
+			super(TIMEOUT);
+			this.event = event;
+			this.node = node;
+			this.callback = callback;
+			this.filters = filters;
+		}
+
+		public NodeFirerTimed(int event, Node from, Node to, NodeCallback callback,
+				ArrayList filters) {
+			this(event, from, callback, filters);
+			this.dest = to;
+		}
+
+		protected Object construct() throws InterruptedException {
+			boolean tofire = false;
+			for (int i = 0; i < filters.size(); i++) {
+				if (ConstRuntime.isFilterMatching((Filter) filters.get(i), node)) {
+					tofire = true;
+					break;
 				}
-				if (tofire) {
-					switch (event) {
-					case EVT_ARRIVAL:
-						((NodeCallback) pairs.getKey()).onArrival(node);
-						break;
-					case EVT_DEPARTURE:
-						((NodeCallback) pairs.getKey()).onDeparture(node);
-						break;
-					case EVT_MODIFIED:
-						((NodeCallback) pairs.getKey()).onModified(node);
-						break;
-					}
+			}
+			if (tofire) {
+				switch (event) {
+				case EVT_ARRIVAL:
+					callback.onArrival(node);
+					break;
+				case EVT_DEPARTURE:
+					callback.onDeparture(node);
+					break;
+				case EVT_MODIFIED:
+					callback.onModified(node);
+					break;
+				case EVT_BIND:
+					callback.onBind(node, dest);
+					break;
+
+				case EVT_UNBIND:
+					callback.onUnBind(node, dest);
+					break;
 				}
+			}
+			return null;
+		}
+
+		/* Wait end of asynchronous subscriber call */
+		protected void finished() {
+			try {
+				get();
+			} catch (InvocationTargetException e) {
+				Throwable ex = e.getTargetException();
+				if (ex instanceof InterruptedException) {
+					logger.error("TimeOut callback application specification 'node' ");
+				}
+			} catch (InterruptedException e) {
 			}
 		}
 	}
@@ -204,71 +263,74 @@ public class ApplicationListenerSupport implements TrackerCustomizer, ChainRegis
 		removeFilterListener(listenerChain, listener);
 	}
 
-	public void fireEventChain(int evt, String name) {
-		if ((!listenerChain.isEmpty()) && name != null) {
-			runEvent(new FirerChainEvent(evt, name));
-		}
-	}
-
-	private void runEvent(Runnable event) {
-		ServiceReference refs[] = null;
-		try {
-			refs = bundleContext.getServiceReferences(WorkQueue.class.getName(),
-					"(cilia.pool.scope=application)");
-		} catch (InvalidSyntaxException e) {
-			logger.error("Unable to get WorkQueue Service");
+	/* Call susbcribers in separated thread */
+	public void fireEventChain(int evt, String chainId) {
+		if (listenerChain.isEmpty())
 			return;
-		}
-		if (refs != null && refs.length > 0) {
-			WorkQueue worker = (WorkQueue) bundleContext.getService(refs[0]);
-			worker.execute(event);
-			bundleContext.ungetService(refs[0]);
+		/* Iterator assumes a valid copy of listeners */
+		Iterator it = listenerChain.entrySet().iterator();
+		while (it.hasNext()) {
+			Map.Entry pairs = (Map.Entry) it.next();
+			new FiredChainTimed(evt, chainId, (ChainCallback) pairs.getKey(),
+					(ArrayList) pairs.getValue()).start();
 		}
 
 	}
 
-	/* Run in a thread MIN_PRIORITY+1 */
-	private class FirerChainEvent implements Runnable {
+	private class FiredChainTimed extends SwingWorker {
+
 		private int evt;
+		private ChainCallback callback;
+		private ArrayList filters;
 		private Dictionary dico = new Hashtable(1);
 
-		public FirerChainEvent(int evt, String name) {
+		public FiredChainTimed(int evt, String name, ChainCallback callback,
+				ArrayList filters) {
+			super(TIMEOUT);
 			this.evt = evt;
+			this.callback = callback;
+			this.filters = filters;
 			dico.put(ConstRuntime.CHAIN_ID, name);
 		}
 
-		public void run() {
+		protected Object construct() throws Exception {
+			boolean tofire = false;
+			for (int i = 0; i < filters.size(); i++) {
+				if (((Filter) filters.get(i)).match(dico)) {
+					tofire = true;
+					break;
+				}
+			}
+			if (tofire) {
 
-			Iterator it = listenerChain.entrySet().iterator();
-			while (it.hasNext()) {
-				Map.Entry pairs = (Map.Entry) it.next();
-				ArrayList filters = (ArrayList) pairs.getValue();
-				boolean tofire = false;
-				for (int i = 0; i < filters.size(); i++) {
-					if (((Filter) filters.get(i)).match(dico)) {
-						tofire = true;
-						break;
-					}
+				String chainId = (String) dico.get(ConstRuntime.CHAIN_ID);
+				switch (evt) {
+				case EVT_ARRIVAL:
+					callback.onAdded(chainId);
+					break;
+				case EVT_DEPARTURE:
+					callback.onRemoved(chainId);
+					break;
+				case EVT_STARTED:
+					callback.onStarted(chainId);
+					break;
+				case EVT_STOPPED:
+					callback.onStopped(chainId);
+					break;
 				}
-				if (tofire) {
-					ChainCallback cb = (ChainCallback) pairs.getKey();
-					String chainId = (String) dico.get(ConstRuntime.CHAIN_ID);
-					switch (evt) {
-						
-					case 0:
-						cb.onAdded(chainId);
-						break;
-					case 1:
-						cb.onRemoved(chainId);
-						break;
-					case 2:
-						cb.onStarted(chainId);
-						break;
-					case 3:
-						cb.onStopped(chainId);
-						break;
-					}
+			}
+			return null;
+		}
+
+		protected void finished() {
+			try {
+				get();
+			} catch (InvocationTargetException e) {
+				Throwable ex = e.getTargetException();
+				if (ex instanceof InterruptedException) {
+					logger.error("TimeOut callback application specification 'node' ");
 				}
+			} catch (InterruptedException e) {
 			}
 		}
 

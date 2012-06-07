@@ -39,9 +39,8 @@ import fr.liglab.adele.cilia.model.CiliaContainer;
 import fr.liglab.adele.cilia.model.Mediator;
 import fr.liglab.adele.cilia.model.impl.ChainRuntime;
 import fr.liglab.adele.cilia.model.impl.PatternType;
-import fr.liglab.adele.cilia.runtime.AbstractTopology;
 import fr.liglab.adele.cilia.runtime.ConstRuntime;
-import fr.liglab.adele.cilia.runtime.WorkQueue;
+import fr.liglab.adele.cilia.runtime.impl.AbstractTopology;
 import fr.liglab.adele.cilia.util.concurrent.ReadWriteLock;
 import fr.liglab.adele.cilia.util.concurrent.WriterPreferenceReadWriteLock;
 
@@ -53,7 +52,6 @@ import fr.liglab.adele.cilia.util.concurrent.WriterPreferenceReadWriteLock;
  *         Team</a>
  */
 @SuppressWarnings({ "rawtypes", "unchecked" })
-
 public class ApplicationRuntimeImpl extends AbstractTopology implements
 		ApplicationRuntime, NodeCallback {
 
@@ -63,39 +61,33 @@ public class ApplicationRuntimeImpl extends AbstractTopology implements
 	private RuntimeRegistryImpl registry;
 	/* Cilia components discovery (adapters, mediators) */
 	private NodeDiscoveryImpl discovery;
-	/* Cilia application model */
-	private CiliaContainer ciliaContainer;
+
 	/* holds values fired by mediators/adapters */
 	private MonitorHandlerListener chainRt;
 	private ReadWriteLock mutex;
-	private NodeListenerSupport nodeListenerSupport;
+	private ApplicationRuntimeListenerSupport nodeListenerSupport;
 
-	public ApplicationRuntimeImpl(BundleContext bc, CiliaContainer cc) {
+	public ApplicationRuntimeImpl(BundleContext bc, CiliaContainer cc,ApplicationRuntimeListenerSupport nodeListenerSupport) {
 
 		registry = new RuntimeRegistryImpl(bc);
 		discovery = new NodeDiscoveryImpl(bc, this);
 		mutex = new WriterPreferenceReadWriteLock();
-		nodeListenerSupport = new NodeListenerSupport(bc);
+		this.nodeListenerSupport = nodeListenerSupport ;
 		chainRt = new MonitorHandlerListener(bc, nodeListenerSupport);
-		ciliaContainer = cc;
+		ciliaContext = cc;
 	}
 
 	/*
 	 * Start the service
 	 */
 	public void start() {
-
 		registry.start();
-		super.setContext(ciliaContainer);
-		nodeListenerSupport.start();
-
 		discovery.setRegistry(registry);
 		chainRt.setRegistry(registry);
 		/* Start listening state variables */
 		chainRt.start();
 		/* Start runtime discovery */
 		discovery.start();
-		logger.info("ModelS@RunTime 'Application Runtime' - started");
 	}
 
 	/*
@@ -103,10 +95,8 @@ public class ApplicationRuntimeImpl extends AbstractTopology implements
 	 */
 	public void stop() {
 		registry.stop();
-		nodeListenerSupport.stop();
 		chainRt.stop();
 		discovery.stop();
-		logger.info("ModelS@RunTime 'Application Runtime' - stopped");
 	}
 
 	private void addNode(String uuid) {
@@ -117,8 +107,10 @@ public class ApplicationRuntimeImpl extends AbstractTopology implements
 				/* Store in the registry the specification reference */
 				item.setSpecificationReference(getModel(item));
 				chainRt.addNode(uuid);
-			} catch (Exception e) {
+			} catch (Throwable e) {
 				logger.error("Internal error, cannot retrieve mediatorComponent reference");
+				throw new RuntimeException(
+						"Internal error, cannot retrieve mediatorComponent reference");
 			} finally {
 				mutex.writeLock().release();
 			}
@@ -152,6 +144,12 @@ public class ApplicationRuntimeImpl extends AbstractTopology implements
 	}
 
 	public void onModified(Node node) {
+	}
+
+	public void onBind(Node from, Node to) {
+	}
+
+	public void onUnBind(Node from, Node to) {
 	}
 
 	/*
@@ -264,7 +262,7 @@ public class ApplicationRuntimeImpl extends AbstractTopology implements
 		Set adapterSet = new HashSet();
 		Node[] item = registry.findByFilter(ldapFilter);
 		for (int i = 0; i < item.length; i++) {
-			chain = ciliaContainer.getChain(item[i].chainId());
+			chain = ciliaContext.getChain(item[i].chainId());
 			if (chain != null) {
 				adapter = chain.getAdapter(item[i].nodeId());
 				if (adapter != null) {
@@ -299,7 +297,7 @@ public class ApplicationRuntimeImpl extends AbstractTopology implements
 		if (registry.findByUuid(node.uuid()) == null)
 			throw new CiliaIllegalStateException("node disappears");
 		/* retreive the chain hosting the mediator/component */
-		chain = ciliaContainer.getChain(node.chainId());
+		chain = ciliaContext.getChain(node.chainId());
 		if (chain != null) {
 			/* checks if the node is an adapter */
 			adapter = chain.getAdapter(node.nodeId());
@@ -400,7 +398,7 @@ public class ApplicationRuntimeImpl extends AbstractTopology implements
 			CiliaIllegalStateException {
 		if (chainId == null)
 			throw new CiliaIllegalParameterException("chain id is null");
-		ChainRuntime chain = ciliaContainer.getChainRuntime(chainId);
+		ChainRuntime chain = ciliaContext.getChainRuntime(chainId);
 		if (chain == null)
 			throw new CiliaIllegalStateException("'" + chainId + "' not found");
 		return chain.getState();
@@ -410,7 +408,7 @@ public class ApplicationRuntimeImpl extends AbstractTopology implements
 			CiliaIllegalStateException {
 		if (chainId == null)
 			throw new CiliaIllegalParameterException("chain id is null");
-		ChainRuntime chain = ciliaContainer.getChainRuntime(chainId);
+		ChainRuntime chain = ciliaContext.getChainRuntime(chainId);
 		if (chain == null)
 			throw new CiliaIllegalStateException("'" + chainId + "' not found");
 		return chain.lastCommand();
@@ -446,31 +444,37 @@ public class ApplicationRuntimeImpl extends AbstractTopology implements
 		nodeListenerSupport.removeListener(listener);
 	}
 
-	/* (non-Javadoc)
-	 * @see fr.liglab.adele.cilia.dynamic.ApplicationRuntime#start(java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * fr.liglab.adele.cilia.dynamic.ApplicationRuntime#start(java.lang.String)
 	 */
 	public boolean start(String chainId) throws CiliaIllegalParameterException {
 		if (chainId == null) {
 			throw new CiliaIllegalParameterException("Chain ID is null");
 		}
-		if (ciliaContainer.getChain(chainId) == null) {
+		if (ciliaContext.getChain(chainId) == null) {
 			return false;
 		}
-		ciliaContainer.startChain(chainId);
+		ciliaContext.startChain(chainId);
 		return true;
 	}
 
-	/* (non-Javadoc)
-	 * @see fr.liglab.adele.cilia.dynamic.ApplicationRuntime#stop(java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * fr.liglab.adele.cilia.dynamic.ApplicationRuntime#stop(java.lang.String)
 	 */
 	public boolean stop(String chainId) throws CiliaIllegalParameterException {
 		if (chainId == null) {
 			throw new CiliaIllegalParameterException("Chain ID is null");
 		}
-		if (ciliaContainer.getChain(chainId) == null) {
+		if (ciliaContext.getChain(chainId) == null) {
 			return false;
 		}
-		ciliaContainer.stopChain(chainId);
+		ciliaContext.stopChain(chainId);
 		return true;
 	}
 

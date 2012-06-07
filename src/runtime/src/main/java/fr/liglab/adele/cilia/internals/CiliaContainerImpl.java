@@ -26,9 +26,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import fr.liglab.adele.cilia.ChainListener;
-import fr.liglab.adele.cilia.builder.Builder;
-import fr.liglab.adele.cilia.builder.impl.BuilderImpl;
-import fr.liglab.adele.cilia.event.CiliaEvent;
 import fr.liglab.adele.cilia.internals.controller.ChainControllerImpl;
 import fr.liglab.adele.cilia.internals.controller.CreatorThread;
 import fr.liglab.adele.cilia.model.Chain;
@@ -36,8 +33,8 @@ import fr.liglab.adele.cilia.model.CiliaContainer;
 import fr.liglab.adele.cilia.model.impl.ChainImpl;
 import fr.liglab.adele.cilia.model.impl.ChainRuntime;
 import fr.liglab.adele.cilia.runtime.Const;
+import fr.liglab.adele.cilia.runtime.application.ApplicationListenerSupport;
 import fr.liglab.adele.cilia.runtime.impl.ChainRuntimeImpl;
-import fr.liglab.adele.cilia.runtime.impl.CiliaFrameworkEventPublisher;
 import fr.liglab.adele.cilia.runtime.impl.MediatorRuntimeSpecification;
 import fr.liglab.adele.cilia.specification.MediatorSpecification;
 import fr.liglab.adele.cilia.util.concurrent.ReadWriteLock;
@@ -51,7 +48,7 @@ import fr.liglab.adele.cilia.util.concurrent.ReentrantWriterPreferenceReadWriteL
  *         Team</a> NA:ST
  * 
  */
-public class CiliaContainerImpl implements CiliaContainer{
+public class CiliaContainerImpl implements CiliaContainer {
 	private static final Logger logger = LoggerFactory.getLogger(Const.LOGGER_CORE);
 	/**
 	 * The creatorThread creates pojo instances using a given model.
@@ -61,7 +58,7 @@ public class CiliaContainerImpl implements CiliaContainer{
 	/* Model */
 	private final Map /* <ChainInstance> */chainInstances;
 	/* Run time information */
-	private final Map chainRuntime ;
+	private final Map chainRuntime;
 
 	private final BundleContext bcontext;
 
@@ -71,11 +68,11 @@ public class CiliaContainerImpl implements CiliaContainer{
 
 	private final Object lockObject = new Object();
 
-	private CiliaFrameworkEventPublisher eventNotifier;
-	
-	private final ReadWriteLock mutex ;
-	
+	//private CiliaFrameworkEventPublisher eventNotifier;
 
+	private final ReadWriteLock mutex;
+	
+	private final ApplicationListenerSupport applicationNotifier ;
 
 	/**
 	 * Create a CiliaContext instance. This instance is created by iPOJO.
@@ -83,14 +80,16 @@ public class CiliaContainerImpl implements CiliaContainer{
 	 * @param context
 	 *            OSGi Bundle Context.
 	 */
-	public CiliaContainerImpl(BundleContext context) {
+	public CiliaContainerImpl(BundleContext context,ApplicationListenerSupport notifier) {
 		bcontext = context;
 		creator = new CreatorThread();
 		chainInstances = new Hashtable();
 		listeners = new Hashtable();
 		chainRuntime = new Hashtable();
-		mutex = new ReentrantWriterPreferenceReadWriteLock() ;
+		mutex = new ReentrantWriterPreferenceReadWriteLock();
+		applicationNotifier = notifier ;
 	}
+	
 
 	/**
 	 * Add a chain to the CiliaContext. If a chain with the same id is in the
@@ -111,13 +110,13 @@ public class CiliaContainerImpl implements CiliaContainer{
 		chainName = chain.getId();
 		synchronized (lockObject) {
 			if (!chainInstances.containsKey(chain.getId())) {
-				ChainControllerImpl chainInstance = new ChainControllerImpl(bcontext, chain,
-						creator);
+				ChainControllerImpl chainInstance = new ChainControllerImpl(bcontext,
+						chain, creator,applicationNotifier);
 				chainInstances.put(chainName, chainInstance);
 				chainRuntime.put(chainName, new ChainRuntimeImpl());
-				eventNotifier.publish(chainName, CiliaEvent.EVENT_CHAIN_ADDED);
-				logger.info("Chain [{}] added",chainName) ;
-				
+				applicationNotifier.fireEventChain(ApplicationListenerSupport.EVT_ARRIVAL,chainName) ;
+				logger.info("Chain [{}] added", chainName);
+
 			} else {
 				msg = "Chain with the same id already in the CiliaContext";
 				log.error(msg);
@@ -211,11 +210,11 @@ public class CiliaContainerImpl implements CiliaContainer{
 		}
 		if (cinstance != null) {
 			cinstance.start();
-			ChainRuntimeImpl chainRt=(ChainRuntimeImpl)chainRuntime.get(chainId) ;
-			chainRt.setState(ChainRuntime.STATE_STARTED) ;
+			ChainRuntimeImpl chainRt = (ChainRuntimeImpl) chainRuntime.get(chainId);
+			chainRt.setState(ChainRuntime.STATE_STARTED);
 			chainRt.setLastDate();
-			eventNotifier.publish(chainId, CiliaEvent.EVENT_CHAIN_STARTED);
-			logger.info("Chain [{}] started",chainId) ;
+			applicationNotifier.fireEventChain(ApplicationListenerSupport.EVT_STARTED, chainId);
+			logger.info("Chain [{}] started", chainId);
 		}
 
 	}
@@ -255,8 +254,8 @@ public class CiliaContainerImpl implements CiliaContainer{
 				toBeRemoved = null;
 				ChainImpl.class.cast(chain).dispose();
 				chain = null;
-				eventNotifier.publish(chainId, CiliaEvent.EVENT_CHAIN_REMOVED);
-				logger.info("Chain [{}] removed",chainId) ;
+				applicationNotifier.fireEventChain(ApplicationListenerSupport.EVT_DEPARTURE, chainId);
+				logger.info("Chain [{}] removed", chainId);
 			}
 		} else {
 			log.error("remove chain", new NullPointerException(
@@ -294,11 +293,11 @@ public class CiliaContainerImpl implements CiliaContainer{
 			}
 			if (ci != null) {
 				ci.stop();
-				ChainRuntimeImpl chainRt = (ChainRuntimeImpl)chainRuntime.get(chainId);
+				ChainRuntimeImpl chainRt = (ChainRuntimeImpl) chainRuntime.get(chainId);
 				chainRt.setState(ChainRuntime.STATE_STOPPED);
 				chainRt.setLastDate();
-				eventNotifier.publish(chainId, CiliaEvent.EVENT_CHAIN_STOPPED);
-				logger.info("Chain [{}] stopped",chainId);
+				applicationNotifier.fireEventChain(ApplicationListenerSupport.EVT_STOPPED, chainId) ;
+				logger.info("Chain [{}] stopped", chainId);
 			} else {
 				msg = "There is any chain with the given id " + chainId;
 				log.error(msg);
@@ -338,7 +337,7 @@ public class CiliaContainerImpl implements CiliaContainer{
 	}
 
 	public void start() {
-		eventNotifier = new CiliaFrameworkEventPublisher(bcontext);
+		//eventNotifier = new CiliaFrameworkEventPublisher(bcontext);
 		creator.initialize();
 	}
 
@@ -405,7 +404,6 @@ public class CiliaContainerImpl implements CiliaContainer{
 				listener.onAddingChain(chain);
 			}
 		}
-		eventNotifier.publish(chain, CiliaEvent.EVENT_CHAIN_ADDED);
 	}
 
 	private void notifyRemove(Chain chain) {
@@ -418,20 +416,18 @@ public class CiliaContainerImpl implements CiliaContainer{
 			ChainListener listener = (ChainListener) it.next();
 			listener.onRemovingChain(chain);
 		}
-		eventNotifier.publish(chain, CiliaEvent.EVENT_CHAIN_REMOVED);
 	}
 
 	public ReadWriteLock getMutex() {
-		return mutex ;
+		return mutex;
 	}
 
 	public ChainRuntime getChainRuntime(String chainId) {
-		ChainRuntime chain=null ;
+		ChainRuntime chain = null;
 		if (chainId != null) {
-			chain = (ChainRuntime)chainRuntime.get(chainId) ;
+			chain = (ChainRuntime) chainRuntime.get(chainId);
 		}
-		return chain ;
+		return chain;
 	}
-
 
 }

@@ -78,4 +78,14 @@ public class ApplSpecification implements ChainCallback, NodeCallback {
 		chain_stopped = chainId;
 	}
 
+	public void onBind(Node from, Node to) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void onUnBind(Node from, Node to) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-package fr.liglab.adele.cilia.runtime;
+package fr.liglab.adele.cilia.runtime.impl;
 
 import java.util.Collections;
 import java.util.HashSet;
@@ -31,9 +31,10 @@ import fr.liglab.adele.cilia.model.Chain;
 import fr.liglab.adele.cilia.model.CiliaContainer;
 import fr.liglab.adele.cilia.model.MediatorComponent;
 import fr.liglab.adele.cilia.model.impl.PatternType;
+import fr.liglab.adele.cilia.runtime.ConstRuntime;
 
 /**
- * topological access to node
+ * topological access to nodes
  * 
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project
  *         Team</a>
@@ -42,14 +43,11 @@ import fr.liglab.adele.cilia.model.impl.PatternType;
 @SuppressWarnings({ "rawtypes", "unchecked" })
 public abstract class AbstractTopology implements Topology {
 
-	private CiliaContainer ciliaContext;
+	protected CiliaContainer ciliaContext;
 
 	public AbstractTopology() {
 	}
 
-	protected void setContext(CiliaContainer cc) {
-		ciliaContext = cc;
-	}
 
 
 	/**

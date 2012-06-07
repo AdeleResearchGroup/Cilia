@@ -63,12 +63,10 @@ public class NodeDiscoveryImpl implements TrackerCustomizer, ComponentStateVarPr
 	 */
 	public synchronized void start() {
 		registerTracker();
-		logger.info("ModelS@RunTime 'Node discovery' - started");
 	}
 
 	public synchronized void stop() {
 		unregisterTracker();
-		logger.info("ModelS@RunTime 'Node discovery' - stopped");
 	}
 
 	/*
@@ -128,6 +126,6 @@ public class NodeDiscoveryImpl implements TrackerCustomizer, ComponentStateVarPr
 		item.setRuntimeReference(mediatorHandler);
 		registry.register(item);
 		callback.onArrival(item) ;
-		logger.debug("Node [{}] discovered", item.toString());
+		logger.debug("Node [{}] appear", item.toString());
 	}
 }

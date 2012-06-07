@@ -23,8 +23,10 @@ import fr.liglab.adele.cilia.ApplicationSpecification;
 import fr.liglab.adele.cilia.CiliaContext;
 import fr.liglab.adele.cilia.builder.Builder;
 import fr.liglab.adele.cilia.builder.impl.BuilderImpl;
+import fr.liglab.adele.cilia.runtime.application.ApplicationListenerSupport;
 import fr.liglab.adele.cilia.runtime.application.ApplicationSpecificationImpl;
 import fr.liglab.adele.cilia.runtime.dynamic.ApplicationRuntimeImpl;
+import fr.liglab.adele.cilia.runtime.dynamic.ApplicationRuntimeListenerSupport;
 
 /**
  * Main Cilia Service implementation. It contains methods to retrieve information of mediation
@@ -50,15 +52,23 @@ public class CiliaContextImpl implements CiliaContext {
 
 	private final static Date startup=new Date(System.currentTimeMillis()) ;
 
+	/* notify to subscribers events level Model chain and mediator/adapter */
+	private final ApplicationListenerSupport notifierModel ;
+	/* notify to subscvriber , events level instance  */
+	private final ApplicationRuntimeListenerSupport notifierRuntime ;
 
 	public CiliaContextImpl(BundleContext bc) {
 		bcontext = bc;
-		container = new CiliaContainerImpl(bcontext);
-		application = new ApplicationSpecificationImpl(bcontext, container);
-		dynamicProperties = new ApplicationRuntimeImpl(bcontext, container);
+		notifierModel = new ApplicationListenerSupport(bc);
+		notifierRuntime = new ApplicationRuntimeListenerSupport(bc) ;
+		container = new CiliaContainerImpl(bcontext,notifierModel);
+		application = new ApplicationSpecificationImpl(bcontext,container,notifierModel);
+		dynamicProperties = new ApplicationRuntimeImpl(bcontext, container,notifierRuntime);
 	}
 
 	private void start() {
+		notifierModel.start();
+		notifierRuntime.start();
 		container.start();
 		application.start();
 		dynamicProperties.start();
@@ -66,6 +76,8 @@ public class CiliaContextImpl implements CiliaContext {
 
 
 	private void stop() {
+		notifierModel.stop();
+		notifierModel.stop();
 		container.stop();
 		application.stop();
 		dynamicProperties.stop();

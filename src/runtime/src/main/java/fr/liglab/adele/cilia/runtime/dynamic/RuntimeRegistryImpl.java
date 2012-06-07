@@ -52,11 +52,9 @@ public class RuntimeRegistryImpl implements RuntimeRegistry {
 	}
 
 	public void start() {
-		logger.info("ModelS@RunTime 'Registry' - started");
 	}
 
 	public void stop() {
-		logger.info("ModelS@RunTime 'Registry' - stopped");
 		registry.clear();
 		locked_uuid.clear();
 	}

@@ -51,10 +51,10 @@ public class MonitorHandlerListener implements ComponentStateVarProperties, Even
 	private RuntimeRegistry registry;
 	private NodeProxy weakProxy;
 
-	private final NodeListenerSupport nodeListeners;
+	private final ApplicationRuntimeListenerSupport nodeListeners;
 
 	public MonitorHandlerListener(BundleContext bc,
-			NodeListenerSupport nodeListenerSupport) {
+			ApplicationRuntimeListenerSupport nodeListenerSupport) {
 		this.bundleContext = bc;
 		this.nodeListeners = nodeListenerSupport;
 		this.weakProxy = new NodeProxy();
@@ -67,13 +67,11 @@ public class MonitorHandlerListener implements ComponentStateVarProperties, Even
 	/* Start receiving state variable for this chain */
 	public void start() {
 		registerEventAdmin();
-		logger.info("ModelS@RunTime 'Listening on topic [{}] started", TOPIC_HEADER + "*");
 	}
 
 	/* Stop receiving state variable value */
 	public void stop() {
 		unregisterEventAdmin();
-		logger.info("ModelS@RunTime 'Listening on topic [{}] started", TOPIC_HEADER + "*");
 	}
 
 	/* Register event admin */
@@ -143,7 +141,7 @@ public class MonitorHandlerListener implements ComponentStateVarProperties, Even
 		/* Store in the registry the previous Data node instancied */
 		item.setDataRuntimeReference(node);
 		/* informs all listeners 'node arrival' */
-		nodeListeners.fireNodeEvent(NodeListenerSupport.EVT_ARRIVAL, node);
+		nodeListeners.fireNodeEvent(ApplicationRuntimeListenerSupport.EVT_ARRIVAL, node);
 		logger.debug("Listen data published by [{}]", node.toString());
 	}
 
@@ -151,7 +149,7 @@ public class MonitorHandlerListener implements ComponentStateVarProperties, Even
 		Node item = registry.findByUuid(uuid);
 		if (item != null) {
 			/* informs all listeners 'node departure' */
-			nodeListeners.fireNodeEvent(NodeListenerSupport.EVT_DEPARTURE, item);
+			nodeListeners.fireNodeEvent(ApplicationRuntimeListenerSupport.EVT_DEPARTURE, item);
 			logger.debug("Remove listening data from [{}]", item.toString());
 		}
 	}

@@ -52,7 +52,7 @@ public class DynamicNode implements SetUp, RawData, Thresholds {
 
 	private static final int NB_THRESHOLD = 4;
 
-	private final NodeListenerSupport nodeListeners;
+	private final ApplicationRuntimeListenerSupport nodeListeners;
 	/* Object in the registry*/
 	private final RegistryItem item ;
 
@@ -61,7 +61,7 @@ public class DynamicNode implements SetUp, RawData, Thresholds {
 			new ReentrantWriterPreferenceReadWriteLock());
 
 	public DynamicNode(final String uuid, final RuntimeRegistry registry,
-			final NodeListenerSupport nodeListeners) {
+			final ApplicationRuntimeListenerSupport nodeListeners) {
 
 		item = registry.findByUuid(uuid);
 		//mediatorHandler = item.runtimeReference();
@@ -95,7 +95,7 @@ public class DynamicNode implements SetUp, RawData, Thresholds {
 		measures.setLow(low);
 		measures.setVeryLow(verylow);
 		/* notify on modification all listeners */
-		nodeListeners.fireNodeEvent(NodeListenerSupport.EVT_MODIFIED, this);
+		nodeListeners.fireNodeEvent(ApplicationRuntimeListenerSupport.EVT_MODIFIED, this);
 	}
 
 	public void setHigh(String variableId, double high, double veryhigh)
@@ -107,7 +107,7 @@ public class DynamicNode implements SetUp, RawData, Thresholds {
 		measures.setHigh(high);
 		measures.setVeryHigh(veryhigh);
 		/* notify on modification all listeners */
-		nodeListeners.fireNodeEvent(NodeListenerSupport.EVT_MODIFIED, this);
+		nodeListeners.fireNodeEvent(ApplicationRuntimeListenerSupport.EVT_MODIFIED, this);
 	}
 
 	public double getLow(String variableId) throws CiliaIllegalParameterException {
@@ -324,7 +324,7 @@ public class DynamicNode implements SetUp, RawData, Thresholds {
 				else
 					item.runtimeReference().disableStateVar(variableId);
 				/* notify on modification all listeners */
-				nodeListeners.fireNodeEvent(NodeListenerSupport.EVT_MODIFIED, this);
+				nodeListeners.fireNodeEvent(ApplicationRuntimeListenerSupport.EVT_MODIFIED, this);
 			} finally {
 				variablesId.writerSync().release();
 			}
@@ -361,7 +361,7 @@ public class DynamicNode implements SetUp, RawData, Thresholds {
 					observation.setQueueSize(queueSize);
 				}
 				/* notify on modification all listeners */
-				nodeListeners.fireNodeEvent(NodeListenerSupport.EVT_MODIFIED, this);
+				nodeListeners.fireNodeEvent(ApplicationRuntimeListenerSupport.EVT_MODIFIED, this);
 			} finally {
 				variablesId.writerSync().release();
 			}
@@ -389,7 +389,7 @@ public class DynamicNode implements SetUp, RawData, Thresholds {
 				}
 				item.runtimeReference().setCondition(variableId, ldapFilter);
 				/* notify on modification all listeners */
-				nodeListeners.fireNodeEvent(NodeListenerSupport.EVT_MODIFIED, this);
+				nodeListeners.fireNodeEvent(ApplicationRuntimeListenerSupport.EVT_MODIFIED, this);
 			} finally {
 				variablesId.writerSync().release();
 			}
@@ -430,7 +430,7 @@ public class DynamicNode implements SetUp, RawData, Thresholds {
 				else
 					item.runtimeReference().disableStateVar(variableId);
 
-				nodeListeners.fireNodeEvent(NodeListenerSupport.EVT_MODIFIED, this);
+				nodeListeners.fireNodeEvent(ApplicationRuntimeListenerSupport.EVT_MODIFIED, this);
 			} finally {
 				variablesId.writerSync().release();
 			}

@@ -23,58 +23,58 @@ public interface WorkQueue {
 	 * Change the piority for all threads
 	 * 
 	 * @param newPriority
-	 * @throws CiliaIllegalParameterException 
+	 * @throws CiliaIllegalParameterException
 	 */
-	public void setPriority(int newPriority) throws CiliaIllegalParameterException;
+	void setPriority(int newPriority) throws CiliaIllegalParameterException;
 
 	/**
 	 * 
 	 * @return threads priority
 	 */
-	public int getPriority();
+	int getPriority();
 
 	/**
 	 * 
 	 * @return current size of the pool of thread
 	 */
-	public int size();
+	int size();
 
 	/**
 	 * manage the size of the pool of thread ( increment , reduce )
 	 * 
 	 * @param newSize
 	 * @return the new current size of the pool of thread
-	 * @throws CiliaIllegalParameterException 
+	 * @throws CiliaIllegalParameterException
 	 */
-	public int size(int newSize) throws CiliaIllegalParameterException;
+	int size(int newSize) throws CiliaIllegalParameterException;
 
 	/**
 	 * 
 	 * @return the number of job waiting to be executed
 	 */
-	public int sizeJobQueued();
+	int sizeJobQueued();
 
 	/**
 	 * 
 	 * @param job
 	 *            asynchronous work executed inside the first thread ready
 	 */
-	public void execute(Runnable job);
+	void execute(Runnable job);
 
 	/**
 	 * Return the number max of job queued
 	 * 
 	 * @return
 	 */
-	public int sizeMaxjobQueued();
+	int sizeMaxjobQueued();
 
 	/**
 	 * Reset the value max
 	 */
-	public void resetMaxJobQueued();
+	void resetMaxJobQueued();
 
-	public void start();
+	void start();
 
-	public void stop();
+	void stop();
 
 }

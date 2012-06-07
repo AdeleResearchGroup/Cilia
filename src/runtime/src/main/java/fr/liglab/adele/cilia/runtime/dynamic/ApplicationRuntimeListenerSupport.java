@@ -15,6 +15,7 @@
 
 package fr.liglab.adele.cilia.runtime.dynamic;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Map;
@@ -38,7 +39,7 @@ import fr.liglab.adele.cilia.ThresholdsCallback;
 import fr.liglab.adele.cilia.exceptions.CiliaIllegalParameterException;
 import fr.liglab.adele.cilia.exceptions.CiliaInvalidSyntaxException;
 import fr.liglab.adele.cilia.runtime.ConstRuntime;
-import fr.liglab.adele.cilia.runtime.WorkQueue;
+import fr.liglab.adele.cilia.util.SwingWorker;
 import fr.liglab.adele.cilia.util.concurrent.ConcurrentReaderHashMap;
 
 /**
@@ -48,9 +49,14 @@ import fr.liglab.adele.cilia.util.concurrent.ConcurrentReaderHashMap;
  * 
  */
 @SuppressWarnings({ "rawtypes", "unchecked" })
-public class NodeListenerSupport implements TrackerCustomizer, NodeRegistration,
-		MeasuresRegistration {
+public class ApplicationRuntimeListenerSupport implements TrackerCustomizer,
+		NodeRegistration, MeasuresRegistration {
 	protected final Logger logger = LoggerFactory.getLogger(ConstRuntime.LOG_NAME);
+
+	private static int TIMEOUT = 1000; /*
+										 * Max time allowed per subscribers : 1
+										 * second
+										 */
 	public static final int EVT_ARRIVAL = 1;
 	public static final int EVT_DEPARTURE = 2;
 	public static final int EVT_MODIFIED = 3;
@@ -67,7 +73,7 @@ public class NodeListenerSupport implements TrackerCustomizer, NodeRegistration,
 	private Tracker tracker;
 	private BundleContext bundleContext;
 
-	public NodeListenerSupport(BundleContext bc) {
+	public ApplicationRuntimeListenerSupport(BundleContext bc) {
 		bundleContext = bc;
 		nodeListeners = new ConcurrentReaderHashMap();
 		thresholdListeners = new ConcurrentReaderHashMap();
@@ -128,65 +134,84 @@ public class NodeListenerSupport implements TrackerCustomizer, NodeRegistration,
 	 * @param source
 	 */
 	public void fireNodeEvent(int event, Node source) {
-		if (!nodeListeners.isEmpty())
-			runEvent(new NodeFirer(event, source));
-	}
 
-	private void runEvent(Runnable event) {
-		ServiceReference refs[] = null;
-		try {
-			refs = bundleContext.getServiceReferences(WorkQueue.class.getName(),
-					"(cilia.pool.scope=application)");
-		} catch (InvalidSyntaxException e) {
-			logger.error("Unable to get WorkQueue Service");
+		if (nodeListeners.isEmpty())
 			return;
+		/* Iterator assumes a valid copy of listeners */
+		Iterator it = nodeListeners.entrySet().iterator();
+		while (it.hasNext()) {
+			Map.Entry pairs = (Map.Entry) it.next();
+			new NodeFirerTimed(event, source, (NodeCallback) pairs.getKey(),
+					(ArrayList) pairs.getValue()).start();
 		}
-		if (refs != null && refs.length > 0) {
-			WorkQueue worker = (WorkQueue) bundleContext.getService(refs[0]);
-			worker.execute(event);
-			bundleContext.ungetService(refs[0]);
-		}
-
 	}
 
-	private class NodeFirer implements Runnable {
+	// private void runEvent(Runnable event) {
+	// ServiceReference refs[] = null;
+	// try {
+	// refs = bundleContext.getServiceReferences(WorkQueue.class.getName(),
+	// "(cilia.pool.scope=application)");
+	// } catch (InvalidSyntaxException e) {
+	// logger.error("Unable to get WorkQueue Service");
+	// return;
+	// }
+	// if (refs != null && refs.length > 0) {
+	// WorkQueue worker = (WorkQueue) bundleContext.getService(refs[0]);
+	// worker.execute(event);
+	// bundleContext.ungetService(refs[0]);
+	// }
+	// }
 
+	private class NodeFirerTimed extends SwingWorker {
 		private int event;
 		private Node node;
+		private NodeCallback callback;
+		private ArrayList filters;
 
-		public NodeFirer(int event, Node node) {
+		public NodeFirerTimed(int event, Node node, NodeCallback callback,
+				ArrayList filters) {
+			super(TIMEOUT);
 			this.event = event;
 			this.node = node;
+			this.callback = callback;
+			this.filters = filters;
+		}
+		
+		private void fire() {
+			switch (event) {
+			case EVT_ARRIVAL:
+				callback.onArrival(node);
+				break;
+			case EVT_DEPARTURE:
+				callback.onDeparture(node);
+				break;
+			case EVT_MODIFIED:
+				callback.onModified(node);
+				break;
+			}
 		}
 
-		public void run() {
-			/* No need to synchronize ! */
-			/* Iterator over all listener */
-			Iterator it = nodeListeners.entrySet().iterator();
-			while (it.hasNext()) {
-				/* iterator over all filter per listener */
-				Map.Entry pairs = (Map.Entry) it.next();
-				ArrayList filters = (ArrayList) pairs.getValue();
-				boolean toFire = false;
-				for (int i = 0; i < filters.size(); i++) {
-					if (ConstRuntime.isFilterMatching((Filter) filters.get(i), node)) {
-						toFire = true;
-						break;
-					}
+		protected Object construct() throws InterruptedException {
+			for (int i = 0; i < filters.size(); i++) {
+				if (ConstRuntime.isFilterMatching((Filter) filters.get(i), node)) {
+					/* Fire only once the same subscriber */
+					fire();
+					break;
 				}
-				/* call only once the same subscriber */
-				if (toFire) {
-					switch (event) {
-					case EVT_ARRIVAL:
-						((NodeCallback) pairs.getKey()).onArrival(node);
-						break;
-					case EVT_DEPARTURE:
-						((NodeCallback) pairs.getKey()).onDeparture(node);
-						break;
-					case EVT_MODIFIED:
-						((NodeCallback) pairs.getKey()).onModified(node);
-					}
+			}
+			return null;
+		}
+
+		/* Wait end of asynchronous subscriber call */
+		protected void finished() {
+			try {
+				get();
+			} catch (InvocationTargetException e) {
+				Throwable ex = e.getTargetException();
+				if (ex instanceof InterruptedException) {
+					logger.error("TimeOut callback application runtime 'node' ");
 				}
+			} catch (InterruptedException e) {
 			}
 		}
 	}
@@ -216,37 +241,56 @@ public class NodeListenerSupport implements TrackerCustomizer, NodeRegistration,
 	 * @param variableId
 	 */
 	public void fireMeasureReceived(Node node, String variableId, Measure m) {
-		if (!measureListeners.isEmpty())
-			runEvent(new MeasureFirer(node, variableId, m));
-	}
 
-	public class MeasureFirer implements Runnable {
-		private Node node;
-		private String variableId;
-		private Measure measure;
-
-		public MeasureFirer(Node node, String variableId, Measure m) {
-			this.node = node;
-			this.variableId = variableId;
-			this.measure = m;
+		if (measureListeners.isEmpty())
+			return;
+		/* Iterator assumes a valid copy of listeners */
+		Iterator it = measureListeners.entrySet().iterator();
+		while (it.hasNext()) {
+			Map.Entry pairs = (Map.Entry) it.next();
+			new MeasureFirerTimed(node, variableId, m, (MeasureCallback) pairs.getKey(),
+					(ArrayList) pairs.getValue()).start();
 		}
 
-		public void run() {
-			Iterator it = measureListeners.entrySet().iterator();
-			while (it.hasNext()) {
-				Map.Entry pairs = (Map.Entry) it.next();
-				ArrayList filters = (ArrayList) pairs.getValue();
-				boolean tofire = false;
-				for (int i = 0; i < filters.size(); i++) {
-					if (ConstRuntime.isFilterMatching((Filter) filters.get(i), node,
-							variableId)) {
-						tofire = true;
-						break;
-					}
+	}
+
+	private class MeasureFirerTimed extends SwingWorker {
+		private Node node;
+		private MeasureCallback callback;
+		private ArrayList filters;
+		private Measure measure;
+		private String variableId;
+
+		public MeasureFirerTimed(Node node, String variableId, Measure m,
+				MeasureCallback callback, ArrayList filters) {
+			super(TIMEOUT);
+			this.node = node;
+			this.callback = callback;
+			this.filters = filters;
+			this.measure = m;
+			this.variableId = variableId;
+		}
+
+		protected Object construct() throws InterruptedException {
+			for (int i = 0; i < filters.size(); i++) {
+				if (ConstRuntime.isFilterMatching((Filter) filters.get(i), node)) {
+					callback.onUpdate(node, variableId, measure);
+					break;
 				}
-				if (tofire)
-					((MeasureCallback) pairs.getKey())
-							.onUpdate(node, variableId, measure);
+			}
+			return null;
+		}
+
+		/* Wait end of asynchronous subscriber call */
+		protected void finished() {
+			try {
+				get();
+			} catch (InvocationTargetException e) {
+				Throwable ex = e.getTargetException();
+				if (ex instanceof InterruptedException) {
+					logger.error("TimeOut callback application runtime 'measure' ");
+				}
+			} catch (InterruptedException e) {
 			}
 		}
 	}
@@ -277,50 +321,68 @@ public class NodeListenerSupport implements TrackerCustomizer, NodeRegistration,
 	}
 
 	public void fireThresholdEvent(Node node, String variableId, Measure measure, int evt) {
-		if (!thresholdListeners.isEmpty())
-			runEvent(new ThresholdFirer(node, variableId, measure, evt));
-	}
 
-	/* Run in a thread MIN_PRIORITY+1 */
-	private class ThresholdFirer implements Runnable {
-		private int evt;
-		private String variable;
-		private Node node;
-		private Measure measure;
-
-		public ThresholdFirer(Node node, String variable, Measure measure, int evt) {
-			this.evt = evt;
-			this.variable = variable;
-			this.node = node;
-			this.measure = measure;
+		if (thresholdListeners.isEmpty())
+			return;
+		/* Iterator assumes a valid copy of listeners */
+		Iterator it = thresholdListeners.entrySet().iterator();
+		while (it.hasNext()) {
+			Map.Entry pairs = (Map.Entry) it.next();
+			new ThresholdFirerTimed(node, variableId, measure, evt,
+					(ThresholdsCallback) pairs.getKey(), (ArrayList) pairs.getValue())
+					.start();
 		}
 
-		public void run() {
+	}
 
-			Iterator it = thresholdListeners.entrySet().iterator();
-			while (it.hasNext()) {
-				Map.Entry pairs = (Map.Entry) it.next();
-				ArrayList filters = (ArrayList) pairs.getValue();
-				boolean tofire = false;
-				for (int i = 0; i < filters.size(); i++) {
-					if (ConstRuntime.isFilterMatching((Filter) filters.get(i), node,
-							variable)) {
-						tofire = true;
-						break;
-					}
+	private class ThresholdFirerTimed extends SwingWorker {
+		private Node node;
+		private ThresholdsCallback callback;
+		private ArrayList filters;
+		private Measure measure;
+		private String variableId;
+		private int evt;
+
+		public ThresholdFirerTimed(Node node, String variableId, Measure m, int evt,
+				ThresholdsCallback callback, ArrayList filters) {
+			super(TIMEOUT);
+			this.node = node;
+			this.callback = callback;
+			this.filters = filters;
+			this.measure = m;
+			this.variableId = variableId;
+			this.evt = evt;
+		}
+
+		protected Object construct() throws InterruptedException {
+			for (int i = 0; i < filters.size(); i++) {
+				if (ConstRuntime.isFilterMatching((Filter) filters.get(i), node)) {
+					callback.onThreshold(node, variableId, measure, evt);
+					break;
 				}
-				if (tofire)
-					((ThresholdsCallback) pairs.getKey()).onThreshold(node, variable,
-							measure, evt);
+			}
+			return null;
+		}
+
+		/* Wait end of asynchronous subscriber call */
+		protected void finished() {
+			try {
+				get();
+			} catch (InvocationTargetException e) {
+				Throwable ex = e.getTargetException();
+				if (ex instanceof InterruptedException) {
+					logger.error("TimeOut callback application runtime 'measure' ");
+				}
+			} catch (InterruptedException e) {
 			}
 		}
 	}
 
-	protected void start() {
+	public void start() {
 		registerTracker();
 	}
 
-	protected void stop() {
+	public void stop() {
 		unRegisterTracker();
 		nodeListeners.clear();
 		measureListeners.clear();

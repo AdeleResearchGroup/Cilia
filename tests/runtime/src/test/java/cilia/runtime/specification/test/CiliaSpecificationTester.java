@@ -23,6 +23,8 @@ import static org.ops4j.pax.exam.CoreOptions.options;
 import static org.ops4j.pax.exam.CoreOptions.provision;
 
 import java.util.Dictionary;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.felix.ipojo.test.helpers.OSGiHelper;
 import org.junit.After;
@@ -59,6 +61,7 @@ import fr.liglab.adele.cilia.model.MediatorComponent;
 @RunWith(JUnit4TestRunner.class)
 public class CiliaSpecificationTester {
 
+	
 	@Inject
 	private BundleContext context;
 
@@ -594,10 +597,11 @@ public class CiliaSpecificationTester {
 	}
 
 	private void api_registerListener(ApplicationSpecification application) {
-		/* Chain Registration */
-		ChainCb cb = new ChainCb();
+		 CountDownLatch done = new CountDownLatch(1) ;
+		 ChainCallbacks callback = new ChainCallbacks(done);
+		/* checks wrong parameters */
 		try {
-			application.addListener(null, (ChainCallback)cb);
+			application.addListener(null, (ChainCallback)callback);
 			Assert.fail("Exception not thrown");
 		} catch (CiliaIllegalParameterException e) {
 			/* OK */
@@ -606,7 +610,7 @@ public class CiliaSpecificationTester {
 		}
 
 		try {
-			application.addListener("(chain=",(ChainCallback) cb);
+			application.addListener("(chain=",(ChainCallback) callback);
 			Assert.fail("Exception not thrown");
 		} catch (CiliaInvalidSyntaxException e) {
 			/* OK */
@@ -615,14 +619,16 @@ public class CiliaSpecificationTester {
 		}
 
 		try {
-			//application.addListener("(chain=*)", (ChainCallback)cb);
-			//Builder builder = getCiliaContextService().getBuilder();
-			//cb.start(ChainCb.ADD_CHAIN) ;
-			//Architecture chain = builder.create("Chain2");
-			//builder.done();
-			//synchronized (cb.synchro) {
-			//	cb.synchro.wait(2000);
-			//}
+			callback.result=false ;
+			application.addListener("(&(chain=*)(node=*))", (NodeCallback)callback);
+
+			Builder builder = getCiliaContextService().getBuilder();
+			builder.create("Chain2");
+			builder.done();
+			synchronized (done) {
+				done.await(5000, TimeUnit.MILLISECONDS) ;
+			}
+			Assert.assertTrue("Callback never received " + callback.result, callback.result) ;
 			//builder.remove("Chain2") ;
 			//builder.done();
 		} catch (Exception e) {
@@ -632,7 +638,7 @@ public class CiliaSpecificationTester {
 	}
 
 	private void api_unregisterListener(ApplicationSpecification application) {
-
+		
 	}
 
 	private void illegalStateException(ApplicationSpecification application) {
@@ -673,59 +679,58 @@ public class CiliaSpecificationTester {
 		}
 	}
 
-	private class ChainCb implements ChainCallback,NodeCallback {
-		public static final int START_CHAIN = 0 ;
-		public static final int STOP_CHAIN  = 1 ; 
-		public static final int ADD_CHAIN = 2 ; 
-		public static final int REMOVE_CHAIN = 3 ; 
-		public static final int ADD_NODE = 4 ;
-		public static final int REMOVE_NODE = 5 ; 
-		public static final int MODIFY_NODE = 6 ;
+	private class ChainCallbacks implements ChainCallback, NodeCallback {
+		public volatile boolean result;
+		public CountDownLatch lock ;
+
+		public ChainCallbacks(CountDownLatch done) {
+			lock = done ;
+		}
+
 		
-		public Object synchro = new Object();
-		public boolean result=false;
-		public int evt ;
-
-		public ChainCb() {
-
-		}
-
-		public void start(int evt) {
-			result=false ;
-			this.evt =evt ;
-		}
-		public void stop(int evtWaited) {
-			if (evtWaited==evt) result = true;
-			else result = false ;
+		private void stop() {
+			 synchronized(lock) {
+				 result=true;
+				 lock.countDown();
+			 }
 		}
 
 		public void onAdded(String chainId) {
-			 stop(ADD_CHAIN);
+			stop();
 		}
 
 		public void onRemoved(String chainId) {
-			stop(REMOVE_CHAIN);
+			stop();	
 		}
 
 		public void onStarted(String chainId) {
-			 stop(START_CHAIN);
-		}
+			 stop();
+	 }
 
 		public void onStopped(String chainId) {
-			 stop(STOP_CHAIN);
+			 stop();
 		}
 
 		public void onArrival(Node node) {
-			stop(ADD_NODE);
-		}
+			stop();	
+	    }
 
 		public void onDeparture(Node node) {
-		stop(REMOVE_NODE);
-			
-		}
+			stop();
+	  }
 
 		public void onModified(Node node) {
-			stop(MODIFY_NODE);
+			stop() ;
+		}
+
+
+		public void onBind(Node from, Node to) {
+			stop();
+		}
+
+
+		public void onUnBind(Node from, Node to) {
+			stop() ;
 		}
 
 	}

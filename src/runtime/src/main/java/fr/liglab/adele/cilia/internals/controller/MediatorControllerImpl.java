@@ -27,11 +27,9 @@ import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 import fr.liglab.adele.cilia.framework.IDispatcher;
 import fr.liglab.adele.cilia.framework.IScheduler;
 import fr.liglab.adele.cilia.internals.factories.MediatorManager;
-import fr.liglab.adele.cilia.model.Binding;
 import fr.liglab.adele.cilia.model.Component;
 import fr.liglab.adele.cilia.model.Mediator;
 import fr.liglab.adele.cilia.model.MediatorComponent;
@@ -44,7 +42,7 @@ import fr.liglab.adele.cilia.model.impl.UpdateActions;
 import fr.liglab.adele.cilia.model.impl.UpdateEvent;
 import fr.liglab.adele.cilia.runtime.CiliaInstanceWrapper;
 import fr.liglab.adele.cilia.runtime.Const;
-import fr.liglab.adele.cilia.runtime.impl.CiliaFrameworkEventPublisher;
+import fr.liglab.adele.cilia.runtime.application.ApplicationListenerSupport;
 import fr.liglab.adele.cilia.runtime.impl.DispatcherHandler;
 import fr.liglab.adele.cilia.runtime.impl.SchedulerHandler;
 
@@ -86,8 +84,8 @@ public class MediatorControllerImpl implements Observer {
 
 	protected final String filter;
 
-	protected CiliaFrameworkEventPublisher eventNotifier;
-
+	//protected CiliaFrameworkEventPublisher eventNotifier;
+	private ApplicationListenerSupport applicationNotifier ;
 	/**
 	 * Create a mediator model controller.
 	 * 
@@ -95,7 +93,7 @@ public class MediatorControllerImpl implements Observer {
 	 *            Mediator model to handle.
 	 */
 	public MediatorControllerImpl(BundleContext context, MediatorComponent model,
-			CreatorThread creat) {
+			CreatorThread creat,ApplicationListenerSupport notifier) {
 		bcontext = context;
 		creator = creat;
 		mediatorModel = (MediatorComponentImpl) model;
@@ -254,7 +252,7 @@ public class MediatorControllerImpl implements Observer {
 					"Updating Mediator instance when object is not valid" + getState());
 		}
 		mediatorInstance.updateInstanceProperties(properties);
-		eventNotifier.publish(mediatorModel,eventNotifier.EVENT_MEDIATOR_PROPERTIES_UPDATED);
+		applicationNotifier.fireEventNode(ApplicationListenerSupport.EVT_MODIFIED, mediatorModel);
 	}
 
 	/**
@@ -275,7 +273,6 @@ public class MediatorControllerImpl implements Observer {
 	 * Start the mediator instance.
 	 */
 	public void start() {
-		eventNotifier = new CiliaFrameworkEventPublisher(bcontext);
 		createMediatorInstance();
 		updateMediatorModel();
 		updateMediatorInstance();
@@ -532,6 +529,7 @@ public class MediatorControllerImpl implements Observer {
 				case UpdateActions.UPDATE_PROPERTIES: {
 					log.debug(" update instance property");
 					updateInstanceProperties(md.getProperties());
+					applicationNotifier.fireEventNode(ApplicationListenerSupport.EVT_MODIFIED, md) ;
 				}
 					// break;
 					// case UpdateActions.UPDATE_SCHEDULER: {

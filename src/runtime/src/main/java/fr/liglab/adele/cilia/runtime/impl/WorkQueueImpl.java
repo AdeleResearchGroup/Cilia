@@ -24,6 +24,7 @@ import org.slf4j.LoggerFactory;
 import fr.liglab.adele.cilia.exceptions.CiliaIllegalParameterException;
 import fr.liglab.adele.cilia.runtime.WorkQueue;
 
+
 /**
  * 
  * 
@@ -182,7 +183,7 @@ public class WorkQueueImpl implements WorkQueue {
 			queue.notify();
 		}
 	}
-
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -205,8 +206,8 @@ public class WorkQueueImpl implements WorkQueue {
 		public boolean stopped = false;
 
 		public void run() {
-			Runnable r;
 			while (true) {
+				Runnable r ;
 				synchronized (queue) {
 					while (queue.isEmpty()) {
 						try {
@@ -216,7 +217,8 @@ public class WorkQueueImpl implements WorkQueue {
 						} catch (InterruptedException ignored) {
 						}
 					}
-					r = (Runnable) queue.removeFirst();
+					 r= (Runnable)queue.removeFirst();
+
 				}
 				try {
 					r.run();
@@ -226,4 +228,6 @@ public class WorkQueueImpl implements WorkQueue {
 			}
 		}
 	}
+
+	
 }

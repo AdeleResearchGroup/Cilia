@@ -36,8 +36,8 @@ public interface RawData extends Node {
 
 	/**
 	 * 
-	 * @return list of state variable enabled
+	 * @return list of variable enabled
 	 */
-	String[] enabledVariable() throws CiliaIllegalParameterException;
+	String[] enabledVariable() ;
 
 }

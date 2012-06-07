@@ -212,4 +212,12 @@ public class ApplRuntime implements NodeCallback, MeasureCallback, ThresholdsCal
 	public void onModified(Node node) {
 		nodes_modified = node.qualifiedId();
 	}
+
+	public void onBind(Node from, Node to) {
+		// TODO Auto-generated method stub		
+	}
+
+	public void onUnBind(Node from, Node to) {
+		// TODO Auto-generated method stub		
+	}
 }

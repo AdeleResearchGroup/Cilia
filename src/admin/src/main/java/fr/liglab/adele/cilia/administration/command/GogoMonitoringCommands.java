@@ -61,6 +61,10 @@ public class GogoMonitoringCommands {
 	public void start() {
 		runtime = ciliaContext.getApplicationRuntime();
 		application = ciliaContext.getApplicationSpecification();
+		// app_callback_chain("(!chain=admin-chain)") ;
+		// app_callback_node("(&(!chain=admin-chain)(node=*))") ;
+		app_callback_chain("(chain=*)");
+		app_callback_node("(&(chain=*)(node=*))");
 	}
 
 	public void stop() {
@@ -342,13 +346,28 @@ public class GogoMonitoringCommands {
 	@Descriptor("Regiter/Unregister chain callback")
 	public void app_event_chain(String ldapFilter) {
 		try {
-			if ((ldapFilter !=null) && (ldapFilter.length()>0)) {
-				System.out.println("Registering events level chain, filter=" + ldapFilter);
+			if ((ldapFilter != null) && (ldapFilter.length() > 0)) {
+				System.out
+						.println("Registering events level chain, filter=" + ldapFilter);
 				application.addListener(ldapFilter, (ChainCallback) callbacksMeta);
+			} else {
+				System.out.println("UnRegistering events level chain");
+				application.removeListener((ChainCallback) callbacksMeta);
 			}
-			else {
-				System.out.println("UnRegistering events level chain");	
-				application.removeListener((ChainCallback)callbacksMeta);
+		} catch (Throwable e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Descriptor("Regiter/Unregister chain callback")
+	public void app_callback_chain(String ldapFilter) {
+		try {
+			if ((ldapFilter != null) && (ldapFilter.length() > 0)) {
+				System.out.println("Registering events level node, filter=" + ldapFilter);
+				application.addListener(ldapFilter, (ChainCallback) callbacksMeta);
+			} else {
+				System.out.println("UnRegistering events level node");
+				application.removeListener((ChainCallback) callbacksMeta);
 			}
 		} catch (Throwable e) {
 			e.printStackTrace();
@@ -358,13 +377,12 @@ public class GogoMonitoringCommands {
 	@Descriptor("Regiter/Unregister chain callback")
 	public void app_callback_node(String ldapFilter) {
 		try {
-			if ((ldapFilter !=null) && (ldapFilter.length()>0)) {
+			if ((ldapFilter != null) && (ldapFilter.length() > 0)) {
 				System.out.println("Registering events level node, filter=" + ldapFilter);
-				application.addListener(ldapFilter, (ChainCallback) callbacksMeta);
-			}
-			else {
-				System.out.println("UnRegistering events level node");	
-				application.removeListener((ChainCallback)callbacksMeta);
+				application.addListener(ldapFilter, (NodeCallback) callbacksMeta);
+			} else {
+				System.out.println("UnRegistering events level node");
+				application.removeListener((NodeCallback) callbacksMeta);
 			}
 		} catch (Throwable e) {
 			e.printStackTrace();
@@ -372,15 +390,15 @@ public class GogoMonitoringCommands {
 	}
 
 	public void testApplication() {
+		app_callback_chain("(!chain=admin-chain)");
+		app_callback_node("(&(!chain=admin-chain)(node=*))");
 		String[] array = application.getChainId();
 		for (int i = 0; i < array.length; i++) {
 			System.out.println("Chain ID :" + array[i]);
 		}
 		app_endpoints_in("(chain=Chain1)");
 		app_endpoints_out("(chain=Chain1)");
-		/* tester connected to */
 		app_connected_to("(&(chain=Chain1)(node=mediator_1))");
-
 	}
 
 	@Descriptor("Entry for test")
@@ -430,6 +448,16 @@ public class GogoMonitoringCommands {
 		public void onModified(Node node) {
 			System.out.println("GogoCommand-->" + " onModified " + node.qualifiedId());
 		}
+
+		public void onBind(Node from, Node to) {
+			System.out.println("GogoCommand-->" + " onBind from" + from.qualifiedId()
+					+ ", to" + to.qualifiedId());
+		}
+
+		public void onUnBind(Node from, Node to) {
+			System.out.println("GogoCommand-->" + " onUnbind from" + from.qualifiedId()
+					+ ", to" + to.qualifiedId());
+		}
 	}
 
 	private class CallbackEventMetaLevel implements ChainCallback, NodeCallback {
@@ -451,16 +479,25 @@ public class GogoMonitoringCommands {
 		}
 
 		public void onArrival(Node node) {
-			System.out.println("GogoCommand-->" + " onArrival " + node.toString());
-
+			System.out.println("GogoCommand-->" + " onArrival " + node.qualifiedId());
 		}
 
 		public void onDeparture(Node node) {
-			System.out.println("GogoCommand-->" + " onDeparture " + node.toString());
+			System.out.println("GogoCommand-->" + " onDeparture " + node.qualifiedId());
 		}
 
 		public void onModified(Node node) {
-			System.out.println("GogoCommand-->" + " onModify " + node.toString());
+			System.out.println("GogoCommand-->" + " onModify " + node.qualifiedId());
+		}
+
+		public void onBind(Node from, Node to) {
+			System.out.println("GogoCommand-->" + " onBind ( " + from.qualifiedId() + ","
+					+ to.qualifiedId() + ")");
+		}
+
+		public void onUnBind(Node from, Node to) {
+			System.out.println("GogoCommand-->" + " onUnBind ( " + from.qualifiedId() + ","
+					+ to.qualifiedId() + ")");
 		}
 
 	}
