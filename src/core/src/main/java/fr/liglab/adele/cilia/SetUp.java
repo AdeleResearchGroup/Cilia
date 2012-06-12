@@ -28,6 +28,12 @@ import fr.liglab.adele.cilia.exceptions.CiliaInvalidSyntaxException;
 public interface SetUp extends Node {
 
 	/**
+	 * validity of a mediator 
+	 * @return true if the mediator is valid 
+	 */
+	boolean isValid() ;
+	
+	/**
 	 * 
 	 * @return Categories of variables
 	 */

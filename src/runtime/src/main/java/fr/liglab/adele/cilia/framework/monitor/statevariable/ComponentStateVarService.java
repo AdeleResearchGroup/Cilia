@@ -92,5 +92,11 @@ public interface ComponentStateVarService extends IMonitor {
 	 * @return list of state var id.
 	 */
 	String[] getStateVarIdCategory(String category);
+	
+	/** 
+	 * 
+	 * @return state of the component Mediator
+	 */
+	boolean isComponentValid();
 
 }

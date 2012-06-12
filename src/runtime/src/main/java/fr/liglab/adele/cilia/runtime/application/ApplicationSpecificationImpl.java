@@ -23,6 +23,8 @@ import java.util.Set;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Filter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import fr.liglab.adele.cilia.ApplicationSpecification;
 import fr.liglab.adele.cilia.ChainCallback;
@@ -51,6 +53,8 @@ import fr.liglab.adele.cilia.util.UnModifiableDictionary;
 @SuppressWarnings({ "rawtypes", "unchecked" })
 public class ApplicationSpecificationImpl extends AbstractTopology implements
 		ApplicationSpecification {
+
+	private final Logger logger = LoggerFactory.getLogger(ConstRuntime.LOG_NAME);
 
 	private ApplicationListenerSupport listenerSupport;
 
@@ -110,8 +114,9 @@ public class ApplicationSpecificationImpl extends AbstractTopology implements
 				ciliaContext.getMutex().readLock().release();
 			}
 		} catch (InterruptedException e) {
+			logger.error("Interruped thread ",e);
 			Thread.currentThread().interrupt();
-			throw new RuntimeException();
+			throw new RuntimeException(e.getMessage());
 		}
 	}
 
@@ -169,6 +174,7 @@ public class ApplicationSpecificationImpl extends AbstractTopology implements
 				ciliaContext.getMutex().readLock().release();
 			}
 		} catch (InterruptedException e) {
+			logger.error("Interruped thread ",e);
 			Thread.currentThread().interrupt();
 			throw new RuntimeException();
 		}
@@ -210,6 +216,7 @@ public class ApplicationSpecificationImpl extends AbstractTopology implements
 				ciliaContext.getMutex().readLock().release();
 			}
 		} catch (InterruptedException e) {
+			logger.error("Interruped thread ",e);
 			Thread.currentThread().interrupt();
 			throw new RuntimeException(e.getMessage());
 		}
@@ -247,6 +254,7 @@ public class ApplicationSpecificationImpl extends AbstractTopology implements
 			ciliaContext.getMutex().readLock().acquire();
 			return ciliaContext.getChain(chainId);
 		} catch (InterruptedException e) {
+			logger.error("Interruped thread ",e);
 			throw new RuntimeException(e.getMessage());
 		} finally {
 			ciliaContext.getMutex().readLock().release();

@@ -18,17 +18,18 @@ package fr.liglab.adele.cilia.runtime.impl;
 import java.util.HashMap;
 import java.util.Map;
 
-
 import fr.liglab.adele.cilia.runtime.AdminData;
 import fr.liglab.adele.cilia.util.concurrent.ReadWriteLock;
 import fr.liglab.adele.cilia.util.concurrent.WriterPreferenceReadWriteLock;
+
 /**
  * 
- *
- * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project Team</a>
- *
+ * 
+ * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project
+ *         Team</a>
+ * 
  */
-@SuppressWarnings({"rawtypes", "unchecked"})
+@SuppressWarnings({ "rawtypes", "unchecked" })
 public final class AdminDataImpl implements AdminData {
 
 	private final Map m_dataChain = new HashMap();
@@ -47,29 +48,31 @@ public final class AdminDataImpl implements AdminData {
 			}
 		} catch (InterruptedException e) {
 			Thread.currentThread().interrupt();
-			throw new RuntimeException(e.getMessage());
+			throw new RuntimeException(e.getMessage()) ;
 		}
 	}
 
 	private Map m_getData(String mediatorId, boolean isRegular) {
-		Map dataMediator;
+		Map dataMediator = null;
 		Map dataContainer;
 		try {
 			_lock.readLock().acquire();
-			try {
+			try {		
 				if (isRegular)
 					dataContainer = m_dataChain;
 				else
 					dataContainer = m_dataChainLocked;
-				dataMediator = (Map) dataContainer.get(mediatorId);
+				
+				return (Map) dataContainer.get(mediatorId);
+
 			} finally {
-				_lock.readLock().release();
+				_lock.readLock().release();	
 			}
 		} catch (InterruptedException e) {
 			Thread.currentThread().interrupt();
-			throw new RuntimeException(e.getMessage());
+			throw new RuntimeException(e.getMessage()) ;
 		}
-		return dataMediator;
+
 	}
 
 	public Map getData(String mediatorId, boolean isRegular) {
@@ -117,7 +120,7 @@ public final class AdminDataImpl implements AdminData {
 				}
 			} catch (InterruptedException e) {
 				Thread.currentThread().interrupt();
-				throw new RuntimeException(e.getMessage());
+				throw new RuntimeException(e.getMessage()) ;
 			}
 		}
 	}
@@ -154,7 +157,7 @@ public final class AdminDataImpl implements AdminData {
 			}
 		} catch (InterruptedException e) {
 			Thread.currentThread().interrupt();
-			throw new RuntimeException(e.getMessage());
+			throw new RuntimeException(e.getMessage()) ;
 		}
 	}
 }

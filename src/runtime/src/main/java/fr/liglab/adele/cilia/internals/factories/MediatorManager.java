@@ -376,12 +376,6 @@ public class MediatorManager extends InstanceManager implements ComponentInstanc
 	}
 
 
-	public Object getFieldValue(String fieldName) {
-		return null;
-	}
-	public Object getFieldValue(String fieldName, Object pojo) {
-		return null;
-	}
 	public Object[] getPojoObjects() {
 		return null;
 	}

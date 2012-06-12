@@ -46,6 +46,7 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.Filter;
 import org.osgi.framework.ServiceReference;
 
+import fr.liglab.adele.cilia.framework.monitor.IFieldMonitor;
 import fr.liglab.adele.cilia.framework.monitor.IServiceMonitor;
 import fr.liglab.adele.cilia.runtime.Const;
 import fr.liglab.adele.cilia.runtime.dependency.ServiceUsage.Usage;
@@ -1333,11 +1334,13 @@ public class Dependency extends DependencyModel implements FieldInterceptor,
 
 	
     public synchronized void reconfigure(Dictionary dict) {
-    	
+  		if ((dict != null) && (monitor==null)) {
+			monitor = (IServiceMonitor)dict.get("cilia.monitor.handler");
+		}    	
     }
     
     /* Retreives the monitor handler */
-	private IServiceMonitor getMonitor() {
+	private synchronized IServiceMonitor getMonitor() {
 		if (monitor == null) {
 			monitor = (IServiceMonitor) m_handler.getHandler(
 					Const.ciliaQualifiedName("monitor-handler"));

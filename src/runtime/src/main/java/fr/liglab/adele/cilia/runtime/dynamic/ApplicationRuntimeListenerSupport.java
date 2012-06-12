@@ -209,9 +209,10 @@ public class ApplicationRuntimeListenerSupport implements TrackerCustomizer,
 			} catch (InvocationTargetException e) {
 				Throwable ex = e.getTargetException();
 				if (ex instanceof InterruptedException) {
-					logger.error("TimeOut callback application runtime 'node' ");
+					logger.error("TimeOut callback application runtime 'node' ",ex);
 				}
 			} catch (InterruptedException e) {
+				logger.error("Interruped thread ",e);
 			}
 		}
 	}
@@ -288,9 +289,10 @@ public class ApplicationRuntimeListenerSupport implements TrackerCustomizer,
 			} catch (InvocationTargetException e) {
 				Throwable ex = e.getTargetException();
 				if (ex instanceof InterruptedException) {
-					logger.error("TimeOut callback application runtime 'measure' ");
+					logger.error("TimeOut callback application runtime 'measure' ",ex);
 				}
 			} catch (InterruptedException e) {
+				logger.error("Interruped thread ",e);
 			}
 		}
 	}
@@ -371,9 +373,10 @@ public class ApplicationRuntimeListenerSupport implements TrackerCustomizer,
 			} catch (InvocationTargetException e) {
 				Throwable ex = e.getTargetException();
 				if (ex instanceof InterruptedException) {
-					logger.error("TimeOut callback application runtime 'measure' ");
+					logger.error("TimeOut callback application runtime 'measure' ",ex);
 				}
 			} catch (InterruptedException e) {
+				logger.error("Interruped thread ",e);
 			}
 		}
 	}
@@ -420,7 +423,7 @@ public class ApplicationRuntimeListenerSupport implements TrackerCustomizer,
 					addFilterListener(nodeListeners, property, service);
 				}
 			} catch (Throwable e) {
-				logger.error("Cannot add a listener ");
+				logger.error("Cannot add a listener ",e);
 			}
 		}
 		property = (String) reference.getProperty(NODE_DATA);
@@ -431,7 +434,7 @@ public class ApplicationRuntimeListenerSupport implements TrackerCustomizer,
 					addFilterListener(measureListeners, property, service);
 				}
 			} catch (Throwable e) {
-				logger.error("Cannot add a listener ");
+				logger.error("Cannot add a listener ",e);
 			}
 		}
 		property = (String) reference.getProperty(NODE_DATA_THRESHOLD);
@@ -442,7 +445,7 @@ public class ApplicationRuntimeListenerSupport implements TrackerCustomizer,
 					addFilterListener(thresholdListeners, property, service);
 				}
 			} catch (Throwable e) {
-				logger.error("Cannot add a listener ");
+				logger.error("Cannot add a listener ",e);
 			}
 		}
 	}

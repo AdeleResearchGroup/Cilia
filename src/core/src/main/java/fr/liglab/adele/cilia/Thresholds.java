@@ -25,7 +25,13 @@ import fr.liglab.adele.cilia.exceptions.CiliaIllegalParameterException;
  * 
  */
 public interface Thresholds extends Node {
-
+	
+	/**
+	 * validity of a mediator 
+	 * @return true if the mediator is valid 
+	 */
+	boolean isValid() ;
+	
 	/**
 	 * Set threshols low on numerical variable only
 	 * 

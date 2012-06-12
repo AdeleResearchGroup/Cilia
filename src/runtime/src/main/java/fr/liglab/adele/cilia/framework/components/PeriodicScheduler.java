@@ -22,7 +22,7 @@ public class PeriodicScheduler extends AbstractScheduler implements Runnable {
 	 * Periodic time to launch processing.
 	 */
 	private long period;
-	private Object _lock;
+	private Object _lock=new Object();
 	/**
 	 * The POOL_SIZE, this scheduler will handle only one thread.
 	 */

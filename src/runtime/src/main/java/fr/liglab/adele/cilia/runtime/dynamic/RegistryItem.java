@@ -31,6 +31,7 @@ import fr.liglab.adele.cilia.model.MediatorComponent;
 @SuppressWarnings("rawtypes")
 public interface RegistryItem extends Node {
 
+	
 	/**
 	 * 
 	 * @param key

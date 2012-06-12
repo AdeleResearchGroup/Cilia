@@ -26,7 +26,13 @@ import fr.liglab.adele.cilia.exceptions.CiliaRuntimeException;
  * 
  */
 public interface RawData extends Node {
-
+	
+	/**
+	 * validity of a mediator 
+	 * @return true if the mediator is valid 
+	 */
+	boolean isValid() ;
+	
 	/**
 	 * @param variableId
 	 * @return list of measures stored
@@ -39,5 +45,37 @@ public interface RawData extends Node {
 	 * @return list of variable enabled
 	 */
 	String[] enabledVariable() ;
-
+	
+	/**
+	 * 
+	 * @param variableId
+	 * @return list of measure under or equals veryLow condition
+	 * @throws CiliaIllegalParameterException
+	 */
+	Measure[] measuresVeryLow(String variableId) throws CiliaIllegalParameterException;
+	
+	/**
+	 * 
+	 * @param variableId
+	 * @return List of measure under or equals lox condition
+	 * @throws CiliaIllegalParameterException
+	 */
+	Measure[] measuresLow(String variableId) throws CiliaIllegalParameterException;
+	
+	/**
+	 * 
+	 * @param variableId
+	 * @return List of measure under or equals lox condition
+	 * @throws CiliaIllegalParameterException
+	 */
+	Measure[] measuresHigh(String variableId) throws CiliaIllegalParameterException ;
+	
+	/**
+	 * 
+	 * @param variableId
+	 * @return List of measure under or equals lox condition
+	 * @throws CiliaIllegalParameterException
+	 */
+	Measure[] measuresVeryHigh(String variabelId) throws CiliaIllegalParameterException ;
+		
 }

@@ -37,23 +37,25 @@ public class AuditHandler extends PrimitiveHandler {
 
 	private Set fieldsGet = new HashSet();
 	private Set fieldsSet = new HashSet();
-	private Map fieldsPrefix  = new HashMap() ;
-	
-	private IFieldMonitor monitor;
+	private Map fieldsPrefix = new HashMap();
+
+	private IFieldMonitor monitor = null;
+	private Object _lock = new Object();
 
 	public void configure(Element metadata, Dictionary configuration)
 			throws ConfigurationException {
 		Element[] elem = metadata.getElements("audit", Const.CILIA_NAMESPACE);
 		Set fields = new HashSet();
 		if (elem != null) {
-			String field, rights,prefix;
+			String field, rights, prefix;
 			for (int i = 0; i < elem.length; i++) {
 				field = elem[i].getAttribute("field");
 				rights = elem[i].getAttribute("access");
-				prefix = elem[i].getAttribute("namespace") ;				
+				prefix = elem[i].getAttribute("namespace");
 				if (field != null) {
 					fields.add(field);
-					if (prefix !=null) fieldsPrefix.put(field,prefix+":") ;
+					if (prefix != null)
+						fieldsPrefix.put(field, prefix + ":");
 					if (rights == null) {
 						fieldsGet.add(field);
 						fieldsSet.add(field);
@@ -74,7 +76,7 @@ public class AuditHandler extends PrimitiveHandler {
 			String field = (String) it.next();
 			FieldMetadata fm = pojoMeta.getField(field);
 			getInstanceManager().register(fm, this);
-		}	
+		}
 	}
 
 	public void start() {
@@ -84,22 +86,14 @@ public class AuditHandler extends PrimitiveHandler {
 	}
 
 	private String getQualifiedId(String field) {
-		String name ;
-		if (fieldsPrefix.containsKey(field) ) {
-			name = fieldsPrefix.get(field) + field ;
-		}
-		else name=field;
-		return name ;
+		String name;
+		if (fieldsPrefix.containsKey(field)) {
+			name = fieldsPrefix.get(field) + field;
+		} else
+			name = field;
+		return name;
 	}
-	
-	private IFieldMonitor getMonitor() {
-		if (monitor == null) {
-			monitor = (IFieldMonitor) getInstanceManager().getHandler(
-					Const.ciliaQualifiedName("monitor-handler"));
-		}
-		return monitor;
-	}
-	
+
 	/**
 	 * This method is called at each time the pojo 'get' a listened field. The
 	 * method return the stored value.
@@ -115,14 +109,14 @@ public class AuditHandler extends PrimitiveHandler {
 	 *      java.lang.Object)
 	 */
 	public Object onGet(Object pojo, String field, Object o) {
-		String name = getQualifiedId(field);
+		String qualifiedField = getQualifiedId(field);
 		if (fieldsGet.contains(field)) {
 			IFieldMonitor mon = getMonitor();
 			if (mon != null) {
-				mon.onFieldGet(name, o);
+				mon.onFieldGet(qualifiedField, o);
 			}
-			logger.debug("Read access {}={}", name, o.toString());
 		}
+		logger.info("onGet {}", qualifiedField);
 		return o;
 	}
 
@@ -140,20 +134,31 @@ public class AuditHandler extends PrimitiveHandler {
 	 *      java.lang.Object)
 	 */
 	public void onSet(Object pojo, String field, Object newvalue) {
-		String name = getQualifiedId(field);
+		String qualifiedField = getQualifiedId(field);
 		if (fieldsSet.contains(field)) {
 			IFieldMonitor mon = getMonitor();
 			if (mon != null)
-				mon.onFieldSet(name, newvalue);
-			logger.debug("Write access {}={}", name, newvalue.toString());
+				mon.onFieldSet(qualifiedField, newvalue);
+		}
+		logger.info("onSet {}", qualifiedField);
+	}
+
+	/* called by schedulerHandler and dispatcherHandler */
+	public void reconfigure(Dictionary configuration) {
+		synchronized (_lock) {
+			if ((configuration != null) && (monitor == null)) {
+				monitor = (IFieldMonitor) configuration.get("cilia.monitor.handler");
+			}
 		}
 	}
 
-//	public synchronized void reconfigure(Dictionary configuration) {
-//		if (configuration != null) {
-//			logger.debug("reconfiguration called");
-//			Object ref = configuration.get("cilia.monitor.handler");
-//			monitor = (IFieldMonitor) ref;
-//		}
-//	}
+	private IFieldMonitor getMonitor() {
+		synchronized (_lock) {
+			if (monitor == null) {
+				monitor = (IFieldMonitor) getInstanceManager().getHandler(
+						Const.ciliaQualifiedName("monitor-handler"));
+			}
+			return monitor;
+		}
+	}
 }

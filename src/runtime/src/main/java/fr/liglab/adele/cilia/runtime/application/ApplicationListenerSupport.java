@@ -18,7 +18,6 @@ package fr.liglab.adele.cilia.runtime.application;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Dictionary;
-import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Map;
@@ -42,8 +41,6 @@ import fr.liglab.adele.cilia.exceptions.CiliaInvalidSyntaxException;
 import fr.liglab.adele.cilia.runtime.ConstRuntime;
 import fr.liglab.adele.cilia.util.SwingWorker;
 import fr.liglab.adele.cilia.util.concurrent.ConcurrentReaderHashMap;
-import fr.liglab.adele.cilia.util.concurrent.ReentrantWriterPreferenceReadWriteLock;
-import fr.liglab.adele.cilia.util.concurrent.SyncMap;
 
 /**
  * 
@@ -101,6 +98,7 @@ public class ApplicationListenerSupport implements TrackerCustomizer, ChainRegis
 						this);
 				tracker.open();
 			} catch (InvalidSyntaxException e) {
+				/* Never happens */
 			}
 		}
 
@@ -240,9 +238,10 @@ public class ApplicationListenerSupport implements TrackerCustomizer, ChainRegis
 			} catch (InvocationTargetException e) {
 				Throwable ex = e.getTargetException();
 				if (ex instanceof InterruptedException) {
-					logger.error("TimeOut callback application specification 'node' ");
+					logger.error("TimeOut callback application specification 'node' ",ex);
 				}
 			} catch (InterruptedException e) {
+				logger.error("Interruped thread ",e);
 			}
 		}
 	}
@@ -328,7 +327,7 @@ public class ApplicationListenerSupport implements TrackerCustomizer, ChainRegis
 			} catch (InvocationTargetException e) {
 				Throwable ex = e.getTargetException();
 				if (ex instanceof InterruptedException) {
-					logger.error("TimeOut callback application specification 'node' ");
+					logger.error("TimeOut callback application specification 'node' ",ex);
 				}
 			} catch (InterruptedException e) {
 			}
@@ -358,7 +357,7 @@ public class ApplicationListenerSupport implements TrackerCustomizer, ChainRegis
 					addFilterListener(listenerNode, ldapFilter, service);
 				}
 			} catch (Exception e) {
-				logger.error("Cannot add a listener ");
+				logger.error("Cannot add a listener ",e);
 			}
 		}
 		ldapFilter = (String) reference.getProperty(CHAIN_APPLICATION_LISTENER);
@@ -369,7 +368,7 @@ public class ApplicationListenerSupport implements TrackerCustomizer, ChainRegis
 					addFilterListener(listenerChain, ldapFilter, service);
 				}
 			} catch (Exception e) {
-				logger.error("Cannot add a listener ");
+				logger.error("Cannot add a listener ",e);
 			}
 		}
 	}

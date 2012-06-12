@@ -103,6 +103,7 @@ public class RuntimeRegistryImpl implements RuntimeRegistry {
 			}
 
 		} catch (InterruptedException e) {
+			logger.error("Interruped thread ",e);
 			Thread.currentThread().interrupt();
 			throw new RuntimeException(e.getMessage());
 		}
@@ -136,6 +137,7 @@ public class RuntimeRegistryImpl implements RuntimeRegistry {
 				locked_uuid.put(uuid, mutex);
 			} catch (InterruptedException e) {
 				locked_uuid.remove(uuid);
+				logger.error("Interruped thread ",e);
 				Thread.currentThread().interrupt();
 				throw new RuntimeException(e.getMessage());
 			}

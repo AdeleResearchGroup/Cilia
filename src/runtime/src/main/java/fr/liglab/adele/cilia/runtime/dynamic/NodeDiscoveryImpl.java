@@ -79,7 +79,7 @@ public class NodeDiscoveryImpl implements TrackerCustomizer, ComponentStateVarPr
 						bundleContext.createFilter(SERVICE_TRACKED), this);
 				tracker.open();
 			} catch (InvalidSyntaxException e) {
-				e.printStackTrace();
+				/* cannot happens */
 			}
 		}
 	}

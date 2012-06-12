@@ -155,6 +155,35 @@
 					<target>1.5</target>
 				</configuration>
 			</plugin>
+			<!--  begin added -->
+			<plugin>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>maven-ipojo-plugin</artifactId>
+				<version>1.6.0</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>ipojo-bundle</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>maven-bundle-plugin</artifactId>
+				<extensions>true</extensions>
+				<configuration>
+					<instructions>
+						<compilerArgument></compilerArgument>
+						<Bundle-SymbolicName>${pom.artifactId}</Bundle-SymbolicName>
+						<Import-Package>
+						</Import-Package>
+						<Export-Package >
+						</Export-Package>
+					</instructions>
+				</configuration>
+			</plugin>
+			<!--  End added -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>

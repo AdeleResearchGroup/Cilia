@@ -125,4 +125,5 @@ public class RegistryItemImpl implements RegistryItem {
 	public long timeStamp() {
 		return timeStamp;
 	}
+
 }

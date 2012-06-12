@@ -29,7 +29,6 @@ import fr.liglab.adele.cilia.Thresholds;
 import fr.liglab.adele.cilia.ThresholdsCallback;
 import fr.liglab.adele.cilia.exceptions.CiliaIllegalParameterException;
 import fr.liglab.adele.cilia.exceptions.CiliaInvalidSyntaxException;
-import fr.liglab.adele.cilia.framework.monitor.statevariable.ComponentStateVarService;
 import fr.liglab.adele.cilia.runtime.ConstRuntime;
 import fr.liglab.adele.cilia.util.FrameworkUtils;
 import fr.liglab.adele.cilia.util.Watch;
@@ -48,13 +47,13 @@ import fr.liglab.adele.cilia.util.concurrent.SyncMap;
 public class DynamicNode implements SetUp, RawData, Thresholds {
 
 	private final Logger logger = LoggerFactory.getLogger(ConstRuntime.LOG_NAME);
-	//private ComponentStateVarService mediatorHandler;
+	// private ComponentStateVarService mediatorHandler;
 
 	private static final int NB_THRESHOLD = 4;
 
 	private final ApplicationRuntimeListenerSupport nodeListeners;
-	/* Object in the registry*/
-	private final RegistryItem item ;
+	/* Object in the registry */
+	private final RegistryItem item;
 
 	/* list of variables managed by this component */
 	private SyncMap variablesId = new SyncMap(new HashMap(),
@@ -64,7 +63,7 @@ public class DynamicNode implements SetUp, RawData, Thresholds {
 			final ApplicationRuntimeListenerSupport nodeListeners) {
 
 		item = registry.findByUuid(uuid);
-		//mediatorHandler = item.runtimeReference();
+		// mediatorHandler = item.runtimeReference();
 		this.nodeListeners = nodeListeners;
 	}
 
@@ -73,13 +72,13 @@ public class DynamicNode implements SetUp, RawData, Thresholds {
 	}
 
 	public String chainId() {
-		return  item.chainId();
+		return item.chainId();
 	}
 
 	public String nodeId() {
 		return item.nodeId();
 	}
-	
+
 	public long timeStamp() {
 		return item.timeStamp();
 	}
@@ -167,7 +166,7 @@ public class DynamicNode implements SetUp, RawData, Thresholds {
 			} else {
 				nodeListeners.fireThresholdEvent(this, variableId, obj, evt);
 			}
-			logger.info("Received variable [{},{}]", variableId,obj.toString());
+			logger.info("Received variable [{},{}]", variableId, obj.toString());
 		}
 	}
 
@@ -204,6 +203,7 @@ public class DynamicNode implements SetUp, RawData, Thresholds {
 					measures.writerSync().release();
 				}
 			} catch (InterruptedException ex) {
+				logger.error("Interruped thread ", ex);
 				Thread.currentThread().interrupt();
 				throw new RuntimeException(ex.getMessage());
 			}
@@ -219,9 +219,14 @@ public class DynamicNode implements SetUp, RawData, Thresholds {
 					measures.readerSync().release();
 				}
 			} catch (InterruptedException ex) {
+				logger.error("Interruped thread ", ex);
 				Thread.currentThread().interrupt();
 				throw new RuntimeException(ex.getMessage());
 			}
+		}
+
+		public Measure[] getVeryLowMeasure() {
+			throw new UnsupportedOperationException("not yet implemented");
 		}
 
 		public void setQueueSize(int queue) {
@@ -237,6 +242,7 @@ public class DynamicNode implements SetUp, RawData, Thresholds {
 					measures.writerSync().release();
 				}
 			} catch (InterruptedException ex) {
+				logger.error("Interruped thread ", ex);
 				Thread.currentThread().interrupt();
 				throw new RuntimeException(ex.getMessage());
 			}
@@ -324,11 +330,13 @@ public class DynamicNode implements SetUp, RawData, Thresholds {
 				else
 					item.runtimeReference().disableStateVar(variableId);
 				/* notify on modification all listeners */
-				nodeListeners.fireNodeEvent(ApplicationRuntimeListenerSupport.EVT_MODIFIED, this);
+				nodeListeners.fireNodeEvent(
+						ApplicationRuntimeListenerSupport.EVT_MODIFIED, this);
 			} finally {
 				variablesId.writerSync().release();
 			}
 		} catch (InterruptedException e) {
+			logger.error("Interruped thread ", e);
 			Thread.currentThread().interrupt();
 			throw new RuntimeException(e.getMessage());
 		}
@@ -361,12 +369,14 @@ public class DynamicNode implements SetUp, RawData, Thresholds {
 					observation.setQueueSize(queueSize);
 				}
 				/* notify on modification all listeners */
-				nodeListeners.fireNodeEvent(ApplicationRuntimeListenerSupport.EVT_MODIFIED, this);
+				nodeListeners.fireNodeEvent(
+						ApplicationRuntimeListenerSupport.EVT_MODIFIED, this);
 			} finally {
 				variablesId.writerSync().release();
 			}
 
 		} catch (InterruptedException e) {
+			logger.error("Interruped thread ", e);
 			Thread.currentThread().interrupt();
 			throw new RuntimeException(e.getMessage());
 		}
@@ -389,11 +399,13 @@ public class DynamicNode implements SetUp, RawData, Thresholds {
 				}
 				item.runtimeReference().setCondition(variableId, ldapFilter);
 				/* notify on modification all listeners */
-				nodeListeners.fireNodeEvent(ApplicationRuntimeListenerSupport.EVT_MODIFIED, this);
+				nodeListeners.fireNodeEvent(
+						ApplicationRuntimeListenerSupport.EVT_MODIFIED, this);
 			} finally {
 				variablesId.writerSync().release();
 			}
 		} catch (InterruptedException e) {
+			logger.error("Interruped thread ", e);
 			Thread.currentThread().interrupt();
 			throw new RuntimeException(e.getMessage());
 		}
@@ -430,11 +442,13 @@ public class DynamicNode implements SetUp, RawData, Thresholds {
 				else
 					item.runtimeReference().disableStateVar(variableId);
 
-				nodeListeners.fireNodeEvent(ApplicationRuntimeListenerSupport.EVT_MODIFIED, this);
+				nodeListeners.fireNodeEvent(
+						ApplicationRuntimeListenerSupport.EVT_MODIFIED, this);
 			} finally {
 				variablesId.writerSync().release();
 			}
 		} catch (InterruptedException e) {
+			logger.error("Interruped thread ", e);
 			Thread.currentThread().interrupt();
 			throw new RuntimeException(e.getMessage());
 		}
@@ -480,17 +494,77 @@ public class DynamicNode implements SetUp, RawData, Thresholds {
 	public String qualifiedId() {
 		return FrameworkUtils.makeQualifiedId(chainId(), nodeId(), uuid());
 	}
-	
+
 	public String toString() {
-		StringBuffer sb= new StringBuffer(qualifiedId());
-		sb.append("creation date :"+Watch.formatDateIso8601(timeStamp()));
+		StringBuffer sb = new StringBuffer(qualifiedId());
+		sb.append("creation date :" + Watch.formatDateIso8601(timeStamp()));
 		sb.append("{");
 		Iterator it = variablesId.entrySet().iterator();
 		while (it.hasNext()) {
 			Map.Entry pairs = (Map.Entry) it.next();
-			sb.append(pairs.getKey()).append(",");		
+			sb.append(pairs.getKey()).append(",");
 		}
 		sb.append("}");
-		return sb.toString() ;
+		return sb.toString();
+	}
+
+	public Measure[] measuresVeryLow(String variableId)
+			throws CiliaIllegalParameterException {
+		Measure[] m;
+		if (variableId == null)
+			throw new CiliaIllegalParameterException("Variable id must not be null !");
+		/* retreive the component */
+		Observations measures = (Observations) variablesId.get(variableId);
+		if (measures != null) {
+			m = measures.getMeasure();
+		} else
+			m = new Measure[0];
+		return m;
+	}
+
+	public Measure[] measuresLow(String variableId) throws CiliaIllegalParameterException {
+		Measure[] m;
+		if (variableId == null)
+			throw new CiliaIllegalParameterException("Variable id must not be null !");
+		/* retreive the component */
+		Observations measures = (Observations) variablesId.get(variableId);
+		if (measures != null) {
+			m = measures.getMeasure();
+		} else
+			m = new Measure[0];
+		return m;
+	}
+
+	public Measure[] measuresHigh(String variableId)
+			throws CiliaIllegalParameterException {
+		Measure[] m;
+		if (variableId == null)
+			throw new CiliaIllegalParameterException("Variable id must not be null !");
+		/* retreive the component */
+		Observations measures = (Observations) variablesId.get(variableId);
+		if (measures != null) {
+			m = measures.getMeasure();
+		} else
+			m = new Measure[0];
+		return m;
+
+	}
+
+	public Measure[] measuresVeryHigh(String variableId)
+			throws CiliaIllegalParameterException {
+		Measure[] m;
+		if (variableId == null)
+			throw new CiliaIllegalParameterException("Variable id must not be null !");
+		/* retreive the component */
+		Observations measures = (Observations) variablesId.get(variableId);
+		if (measures != null) {
+			m = measures.getMeasure();
+		} else
+			m = new Measure[0];
+		return m;
+	}
+
+	public boolean isValid() {
+		return item.runtimeReference().isComponentValid() ;
 	}
 }

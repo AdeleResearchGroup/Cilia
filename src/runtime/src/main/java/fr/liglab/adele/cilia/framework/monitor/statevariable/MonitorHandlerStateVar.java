@@ -24,10 +24,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.felix.ipojo.ComponentInstance;
 import org.apache.felix.ipojo.ConfigurationException;
+import org.apache.felix.ipojo.Handler;
+import org.apache.felix.ipojo.InstanceStateListener;
 import org.apache.felix.ipojo.metadata.Element;
 
 import fr.liglab.adele.cilia.Data;
+import fr.liglab.adele.cilia.runtime.Const;
 import fr.liglab.adele.cilia.runtime.WorkQueue;
 import fr.liglab.adele.cilia.util.Watch;
 
@@ -36,6 +40,7 @@ public class MonitorHandlerStateVar extends AbstractStateVariable {
 	/* TAG for storing message history */
 	private static final String PROPERTY_MSG_HISTORY = "cilia.message.history";
 	private static final String PROPERTY_BINDING_TIME = "cilia.message.time.bind";
+
 	/* Liste of state var */
 
 	private static final Set setStateVar, setDependencyCall, setEventing, setSystemCall,
@@ -412,6 +417,39 @@ public class MonitorHandlerStateVar extends AbstractStateVariable {
 		public void run() {
 			publish(stateVar, data, tickCount);
 		}
+	}
+
+	/* Return the mediator/adapteur instance validity */
+	public synchronized boolean isComponentValid() {
+		boolean isValid = false;
+		;
+		int counter = 0;
+		try {
+			Handler handler;
+			System.out.println("mediator name " + getInstanceManager().getInstanceName());
+			// handler = getHandler(Const.ciliaQualifiedName("scheduler"));
+			handler = getInstanceManager().getHandler(
+					Const.ciliaQualifiedName("scheduler"));
+
+			System.out.println("Handler dispatcher "+((Handler)this.getDispatcher()).isValid());
+			System.out.println("Hanlder Scheduler :"+((Handler)this.getScheduler()).isValid() );
+			if (handler == null) {
+				System.out.println("Handler scheduler null");
+			} else if (handler.getValidity()) {
+				counter = 1;
+			}
+			handler = getInstanceManager().getHandler(
+					Const.ciliaQualifiedName("dispatcher-tracker"));
+			if (handler == null) {
+				System.out.println("Handler dispatcher null");
+			} 
+		} catch (Throwable e) {
+			e.printStackTrace();
+		}
+		if (counter == 2)
+			isValid = true;
+		System.out.println("is Valid called " + isValid);
+		return isValid;
 	}
 
 }

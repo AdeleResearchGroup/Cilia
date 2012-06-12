@@ -20,6 +20,9 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import fr.liglab.adele.cilia.Node;
 import fr.liglab.adele.cilia.Topology;
 import fr.liglab.adele.cilia.exceptions.CiliaIllegalParameterException;
@@ -42,6 +45,7 @@ import fr.liglab.adele.cilia.runtime.ConstRuntime;
  */
 @SuppressWarnings({ "rawtypes", "unchecked" })
 public abstract class AbstractTopology implements Topology {
+	private final Logger logger = LoggerFactory.getLogger(ConstRuntime.LOG_NAME);
 
 	protected CiliaContainer ciliaContext;
 
@@ -149,6 +153,7 @@ public abstract class AbstractTopology implements Topology {
 				ciliaContext.getMutex().readLock().release();
 			}
 		} catch (InterruptedException e) {
+			logger.error("Interruped thread ",e);
 			Thread.currentThread().interrupt();
 			throw new RuntimeException(e.getMessage());
 		}

@@ -115,6 +115,7 @@ public class ApplicationRuntimeImpl extends AbstractTopology implements
 				mutex.writeLock().release();
 			}
 		} catch (InterruptedException e) {
+			logger.error("Interruped thread ",e);
 			Thread.currentThread().interrupt();
 			throw new RuntimeException(e.getMessage());
 		}
@@ -130,6 +131,7 @@ public class ApplicationRuntimeImpl extends AbstractTopology implements
 				mutex.writeLock().release();
 			}
 		} catch (InterruptedException e) {
+			logger.error("Interruped thread ",e);
 			Thread.currentThread().interrupt();
 			throw new RuntimeException(e.getMessage());
 		}
@@ -183,6 +185,7 @@ public class ApplicationRuntimeImpl extends AbstractTopology implements
 				mutex.readLock().release();
 			}
 		} catch (InterruptedException e) {
+			logger.error("Interruped thread ",e);
 			Thread.currentThread().interrupt();
 			throw new RuntimeException(e.getMessage());
 		}
@@ -220,6 +223,7 @@ public class ApplicationRuntimeImpl extends AbstractTopology implements
 				mutex.readLock().release();
 			}
 		} catch (InterruptedException e) {
+			logger.error("Interruped thread ",e);
 			Thread.currentThread().interrupt();
 			throw new RuntimeException(e.getMessage());
 		}
@@ -249,6 +253,7 @@ public class ApplicationRuntimeImpl extends AbstractTopology implements
 				mutex.readLock().release();
 			}
 		} catch (InterruptedException e) {
+			logger.error("Interruped thread ",e);
 			Thread.currentThread().interrupt();
 			throw new RuntimeException(e.getMessage());
 		}

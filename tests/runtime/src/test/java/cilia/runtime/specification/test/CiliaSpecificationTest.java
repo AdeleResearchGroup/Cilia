@@ -59,7 +59,7 @@ import fr.liglab.adele.cilia.model.Chain;
 import fr.liglab.adele.cilia.model.MediatorComponent;
 
 @RunWith(JUnit4TestRunner.class)
-public class CiliaSpecificationTester {
+public class CiliaSpecificationTest {
 
 	
 	@Inject
@@ -178,6 +178,7 @@ public class CiliaSpecificationTester {
 			Assert.fail("Invalid exception thrown " + e.getMessage());
 		} catch (CiliaInvalidSyntaxException e) {
 			/* OK */
+			assertNotNull(e.getMessage());
 		} catch (Exception e) {
 			Assert.fail("Invalid exception thrown " + e.getMessage());
 		}
@@ -188,6 +189,7 @@ public class CiliaSpecificationTester {
 			Assert.fail("No Exception thrown : missing ldap keyword ");
 		} catch (CiliaIllegalParameterException e) {
 			/* OK */
+			assertNotNull(e.getMessage());
 		} catch (CiliaInvalidSyntaxException e) {
 			Assert.fail("Invalid exception thrown " + e.getMessage());
 		} catch (Exception e) {
@@ -199,6 +201,7 @@ public class CiliaSpecificationTester {
 			Assert.fail("No Exception thrown :null filter");
 		} catch (CiliaIllegalParameterException e) {
 			/* OK */
+			assertNotNull(e.getMessage());
 		} catch (CiliaInvalidSyntaxException e) {
 			Assert.fail("Invalid exception thrown " + e.getMessage());
 		} catch (Exception e) {
@@ -269,6 +272,7 @@ public class CiliaSpecificationTester {
 			Assert.fail("no exception thrown invalid parameter");
 		} catch (CiliaIllegalParameterException e) {
 			/* OK */
+			assertNotNull(e.getMessage());
 		} catch (Exception e) {
 			Assert.fail("Invalid exception thrown " + e.getMessage());
 		}
@@ -329,6 +333,7 @@ public class CiliaSpecificationTester {
 			Assert.fail("Exception not thrown");
 		} catch (CiliaIllegalParameterException e) {
 			/* OK */
+			assertNotNull(e.getMessage());
 		} catch (Exception e) {
 			Assert.fail("Invalid exception thrown " + e.getMessage());
 		}
@@ -348,6 +353,7 @@ public class CiliaSpecificationTester {
 			Dictionary dico = application.properties(null);
 		} catch (CiliaIllegalParameterException e) {
 			/* OK */
+			assertNotNull(e.getMessage());
 		} catch (Exception e) {
 			Assert.fail("Invalid exception thrown " + e.getMessage());
 		}
@@ -376,6 +382,7 @@ public class CiliaSpecificationTester {
 			Assert.fail("Exception not thrown");
 		} catch (CiliaIllegalParameterException e) {
 			/* OK */
+			assertNotNull(e.getMessage());
 		} catch (CiliaInvalidSyntaxException e) {
 			Assert.fail("Invalid exception thrown " + e.getMessage());
 		} catch (Exception e) {
@@ -427,6 +434,7 @@ public class CiliaSpecificationTester {
 			Assert.fail("Exception not thrown");
 		} catch (CiliaIllegalParameterException e) {
 			/* OK */
+			assertNotNull(e.getMessage());
 		} catch (CiliaInvalidSyntaxException e) {
 			Assert.fail("Invalid exception thrown " + e.getMessage());
 		} catch (Exception e) {
@@ -440,6 +448,7 @@ public class CiliaSpecificationTester {
 			Assert.fail("Invalid exception thrown " + e.getMessage());
 		} catch (CiliaInvalidSyntaxException e) {
 			/* OK */
+			assertNotNull(e.getMessage());
 		} catch (Exception e) {
 			Assert.fail("Invalid exception thrown " + e.getMessage());
 		}
@@ -489,6 +498,7 @@ public class CiliaSpecificationTester {
 			Assert.fail("Exception not thrown");
 		} catch (CiliaInvalidSyntaxException e) {
 			/* OK */
+			assertNotNull(e.getMessage());
 		} catch (Exception e) {
 			Assert.fail("Invalid exception thrown " + e.getMessage());
 		}
@@ -519,6 +529,7 @@ public class CiliaSpecificationTester {
 			}
 		} catch (CiliaInvalidSyntaxException e) {
 			/* OK */
+			assertNotNull(e.getMessage());
 		} catch (Exception e) {
 			Assert.fail("Invalid exception thrown " + e.getMessage());
 		}
@@ -534,6 +545,7 @@ public class CiliaSpecificationTester {
 			}
 		} catch (CiliaInvalidSyntaxException e) {
 			/* OK */
+			assertNotNull(e.getMessage());
 		} catch (Exception e) {
 			Assert.fail("Invalid exception thrown " + e.getMessage());
 		}
@@ -547,6 +559,7 @@ public class CiliaSpecificationTester {
 
 		} catch (CiliaInvalidSyntaxException e) {
 			/* OK */
+			assertNotNull(e.getMessage());
 		} catch (Exception e) {
 			Assert.fail("Invalid exception thrown " + e.getMessage());
 		}
@@ -599,12 +612,13 @@ public class CiliaSpecificationTester {
 	private void api_registerListener(ApplicationSpecification application) {
 		 CountDownLatch done = new CountDownLatch(1) ;
 		 ChainCallbacks callback = new ChainCallbacks(done);
-		/* checks wrong parameters */
+		/* checks illegal parameters */
 		try {
 			application.addListener(null, (ChainCallback)callback);
 			Assert.fail("Exception not thrown");
 		} catch (CiliaIllegalParameterException e) {
 			/* OK */
+			assertNotNull(e.getMessage());
 		} catch (Exception e) {
 			Assert.fail("Invalid exception thrown " + e.getMessage());
 		}
@@ -614,10 +628,12 @@ public class CiliaSpecificationTester {
 			Assert.fail("Exception not thrown");
 		} catch (CiliaInvalidSyntaxException e) {
 			/* OK */
+			assertNotNull(e.getMessage());
 		} catch (Exception e) {
 			Assert.fail("Invalid exception thrown " + e.getMessage());
 		}
 
+		/* Check callback */
 		try {
 			callback.result=false ;
 			application.addListener("(&(chain=*)(node=*))", (NodeCallback)callback);
@@ -637,9 +653,6 @@ public class CiliaSpecificationTester {
 
 	}
 
-	private void api_unregisterListener(ApplicationSpecification application) {
-		
-	}
 
 	private void illegalStateException(ApplicationSpecification application) {
 		Node[] nodes = null ;
@@ -654,6 +667,7 @@ public class CiliaSpecificationTester {
 			Assert.fail("No Exception thrown ");
 		}catch (CiliaIllegalStateException e) {
 			/* OK */
+			assertNotNull(e.getMessage());
 		} catch (Exception e) {
 			Assert.fail("Invalid exception thrown " + e.getMessage());
 		} 	
@@ -663,6 +677,7 @@ public class CiliaSpecificationTester {
 		}
 		catch (CiliaIllegalStateException e) {
 			/* OK */
+			assertNotNull(e.getMessage());
 		}
 		catch (Exception e) {
 			Assert.fail("Invalid exception thrown " + e.getMessage());
@@ -673,6 +688,7 @@ public class CiliaSpecificationTester {
 		}
 		catch (CiliaIllegalStateException e) {
 			/* OK */
+			assertNotNull(e.getMessage());
 		}
 		catch (Exception e) {
 			Assert.fail("Invalid exception thrown " + e.getMessage());
@@ -751,7 +767,6 @@ public class CiliaSpecificationTester {
 		api_endpointsOut(application);
 		api_connectedTo(application);
 		api_registerListener(application);
-		api_unregisterListener(application);
 		illegalStateException(application);
 	}
 
