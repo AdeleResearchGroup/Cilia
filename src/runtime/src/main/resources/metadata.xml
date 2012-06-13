@@ -62,9 +62,10 @@
 			<property name="mediator.service" value="monitor" type="String" />
 		</provides>
 		<requires field="m_systemQueue" specification="fr.liglab.adele.cilia.runtime.WorkQueue"
-			filter="(cilia.pool.scope=application)" />
+			filter="(cilia.pool.scope=application)" />			
 		<callback transition="validate" method="validate" />
 		<callback transition="invalidate" method="unvalidate" />
+
 	</handler>
 
 	<handler classname="fr.liglab.adele.cilia.runtime.impl.SchedulerHandler"
@@ -81,7 +82,7 @@
 		classname="fr.liglab.adele.cilia.framework.components.ImmediateScheduler"
 		name="immediate-scheduler" namespace="fr.liglab.adele.cilia"
 		architecture="false">
- <!--
+<!--  
 		<cilia:audit field="testAudit" namespace ="scheduler" access="rw" />
 		
 		<requires field="wq" specification="fr.liglab.adele.cilia.runtime.WorkQueue"

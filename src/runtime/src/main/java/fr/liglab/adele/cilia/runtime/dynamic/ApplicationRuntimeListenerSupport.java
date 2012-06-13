@@ -60,6 +60,9 @@ public class ApplicationRuntimeListenerSupport implements TrackerCustomizer,
 	public static final int EVT_ARRIVAL = 1;
 	public static final int EVT_DEPARTURE = 2;
 	public static final int EVT_MODIFIED = 3;
+	public static final int EVT_VALID = 4 ; 
+	public static final int EVT_INVALID = 5 ;
+	
 
 	private static final String NODE_LISTENER = "cilia.runtime.node";
 	private static final String NODE_DATA = "cilia.runtime.node.data";
@@ -188,7 +191,16 @@ public class ApplicationRuntimeListenerSupport implements TrackerCustomizer,
 			case EVT_MODIFIED:
 				callback.onModified(node);
 				break;
-			}
+			
+			case EVT_VALID :
+				callback.onStateChange(node,true) ;
+				break ;
+			
+			case EVT_INVALID :
+				callback.onStateChange(node,false) ;
+				break ;
+			}	
+
 		}
 
 		protected Object construct() throws InterruptedException {

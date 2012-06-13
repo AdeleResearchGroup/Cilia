@@ -35,7 +35,7 @@ import fr.liglab.adele.cilia.runtime.Const;
 import fr.liglab.adele.cilia.runtime.WorkQueue;
 import fr.liglab.adele.cilia.util.Watch;
 
-public class MonitorHandlerStateVar extends AbstractStateVariable {
+public class MonitorHandlerStateVar extends AbstractStateVariable implements InstanceStateListener {
 
 	/* TAG for storing message history */
 	private static final String PROPERTY_MSG_HISTORY = "cilia.message.history";
@@ -105,6 +105,7 @@ public class MonitorHandlerStateVar extends AbstractStateVariable {
 	private LinkedList m_historyList = new LinkedList();
 	private Object _lock = new Object();
 	private Watch processTime;
+	private boolean isMediatorValid = false ;
 
 	public void configure(Element metadata, Dictionary configuration)
 			throws ConfigurationException {
@@ -121,7 +122,18 @@ public class MonitorHandlerStateVar extends AbstractStateVariable {
 	}
 
 	public void unvalidate() {
-		super.unvalidate();
+		super.unvalidate() ;
+	}
+	
+	public void start() {
+		/* Start eventAdmin */
+		super.start();
+		super.getInstanceManager().addInstanceStateListener(this) ;
+	}
+	
+	public void stop() {
+		super.stop() ;
+		super.getInstanceManager().addInstanceStateListener(this) ;
 	}
 
 	private void gatherIncommingHistory(Data data) {
@@ -420,36 +432,17 @@ public class MonitorHandlerStateVar extends AbstractStateVariable {
 	}
 
 	/* Return the mediator/adapteur instance validity */
-	public synchronized boolean isComponentValid() {
-		boolean isValid = false;
-		;
-		int counter = 0;
-		try {
-			Handler handler;
-			System.out.println("mediator name " + getInstanceManager().getInstanceName());
-			// handler = getHandler(Const.ciliaQualifiedName("scheduler"));
-			handler = getInstanceManager().getHandler(
-					Const.ciliaQualifiedName("scheduler"));
+	public  boolean isComponentValid() {
+		return isMediatorValid;
+	}
 
-			System.out.println("Handler dispatcher "+((Handler)this.getDispatcher()).isValid());
-			System.out.println("Hanlder Scheduler :"+((Handler)this.getScheduler()).isValid() );
-			if (handler == null) {
-				System.out.println("Handler scheduler null");
-			} else if (handler.getValidity()) {
-				counter = 1;
-			}
-			handler = getInstanceManager().getHandler(
-					Const.ciliaQualifiedName("dispatcher-tracker"));
-			if (handler == null) {
-				System.out.println("Handler dispatcher null");
-			} 
-		} catch (Throwable e) {
-			e.printStackTrace();
-		}
-		if (counter == 2)
-			isValid = true;
-		System.out.println("is Valid called " + isValid);
-		return isValid;
+	/* Publish the new state */ 
+	public void stateChanged(ComponentInstance instance, int newState) {
+		Boolean valid ;
+		if (newState == ComponentInstance.VALID) valid = new Boolean(true) ;
+		else valid= new Boolean(false);
+		isMediatorValid = valid.booleanValue() ;
+		m_systemQueue.execute(new AsynchronousExec("mediator.state", valid));
 	}
 
 }

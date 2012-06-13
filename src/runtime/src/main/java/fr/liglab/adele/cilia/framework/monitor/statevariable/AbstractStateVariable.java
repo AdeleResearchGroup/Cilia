@@ -81,17 +81,24 @@ public abstract class AbstractStateVariable extends AbstractMonitor implements
 	}
 
 	public void validate() {
-		m_bundleContext = getFactory().getBundleContext();
-		retreiveEventAdmin();
 	}
 
 	public void unvalidate() {
+	}
+	
+	public void start() {
+		m_bundleContext = getFactory().getBundleContext();
+		retreiveEventAdmin();		
+	}
+	
+	public void stop() {	
 		/* Disable all state var */
 		enable(false);
 		/* Clear state var */
 		m_lastPublich.clear();
 		m_listStateVarEnable.clear();
 	}
+	
 
 	/*
 	 * Enable all state var (non-Javadoc)

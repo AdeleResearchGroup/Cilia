@@ -220,4 +220,9 @@ public class ApplRuntime implements NodeCallback, MeasureCallback, ThresholdsCal
 	public void onUnBind(Node from, Node to) {
 		// TODO Auto-generated method stub		
 	}
+
+	public void onStateChange(Node node, boolean isValid) {
+		// TODO Auto-generated method stub
+		
+	}
 }

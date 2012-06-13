@@ -131,6 +131,7 @@ public final class ConstRuntime {
 		dico.put(TIMESTAMP,new Long(node.timeStamp()));
 		return filter.match(dico);
 	}
+	
 	public static final boolean isFilterMatching(Filter filter, Node node,String variable) {
 		Dictionary dico = new Hashtable(5);
 		dico.put(UUID, node.uuid());

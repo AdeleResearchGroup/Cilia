@@ -749,10 +749,126 @@ public class CiliaSpecificationTest {
 			stop() ;
 		}
 
+
+		public void onStateChange(Node node, boolean isValid) {
+			// TODO Auto-generated method stub
+			
+		}
+
 	}
 
 	@Test
-	public void all_apis() {
+	public void testBuildChain() {
+		CiliaTools.waitToInitialize();
+		CiliaContext ciliaContext = getCiliaContextService();
+		ApplicationSpecification application = ciliaContext.getApplicationSpecification();
+		assertNotNull(application);
+		buildChain();
+	}
+	@Test
+	public void testGetChainId() {
+		CiliaTools.waitToInitialize();
+		CiliaContext ciliaContext = getCiliaContextService();
+		ApplicationSpecification application = ciliaContext.getApplicationSpecification();
+		assertNotNull(application);
+		buildChain();
+		api_getChainId(application);
+	}
+	
+	
+	@Test
+	public void testFindNodeByFilter() {
+		CiliaTools.waitToInitialize();
+		CiliaContext ciliaContext = getCiliaContextService();
+		ApplicationSpecification application = ciliaContext.getApplicationSpecification();
+		assertNotNull(application);
+		buildChain();
+		api_findNodeByFilter(application);
+	}
+	
+	@Test
+	public void testGetChain() {
+		CiliaTools.waitToInitialize();
+		CiliaContext ciliaContext = getCiliaContextService();
+		ApplicationSpecification application = ciliaContext.getApplicationSpecification();
+		assertNotNull(application);
+		buildChain();
+		api_getChain(application);
+	}
+	
+	@Test
+	public void testGetModel() {
+		CiliaTools.waitToInitialize();
+		CiliaContext ciliaContext = getCiliaContextService();
+		ApplicationSpecification application = ciliaContext.getApplicationSpecification();
+		assertNotNull(application);
+		buildChain();
+		api_getModel(application);
+	}
+	
+	@Test
+	public void testGetPropertie() {
+		CiliaTools.waitToInitialize();
+		CiliaContext ciliaContext = getCiliaContextService();
+		ApplicationSpecification application = ciliaContext.getApplicationSpecification();
+		assertNotNull(application);
+		buildChain();
+		api_getPropertie(application);
+	}
+	
+	@Test
+	public void testEndpointsIn() {
+		CiliaTools.waitToInitialize();
+		CiliaContext ciliaContext = getCiliaContextService();
+		ApplicationSpecification application = ciliaContext.getApplicationSpecification();
+		assertNotNull(application);
+		buildChain();
+		api_endpointsIn(application);
+	}
+	
+	@Test
+	public void testEndpointsOut() {
+		CiliaTools.waitToInitialize();
+		CiliaContext ciliaContext = getCiliaContextService();
+		ApplicationSpecification application = ciliaContext.getApplicationSpecification();
+		assertNotNull(application);
+		buildChain();
+		api_endpointsOut(application);
+	}
+	
+	@Test
+	public void testConnectedTo() {
+		CiliaTools.waitToInitialize();
+		CiliaContext ciliaContext = getCiliaContextService();
+		ApplicationSpecification application = ciliaContext.getApplicationSpecification();
+		assertNotNull(application);
+		buildChain();
+		api_connectedTo(application);
+
+	}
+	
+	@Test
+	public void testIllegalStateException() {
+		CiliaTools.waitToInitialize();
+		CiliaContext ciliaContext = getCiliaContextService();
+		ApplicationSpecification application = ciliaContext.getApplicationSpecification();
+		assertNotNull(application);
+		buildChain();
+		illegalStateException(application);
+	}
+	
+	//@Test
+	public void testRegisterListener() {
+		CiliaTools.waitToInitialize();
+		CiliaContext ciliaContext = getCiliaContextService();
+		ApplicationSpecification application = ciliaContext.getApplicationSpecification();
+		assertNotNull(application);
+		buildChain();
+		api_registerListener(application);
+	}
+	
+	
+	public void api_all() {
 		CiliaTools.waitToInitialize();
 		CiliaContext ciliaContext = getCiliaContextService();
 		ApplicationSpecification application = ciliaContext.getApplicationSpecification();

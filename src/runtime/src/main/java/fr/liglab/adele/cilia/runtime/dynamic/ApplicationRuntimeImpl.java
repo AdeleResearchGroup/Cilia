@@ -153,6 +153,9 @@ public class ApplicationRuntimeImpl extends AbstractTopology implements
 
 	public void onUnBind(Node from, Node to) {
 	}
+	
+	public void onStateChange(Node node,boolean isValid) {
+	}
 
 	/*
 	 * Return a proxy for configuring the node (non-Javadoc)

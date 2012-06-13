@@ -266,116 +266,60 @@ public class CiliaDynamicTest {
 		}
 	}
 
-	private void api_getChain(ApplicationSpecification application) {
+	private void api_getChainState(ApplicationRuntime runtime) {
 		/* Exception : invalid parameter */
-		try {
-			Chain chain = application.getChain(null);
+		try  { 
+			int state = runtime.getChainState(null) ;
 			Assert.fail("no exception thrown invalid parameter");
 		} catch (CiliaIllegalParameterException e) {
-			/* OK */
 			assertNotNull(e.getMessage());
 		} catch (Exception e) {
 			Assert.fail("Invalid exception thrown " + e.getMessage());
 		}
-		/* return null */
+
+		/* Exception illegalStateException */
 		try {
-			Chain chain = application.getChain("Chain2");
-			Assert.assertNull(chain);
+			int  state = runtime.getChainState("Chain100") ;
+			Assert.fail("no exception thrown invalid parameter");
+		} catch (CiliaIllegalStateException e) {
+			assertNotNull(e.getMessage());
 		} catch (Exception e) {
 			Assert.fail("Invalid exception thrown " + e.getMessage());
 		}
 		/* return the instance */
 		try {
-			Chain chain = application.getChain("Chain1");
-			Assert.assertNotNull(chain);
-			if (!chain.getId().equals("Chain1")) {
-				Assert.fail("invalid chain retreived");
+			int state = runtime.getChainState("Chain1");
+			if (state !=ApplicationRuntime.IDLE) {
+				Assert.fail("Illegate chain state exptected IDLE");
+			}
+			
+		} catch (Exception e) {
+			Assert.fail("Invalid exception thrown " + e.getMessage());
+		}
+		/* test start  */
+		try {
+			runtime.start("Chain1") ;
+			int state = runtime.getChainState("Chain1");
+			if (state !=ApplicationRuntime.STARTED) {
+				Assert.fail("Illegate chain state expected STARTED");
 			}
 		} catch (Exception e) {
 			Assert.fail("Invalid exception thrown " + e.getMessage());
 		}
-	}
-
-	public void api_getModel(ApplicationSpecification application) {
-
-		Chain chain = null;
+		
 		try {
-			chain = application.getChain("Chain1");
-			Assert.assertNotNull(chain);
-		} catch (Exception e) {
-			Assert.fail("Invalid exception thrown " + e.getMessage());
-		}
-
-		try {
-			Node node = chain.getMediator("mediator_1");
-			Assert.assertNotNull(node);
-			MediatorComponent mediatorModel = application.getModel(node);
-			if (!mediatorModel.qualifiedId().startsWith("Chain1/mediator_1")) {
-				Assert.fail("Wrong node");
+			runtime.stop("Chain1") ;
+			int state = runtime.getChainState("Chain1");
+			if (state !=ApplicationRuntime.STOPPED) {
+				Assert.fail("Illegate chain state expected STOPPED");
 			}
 		} catch (Exception e) {
 			Assert.fail("Invalid exception thrown " + e.getMessage());
 		}
-
-		try {
-			Node[] node = application.findNodeByFilter("(node=mediator_1)");
-			Assert.assertNotNull(node);
-			MediatorComponent mediatorModel = application.getModel(node[0]);
-			if (!mediatorModel.qualifiedId().startsWith("Chain1/mediator_1")) {
-				Assert.fail("Wrong node");
-			}
-		} catch (Exception e) {
-			Assert.fail("Invalid exception thrown " + e.getMessage());
-		}
-
-		/* IllegalParameterException */
-		try {
-			MediatorComponent mediatorModel = application.getModel(null);
-			Assert.fail("Exception not thrown");
-		} catch (CiliaIllegalParameterException e) {
-			/* OK */
-			assertNotNull(e.getMessage());
-		} catch (Exception e) {
-			Assert.fail("Invalid exception thrown " + e.getMessage());
-		}
-
+		
 	}
 
-	private void api_getPropertie(ApplicationSpecification application) {
-		Node[] node = null;
-		try {
-			node = application.findNodeByFilter("(node=mediator_1)");
-		} catch (Exception e) {
-			Assert.fail("Invalid exception thrown " + e.getMessage());
 
-		}
-
-		try {
-			Dictionary dico = application.properties(null);
-		} catch (CiliaIllegalParameterException e) {
-			/* OK */
-			assertNotNull(e.getMessage());
-		} catch (Exception e) {
-			Assert.fail("Invalid exception thrown " + e.getMessage());
-		}
-
-		Dictionary dico = null;
-		try {
-			dico = application.properties(node[0]);
-			Assert.assertNotNull(dico);
-		} catch (Exception e) {
-			Assert.fail("Invalid exception thrown " + e.getMessage());
-		}
-
-		try {
-			dico.put("key", "testValue");
-		} catch (UnsupportedOperationException e) {
-			/* OK */
-			assertNotNull(e.getMessage());
-		} catch (Exception e) {
-			Assert.fail("Invalid exception thrown " + e.getMessage());
-		}
-	}
 
 	private void api_endpointsIn(ApplicationSpecification application) {
 
@@ -751,10 +695,27 @@ public class CiliaDynamicTest {
 			stop() ;
 		}
 
-	}
 
+		public void onStateChange(Node node, boolean isValid) {
+			// TODO Auto-generated method stub
+			
+		}
+
+	}
+	
 	@Test
-	public void all_apis() {
+	public void testGetBuildChain() {
+		CiliaTools.waitToInitialize();
+		CiliaContext ciliaContext = getCiliaContextService();
+		ApplicationSpecification application = ciliaContext.getApplicationSpecification();
+		assertNotNull(application);
+		ApplicationRuntime runtime = ciliaContext.getApplicationRuntime();
+		assertNotNull(application);
+		buildChain();
+	}
+	
+	@Test
+	public void testGetChainId() {
 		CiliaTools.waitToInitialize();
 		CiliaContext ciliaContext = getCiliaContextService();
 		ApplicationSpecification application = ciliaContext.getApplicationSpecification();
@@ -763,10 +724,64 @@ public class CiliaDynamicTest {
 		assertNotNull(application);
 		buildChain();
 		api_getChainId(runtime);
+	}
+	
+	@Test
+	public void testfindNodeByFilter() {
+		CiliaTools.waitToInitialize();
+		CiliaContext ciliaContext = getCiliaContextService();
+		ApplicationSpecification application = ciliaContext.getApplicationSpecification();
+		assertNotNull(application);
+		ApplicationRuntime runtime = ciliaContext.getApplicationRuntime();
+		assertNotNull(application);
+		buildChain();
 		api_findNodeByFilter(runtime);
-		//api_getChain(runtime);
-		//api_getModel(runtime);
-		//api_getPropertie(application);
+	}
+	
+	
+	public void testGetChainState() {
+		CiliaTools.waitToInitialize();
+		CiliaContext ciliaContext = getCiliaContextService();
+		ApplicationSpecification application = ciliaContext.getApplicationSpecification();
+		assertNotNull(application);
+		ApplicationRuntime runtime = ciliaContext.getApplicationRuntime();
+		assertNotNull(application);
+		buildChain();
+		api_getChainState(runtime);
+
+		//api_endpointsIn(application);
+		//api_endpointsOut(application);
+		//api_connectedTo(application);
+		//api_registerListener(application);
+		//illegalStateException(application);
+	}
+	
+	public void testEndpointsIn() {
+		CiliaTools.waitToInitialize();
+		CiliaContext ciliaContext = getCiliaContextService();
+		ApplicationSpecification application = ciliaContext.getApplicationSpecification();
+		assertNotNull(application);
+		ApplicationRuntime runtime = ciliaContext.getApplicationRuntime();
+		assertNotNull(application);
+		buildChain();
+		api_getChainState(runtime);
+		//api_endpointsIn(application);
+		//api_endpointsOut(application);
+		//api_connectedTo(application);
+		//api_registerListener(application);
+		//illegalStateException(application);
+	}
+	
+	public void testEndpointsOut() {
+		CiliaTools.waitToInitialize();
+		CiliaContext ciliaContext = getCiliaContextService();
+		ApplicationSpecification application = ciliaContext.getApplicationSpecification();
+		assertNotNull(application);
+		ApplicationRuntime runtime = ciliaContext.getApplicationRuntime();
+		assertNotNull(application);
+		buildChain();
+		api_getChainState(runtime);
+
 		//api_endpointsIn(application);
 		//api_endpointsOut(application);
 		//api_connectedTo(application);

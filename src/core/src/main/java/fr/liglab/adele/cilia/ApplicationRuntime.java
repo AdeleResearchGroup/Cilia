@@ -30,6 +30,10 @@ import fr.liglab.adele.cilia.exceptions.CiliaInvalidSyntaxException;
  */
 public interface ApplicationRuntime extends Topology, NodeRegistration,
 		MeasuresRegistration {
+	
+	int IDLE = 0 ;
+	int STARTED  = 1  ;
+	int STOPPED = 2  ;
 	/**
 	 * @return list of chain Id
 	 */

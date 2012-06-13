@@ -25,6 +25,8 @@ import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import fr.liglab.adele.cilia.ApplicationRuntime;
+import fr.liglab.adele.cilia.ApplicationSpecification;
 import fr.liglab.adele.cilia.ChainListener;
 import fr.liglab.adele.cilia.internals.controller.ChainControllerImpl;
 import fr.liglab.adele.cilia.internals.controller.CreatorThread;
@@ -211,7 +213,7 @@ public class CiliaContainerImpl implements CiliaContainer {
 		if (cinstance != null) {
 			cinstance.start();
 			ChainRuntimeImpl chainRt = (ChainRuntimeImpl) chainRuntime.get(chainId);
-			chainRt.setState(ChainRuntime.STATE_STARTED);
+			chainRt.setState(ApplicationRuntime.STARTED);
 			chainRt.setLastDate();
 			applicationNotifier.fireEventChain(ApplicationListenerSupport.EVT_STARTED, chainId);
 			logger.info("Chain [{}] started", chainId);
@@ -294,7 +296,7 @@ public class CiliaContainerImpl implements CiliaContainer {
 			if (ci != null) {
 				ci.stop();
 				ChainRuntimeImpl chainRt = (ChainRuntimeImpl) chainRuntime.get(chainId);
-				chainRt.setState(ChainRuntime.STATE_STOPPED);
+				chainRt.setState(ApplicationRuntime.STOPPED);
 				chainRt.setLastDate();
 				applicationNotifier.fireEventChain(ApplicationListenerSupport.EVT_STOPPED, chainId) ;
 				logger.info("Chain [{}] stopped", chainId);

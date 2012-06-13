@@ -95,7 +95,7 @@ public interface ComponentStateVarService extends IMonitor {
 	
 	/** 
 	 * 
-	 * @return state of the component Mediator
+	 * @return state of the component Mediator/Adapter
 	 */
 	boolean isComponentValid();
 

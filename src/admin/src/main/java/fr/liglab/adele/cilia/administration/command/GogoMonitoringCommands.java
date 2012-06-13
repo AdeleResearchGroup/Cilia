@@ -235,7 +235,7 @@ public class GogoMonitoringCommands {
 		for (int i = 0; i < nodes.length; i++) {
 			System.out.print("| Node #");
 			System.out.println(((Node) nodes[i]).qualifiedId());
-			System.out.println("| Valid :" +((SetUp) nodes[i]).isValid());
+			System.out.println("| Valid :" + ((SetUp) nodes[i]).isValid());
 			System.out.println("| Categories");
 			System.out.println("|    SystemCall variables :");
 			variables = ((SetUp) nodes[i]).variablesByCategory("SystemCall");
@@ -412,7 +412,8 @@ public class GogoMonitoringCommands {
 			if (rt.length != 0) {
 				for (int i = 0; i < rt.length; i++) {
 					rt[i].setMonitoring("process.entry.count", 100, "", true);
-					System.out.println("isValid "+rt[i].nodeId()+" "+rt[i].isValid());
+					System.out.println("isValid " + rt[i].nodeId() + " "
+							+ rt[i].isValid());
 				}
 			}
 			node_rawdata("(node=mediator_1)", "process.entry.count");
@@ -461,6 +462,11 @@ public class GogoMonitoringCommands {
 			System.out.println("GogoCommand-->" + " onUnbind from" + from.qualifiedId()
 					+ ", to" + to.qualifiedId());
 		}
+
+		public void onStateChange(Node node, boolean isValid) {
+			System.out.println("GogoCommand-->" + " onStateChange " + node.qualifiedId()
+					+ "valid=" + isValid);
+		}
 	}
 
 	private class CallbackEventMetaLevel implements ChainCallback, NodeCallback {
@@ -499,8 +505,11 @@ public class GogoMonitoringCommands {
 		}
 
 		public void onUnBind(Node from, Node to) {
-			System.out.println("GogoCommand-->" + " onUnBind ( " + from.qualifiedId() + ","
-					+ to.qualifiedId() + ")");
+			System.out.println("GogoCommand-->" + " onUnBind ( " + from.qualifiedId()
+					+ "," + to.qualifiedId() + ")");
+		}
+
+		public void onStateChange(Node node, boolean isValid) {
 		}
 
 	}

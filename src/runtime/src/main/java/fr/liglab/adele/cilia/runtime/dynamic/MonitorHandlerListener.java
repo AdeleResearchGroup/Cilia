@@ -128,7 +128,21 @@ public class MonitorHandlerListener implements ComponentStateVarProperties, Even
 		if (item != null) {
 			DynamicNode node = item.dataRuntimeReference();
 			if (node != null) {
-				node.addMeasure(stateVariable, new MeasureImpl(value, ticksCount));
+				/*
+				 * Check state.var state published on state change
+				 * (valid/invalid)
+				 */
+				if (stateVariable.equals("mediator.state")) {
+					if (((Boolean) value).booleanValue() == true) {
+						nodeListeners.fireNodeEvent(
+								ApplicationRuntimeListenerSupport.EVT_VALID, node);
+					} else
+						nodeListeners.fireNodeEvent(
+								ApplicationRuntimeListenerSupport.EVT_INVALID, node);
+				}
+				/* standard value published */
+				else
+					node.addMeasure(stateVariable, new MeasureImpl(value, ticksCount));
 			}
 		}
 	}
@@ -149,7 +163,8 @@ public class MonitorHandlerListener implements ComponentStateVarProperties, Even
 		Node item = registry.findByUuid(uuid);
 		if (item != null) {
 			/* informs all listeners 'node departure' */
-			nodeListeners.fireNodeEvent(ApplicationRuntimeListenerSupport.EVT_DEPARTURE, item);
+			nodeListeners.fireNodeEvent(ApplicationRuntimeListenerSupport.EVT_DEPARTURE,
+					item);
 			logger.debug("Remove listening data from [{}]", item.toString());
 		}
 	}

@@ -88,4 +88,8 @@ public class ApplSpecification implements ChainCallback, NodeCallback {
 		
 	}
 
+	public void onStateChange(Node node, boolean isValid) {
+		// TODO Auto-generated method stub
+	}
+
 }

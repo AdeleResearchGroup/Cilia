@@ -142,8 +142,13 @@
 			<scope>test</scope>
 		</dependency>
 
-
+		<dependency>
+			<artifactId>cilia-runtime-tests</artifactId>
+			<groupId>fr.liglab.adele.cilia</groupId>
+			<version>1.2.2-SNAPSHOT</version>
+		</dependency>
 	</dependencies>
+	
 
 	<build>
 		<plugins>
@@ -155,35 +160,22 @@
 					<target>1.5</target>
 				</configuration>
 			</plugin>
-			<!--  begin added -->
+			<!-- begin added -->
 			<plugin>
 				<groupId>org.apache.felix</groupId>
-				<artifactId>maven-ipojo-plugin</artifactId>
-				<version>1.6.0</version>
+				<artifactId>maven-junit4osgi-plugin</artifactId>
 				<executions>
 					<execution>
 						<goals>
-							<goal>ipojo-bundle</goal>
+							<goal>test</goal>
 						</goals>
+						<configuration>
+							<deployprojectartifact>true</deployprojectartifact>
+						</configuration>
 					</execution>
 				</executions>
 			</plugin>
-			<plugin>
-				<groupId>org.apache.felix</groupId>
-				<artifactId>maven-bundle-plugin</artifactId>
-				<extensions>true</extensions>
-				<configuration>
-					<instructions>
-						<compilerArgument></compilerArgument>
-						<Bundle-SymbolicName>${pom.artifactId}</Bundle-SymbolicName>
-						<Import-Package>
-						</Import-Package>
-						<Export-Package >
-						</Export-Package>
-					</instructions>
-				</configuration>
-			</plugin>
-			<!--  End added -->
+			<!-- End added -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
