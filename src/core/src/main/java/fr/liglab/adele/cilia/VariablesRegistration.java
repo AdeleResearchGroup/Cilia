@@ -25,7 +25,7 @@ import fr.liglab.adele.cilia.exceptions.CiliaInvalidSyntaxException;
  *         Team</a>
  * 
  */
-public interface MeasuresRegistration {
+public interface VariablesRegistration {
 
 	/**
 	 * inserts a listener
@@ -50,7 +50,7 @@ public interface MeasuresRegistration {
 	 * @throws InvalidSyntaxException
 	 * @throws CiliaInvalidSyntaxException
 	 */
-	void addListener(String ldapfilter, MeasureCallback listener)
+	void addListener(String ldapfilter, VariableCallback listener)
 			throws CiliaIllegalParameterException, CiliaInvalidSyntaxException;
 
 	/**
@@ -67,5 +67,5 @@ public interface MeasuresRegistration {
 	 * 
 	 * @param listener
 	 */
-	void removeListener(MeasureCallback listener) throws CiliaIllegalParameterException;
+	void removeListener(VariableCallback listener) throws CiliaIllegalParameterException;
 }

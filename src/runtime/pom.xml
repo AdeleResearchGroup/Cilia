@@ -71,7 +71,8 @@
 							fr.liglab.adele.cilia.runtime,
 							fr.liglab.adele.cilia.runtime.dependency,
 							fr.liglab.adele.cilia.runtime.application,
-							fr.liglab.adele.cilia.runtime.dynamic
+							fr.liglab.adele.cilia.runtime.dynamic,
+							fr.liglab.adele.cilia.runtime.knowledge
 						</Export-Package>
 						<Private-Package>
 							fr.liglab.adele.cilia.internals,

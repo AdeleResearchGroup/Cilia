@@ -16,15 +16,21 @@
 package fr.liglab.adele.cilia.model.impl;
 
 import fr.liglab.adele.cilia.model.Component;
+import fr.liglab.adele.cilia.model.ModelExtension;
 
 
 public class UpdateEvent {
 
 	
 	private int updateAction;
-	private Component source;
+	private Object source;
 	
 	public UpdateEvent(int updateAction, Component source) {
+		this.updateAction = updateAction;
+		this.source = source;
+	}
+	
+	public UpdateEvent(int updateAction, ModelExtension source) {
 		this.updateAction = updateAction;
 		this.source = source;
 	}
@@ -34,6 +40,10 @@ public class UpdateEvent {
 	}
 	
 	public Component getSource() {
-		return this.source;
+		return (Component)this.source;
+	}
+	
+	public ModelExtension getModelExtension() {
+		return (ModelExtension)this.source ;
 	}
 }

@@ -208,7 +208,7 @@
 				        node_setup,node_rawdata,node_monitoring,node_dump,
 				        app_chains,app_endpoints_in,app_endpoints_out,app_connected_to,
 				        app_find_node,
-				        app_callback_chain,app_callback_node,
+				        app_callback_chain,app_callback_node,app_callback_measure,
 				        my_entry
 				        }" />
 		</provides>

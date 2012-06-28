@@ -18,8 +18,7 @@
 		<callback transition="validate" method="start" />
 		<callback transition="invalidate" method="stop" />
 	</component>
-
-
+	
 	<!-- Declare the handlers -->
 	<handler
 		classname="fr.liglab.adele.cilia.internals.factories.MediatorDummyHandler"
@@ -53,16 +52,31 @@
 		classname="fr.liglab.adele.cilia.framework.monitor.AuditHandler"
 		name="audit" namespace="fr.liglab.adele.cilia" architecture="true">
 	</handler>
-	
+<!--  	
 	<handler
 		classname="fr.liglab.adele.cilia.framework.monitor.statevariable.MonitorHandlerStateVar"
 		name="monitor-statevar-handler" namespace="fr.liglab.adele.cilia"
-		architecture="true">
+		architecture="false">
 		<provides>
-			<property name="mediator.service" value="monitor" type="String" />
+			<property name="mediator.service" value="3D194CA1-26F8-49CD-B78C-0B7C7B16FF70" type="String" />
 		</provides>
+ 
 		<requires field="m_systemQueue" specification="fr.liglab.adele.cilia.runtime.WorkQueue"
-			filter="(cilia.pool.scope=application)" />			
+			filter="(cilia.pool.scope=system)" />	
+
+		<callback transition="validate" method="validate" />
+		<callback transition="invalidate" method="unvalidate" />
+
+	</handler>
+-->	
+	<handler
+		classname="fr.liglab.adele.cilia.framework.monitor.statevariable.MonitorHandlerStateVar"
+		name="monitor-statevar-handler" namespace="fr.liglab.adele.cilia"
+		architecture="false">
+ 
+		<requires field="m_systemQueue" specification="fr.liglab.adele.cilia.runtime.WorkQueue"
+			filter="(cilia.pool.scope=system)" />	
+
 		<callback transition="validate" method="validate" />
 		<callback transition="invalidate" method="unvalidate" />
 

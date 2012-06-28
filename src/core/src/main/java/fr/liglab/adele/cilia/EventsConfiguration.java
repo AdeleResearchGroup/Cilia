@@ -15,22 +15,14 @@
 
 package fr.liglab.adele.cilia;
 
-
 /**
- * Callback on data received from the monitoring
+ * Configuration of events published by the runtime
  * 
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project
  *         Team</a>
  * 
- * 
  */
-public interface MeasureCallback {
+public interface EventsConfiguration extends NodeRegistration, ChainRegistration,
+VariablesRegistration {
 
-	/**
-	 * 
-	 * @param node 
-	 * @param variable , variable id updated
-	 * @param Measure measure received :
-	 */
-	void onUpdate(Node node, String variable,Measure m);
 }

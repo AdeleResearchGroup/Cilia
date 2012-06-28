@@ -132,7 +132,7 @@ public class CiliaFileManagerImpl implements CiliaFileManager {
 					//ccontext.addChain(chains[i]);
 					//ccontext.startChain(chains[i]);
 					builders[i].done();
-					ccontext.getApplicationRuntime().start(builders[i].current());
+					ccontext.getApplicationRuntime().startChain(builders[i].current());
 					chainsList.add(builders[i].current());
 					logger.debug("Handling Cilia Chain : " + builders[i].current());
 				}
@@ -158,7 +158,7 @@ public class CiliaFileManagerImpl implements CiliaFileManager {
 				for (int i = 0; i < chains.length; i++) {
 					if (ccontext != null) { //CiliaContext could disappear and this service is stopping also.
 						try{
-							ccontext.getApplicationRuntime().stop(chains[i]);
+							ccontext.getApplicationRuntime().stopChain(chains[i]);
 							//ccontext.removeChain(chains[i]);
 						}catch(Exception ex) {} //Exception when stoping iPOJO runtime.
 					}

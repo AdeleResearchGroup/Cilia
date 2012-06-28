@@ -15,31 +15,24 @@
 
 package fr.liglab.adele.cilia;
 
+
 /**
- * Interface data recevied from the monitoring
+ * Callback on data received from the monitoring
  * 
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project
  *         Team</a>
  * 
+ * 
  */
-public interface Measure  {
-	/**
-	 * 
-	 * @return value
-	 */
-	Object value();
+public interface VariableCallback {
 
-	/**
-	 * timestamp at source level
-	 * 
-	 * @return time in ms
-	 */
-	long timeStampMs();
-	
-	/**
-	 * 
-	 * @return clone this object
-	 */
-	Measure clone() ;
 
+	void onStateChange(Node node, String variable , boolean enable) ;
+	/**
+	 * 
+	 * @param node 
+	 * @param variable , variable id updated
+	 * @param Measure measure received :
+	 */
+	void onUpdate(Node node, String variable,Measure m);
 }

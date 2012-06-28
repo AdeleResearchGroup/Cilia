@@ -13,33 +13,15 @@
  * limitations under the License.
  */
 
-package fr.liglab.adele.cilia;
+package fr.liglab.adele.cilia.model;
 
-/**
- * Interface data recevied from the monitoring
- * 
- * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project
- *         Team</a>
- * 
- */
-public interface Measure  {
+public interface ModelExtension {
 	/**
 	 * 
-	 * @return value
+	 * @return the model
 	 */
-	Object value();
+	MediatorComponent getModel();
 
-	/**
-	 * timestamp at source level
-	 * 
-	 * @return time in ms
-	 */
-	long timeStampMs();
-	
-	/**
-	 * 
-	 * @return clone this object
-	 */
-	Measure clone() ;
+	void setModel(MediatorComponent model);
 
 }

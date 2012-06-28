@@ -32,6 +32,7 @@ import fr.liglab.adele.cilia.model.impl.AdapterImpl;
 import fr.liglab.adele.cilia.model.impl.ConstModel;
 import fr.liglab.adele.cilia.model.impl.MediatorImpl;
 import fr.liglab.adele.cilia.runtime.Const;
+import fr.liglab.adele.cilia.util.FrameworkUtils;
 
 public class CiliaCopierProcessor {
 	private static final Logger logger = LoggerFactory
@@ -114,8 +115,8 @@ public class CiliaCopierProcessor {
 				properties, chain);
 
 		logger.info("Command 'copy mediator' [{}] to [{}] ",
-				mediatorSource.qualifiedId(), mediatorDest.qualifiedId());
-
+				FrameworkUtils.makeQualifiedId(mediatorSource),
+				FrameworkUtils.makeQualifiedId(mediatorDest));
 	}
 
 	private void copyAdapter(Data data) {
@@ -165,7 +166,8 @@ public class CiliaCopierProcessor {
 				adapterSource.getPattern());
 
 		logger.info("Command 'copy adapter' [{}] to [{}] ",
-				adapterSource.qualifiedId(), adapterDest.qualifiedId());
+				FrameworkUtils.makeQualifiedId(adapterSource),
+				FrameworkUtils.makeQualifiedId(adapterDest));
 
 	}
 }

@@ -19,8 +19,8 @@ import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.Set;
 
-import fr.liglab.adele.cilia.ApplicationSpecification;
 import fr.liglab.adele.cilia.CiliaContext;
+import fr.liglab.adele.cilia.ApplicationRuntime;
 import fr.liglab.adele.cilia.Data;
 import fr.liglab.adele.cilia.exceptions.CiliaIllegalParameterException;
 import fr.liglab.adele.cilia.model.Adapter;
@@ -30,7 +30,6 @@ import fr.liglab.adele.cilia.model.Mediator;
 import fr.liglab.adele.cilia.model.MediatorComponent;
 import fr.liglab.adele.cilia.model.impl.AdapterImpl;
 import fr.liglab.adele.cilia.model.impl.BindingImpl;
-import fr.liglab.adele.cilia.model.impl.ChainImpl;
 import fr.liglab.adele.cilia.model.impl.MediatorImpl;
 
 /**
@@ -77,7 +76,7 @@ public class CiliaShowProcessor {
 	 */
 	private void showChains() {
 		StringBuffer toShow = new StringBuffer("Chains:\n");
-		ApplicationSpecification chains = ccontext.getApplicationSpecification();
+		ApplicationRuntime chains = ccontext.getApplicationRuntime();
 		String[] chainnames = chains.getChainId();
 		for (int i = 0; i < chainnames.length; i ++) {
 			toShow.append(chainnames[i]);
@@ -95,7 +94,7 @@ public class CiliaShowProcessor {
 	 */
 	private void showChainInfo(String chainId) throws CiliaIllegalParameterException {
 		
-		ApplicationSpecification chains = ccontext.getApplicationSpecification();
+		ApplicationRuntime chains = ccontext.getApplicationRuntime();
 		Chain ch = chains.getChain(chainId);
 		StringBuffer toShow = new StringBuffer("ChainImpl: ");
 		if (ch == null) {
@@ -153,7 +152,7 @@ public class CiliaShowProcessor {
 		StringBuffer toShow = new StringBuffer();
 		String mediatorId = String.valueOf(data.getProperty("id"));
 		String chainId = String.valueOf(data.getProperty("chain"));
-		ApplicationSpecification chains = ccontext.getApplicationSpecification();
+		ApplicationRuntime chains = ccontext.getApplicationRuntime();
 		Chain ch = chains.getChain(chainId);
 		if (ch == null) {
 			System.out.println("ChainImpl " + chainId + " Not found.");
@@ -185,7 +184,7 @@ public class CiliaShowProcessor {
 		String mediatorId = String.valueOf(data.getProperty("id"));
 		String chainId = String.valueOf(data.getProperty("chain"));
 		
-		ApplicationSpecification chains = ccontext.getApplicationSpecification();
+		ApplicationRuntime chains = ccontext.getApplicationRuntime();
 		Chain ch = chains.getChain(chainId);
 
 		if (ch == null) {

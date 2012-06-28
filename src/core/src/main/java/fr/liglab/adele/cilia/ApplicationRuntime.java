@@ -22,35 +22,34 @@ import fr.liglab.adele.cilia.exceptions.CiliaIllegalStateException;
 import fr.liglab.adele.cilia.exceptions.CiliaInvalidSyntaxException;
 
 /**
- * Class Runtime properties
  * 
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project
  *         Team</a>
  * 
  */
-public interface ApplicationRuntime extends Topology, NodeRegistration,
-		MeasuresRegistration {
-	
-	int IDLE = 0 ;
-	int STARTED  = 1  ;
-	int STOPPED = 2  ;
+public interface ApplicationRuntime extends Topology, EventsConfiguration, ModelComponents {
+
+	static final int CHAIN_STATE_IDLE = 0;
+	static final int CHAIN_STATE_STARTED = 1;
+	static final int CHAIN_STATE_STOPPED = 2;
+
 	/**
 	 * @return list of chain Id
 	 */
 	String[] getChainId();
 
 	/**
-	 * 
+	 * gives the current chain state
 	 * @param chainId
-	 * @return 0=IDLE, 1 = STARTED , 2 = STOPPED
+	 * @return  CHAIN_STATE_IDLE,CHAIN_STATE_STARTED,CHAIN_STATE_STOPPED
 	 * @throws CiliaIllegalParameterException
 	 *             ,CiliaIllegalStateException
 	 */
 	int getChainState(String chainId) throws CiliaIllegalParameterException,
 			CiliaIllegalStateException;
-	
+
 	/**
-	 * Return last Command start or stop level chain
+	 * Return date and time last command [start,stop] level chain
 	 * 
 	 * @param chainId
 	 * @return
@@ -61,14 +60,39 @@ public interface ApplicationRuntime extends Topology, NodeRegistration,
 			CiliaIllegalStateException;
 
 	/**
+	 * start a chain
+	 * 
+	 * @param chainId
+	 *            the chain ID to initialize
+	 * @return true if success, false if not.
+	 * @throws CiliaIllegalParameterException
+	 *             when the chain ID does not exist.
+	 */
+	void startChain(String chainId) throws CiliaIllegalParameterException,
+			CiliaIllegalStateException;
+
+	/**
+	 * stop a chain
+	 * 
+	 * @param chainId
+	 *            The chain id to stop.
+	 * @return true if success, false if not.
+	 * @throws CiliaIllegalParameterException
+	 *             when the chain ID does not exist.
+	 */
+	void stopChain(String chainId) throws CiliaIllegalParameterException,
+			CiliaIllegalStateException;
+
+	/**
 	 * @throws CiliaInvalidSyntaxException
 	 * 
 	 * @param ldapFilter
 	 *            ldap filters, keywords {uuid,chain,node}
 	 * @return array of Setup , size is 0 if no node found matching the filter
+	 * @throws CiliaIllegalStateException 
 	 */
 	SetUp[] nodeSetup(String ldapFilter) throws CiliaIllegalParameterException,
-			CiliaInvalidSyntaxException;
+			CiliaInvalidSyntaxException ;
 
 	/**
 	 * fast access using the node reference
@@ -121,8 +145,8 @@ public interface ApplicationRuntime extends Topology, NodeRegistration,
 	 * @throws CiliaIllegalParameterException
 	 * @throws CiliaInvalidSyntaxException
 	 */
-	Thresholds[] nodeMonitoring(String ldapFilter) throws CiliaIllegalParameterException,
-			CiliaInvalidSyntaxException;
+	Thresholds[] nodeMonitoring(String ldapFilter)
+			throws CiliaIllegalParameterException, CiliaInvalidSyntaxException;
 
 	/**
 	 * fast access using the node reference
@@ -135,29 +159,5 @@ public interface ApplicationRuntime extends Topology, NodeRegistration,
 	 */
 	Thresholds nodeMonitoring(Node node) throws CiliaIllegalParameterException,
 			CiliaIllegalStateException;
-	
-	/**
-	 * initializes a chain.
-	 * @param chainId the chain ID to initialize
-	 * @return true if success, false if not.
-	 * @throws CiliaIllegalParameterException when the chain ID does not exist.
-	 */
-	boolean start(String chainId) throws CiliaIllegalParameterException;
-	
-	/**
-	 * Stops a mediation chain.
-	 * @param chainId The chain id to stop.
-	 * @return true if success, false if not.
-	 * @throws CiliaIllegalParameterException when the chain ID does not exist.
-	 */
-	boolean stop(String chainId) throws CiliaIllegalParameterException;
-
-	/** 
-	 * Retrieve a node knowing its uuid (faster access) 
-	 * @param uuid
-	 * @return Node matching the uuid
-	 * @throws CiliaIllegalParameterException
-	 */
-	Node findNodeByUUID(String uuid) throws CiliaIllegalParameterException;
 
 }

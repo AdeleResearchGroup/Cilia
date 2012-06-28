@@ -21,6 +21,7 @@ import fr.liglab.adele.cilia.exceptions.BuilderConfigurationException;
 import fr.liglab.adele.cilia.exceptions.BuilderException;
 import fr.liglab.adele.cilia.exceptions.BuilderPerformerException;
 import fr.liglab.adele.cilia.exceptions.CiliaIllegalParameterException;
+import fr.liglab.adele.cilia.exceptions.CiliaIllegalStateException;
 import fr.liglab.adele.cilia.ext.ContentBasedRouting;
 import fr.liglab.adele.cilia.model.impl.AdapterImpl;
 import fr.liglab.adele.cilia.model.impl.ChainImpl;
@@ -50,7 +51,8 @@ public class AdminChainActivator {
 	protected void start() {
 		try {
 			createChain();
-			ccontext.getApplicationRuntime().start(chainName);
+
+			ccontext.getApplicationRuntime().startChain(chainName) ;
 		} catch (CiliaIllegalParameterException e) {
 			e.printStackTrace();
 		} catch (BuilderConfigurationException e) {
@@ -58,6 +60,9 @@ public class AdminChainActivator {
 		} catch (BuilderException e) {
 			e.printStackTrace();
 		} catch (BuilderPerformerException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (CiliaIllegalStateException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -69,8 +74,10 @@ public class AdminChainActivator {
 	protected void stop() {
 		if (ccontext != null) {
 			try {
-				ccontext.getApplicationRuntime().stop(chainName);
+				ccontext.getApplicationRuntime().stopChain(chainName);
 			} catch (CiliaIllegalParameterException e) {
+				e.printStackTrace();
+			} catch (CiliaIllegalStateException e) {
 				e.printStackTrace();
 			}
 			removeChain();

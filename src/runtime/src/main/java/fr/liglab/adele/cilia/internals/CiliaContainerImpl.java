@@ -25,9 +25,8 @@ import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import fr.liglab.adele.cilia.ApplicationRuntime;
-import fr.liglab.adele.cilia.ApplicationSpecification;
 import fr.liglab.adele.cilia.ChainListener;
+import fr.liglab.adele.cilia.ApplicationRuntime;
 import fr.liglab.adele.cilia.internals.controller.ChainControllerImpl;
 import fr.liglab.adele.cilia.internals.controller.CreatorThread;
 import fr.liglab.adele.cilia.model.Chain;
@@ -35,7 +34,7 @@ import fr.liglab.adele.cilia.model.CiliaContainer;
 import fr.liglab.adele.cilia.model.impl.ChainImpl;
 import fr.liglab.adele.cilia.model.impl.ChainRuntime;
 import fr.liglab.adele.cilia.runtime.Const;
-import fr.liglab.adele.cilia.runtime.application.ApplicationListenerSupport;
+import fr.liglab.adele.cilia.runtime.FirerEvents;
 import fr.liglab.adele.cilia.runtime.impl.ChainRuntimeImpl;
 import fr.liglab.adele.cilia.runtime.impl.MediatorRuntimeSpecification;
 import fr.liglab.adele.cilia.specification.MediatorSpecification;
@@ -70,11 +69,10 @@ public class CiliaContainerImpl implements CiliaContainer {
 
 	private final Object lockObject = new Object();
 
-	//private CiliaFrameworkEventPublisher eventNotifier;
 
 	private final ReadWriteLock mutex;
 	
-	private final ApplicationListenerSupport applicationNotifier ;
+	private final FirerEvents eventFirer ;
 
 	/**
 	 * Create a CiliaContext instance. This instance is created by iPOJO.
@@ -82,14 +80,15 @@ public class CiliaContainerImpl implements CiliaContainer {
 	 * @param context
 	 *            OSGi Bundle Context.
 	 */
-	public CiliaContainerImpl(BundleContext context,ApplicationListenerSupport notifier) {
+	public CiliaContainerImpl(BundleContext context,FirerEvents notifier) {
 		bcontext = context;
 		creator = new CreatorThread();
 		chainInstances = new Hashtable();
 		listeners = new Hashtable();
 		chainRuntime = new Hashtable();
 		mutex = new ReentrantWriterPreferenceReadWriteLock();
-		applicationNotifier = notifier ;
+		eventFirer = notifier ;
+
 	}
 	
 
@@ -113,10 +112,10 @@ public class CiliaContainerImpl implements CiliaContainer {
 		synchronized (lockObject) {
 			if (!chainInstances.containsKey(chain.getId())) {
 				ChainControllerImpl chainInstance = new ChainControllerImpl(bcontext,
-						chain, creator,applicationNotifier);
+						chain, creator,eventFirer);
 				chainInstances.put(chainName, chainInstance);
 				chainRuntime.put(chainName, new ChainRuntimeImpl());
-				applicationNotifier.fireEventChain(ApplicationListenerSupport.EVT_ARRIVAL,chainName) ;
+				eventFirer.fireEventChain(FirerEvents.EVT_ARRIVAL,chainName) ;
 				logger.info("Chain [{}] added", chainName);
 
 			} else {
@@ -213,9 +212,9 @@ public class CiliaContainerImpl implements CiliaContainer {
 		if (cinstance != null) {
 			cinstance.start();
 			ChainRuntimeImpl chainRt = (ChainRuntimeImpl) chainRuntime.get(chainId);
-			chainRt.setState(ApplicationRuntime.STARTED);
+			chainRt.setState(ApplicationRuntime.CHAIN_STATE_STARTED);
 			chainRt.setLastDate();
-			applicationNotifier.fireEventChain(ApplicationListenerSupport.EVT_STARTED, chainId);
+			eventFirer.fireEventChain(FirerEvents.EVT_STARTED, chainId);
 			logger.info("Chain [{}] started", chainId);
 		}
 
@@ -256,7 +255,7 @@ public class CiliaContainerImpl implements CiliaContainer {
 				toBeRemoved = null;
 				ChainImpl.class.cast(chain).dispose();
 				chain = null;
-				applicationNotifier.fireEventChain(ApplicationListenerSupport.EVT_DEPARTURE, chainId);
+				eventFirer.fireEventChain(FirerEvents.EVT_DEPARTURE, chainId);
 				logger.info("Chain [{}] removed", chainId);
 			}
 		} else {
@@ -296,9 +295,9 @@ public class CiliaContainerImpl implements CiliaContainer {
 			if (ci != null) {
 				ci.stop();
 				ChainRuntimeImpl chainRt = (ChainRuntimeImpl) chainRuntime.get(chainId);
-				chainRt.setState(ApplicationRuntime.STOPPED);
+				chainRt.setState(ApplicationRuntime.CHAIN_STATE_STOPPED);
 				chainRt.setLastDate();
-				applicationNotifier.fireEventChain(ApplicationListenerSupport.EVT_STOPPED, chainId) ;
+				eventFirer.fireEventChain(FirerEvents.EVT_STOPPED, chainId) ;
 				logger.info("Chain [{}] stopped", chainId);
 			} else {
 				msg = "There is any chain with the given id " + chainId;

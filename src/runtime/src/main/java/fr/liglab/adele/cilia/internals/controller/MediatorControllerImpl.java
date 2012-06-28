@@ -42,10 +42,11 @@ import fr.liglab.adele.cilia.model.impl.UpdateActions;
 import fr.liglab.adele.cilia.model.impl.UpdateEvent;
 import fr.liglab.adele.cilia.runtime.CiliaInstanceWrapper;
 import fr.liglab.adele.cilia.runtime.Const;
-import fr.liglab.adele.cilia.runtime.application.ApplicationListenerSupport;
+import fr.liglab.adele.cilia.runtime.FirerEvents;
 import fr.liglab.adele.cilia.runtime.impl.DispatcherHandler;
 import fr.liglab.adele.cilia.runtime.impl.SchedulerHandler;
-
+import fr.liglab.adele.cilia.runtime.knowledge.MediatorMonitoring;
+import fr.liglab.adele.cilia.util.FrameworkUtils;
 
 /**
  * This class will observe the mediator model and will act as an itermediator
@@ -77,15 +78,16 @@ public class MediatorControllerImpl implements Observer {
 	protected static Logger log = LoggerFactory.getLogger("cilia.ipojo.runtime");
 
 	private static Logger logger = LoggerFactory.getLogger(Const.LOGGER_CORE);
-	
+
 	protected CreatorThread creator;
 
 	protected final Object lockObject = new Object();
 
 	protected final String filter;
 
-	//protected CiliaFrameworkEventPublisher eventNotifier;
-	private ApplicationListenerSupport applicationNotifier ;
+	// protected CiliaFrameworkEventPublisher eventNotifier;
+	private FirerEvents eventFirer;
+
 	/**
 	 * Create a mediator model controller.
 	 * 
@@ -93,19 +95,23 @@ public class MediatorControllerImpl implements Observer {
 	 *            Mediator model to handle.
 	 */
 	public MediatorControllerImpl(BundleContext context, MediatorComponent model,
-			CreatorThread creat,ApplicationListenerSupport notifier) {
+			CreatorThread creat, FirerEvents notifier) {
 		bcontext = context;
 		creator = creat;
 		mediatorModel = (MediatorComponentImpl) model;
 		filter = createComponentFilter(mediatorModel);
 		updateProperties();
 		mediatorModel.addObserver(this);
-
+		/* add extended Model : "monitoring" */
+		MediatorMonitoring monitoring = new MediatorMonitoring() ;
+		monitoring.setModel(mediatorModel) ;
+		monitoring.setFirerEvent(notifier) ;
+		mediatorModel.addModel(MediatorMonitoring.NAME, monitoring);
 	}
 
 	protected void updateProperties() {
-		mediatorModel
-				.setProperty(ConstModel.PROPERTY_COMPONENT_ID, mediatorModel.nodeId());
+		mediatorModel.setProperty(ConstModel.PROPERTY_COMPONENT_ID,
+				mediatorModel.nodeId());
 		mediatorModel.setProperty(ConstModel.PROPERTY_CHAIN_ID, mediatorModel.chainId());
 		mediatorModel.setProperty(ConstModel.PROPERTY_UUID, mediatorModel.uuid());
 	}
@@ -178,7 +184,6 @@ public class MediatorControllerImpl implements Observer {
 
 		// remove observer.
 		mediatorModel.deleteObserver(this);
-
 		if (im != null) {
 			int totalHandlers = handlers.length;
 			for (int i = 0; i < totalHandlers; i++) {
@@ -197,7 +202,6 @@ public class MediatorControllerImpl implements Observer {
 			}
 
 		}
-		// restore observer.
 		mediatorModel.addObserver(this);
 	}
 
@@ -215,7 +219,7 @@ public class MediatorControllerImpl implements Observer {
 	 * Create collector instances from the model.
 	 */
 	private void createCollectorInstances() {
-		BindingImpl[] bs = (BindingImpl[])mediatorModel.getInBindings();
+		BindingImpl[] bs = (BindingImpl[]) mediatorModel.getInBindings();
 		for (int i = 0; i < bs.length; i++) {
 			Component collector = bs[i].getCollector();
 			if (collector != null) {
@@ -229,7 +233,7 @@ public class MediatorControllerImpl implements Observer {
 	 * Create sender instances from the model.
 	 */
 	private void createSenderInstances() {
-		BindingImpl[] bs = (BindingImpl[])mediatorModel.getOutBindings();
+		BindingImpl[] bs = (BindingImpl[]) mediatorModel.getOutBindings();
 		for (int i = 0; i < bs.length; i++) {
 			Component sender = bs[i].getSender();
 			if (sender != null) {
@@ -252,7 +256,8 @@ public class MediatorControllerImpl implements Observer {
 					"Updating Mediator instance when object is not valid" + getState());
 		}
 		mediatorInstance.updateInstanceProperties(properties);
-		applicationNotifier.fireEventNode(ApplicationListenerSupport.EVT_MODIFIED, mediatorModel);
+		eventFirer.fireEventNode(FirerEvents.EVT_MODIFIED,
+				mediatorModel);
 	}
 
 	/**
@@ -264,7 +269,7 @@ public class MediatorControllerImpl implements Observer {
 			if (mediatorInstance != null) {
 				mediatorInstance.deleteObserver(this);
 				mediatorInstance.stop();
-				logger.info("Component [{}] stopped",mediatorModel.qualifiedId());
+				logger.info("Component [{}] stopped",FrameworkUtils.makeQualifiedId(mediatorModel));
 			}
 		}
 	}
@@ -276,7 +281,7 @@ public class MediatorControllerImpl implements Observer {
 		createMediatorInstance();
 		updateMediatorModel();
 		updateMediatorInstance();
-		logger.info("Component [{}] started",mediatorModel.qualifiedId());
+		logger.info("Component [{}] started", FrameworkUtils.makeQualifiedId(mediatorModel));
 	}
 
 	/**
@@ -529,7 +534,6 @@ public class MediatorControllerImpl implements Observer {
 				case UpdateActions.UPDATE_PROPERTIES: {
 					log.debug(" update instance property");
 					updateInstanceProperties(md.getProperties());
-					applicationNotifier.fireEventNode(ApplicationListenerSupport.EVT_MODIFIED, md) ;
 				}
 					// break;
 					// case UpdateActions.UPDATE_SCHEDULER: {

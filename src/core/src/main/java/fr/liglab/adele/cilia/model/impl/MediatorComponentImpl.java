@@ -17,16 +17,20 @@ package fr.liglab.adele.cilia.model.impl;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Dictionary;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Observer;
 import java.util.Set;
 import fr.liglab.adele.cilia.util.FrameworkUtils;
 import fr.liglab.adele.cilia.util.Watch;
 import fr.liglab.adele.cilia.model.Binding;
 import fr.liglab.adele.cilia.model.Chain;
 import fr.liglab.adele.cilia.model.MediatorComponent;
+import fr.liglab.adele.cilia.model.ModelExtension;
 import fr.liglab.adele.cilia.model.Port;
 import fr.liglab.adele.cilia.util.Uuid;
 
@@ -76,6 +80,8 @@ public abstract class MediatorComponentImpl extends ComponentImpl implements
 	private final String uuid = Uuid.generate().toString();
 
 	private final static long creationTimeStamp = System.currentTimeMillis();
+	
+	private Map additionnalModel = new HashMap(1);
 
 	/**
 	 * 
@@ -438,14 +444,38 @@ public abstract class MediatorComponentImpl extends ComponentImpl implements
 		return creationTimeStamp;
 	}
 
-	public String qualifiedId() {
-		return FrameworkUtils.makeQualifiedId(chainId(), nodeId(), uuid());
-	}
 
 	public String toString() {
-		StringBuffer sb = new StringBuffer(qualifiedId());
+		StringBuffer sb = new StringBuffer(FrameworkUtils.makeQualifiedId(chainId(), nodeId(), uuid()));
 		sb.append("creation date :"+Watch.formatDateIso8601(creationTimeStamp));
 		sb.append(",properties:").append(super.getProperties());
 		return sb.toString();
 	}
+	
+
+	public String[] extendedModelName() {
+		final Set keys = additionnalModel.keySet();
+		return (String[]) keys.toArray(new String[keys.size()]);
+	}
+
+	
+	public ModelExtension getModel(String modelName) {
+		ModelExtension modelExtension = null ;
+		if (modelName !=null) {
+			modelExtension = (ModelExtension)additionnalModel.get(modelName) ;
+		}
+		return modelExtension ;
+	}
+	
+	public void addModel(String modelName,ModelExtension modelExtension) {
+		if ((modelName !=null) && (modelName.length()>0))
+			additionnalModel.put(modelName, modelExtension) ;
+	}
+	
+	public void removeModel(String modelName) {
+		if ((modelName !=null) && (modelName.length()>0))
+			additionnalModel.remove(modelName) ;
+	}
+	
+	
 }

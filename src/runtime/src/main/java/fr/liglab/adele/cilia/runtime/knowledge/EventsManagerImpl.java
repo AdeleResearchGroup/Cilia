@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-package fr.liglab.adele.cilia.runtime.application;
+package fr.liglab.adele.cilia.runtime.knowledge;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -32,13 +32,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import fr.liglab.adele.cilia.ChainCallback;
-import fr.liglab.adele.cilia.ChainRegistration;
+import fr.liglab.adele.cilia.EventsConfiguration;
+import fr.liglab.adele.cilia.Measure;
+import fr.liglab.adele.cilia.VariableCallback;
 import fr.liglab.adele.cilia.Node;
 import fr.liglab.adele.cilia.NodeCallback;
-import fr.liglab.adele.cilia.NodeRegistration;
+import fr.liglab.adele.cilia.ThresholdsCallback;
 import fr.liglab.adele.cilia.exceptions.CiliaIllegalParameterException;
 import fr.liglab.adele.cilia.exceptions.CiliaInvalidSyntaxException;
-import fr.liglab.adele.cilia.runtime.ConstRuntime;
+import fr.liglab.adele.cilia.runtime.Const;
+import fr.liglab.adele.cilia.runtime.FirerEvents;
 import fr.liglab.adele.cilia.util.SwingWorker;
 import fr.liglab.adele.cilia.util.concurrent.ConcurrentReaderHashMap;
 
@@ -49,35 +52,35 @@ import fr.liglab.adele.cilia.util.concurrent.ConcurrentReaderHashMap;
  * 
  */
 @SuppressWarnings({ "rawtypes", "unchecked" })
-public class ApplicationListenerSupport implements TrackerCustomizer, ChainRegistration,
-		NodeRegistration {
+public class EventsManagerImpl implements TrackerCustomizer, EventsConfiguration,
+		FirerEvents {
 	private static int TIMEOUT = 1000; /*
 										 * Max time allowed per subscribers : 1
 										 * second
 										 */
-	public static final int EVT_ARRIVAL = 1;
-	public static final int EVT_DEPARTURE = 2;
-	public static final int EVT_MODIFIED = 3;
-	public static final int EVT_STARTED = 4;
-	public static final int EVT_STOPPED = 5;
-	public static final int EVT_BIND = 6;
-	public static final int EVT_UNBIND = 7;
 
-	private final Logger logger = LoggerFactory.getLogger(ConstRuntime.LOG_NAME);
+	private final Logger logger = LoggerFactory.getLogger(Const.LOGGER_KNOWLEDGE);
 
 	private static final String NODE_APPLICATION_LISTENER = "cilia.application.node";
 	private static final String CHAIN_APPLICATION_LISTENER = "cilia.application.chain";
-	private static final String FILTER = "(|(cilia.application.node=*)(cilia.application.chain=*))";
+	private static final String NODE_MEASURE = "cilia.runtime.node.data";
+	private static final String MEASURE_THRESHOLD = "cilia.runtime.node.threshold";
+	private static final String FILTER = "(|(cilia.application.node=*)(cilia.application.chain=*)"
+			+ "(cilia.runtime.node.data=*)(cilia.runtime.node.threshold=*))";
 
 	private Map listenerNode;
 	private Map listenerChain;
+	private Map listenerVariable;
+	private Map listenerThreshold;
 	private BundleContext bundleContext;
 	private Tracker tracker;
 
-	public ApplicationListenerSupport(BundleContext bc) {
+	public EventsManagerImpl(BundleContext bc) {
 		bundleContext = bc;
 		listenerNode = new ConcurrentReaderHashMap();
 		listenerChain = new ConcurrentReaderHashMap();
+		listenerVariable = new ConcurrentReaderHashMap();
+		listenerThreshold = new ConcurrentReaderHashMap();
 	}
 
 	public void start() {
@@ -88,6 +91,8 @@ public class ApplicationListenerSupport implements TrackerCustomizer, ChainRegis
 		unRegisterTracker();
 		listenerNode.clear();
 		listenerChain.clear();
+		listenerVariable.clear();
+		listenerThreshold.clear();
 	}
 
 	/* register the listener tracker */
@@ -117,9 +122,9 @@ public class ApplicationListenerSupport implements TrackerCustomizer, ChainRegis
 		if (listener == null)
 			throw new CiliaIllegalParameterException("listener is null");
 
-		ArrayList array = new ArrayList(1);
-		ArrayList old;
-		array.add(ConstRuntime.createFilter(filter));
+		ArrayList array, old;
+		array = new ArrayList(1);
+		array.add(Const.createFilter(filter));
 		old = (ArrayList) map.put(listener, array);
 		if (old != null) {
 			array.addAll(old);
@@ -166,6 +171,7 @@ public class ApplicationListenerSupport implements TrackerCustomizer, ChainRegis
 		}
 	}
 
+	/* Notify a proxy weak reference Node */
 	public void fireEventNode(int event, Node from, Node to) {
 		if (listenerNode.isEmpty())
 			return;
@@ -189,7 +195,7 @@ public class ApplicationListenerSupport implements TrackerCustomizer, ChainRegis
 				ArrayList filters) {
 			super(TIMEOUT);
 			this.event = event;
-			this.node = node;
+			this.node = (Node) MediatorModelProxy.getInstance().makeNode(node);
 			this.callback = callback;
 			this.filters = filters;
 		}
@@ -197,13 +203,13 @@ public class ApplicationListenerSupport implements TrackerCustomizer, ChainRegis
 		public NodeFirerTimed(int event, Node from, Node to, NodeCallback callback,
 				ArrayList filters) {
 			this(event, from, callback, filters);
-			this.dest = to;
+			this.dest = (Node) MediatorModelProxy.getInstance().makeNode(to);
 		}
 
 		protected Object construct() throws InterruptedException {
 			boolean tofire = false;
 			for (int i = 0; i < filters.size(); i++) {
-				if (ConstRuntime.isFilterMatching((Filter) filters.get(i), node)) {
+				if (Const.isFilterMatching((Filter) filters.get(i), node)) {
 					tofire = true;
 					break;
 				}
@@ -238,10 +244,10 @@ public class ApplicationListenerSupport implements TrackerCustomizer, ChainRegis
 			} catch (InvocationTargetException e) {
 				Throwable ex = e.getTargetException();
 				if (ex instanceof InterruptedException) {
-					logger.error("TimeOut callback application specification 'node' ",ex);
+					logger.error("TimeOut callback application specification 'node' ", ex);
 				}
 			} catch (InterruptedException e) {
-				logger.error("Interruped thread ",e);
+				logger.error("Interruped thread ", e);
 			}
 		}
 	}
@@ -289,7 +295,7 @@ public class ApplicationListenerSupport implements TrackerCustomizer, ChainRegis
 			this.evt = evt;
 			this.callback = callback;
 			this.filters = filters;
-			dico.put(ConstRuntime.CHAIN_ID, name);
+			dico.put(Const.CHAIN_ID, name);
 		}
 
 		protected Object construct() throws Exception {
@@ -302,7 +308,7 @@ public class ApplicationListenerSupport implements TrackerCustomizer, ChainRegis
 			}
 			if (tofire) {
 
-				String chainId = (String) dico.get(ConstRuntime.CHAIN_ID);
+				String chainId = (String) dico.get(Const.CHAIN_ID);
 				switch (evt) {
 				case EVT_ARRIVAL:
 					callback.onAdded(chainId);
@@ -327,7 +333,7 @@ public class ApplicationListenerSupport implements TrackerCustomizer, ChainRegis
 			} catch (InvocationTargetException e) {
 				Throwable ex = e.getTargetException();
 				if (ex instanceof InterruptedException) {
-					logger.error("TimeOut callback application specification 'node' ",ex);
+					logger.error("TimeOut callback application specification 'node' ", ex);
 				}
 			} catch (InterruptedException e) {
 			}
@@ -357,7 +363,7 @@ public class ApplicationListenerSupport implements TrackerCustomizer, ChainRegis
 					addFilterListener(listenerNode, ldapFilter, service);
 				}
 			} catch (Exception e) {
-				logger.error("Cannot add a listener ",e);
+				logger.error("Cannot add a listener ", e);
 			}
 		}
 		ldapFilter = (String) reference.getProperty(CHAIN_APPLICATION_LISTENER);
@@ -368,7 +374,29 @@ public class ApplicationListenerSupport implements TrackerCustomizer, ChainRegis
 					addFilterListener(listenerChain, ldapFilter, service);
 				}
 			} catch (Exception e) {
-				logger.error("Cannot add a listener ",e);
+				logger.error("Cannot add a listener ", e);
+			}
+		}
+		ldapFilter = (String) reference.getProperty(NODE_MEASURE);
+		if (ldapFilter != null) {
+			/* checks if the interface is implemented */
+			try {
+				if (service instanceof VariableCallback) {
+					addFilterListener(listenerVariable, ldapFilter, service);
+				}
+			} catch (Exception e) {
+				logger.error("Cannot add a listener ", e);
+			}
+		}
+		ldapFilter = (String) reference.getProperty(MEASURE_THRESHOLD);
+		if (ldapFilter != null) {
+			/* checks if the interface is implemented */
+			try {
+				if (service instanceof ThresholdsCallback) {
+					addFilterListener(listenerThreshold, ldapFilter, service);
+				}
+			} catch (Exception e) {
+				logger.error("Cannot add a listener ", e);
 			}
 		}
 	}
@@ -389,4 +417,214 @@ public class ApplicationListenerSupport implements TrackerCustomizer, ChainRegis
 	public void removedService(ServiceReference reference, Object service) {
 		extractService(service);
 	}
+
+	public void addListener(String ldapfilter, VariableCallback listener)
+			throws CiliaIllegalParameterException, CiliaInvalidSyntaxException {
+		addFilterListener(listenerVariable, ldapfilter, listener);
+	}
+
+	public void removeListener(VariableCallback listener)
+			throws CiliaIllegalParameterException {
+		removeFilterListener(listenerVariable, listener);
+	}
+
+	/**
+	 * Notify all listeners matching the filter
+	 * 
+	 * the notified Node is a proxy weak Reference
+	 * 
+	 * @param node
+	 * @param variableId
+	 */
+	public void fireEventMeasure(Node node, String variableId, Measure m) {
+
+		if (listenerVariable.isEmpty())
+			return;
+		/* Iterator assumes a valid copy of listeners */
+		Iterator it = listenerVariable.entrySet().iterator();
+		while (it.hasNext()) {
+			Map.Entry pairs = (Map.Entry) it.next();
+			new MeasureFirerTimed(node, variableId, m, (VariableCallback) pairs.getKey(),
+					(ArrayList) pairs.getValue()).start();
+		}
+
+	}
+
+	private class MeasureFirerTimed extends SwingWorker {
+		private Node node;
+		private VariableCallback callback;
+		private ArrayList filters;
+		private Measure measure;
+		private String variableId;
+
+		public MeasureFirerTimed(Node node, String variableId, Measure m,
+				VariableCallback callback, ArrayList filters) {
+			super(TIMEOUT);
+			this.node = (Node) MediatorModelProxy.getInstance().makeNode(node);
+			this.callback = callback;
+			this.filters = filters;
+			this.measure = m.clone();
+			this.variableId = variableId;
+		}
+
+		protected Object construct() throws InterruptedException {
+			for (int i = 0; i < filters.size(); i++) {
+				if (Const.isFilterMatching((Filter) filters.get(i), node)) {
+					callback.onUpdate(node, variableId, measure);
+					break;
+				}
+			}
+			return null;
+		}
+
+		/* Wait end of asynchronous subscriber call */
+		protected void finished() {
+			try {
+				get();
+			} catch (InvocationTargetException e) {
+				Throwable ex = e.getTargetException();
+				if (ex instanceof InterruptedException) {
+					logger.error("TimeOut callback application runtime 'measure' ", ex);
+				}
+			} catch (InterruptedException e) {
+				logger.error("Interruped thread ", e);
+			}
+		}
+	}
+	
+	/**
+	 * Notify all listeners matching the filter
+	 * 
+	 * the notified Node is a proxy weak Reference
+	 * 
+	 * @param node
+	 * @param variableId
+	 */
+	public void fireEventVariableStatus(Node node, String variableId, boolean enable) {
+
+		if (listenerVariable.isEmpty())
+			return;
+		/* Iterator assumes a valid copy of listeners */
+		Iterator it = listenerVariable.entrySet().iterator();
+		while (it.hasNext()) {
+			Map.Entry pairs = (Map.Entry) it.next();
+			new VariableStatusTimed(node, variableId, enable, (VariableCallback) pairs.getKey(),
+					(ArrayList) pairs.getValue()).start();
+		}
+
+	}
+
+	private class VariableStatusTimed extends SwingWorker {
+		private Node node;
+		private VariableCallback callback;
+		private ArrayList filters;
+		private boolean enable;
+		private String variableId;
+
+		public VariableStatusTimed(Node node, String variableId, boolean enable,
+				VariableCallback callback, ArrayList filters) {
+			super(TIMEOUT);
+			this.node = (Node) MediatorModelProxy.getInstance().makeNode(node);
+			this.callback = callback;
+			this.filters = filters;
+			this.enable = enable;
+			this.variableId = variableId;
+		}
+
+		protected Object construct() throws InterruptedException {
+			for (int i = 0; i < filters.size(); i++) {
+				if (Const.isFilterMatching((Filter) filters.get(i), node)) {
+					callback.onStateChange(node, variableId, enable);
+					break;
+				}
+			}
+			return null;
+		}
+
+		/* Wait end of asynchronous subscriber call */
+		protected void finished() {
+			try {
+				get();
+			} catch (InvocationTargetException e) {
+				Throwable ex = e.getTargetException();
+				if (ex instanceof InterruptedException) {
+					logger.error("TimeOut callback application runtime 'measure' ", ex);
+				}
+			} catch (InterruptedException e) {
+				logger.error("Interruped thread ", e);
+			}
+		}
+	}
+
+
+	public void addListener(String ldapfilter, ThresholdsCallback listener)
+			throws CiliaIllegalParameterException, CiliaInvalidSyntaxException {
+		addFilterListener(listenerThreshold, ldapfilter, listener);
+	}
+
+	public void removeListener(ThresholdsCallback listener)
+			throws CiliaIllegalParameterException {
+		removeFilterListener(listenerThreshold, listener);
+	}
+
+	public void fireThresholdEvent(Node node, String variableId, Measure measure, int evt) {
+
+		if (listenerThreshold.isEmpty())
+			return;
+		/* Iterator assumes a valid copy of listeners */
+		Iterator it = listenerThreshold.entrySet().iterator();
+		while (it.hasNext()) {
+			Map.Entry pairs = (Map.Entry) it.next();
+			new ThresholdFirerTimed(node, variableId, measure, evt,
+					(ThresholdsCallback) pairs.getKey(), (ArrayList) pairs.getValue())
+					.start();
+		}
+
+	}
+
+	private class ThresholdFirerTimed extends SwingWorker {
+		private Node node;
+		private ThresholdsCallback callback;
+		private ArrayList filters;
+		private Measure measure;
+		private String variableId;
+		private int evt;
+		private Object o = new Object();
+
+		public ThresholdFirerTimed(Node node, String variableId, Measure m, int evt,
+				ThresholdsCallback callback, ArrayList filters) {
+			super(TIMEOUT);
+			this.node = (Node) MediatorModelProxy.getInstance().makeNode(node);
+			this.callback = callback;
+			this.filters = filters;
+			this.measure = m.clone();
+			this.variableId = variableId;
+			this.evt = evt;
+		}
+
+		protected Object construct() throws InterruptedException {
+			for (int i = 0; i < filters.size(); i++) {
+				if (Const.isFilterMatching((Filter) filters.get(i), node)) {
+					callback.onThreshold(node, variableId, measure, evt);
+					break;
+				}
+			}
+			return null;
+		}
+
+		/* Wait end of asynchronous subscriber call */
+		protected void finished() {
+			try {
+				get();
+			} catch (InvocationTargetException e) {
+				Throwable ex = e.getTargetException();
+				if (ex instanceof InterruptedException) {
+					logger.error("TimeOut callback application runtime 'measure' ", ex);
+				}
+			} catch (InterruptedException e) {
+				logger.error("Interruped thread ", e);
+			}
+		}
+	}
+
 }

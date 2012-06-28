@@ -16,6 +16,7 @@
 package fr.liglab.adele.cilia;
 
 import fr.liglab.adele.cilia.exceptions.CiliaIllegalParameterException;
+import fr.liglab.adele.cilia.exceptions.CiliaIllegalStateException;
 import fr.liglab.adele.cilia.exceptions.CiliaInvalidSyntaxException;
 
 /**
@@ -28,23 +29,19 @@ import fr.liglab.adele.cilia.exceptions.CiliaInvalidSyntaxException;
 public interface SetUp extends Node {
 
 	/**
-	 * validity of a mediator 
-	 * @return true if the mediator is valid 
-	 */
-	boolean isValid() ;
-	
-	/**
 	 * 
-	 * @return Categories of variables
+	 * @return Categories of state variables variables
 	 */
-	String[] getCategories();
+	String[] getCategories() throws CiliaIllegalStateException;
 
 	/**
 	 * 
-	 * @param category , if null return all variables name
-	 * @return array of variables name
+	 * @param category
+	 *            catory name or null
+	 * @return list of variable per category of all state variable name if
+	 *         category is null
 	 */
-	String[] variablesByCategory(String category);
+	String[] variablesByCategory(String category) throws CiliaIllegalStateException;
 
 	/**
 	 * Configure the monitoring on this object
@@ -59,9 +56,10 @@ public interface SetUp extends Node {
 	 *            , true values are published
 	 * @return true if action done , false otherwhise
 	 * @throws CiliaInvalidSyntaxException
+	 * @throws CiliaIllegalStateException 
 	 */
 	void setMonitoring(String variableId, int queueSize, String LdapFilter, boolean enable)
-			throws CiliaIllegalParameterException, CiliaInvalidSyntaxException;
+			throws CiliaIllegalParameterException, CiliaInvalidSyntaxException, CiliaIllegalStateException;
 
 	/**
 	 * Configure the monitoring on this object ( others parameters are not
@@ -72,9 +70,10 @@ public interface SetUp extends Node {
 	 * @param queueSize
 	 *            , number of monitored values stored ( circular queue)
 	 * @return true if action done , false otherwhise
+	 * @throws CiliaIllegalStateException 
 	 */
 	void setMonitoring(String variableId, int queueSize)
-			throws CiliaIllegalParameterException;
+			throws CiliaIllegalParameterException, CiliaIllegalStateException;
 
 	/**
 	 * Configure the monitoring on this object
@@ -85,39 +84,43 @@ public interface SetUp extends Node {
 	 *            , data control flow management
 	 * @return true if action done , false otherwhise
 	 * @throws CiliaInvalidSyntaxException
+	 * @throws CiliaIllegalStateException 
 	 */
 	void setMonitoring(String variableId, String LdapFilter)
-			throws CiliaIllegalParameterException, CiliaInvalidSyntaxException;
+			throws CiliaIllegalParameterException, CiliaInvalidSyntaxException, CiliaIllegalStateException;
 
 	/**
-	 * Configure the monitoring on this object
+	 * Enable/disable
 	 * 
 	 * @param variableId
 	 *            , name of the variable to configure
 	 * @param enable
 	 *            , true values are published
 	 * @return true if action done , false otherwhise
+	 * @throws CiliaIllegalStateException 
 	 */
-	void setMonitoring(String variableId, boolean enable)
-			throws CiliaIllegalParameterException;
-
-	/**
-	 * 
-	 * @return list of state variable enabled
-	 */
-	String[] enabledVariable();
+	void setMonitoring(String variableId, boolean enable) throws CiliaIllegalParameterException, CiliaIllegalStateException;
 
 	/**
 	 * 
 	 * @param variableId
 	 * @return number of objects stored
+	 * @throws CiliaIllegalStateException 
 	 */
-	int queueSize(String variableId) throws CiliaIllegalParameterException;
+	int getQueueSize(String variableId) throws CiliaIllegalParameterException, CiliaIllegalStateException;
 
 	/**
 	 * @param variableId
 	 * @return ldap filter for the flow control
 	 * @throws CiliaIllegalParameterException
+	 * @throws CiliaIllegalStateException 
 	 */
-	String flowControl(String variableId) throws CiliaIllegalParameterException;
+	String getFlowControl(String variableId) throws CiliaIllegalParameterException, CiliaIllegalStateException;
+
+	/**
+	 * 
+	 * @return list of state variable enabled
+	 */
+	String[] getEnabledVariable() throws CiliaIllegalStateException ;
+	
 }

@@ -15,71 +15,177 @@
 
 package fr.liglab.adele.cilia.internals;
 
-import java.util.HashMap;
 
 import org.w3c.dom.Node;
 
 import fr.liglab.adele.cilia.exceptions.CiliaParserException;
+import fr.liglab.adele.cilia.ext.MonitoringHandler;
+import fr.liglab.adele.cilia.ext.StateVarConfigurationImpl;
 import fr.liglab.adele.cilia.model.Component;
 import fr.liglab.adele.cilia.model.impl.ComponentImpl;
+import fr.liglab.adele.cilia.model.impl.MediatorComponentImpl;
 import fr.liglab.adele.cilia.util.CiliaExtenderParser;
 
 public class MonitoringParser extends DomExtenderParser implements CiliaExtenderParser {
 	private static final String TAG_MONITORING = "monitoring";
 	private static final String ATTR_ENABLE = "enable";
 	private static final String TAG_STATEVAR = "state-variable";
+	private static final String TAG_SETUP = "setup";
+	private static final String TAG_THRESHOLD = "threshold";
 	private static final String ATTR_ID = "id";
-	private static final String ATTR_CONDITION = "condition";
+	private static final String ATTR_FLOWCONTROL = "flow-control";
+	private static final String ATTR_VERYLOW = "very-low";
+	private static final String ATTR_LOW = "low";
+	private static final String ATTR_HIGH = "high";
+	private static final String ATTR_VERYHIGH = "very-high";
+	private static final String ATTR_QUEUE = "queue";
 
 	public MonitoringParser() {
-
+		System.out.println(">>>>>> PARSERUR MONITORING");
 	}
+	
 
-	public boolean canHandle(Object elementDescription) {
-		if ((elementDescription != null) && (elementDescription instanceof Node)) {
-			Node parent = ((Node) elementDescription);
-			if (parent != null && parent.getLocalName() != null) {
-				if (parent.getLocalName().equalsIgnoreCase("adapter-instance"))
-					return true;
-				if (parent.getLocalName().equalsIgnoreCase("mediator-instance"))
-					return true;
-			}
+	protected Node getNode(String parentName, Object componentDescription) {
+		if (componentDescription == null || !(componentDescription instanceof Node)) {
+			return null;
 		}
-		return false;
+		Node parent = ((Node) componentDescription).getFirstChild();
+		Node child = null;
+		while (parent != null) {
+			if (parent.getLocalName() != null
+					&& parent.getLocalName().equalsIgnoreCase(parentName)) {
+				child = parent.cloneNode(true).getFirstChild();
+				break;
+			}
+			parent = parent.getNextSibling();
+		}
+
+		while (child != null) {
+			if (child.getNamespaceURI() != null
+					&& child.getLocalName().equalsIgnoreCase(NAME)) {
+				return child;
+			}
+			child = child.getNextSibling();
+		}
+		return null;
+	}
+	public boolean canHandle(Object elementDescription) {
+		System.out.println(">>>>>>CAN HANDLE ") ;
+		//if ((elementDescription != null) && (elementDescription instanceof Node)) {
+		//	Node parent = ((Node) elementDescription);
+		//	if (parent != null && parent.getLocalName() != null) {
+		//		if (parent.getLocalName().equalsIgnoreCase("adapter-instance"))
+		//			return true;
+		//		if (parent.getLocalName().equalsIgnoreCase("mediator-instance"))
+		//			return true;
+		//	}
+		//}
+		Node disp = getNode(TAG_MONITORING,elementDescription);
+		if(disp == null) {
+			System.out.println(">>>>>>>>> MONITORING FALSE ") ;
+
+			return false;
+		}
+		System.out.println(">>>>>>>>> MONITORING TRUE ") ;
+		return true;
 	}
 
-	public Component getComponent(Object componentDescription,
-			Component current) throws CiliaParserException {
-		HashMap stateVarList = null;
-		ComponentImpl currentComponent = (ComponentImpl)current;
-		Node child = getElement(TAG_MONITORING,(Node) componentDescription);
+	private boolean getAttributeBoolean(Node node, String attribute) {
+		String enableStr = getAttributeValue(node, attribute);
+		boolean enable = false;
+		if ((enableStr != null) && (enableStr.equalsIgnoreCase("true")))
+			enable = true;
+		else
+			enable = false;
+		return enable;
+	}
+	
+	
+
+	public Component getComponent(Object componentDescription, Component current)
+			throws CiliaParserException {
+		
+		ComponentImpl currentComponent = (ComponentImpl) current;
+		Node child = getNode(TAG_STATEVAR,componentDescription) ;
+		System.out.println(">>>>>GET MONITORING __> STATE VAR") ;
 		if (child != null) {
-			String enable = getAttributeValue(child, ATTR_ENABLE);
-			if (enable != null) {
-				if (enable.equalsIgnoreCase("true")) {
-					currentComponent.setProperty("state.variable.status", "true");
-				} else currentComponent.setProperty("state.variable.status", "false");
-			} else currentComponent.setProperty("state.variable.status", "true");
-			
+			MonitoringHandler monitorConfig = new MonitoringHandler(
+					(MediatorComponentImpl) currentComponent);
+
 			Node conf = child.getFirstChild();
 			while (conf != null) {
+
+				/* Tag STATE VAR attribute enable & id */
 				if (conf.getLocalName() != null
 						&& conf.getLocalName().equalsIgnoreCase(TAG_STATEVAR)) {
+					System.out.println("GET STATE VAR ");
 					String id = getAttributeValue(conf, ATTR_ID);
-					String condition = getAttributeValue(conf, ATTR_CONDITION);
+					/* tag mandatory */
 					if (id != null) {
-						if (stateVarList == null)
-							stateVarList = new HashMap();
-						if (condition == null)
-							condition = "";
-						stateVarList.put(id, condition);
+						boolean enable = getAttributeBoolean(conf, ATTR_ENABLE);
+						StateVarConfigurationImpl statevarConfig = monitorConfig.addId(
+								id, enable);
+						Node statevar = conf.getFirstChild();
+						while (statevar != null) {
+							/* TAG setup & TAG threshold */
+							if (statevar.getLocalName() != null) {
+								String attr;
+								if (statevar.getLocalName().equalsIgnoreCase(TAG_SETUP)) {
+									attr = getAttributeValue(statevar, ATTR_QUEUE);
+									if (attr != null) {
+										try {
+											int queue = Integer.parseInt(attr);
+											statevarConfig.setQueueSize(queue);
+										} catch (NumberFormatException e) {
+										}
+									}
+									attr = getAttributeValue(statevar, ATTR_FLOWCONTROL);
+									statevarConfig.setControlFlow(attr);
+								}
+								if (statevar.getLocalName().equalsIgnoreCase(
+										TAG_THRESHOLD)) {
+									attr = getAttributeValue(statevar, ATTR_VERYLOW);
+									if (attr != null) {
+										try {
+											Double d = Double.parseDouble(attr);
+											statevarConfig.setVeryLow(d);
+										} catch (NumberFormatException e) {
+										}
+									}
+									attr = getAttributeValue(statevar, ATTR_LOW);
+									if (attr != null) {
+										try {
+											Double d = Double.parseDouble(attr);
+											statevarConfig.setLow(d);
+										} catch (NumberFormatException e) {
+										}
+									}
+									attr = getAttributeValue(statevar, ATTR_HIGH);
+									if (attr != null) {
+										try {
+											Double d = Double.parseDouble(attr);
+											statevarConfig.setHigh(d);
+										} catch (NumberFormatException e) {
+										}
+									}
+									attr = getAttributeValue(statevar, ATTR_VERYHIGH);
+									if (attr != null) {
+										try {
+											Double d = Double.parseDouble(attr);
+											statevarConfig.setVeryHigh(d);
+										} catch (NumberFormatException e) {
+										}
+									}
+								}
+							}
+						}
+						statevar = statevar.getNextSibling();
 					}
+
 				}
 				conf = conf.getNextSibling();
 			}
-			if (stateVarList != null)
-				currentComponent
-						.setProperty("state.variable.configuration", stateVarList);
+			monitorConfig.done();
 		}
 		return currentComponent;
 	}

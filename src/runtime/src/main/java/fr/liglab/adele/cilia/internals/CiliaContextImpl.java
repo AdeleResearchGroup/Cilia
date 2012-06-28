@@ -18,15 +18,12 @@ import java.util.Date;
 
 import org.osgi.framework.BundleContext;
 
-import fr.liglab.adele.cilia.ApplicationRuntime;
-import fr.liglab.adele.cilia.ApplicationSpecification;
 import fr.liglab.adele.cilia.CiliaContext;
+import fr.liglab.adele.cilia.ApplicationRuntime;
 import fr.liglab.adele.cilia.builder.Builder;
 import fr.liglab.adele.cilia.builder.impl.BuilderImpl;
-import fr.liglab.adele.cilia.runtime.application.ApplicationListenerSupport;
-import fr.liglab.adele.cilia.runtime.application.ApplicationSpecificationImpl;
-import fr.liglab.adele.cilia.runtime.dynamic.ApplicationRuntimeImpl;
-import fr.liglab.adele.cilia.runtime.dynamic.ApplicationRuntimeListenerSupport;
+import fr.liglab.adele.cilia.runtime.knowledge.EventsManagerImpl;
+import fr.liglab.adele.cilia.runtime.knowledge.KEngineImpl;
 
 /**
  * Main Cilia Service implementation. It contains methods to retrieve information of mediation
@@ -44,43 +41,33 @@ public class CiliaContextImpl implements CiliaContext {
 
 	private CiliaContainerImpl container = null;
 
-	private ApplicationSpecificationImpl application = null;
-
-	private ApplicationRuntimeImpl dynamicProperties = null;
-
 	private final static String version = "2.0.1";
 
 	private final static Date startup=new Date(System.currentTimeMillis()) ;
-
-	/* notify to subscribers events level Model chain and mediator/adapter */
-	private final ApplicationListenerSupport notifierModel ;
-	/* notify to subscvriber , events level instance  */
-	private final ApplicationRuntimeListenerSupport notifierRuntime ;
+	
+	private final EventsManagerImpl eventManager ;
+	private final KEngineImpl KEngine ;
 
 	public CiliaContextImpl(BundleContext bc) {
 		bcontext = bc;
-		notifierModel = new ApplicationListenerSupport(bc);
-		notifierRuntime = new ApplicationRuntimeListenerSupport(bc) ;
-		container = new CiliaContainerImpl(bcontext,notifierModel);
-		application = new ApplicationSpecificationImpl(bcontext,container,notifierModel);
-		dynamicProperties = new ApplicationRuntimeImpl(bcontext, container,notifierRuntime);
+		/* Fire events related to operating modes level chain / mediator / bindings */
+		eventManager = new EventsManagerImpl(bc) ;
+		container = new CiliaContainerImpl(bcontext,eventManager);
+		/* provides configuration interfaces for building the knowledge base */
+		KEngine = new KEngineImpl(bc, container, eventManager) ;
 	}
 
 	private void start() {
-		notifierModel.start();
-		notifierRuntime.start();
+		eventManager.start() ;
 		container.start();
-		application.start();
-		dynamicProperties.start();
+		KEngine.start() ;
 	}
 
 
 	private void stop() {
-		notifierModel.stop();
-		notifierModel.stop();
+		eventManager.stop() ;
 		container.stop();
-		application.stop();
-		dynamicProperties.stop();
+		KEngine.stop();
 	}
 
 	/**
@@ -98,7 +85,6 @@ public class CiliaContextImpl implements CiliaContext {
 
 	public Builder getBuilder() {
 		return new BuilderImpl(container);
-
 	}
 
 	/**
@@ -108,19 +94,7 @@ public class CiliaContextImpl implements CiliaContext {
 	 * @return the ApplicationSpecification instance.
 	 * */
 	public ApplicationRuntime getApplicationRuntime() {
-		return dynamicProperties;
+		return KEngine ;
 	}
-
-	/**
-	 * Retrieve the ApplicationSpecification instance which allows to inspect
-	 * the structure of mediation chains and its properties.
-	 * 
-	 * @return the ApplicationSpecification instance.
-	 */
-
-	public ApplicationSpecification getApplicationSpecification() {
-		return application;
-	}
-
 
 }

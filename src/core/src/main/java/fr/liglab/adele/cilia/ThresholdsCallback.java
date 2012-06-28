@@ -25,6 +25,7 @@ package fr.liglab.adele.cilia;
  * 
  */
 public interface ThresholdsCallback {
+	static int NONE = 0 ;
 	static int VERY_LOW = 1;
 	static int LOW = 2;
 	static int HIGH = 3;

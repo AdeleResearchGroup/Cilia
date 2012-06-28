@@ -2,16 +2,18 @@ package fr.liglab.adele.cilia.administration.jmx;
 
 import fr.liglab.adele.cilia.CiliaContext;
 import fr.liglab.adele.cilia.Measure;
-import fr.liglab.adele.cilia.MeasureCallback;
+import fr.liglab.adele.cilia.VariableCallback;
 import fr.liglab.adele.cilia.Node;
 import fr.liglab.adele.cilia.NodeCallback;
 import fr.liglab.adele.cilia.RawData;
 import fr.liglab.adele.cilia.SetUp;
 import fr.liglab.adele.cilia.ThresholdsCallback;
 import fr.liglab.adele.cilia.exceptions.CiliaIllegalParameterException;
+import fr.liglab.adele.cilia.exceptions.CiliaIllegalStateException;
 import fr.liglab.adele.cilia.exceptions.CiliaInvalidSyntaxException;
+import fr.liglab.adele.cilia.util.FrameworkUtils;
 
-public class ApplRuntime implements NodeCallback, MeasureCallback, ThresholdsCallback {
+public class ApplRuntime implements NodeCallback, VariableCallback, ThresholdsCallback {
 	private CiliaContext ciliaContext ;
 
 	private volatile String nodes_arrival;
@@ -20,8 +22,8 @@ public class ApplRuntime implements NodeCallback, MeasureCallback, ThresholdsCal
 	private volatile String variable_outOfBounds;
 	private volatile String nodes_modified;
 
-	private static synchronized String convertNodeToString(Node nodes) {
-		return "{" + nodes.qualifiedId() + "}";
+	private static synchronized String convertNodeToString(Node node) {
+		return "{" + FrameworkUtils.makeQualifiedId(node) + "}";
 	}
 
 	private static synchronized String[] convertNodeToString(Node[] nodes) {
@@ -107,6 +109,9 @@ public class ApplRuntime implements NodeCallback, MeasureCallback, ThresholdsCal
 			} catch (CiliaInvalidSyntaxException e) {
 				result[i] = variableToString(nodes[i], variable,
 						"CiliaInvalidSyntaxException " + e.getMessage());
+			} catch (CiliaIllegalStateException e) {
+				result[i] = variableToString(nodes[i], variable,
+						"CiliaIllegalStateException " + e.getMessage());
 			}
 		}
 		return result;
@@ -129,11 +134,14 @@ public class ApplRuntime implements NodeCallback, MeasureCallback, ThresholdsCal
 		queueSize = new String[nodes.length];
 		for (int i = 0; i < nodes.length; i++) {
 			try {
-				value = nodes[i].queueSize(variable);
+				value = nodes[i].getQueueSize(variable);
 				queueSize[i] = variableToString(nodes[i], variable, value);
 			} catch (CiliaIllegalParameterException e) {
 				queueSize[i] = variableToString(nodes[i], variable,
 						"CiliaIllegalParameterException " + e.getMessage());
+			} catch (CiliaIllegalStateException e) {
+				queueSize[i] = variableToString(nodes[i], variable,
+						"CiliaIllegalStateException " + e.getMessage());
 			}
 		}
 		return queueSize;
@@ -157,10 +165,13 @@ public class ApplRuntime implements NodeCallback, MeasureCallback, ThresholdsCal
 		for (int i = 0; i < nodes.length; i++) {
 			try {
 				queueSize[i] = variableToString(nodes[i], variable,
-						nodes[i].flowControl(variable));
+						nodes[i].getFlowControl(variable));
 			} catch (CiliaIllegalParameterException e) {
 				queueSize[i] = variableToString(nodes[i], variable,
 						"CiliaIllegalParameterException " + e.getMessage());
+			} catch (CiliaIllegalStateException e) {
+				queueSize[i] = variableToString(nodes[i], variable,
+						"CiliaIllegalStateException " + e.getMessage());
 			}
 		}
 		return queueSize;
@@ -187,6 +198,9 @@ public class ApplRuntime implements NodeCallback, MeasureCallback, ThresholdsCal
 			} catch (CiliaIllegalParameterException e) {
 				mesures[i] += variableToString(nodes[i], variable,
 						"CiliaIllegalParameterException " + e.getMessage());
+			} catch (CiliaIllegalStateException e) {
+				mesures[i] += variableToString(nodes[i], variable,
+						"CiliaIllegalStateException " + e.getMessage());
 			}
 		}
 		return mesures;
@@ -197,11 +211,11 @@ public class ApplRuntime implements NodeCallback, MeasureCallback, ThresholdsCal
 	}
 
 	public void onArrival(Node node) {
-		nodes_arrival = node.qualifiedId();
+		nodes_arrival = FrameworkUtils.makeQualifiedId(node);
 	}
 
 	public void onDeparture(Node node) {
-		nodes_departure = node.qualifiedId();
+		nodes_departure =  FrameworkUtils.makeQualifiedId(node);
 	}
 
 	public void onThreshold(Node node, String variable, Measure measure, int thresholdType) {
@@ -210,7 +224,7 @@ public class ApplRuntime implements NodeCallback, MeasureCallback, ThresholdsCal
 	}
 
 	public void onModified(Node node) {
-		nodes_modified = node.qualifiedId();
+		nodes_modified =  FrameworkUtils.makeQualifiedId(node);
 	}
 
 	public void onBind(Node from, Node to) {
@@ -224,5 +238,9 @@ public class ApplRuntime implements NodeCallback, MeasureCallback, ThresholdsCal
 	public void onStateChange(Node node, boolean isValid) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	public void onStateChange(Node node, String variable, boolean enable) {
+		// TODO Auto-generated method stub
 	}
 }

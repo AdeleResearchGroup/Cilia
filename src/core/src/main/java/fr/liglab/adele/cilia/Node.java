@@ -15,6 +15,8 @@
 
 package fr.liglab.adele.cilia;
 
+import fr.liglab.adele.cilia.exceptions.CiliaIllegalStateException;
+
 /**
  * 
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project
@@ -25,29 +27,24 @@ public interface Node {
 
 	/**
 	 * @return chain id hosting the node
+	 * @throws CiliaIllegalStateException
 	 */
-	String chainId();
+	String chainId() ;
 
 	/**
 	 * @return node name ( adapter id or mediator id )
 	 */
-	String nodeId();
+	String nodeId() ;
 
 	/**
 	 * @return unique Identifier
 	 */
-	String uuid();
-
-	/**
-	 * 
-	 * @return Return the single name for a node "chaineId/mediatorId/uuid"
-	 */
-	String qualifiedId();
+	String uuid() ;
 
 	/**
 	 * 
 	 * @return the the value of System.currentms() at creation time
 	 */
-	long timeStamp();
-
+	long timeStamp() ;
+	
 }

@@ -50,14 +50,7 @@ public interface CiliaContext {
 	 * @return the new Builder object.
 	 */
 	Builder getBuilder();
-	
-	/**
-	 * Retrieve the ApplicationSpecification instance which allows to inspect the structure
-	 * of mediation chains and its properties. 
-	 * @return the ApplicationSpecification instance.
-	 */
-	ApplicationSpecification getApplicationSpecification();
-	
+		
 	/**
 	 * Retrieve the ApplicationRuntime instance which allows to inspect the runtime information
 	 * of mediation chains. 

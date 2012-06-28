@@ -40,7 +40,7 @@ import fr.liglab.adele.cilia.model.impl.UpdateEvent;
 import fr.liglab.adele.cilia.runtime.AdminData;
 import fr.liglab.adele.cilia.runtime.CiliaInstance;
 import fr.liglab.adele.cilia.runtime.CiliaInstanceWrapper;
-import fr.liglab.adele.cilia.runtime.application.ApplicationListenerSupport;
+import fr.liglab.adele.cilia.runtime.FirerEvents;
 
 /**
  * This class is used to control a model chain and will act as an intermediator
@@ -81,7 +81,7 @@ public class ChainControllerImpl implements Observer {
 
 	private final Object lockObject = new Object();
 
-	private ApplicationListenerSupport applicationNotifier;
+	private FirerEvents eventFirer;
 
 	private static final Logger log = LoggerFactory.getLogger("cilia.ipojo.runtime");
 
@@ -94,11 +94,11 @@ public class ChainControllerImpl implements Observer {
 	 *            chain model.
 	 */
 	public ChainControllerImpl(BundleContext context, Chain model, CreatorThread crea,
-			ApplicationListenerSupport notifier) {
+			FirerEvents notifier) {
 		bcontext = context;
 		modelChain = (ChainImpl) model;
 		creator = crea;
-		applicationNotifier = notifier;
+		eventFirer = notifier;
 	}
 
 	private void createControllers() {
@@ -370,7 +370,7 @@ public class ChainControllerImpl implements Observer {
 				bindingController.start();
 			}
 			bindings.put(binding.getId(), bindingController);
-			applicationNotifier.fireEventNode(ApplicationListenerSupport.EVT_BIND,
+			eventFirer.fireEventNode(FirerEvents.EVT_BIND,
 					smediator, tmediator);
 		}
 	}
@@ -380,9 +380,9 @@ public class ChainControllerImpl implements Observer {
 		MediatorControllerImpl mc = null;
 		synchronized (lockObject) {
 			if (!mediators.containsKey(mediator.getId())) {
-				mc = new MediatorControllerImpl(bcontext, mediator, creator,applicationNotifier);
+				mc = new MediatorControllerImpl(bcontext, mediator, creator,eventFirer);
 				mediators.put(mediator.getId(), mc);
-				applicationNotifier.fireEventNode(ApplicationListenerSupport.EVT_ARRIVAL,
+				eventFirer.fireEventNode(FirerEvents.EVT_ARRIVAL,
 						mediator);
 				if (isStarted) {
 					localStarted = true;
@@ -402,12 +402,12 @@ public class ChainControllerImpl implements Observer {
 		AdapterControllerImpl mc = null;
 		synchronized (lockObject) {
 			if (!adapters.containsKey(adapter.getId())) {
-				mc = new AdapterControllerImpl(bcontext, adapter, creator,applicationNotifier);
+				mc = new AdapterControllerImpl(bcontext, adapter, creator,eventFirer);
 				if (isStarted) {
 					localStarted = true;
 				}
 				adapters.put(adapter.getId(), mc);
-				applicationNotifier.fireEventNode(ApplicationListenerSupport.EVT_ARRIVAL,
+				eventFirer.fireEventNode(FirerEvents.EVT_ARRIVAL,
 						adapter);
 
 			}
@@ -423,7 +423,7 @@ public class ChainControllerImpl implements Observer {
 		if (!bindings.containsKey(binding.getId())) {
 			return;
 		}
-		applicationNotifier.fireEventNode(ApplicationListenerSupport.EVT_UNBIND,
+		eventFirer.fireEventNode(FirerEvents.EVT_UNBIND,
 				binding.getSourceMediator(), binding.getTargetMediator());
 
 		BindingControllerImpl bindingController = (BindingControllerImpl) bindings
@@ -444,7 +444,7 @@ public class ChainControllerImpl implements Observer {
 			mediatorController.stop();
 		}
 		clearDataMediator(mediatorId);
-		applicationNotifier.fireEventNode(ApplicationListenerSupport.EVT_DEPARTURE,
+		eventFirer.fireEventNode(FirerEvents.EVT_DEPARTURE,
 				mediator);
 
 	}
@@ -458,7 +458,7 @@ public class ChainControllerImpl implements Observer {
 			adapterController.stop();
 		}
 		clearDataMediator(adapter.getId());
-		applicationNotifier.fireEventNode(ApplicationListenerSupport.EVT_DEPARTURE,
+		eventFirer.fireEventNode(FirerEvents.EVT_DEPARTURE,
 				adapter);
 	}
 

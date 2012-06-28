@@ -12,8 +12,9 @@
  * limitations under the License.
  */
 
-package fr.liglab.adele.cilia.runtime.dynamic;
+package fr.liglab.adele.cilia.runtime.knowledge;
 
+import java.util.HashMap;
 import fr.liglab.adele.cilia.Measure;
 import fr.liglab.adele.cilia.util.Watch;
 
@@ -24,28 +25,38 @@ import fr.liglab.adele.cilia.util.Watch;
  *         Team</a>
  * 
  */
+@SuppressWarnings({ "rawtypes", "unchecked" })
 public class MeasureImpl implements Measure {
-	private final Object value;
-	private final long tickCounts;
+	public final HashMap map ;
 
 	public MeasureImpl(Object value, long ticks) {
-		this.value = value;
-		this.tickCounts = ticks;
+		map = new HashMap(2) ;
+		map.put("value", value ) ;
+		map.put("ticks" , new Long(ticks));
 	}
 
+	private MeasureImpl(Measure from) {
+		this.map = new HashMap(((MeasureImpl)from).map);
+	}
+	
+	
 	public Object value() {
-		return value;
+		return map.get("value") ;
 	}
 
 	public long timeStampMs() {
-		return Watch.fromTicksToMs(tickCounts);
+		return Watch.fromTicksToMs(((Long)map.get("ticks")).longValue());
+	}
+
+	
+	public Measure clone()  {
+		return new MeasureImpl(this) ;
 	}
 	
-
 	public String toString() {
 		StringBuffer sb = new StringBuffer();
-		sb.append("value=").append(value.toString());
-		sb.append(",Timestamp=").append(Watch.formatDateIso8601(tickCounts));
+		sb.append("value=").append(value().toString());
+		sb.append(",Timestamp=").append(timeStampMs());
 		return sb.toString();
 	}
 

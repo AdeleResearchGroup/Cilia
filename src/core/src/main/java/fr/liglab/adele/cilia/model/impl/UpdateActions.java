@@ -30,6 +30,6 @@ public interface UpdateActions {
 	final static int REMOVE_MEDIATOR = 12;
 	final static int ADD_BINDING = 13;
 	final static int REMOVE_BINDING = 14;
-	static final int ADD_ADAPTER = 15;
-	static final int REMOVE_ADAPTER = 16;
+	final static int ADD_ADAPTER = 15;
+	final static int REMOVE_ADAPTER = 16;
 }	

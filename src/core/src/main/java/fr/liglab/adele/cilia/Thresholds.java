@@ -16,6 +16,7 @@
 package fr.liglab.adele.cilia;
 
 import fr.liglab.adele.cilia.exceptions.CiliaIllegalParameterException;
+import fr.liglab.adele.cilia.exceptions.CiliaIllegalStateException;
 
 /**
  * thresolds on runtime data
@@ -25,13 +26,13 @@ import fr.liglab.adele.cilia.exceptions.CiliaIllegalParameterException;
  * 
  */
 public interface Thresholds extends Node {
-	
+
 	/**
-	 * validity of a mediator 
-	 * @return true if the mediator is valid 
+	 * 
+	 * @return list of state variable enabled
 	 */
-	boolean isValid() ;
-	
+	String[] getEnabledVariable() throws CiliaIllegalStateException;
+
 	/**
 	 * Set threshols low on numerical variable only
 	 * 
@@ -43,8 +44,8 @@ public interface Thresholds extends Node {
 	 * @throws CiliaIllegalParameterException
 	 *             if variable name is null
 	 */
-	void setLow(String variableId, double low, double veryLow)
-			throws CiliaIllegalParameterException;
+	void setLow(String variableId, double low) throws CiliaIllegalParameterException,
+			CiliaIllegalStateException;
 
 	/**
 	 * Set thresholds high
@@ -55,9 +56,38 @@ public interface Thresholds extends Node {
 	 * @param veryhigh
 	 *            Double.Na if for no threshold very high
 	 * @throws CiliaIllegalParameterException
+	 * @throws CiliaIllegalStateException
 	 */
-	void setHigh(String variableId, double high, double veryhigh)
-			throws CiliaIllegalParameterException;
+	void setHigh(String variableId, double high) throws CiliaIllegalParameterException,
+			CiliaIllegalStateException;
+
+	/**
+	 * Set threshols low on numerical variable only
+	 * 
+	 * @param variableId
+	 *            variable name
+	 * @param low
+	 * @param veryLow
+	 *            Double.Na if for no veryLow threshold
+	 * @throws CiliaIllegalParameterException
+	 *             if variable name is null
+	 */
+	void setVeryLow(String variableId, double verylow)
+			throws CiliaIllegalParameterException, CiliaIllegalStateException;
+
+	/**
+	 * Set thresholds high
+	 * 
+	 * @param variableId
+	 *            variable name
+	 * @param high
+	 * @param veryhigh
+	 *            Double.Na if for no threshold very high
+	 * @throws CiliaIllegalParameterException
+	 * @throws CiliaIllegalStateException
+	 */
+	void setVeryHigh(String variableId, double veryhigh)
+			throws CiliaIllegalParameterException, CiliaIllegalStateException;
 
 	/**
 	 * 
@@ -67,8 +97,10 @@ public interface Thresholds extends Node {
 	 *         thresolhold
 	 * @throws CiliaIllegalParameterException
 	 *             if variable name is null
+	 * @throws CiliaIllegalStateException
 	 */
-	double getLow(String variableId) throws CiliaIllegalParameterException;
+	double getLow(String variableId) throws CiliaIllegalParameterException,
+			CiliaIllegalStateException;
 
 	/**
 	 * 
@@ -77,8 +109,10 @@ public interface Thresholds extends Node {
 	 * @return double value setted for the very low threshold, Double.Na if no
 	 *         thresolhold
 	 * @throws CiliaIllegalParameterException
+	 * @throws CiliaIllegalStateException
 	 */
-	double getVeryLow(String variableId) throws CiliaIllegalParameterException;
+	double getVeryLow(String variableId) throws CiliaIllegalParameterException,
+			CiliaIllegalStateException;
 
 	/**
 	 * 
@@ -88,7 +122,8 @@ public interface Thresholds extends Node {
 	 *         thresolhold
 	 * @throws CiliaIllegalParameterException
 	 */
-	double getHigh(String variableId) throws CiliaIllegalParameterException;
+	double getHigh(String variableId) throws CiliaIllegalParameterException,
+			CiliaIllegalStateException;
 
 	/**
 	 * 
@@ -98,5 +133,6 @@ public interface Thresholds extends Node {
 	 *         thresolhold
 	 * @throws CiliaIllegalParameterException
 	 */
-	double getVeryHigh(String variableId) throws CiliaIllegalParameterException;
+	double getVeryHigh(String variableId) throws CiliaIllegalParameterException,
+			CiliaIllegalStateException;
 }

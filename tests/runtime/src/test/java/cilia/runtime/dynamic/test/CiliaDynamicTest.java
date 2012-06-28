@@ -629,7 +629,7 @@ public class CiliaDynamicTest {
 			Assert.fail("Invalid exception thrown " + e.getMessage());
 		}
 		try {
-			Dictionary dico = application.properties(nodes[0]);
+			Dictionary dico = application.getProperties(nodes[0]);
 			Assert.fail("No Exception thrown ");		
 		}
 		catch (CiliaIllegalStateException e) {

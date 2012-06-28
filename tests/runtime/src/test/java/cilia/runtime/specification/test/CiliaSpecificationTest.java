@@ -350,7 +350,7 @@ public class CiliaSpecificationTest {
 		}
 
 		try {
-			Dictionary dico = application.properties(null);
+			Dictionary dico = application.getProperties(null);
 		} catch (CiliaIllegalParameterException e) {
 			/* OK */
 			assertNotNull(e.getMessage());
@@ -360,7 +360,7 @@ public class CiliaSpecificationTest {
 
 		Dictionary dico = null;
 		try {
-			dico = application.properties(node[0]);
+			dico = application.getProperties(node[0]);
 			Assert.assertNotNull(dico);
 		} catch (Exception e) {
 			Assert.fail("Invalid exception thrown " + e.getMessage());
@@ -683,7 +683,7 @@ public class CiliaSpecificationTest {
 			Assert.fail("Invalid exception thrown " + e.getMessage());
 		}
 		try {
-			Dictionary dico = application.properties(nodes[0]);
+			Dictionary dico = application.getProperties(nodes[0]);
 			Assert.fail("No Exception thrown ");		
 		}
 		catch (CiliaIllegalStateException e) {

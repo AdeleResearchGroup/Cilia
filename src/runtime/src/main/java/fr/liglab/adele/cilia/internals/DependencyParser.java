@@ -33,7 +33,7 @@ import fr.liglab.adele.cilia.util.CiliaExtenderParser;
 public class DependencyParser extends DomExtenderParser implements CiliaExtenderParser {
 	private static final String TAG_DEPENDENCY = "dependency";
 	private static final String ATTR_ID = "filter.name";
-	private static final String ATTR_FILTER = "filter.value";
+	private static final String ATTR_FILTER = "selection";
 	private static final String ATTR_CARDINALITY = "cardinality";
 	private static final String ATTR_RANKING = "ranking";
 	private static final String ATTR_IMMEDIATE="immediate" ;

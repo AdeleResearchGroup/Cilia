@@ -6,6 +6,7 @@ import fr.liglab.adele.cilia.Node;
 import fr.liglab.adele.cilia.NodeCallback;
 import fr.liglab.adele.cilia.exceptions.CiliaIllegalParameterException;
 import fr.liglab.adele.cilia.exceptions.CiliaInvalidSyntaxException;
+import fr.liglab.adele.cilia.util.FrameworkUtils;
 
 public class ApplSpecification implements ChainCallback, NodeCallback {
 	private CiliaContext ciliaContext ;
@@ -21,33 +22,40 @@ public class ApplSpecification implements ChainCallback, NodeCallback {
 	private static synchronized String[] convertNodeToString(Node[] nodes) {
 		String[] results = new String[nodes.length];
 		for (int i = 0; i < nodes.length; i++) {
-			results[i] = "{" + nodes[i].qualifiedId() + "}";
+			results[i] = "{" + FrameworkUtils.makeQualifiedId(nodes[i]) + "}";
 		}
 		return results;
 	}
 
 	public String[] getChainIDs() {
-		return ciliaContext.getApplicationSpecification().getChainId();
+//		return ciliaContext.getApplicationSpecification().getChainId();
+		
+		return null ;
 	}
 
 	public String[] getEndpointsIn(String ldapFilter)
 			throws CiliaIllegalParameterException, CiliaInvalidSyntaxException {
-		return convertNodeToString(ciliaContext.getApplicationSpecification().endpointIn(ldapFilter));
+//		return convertNodeToString(ciliaContext.getApplicationSpecification().endpointIn(ldapFilter));
+		return null ;
 	}
 
 	public String[] getEndpointsOut(String ldapFilter)
 			throws CiliaIllegalParameterException, CiliaInvalidSyntaxException {
-		return convertNodeToString(ciliaContext.getApplicationSpecification().endpointOut(ldapFilter));
+		//return convertNodeToString(ciliaContext.getApplicationSpecification().endpointOut(ldapFilter))
+	;
+		return null ;
 	}
 
 	public String[] getConnectedTo(String ldapFilter)
 			throws CiliaIllegalParameterException, CiliaInvalidSyntaxException {
-		return convertNodeToString(ciliaContext.getApplicationSpecification().connectedTo(ldapFilter));
+		//return convertNodeToString(ciliaContext.getApplicationSpecification().connectedTo(ldapFilter));
+		return null ;
 	}
 
 	public String[] getNodeByFilter(String ldapfilter)
 			throws CiliaIllegalParameterException, CiliaInvalidSyntaxException {
-		return convertNodeToString(ciliaContext.getApplicationSpecification().findNodeByFilter(ldapfilter));
+		//return convertNodeToString(ciliaContext.getApplicationSpecification().findNodeByFilter(ldapfilter));
+	return null ;
 	}
 
 	public void onArrival(Node node) {

@@ -83,4 +83,21 @@ public interface MediatorComponent extends Node,Component {
 	 */
 	Binding[] getBinding(Port outPort);
 
+
+	/**
+	 * 
+	 * @return list of extended model 
+	 */
+	String[] extendedModelName() ;
+	
+	/**
+	 * 
+	 * @param modelName
+	 * @return Model extended or null if modelName doesn't exist
+	 */
+	ModelExtension getModel(String modelName) ;
+	
+	void addModel(String modelName,ModelExtension modelExtension) ;
+	
+	void removeModel(String modelName) ;
 }
