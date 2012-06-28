@@ -95,7 +95,7 @@ public class TopologyImpl implements Topology {
 						dico.put(Const.NODE_ID, component.getId());
 						if (filter.match(dico)) {
 							if (proxy)
-								componentSet.add(MediatorModelProxy.getInstance().make(
+								componentSet.add(MediatorModelProxy.getInstance().makeMediatorModel(
 										component));
 							else
 								componentSet.add(component);
@@ -109,7 +109,7 @@ public class TopologyImpl implements Topology {
 						dico.put(Const.NODE_ID, component.getId());
 						if (filter.match(dico)) {
 							if (proxy)
-								componentSet.add(MediatorModelProxy.getInstance().make(
+								componentSet.add(MediatorModelProxy.getInstance().makeMediatorModel(
 										component));
 							else
 								componentSet.add(component);
@@ -178,7 +178,7 @@ public class TopologyImpl implements Topology {
 									.equals(PatternType.IN_OUT)))) {
 								if (proxy)
 									adapterResult.add(MediatorModelProxy.getInstance()
-											.make(adapter));
+											.makeMediatorModel(adapter));
 								else
 									adapterResult.add(adapter);
 							}
@@ -299,7 +299,7 @@ public class TopologyImpl implements Topology {
 				item = findNodeByFilter(filter);
 				for (int i = 0; i < item.length; i++) {
 					if (proxy)
-						nodeSet.add(MediatorModelProxy.getInstance().make(item[i]));
+						nodeSet.add(MediatorModelProxy.getInstance().makeMediatorModel(item[i]));
 					else
 						nodeSet.add(item[i]);
 				}
@@ -355,7 +355,7 @@ public class TopologyImpl implements Topology {
 		if (node == null)
 			throw new CiliaIllegalParameterException("node is null !");
 		try {
-			return (MediatorComponent) MediatorModelProxy.getInstance().make(
+			return (MediatorComponent) MediatorModelProxy.getInstance().makeMediatorModel(
 					getModel(node.chainId(), node.nodeId()));
 		} catch (Throwable e) {
 			throw new CiliaIllegalStateException("node has disappeared");

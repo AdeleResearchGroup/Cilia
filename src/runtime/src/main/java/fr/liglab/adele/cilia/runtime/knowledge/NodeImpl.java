@@ -19,16 +19,16 @@ import fr.liglab.adele.cilia.util.FrameworkUtils;
 import fr.liglab.adele.cilia.util.Watch;
 
 public class NodeImpl implements Node {
-	protected String chainId , nodeId, uuid ; 
-	protected long timestamp ;
-	
+	protected String chainId, nodeId, uuid;
+	protected long timestamp;
+
 	public NodeImpl(Node node) {
-		chainId= node.chainId();
+		chainId = node.chainId();
 		nodeId = node.nodeId();
 		uuid = node.uuid();
-		timestamp = node.timeStamp() ;
+		timestamp = node.timeStamp();
 	}
-	
+
 	public String chainId() {
 		return chainId;
 	}
@@ -38,16 +38,17 @@ public class NodeImpl implements Node {
 	}
 
 	public String uuid() {
-		return uuid ;
+		return uuid;
 	}
 
 	public long timeStamp() {
-		return timestamp ;
+		return timestamp;
 	}
-	
+
 	public String toString() {
-		StringBuffer sb = new StringBuffer(FrameworkUtils.makeQualifiedId(chainId,nodeId, uuid)) ;
-		sb.append("creation date :"+Watch.formatDateIso8601(timestamp));
+		StringBuffer sb = new StringBuffer(FrameworkUtils.makeQualifiedId(chainId,
+				nodeId, uuid));
+		sb.append("creation date :" + Watch.formatDateIso8601(timestamp));
 		return sb.toString();
 	}
 

@@ -33,13 +33,12 @@ import fr.liglab.adele.cilia.util.WeakValueHashMap;
  */
 @SuppressWarnings({ "rawtypes", "unchecked" })
 public class ListNodes {
-	
+
 	private final Map registry;
 	private TopologyImpl topology;
 
 	public ListNodes(TopologyImpl topo) {
 		registry = new WeakValueHashMap();
-
 		topology = topo;
 	}
 
@@ -54,16 +53,19 @@ public class ListNodes {
 		MediatorMonitoring monitoring = null;
 		MediatorComponent mc;
 		/* containsKey remove gargabed value and associated key */
-		monitoring = getItem(uuid);
+		monitoring = retreive(uuid);
 		if (monitoring == null) {
 			/* Retrieve the node if existing */
 			Node[] nodes;
 			try {
-				nodes = topology.findNodeByFilter("(uuid=" + uuid + ")",false);
+				nodes = topology.findNodeByFilter("(uuid=" + uuid + ")", false);
 				if (nodes.length == 1) {
-					 mc = (MediatorComponent)nodes[0] ;
-					monitoring = (MediatorMonitoring) mc.getModel("monitoring");
-					registry.put(uuid, mc);
+					mc = (MediatorComponent) nodes[0];
+					synchronized (registry) {
+						monitoring = (MediatorMonitoring) mc
+								.getModel(MediatorMonitoring.NAME);
+						registry.put(uuid, mc);
+					}
 				} else
 					throw new CiliaIllegalStateException("no node found with uuid="
 							+ uuid);
@@ -74,25 +76,28 @@ public class ListNodes {
 		return monitoring;
 	}
 
-
-	private MediatorMonitoring getItem(String uuid) {
+	private MediatorMonitoring retreive(String uuid) {
 		MediatorMonitoring mc = null;
-		/* containsKey remove gargabed value and associated key */
-		if (registry.containsKey(uuid)) {
-			mc = (MediatorMonitoring) ((MediatorComponent) registry.get(uuid))
-					.getModel(MediatorMonitoring.NAME);
+		synchronized (registry) {
+			/* containsKey remove garbaged value and associated key */
+			if (registry.containsKey(uuid)) {
+				mc = (MediatorMonitoring) ((MediatorComponent) registry.get(uuid))
+						.getModel(MediatorMonitoring.NAME);
+			}
 		}
 		return mc;
-
 	}
 
 	/* Get item in the registry or fire Exception if no more existing */
 	public MediatorMonitoring get(String uuid) throws CiliaIllegalStateException {
-		if (registry.containsKey(uuid)) {
-			return getItem(uuid) ;
-		}
-		else {
-			throw new CiliaIllegalStateException("uuid "+uuid +" no longer exist")  ;
+		synchronized (registry) {
+			if (registry.containsKey(uuid)) {
+				MediatorMonitoring mc = (MediatorMonitoring) ((MediatorComponent) registry
+						.get(uuid)).getModel(MediatorMonitoring.NAME);
+				return mc;
+			} else {
+				throw new CiliaIllegalStateException("uuid " + uuid + " no longer exist");
+			}
 		}
 	}
 

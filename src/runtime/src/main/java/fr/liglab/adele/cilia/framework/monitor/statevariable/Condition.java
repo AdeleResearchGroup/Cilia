@@ -26,11 +26,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import fr.liglab.adele.cilia.exceptions.CiliaInvalidSyntaxException;
+import fr.liglab.adele.cilia.runtime.Const;
 import fr.liglab.adele.cilia.util.FrameworkUtils;
 
 public class Condition {
-	private static Logger logger = LoggerFactory
-			.getLogger("cilia.ipojo.runtime.monitoring");
+	private static Logger logger = LoggerFactory.getLogger(Const.LOGGER_KNOWLEDGE);
 
 
 	private Filter filter;

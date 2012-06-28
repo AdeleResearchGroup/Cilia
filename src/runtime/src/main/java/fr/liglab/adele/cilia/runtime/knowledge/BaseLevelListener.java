@@ -164,7 +164,6 @@ public class BaseLevelListener implements EventHandler {
 				}
 			} catch (CiliaIllegalStateException e) {
 				logger.error(e.getMessage());
-				e.printStackTrace();
 			}
 		}
 
@@ -186,7 +185,6 @@ public class BaseLevelListener implements EventHandler {
 				}
 			} catch (CiliaIllegalStateException e) {
 				logger.error(e.getMessage());
-				e.printStackTrace();
 			}
 		}
 
@@ -211,7 +209,6 @@ public class BaseLevelListener implements EventHandler {
 				}
 			} catch (CiliaIllegalStateException e) {
 				logger.error(e.getMessage());
-				e.printStackTrace();
 			}
 		}
 	}

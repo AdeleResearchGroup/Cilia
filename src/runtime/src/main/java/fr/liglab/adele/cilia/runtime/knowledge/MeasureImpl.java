@@ -27,7 +27,7 @@ import fr.liglab.adele.cilia.util.Watch;
  */
 @SuppressWarnings({ "rawtypes", "unchecked" })
 public class MeasureImpl implements Measure {
-	public final HashMap map ;
+	private final HashMap map ;
 
 	public MeasureImpl(Object value, long ticks) {
 		map = new HashMap(2) ;

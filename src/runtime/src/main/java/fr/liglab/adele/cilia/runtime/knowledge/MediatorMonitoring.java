@@ -16,8 +16,6 @@ package fr.liglab.adele.cilia.runtime.knowledge;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -52,7 +50,6 @@ public class MediatorMonitoring implements ModelExtension {
 	/* mediator component valid/invalid */
 	private boolean isValid;
 	private MediatorComponent model;
-	private Set enabledVariable;
 	private FirerEvents firerEvents;
 
 	/* list of variables managed by this component */
@@ -60,7 +57,6 @@ public class MediatorMonitoring implements ModelExtension {
 			new ReentrantWriterPreferenceReadWriteLock());
 
 	public MediatorMonitoring() {
-		enabledVariable = new HashSet();
 	}
 
 	public MediatorComponent getModel() {
@@ -110,7 +106,7 @@ public class MediatorMonitoring implements ModelExtension {
 
 		if (measures == null) {
 			/* should never happen */
-			measures = new Observations(Const.DEFAULT_QUEUE_SIZE);
+			measures = new Observations();
 			variablesId.put(variableId, measures);
 		}
 		/* insert a new measure and checks the viability */
@@ -123,11 +119,18 @@ public class MediatorMonitoring implements ModelExtension {
 		logger.info("Received variable [{},{}]", variableId, measure.toString());
 	}
 
-	public String[] enabledVariable() {
-		/* The base level send a status */
-		return null;
+	private Observations getObservations(String variableId) {
+		Observations observations  ;
+		if (!variablesId.containsKey(variableId)) {
+			/* a variable with defaults configuration is created */
+			observations = new Observations() ;
+			variablesId.put(variableId, observations);
+		} else {
+			 observations = (Observations) variablesId.get(variableId);
+		}
+		return observations;
 	}
-
+	
 	public void setQueueSize(String variableId, int queueSize) {
 		try {
 			variablesId.writerSync().acquire();
@@ -135,7 +138,6 @@ public class MediatorMonitoring implements ModelExtension {
 				if (!variablesId.containsKey(variableId)) {
 					/* a variable with defaults configuration is created */
 					variablesId.put(variableId, new Observations(queueSize));
-
 				} else {
 					Observations observation = (Observations) variablesId.get(variableId);
 					observation.setQueueSize(queueSize);
@@ -155,16 +157,7 @@ public class MediatorMonitoring implements ModelExtension {
 		try {
 			variablesId.writerSync().acquire();
 			try {
-				int queue;
-				if (!variablesId.containsKey(variableId)) {
-					/* a variable with defaults configuration is created */
-					queue = Const.DEFAULT_QUEUE_SIZE;
-
-				} else {
-					Observations observation = (Observations) variablesId.get(variableId);
-					queue = observation.getQueueSize();
-				}
-				return queue;
+				return getObservations(variableId).getQueueSize();
 			} finally {
 				variablesId.writerSync().release();
 			}
@@ -177,46 +170,132 @@ public class MediatorMonitoring implements ModelExtension {
 	}
 
 	public void setLow(String variableId, double low) {
-		Observations measures = (Observations) variablesId.get(variableId);
-		measures.setLow(low);
+		try {
+			variablesId.writerSync().acquire();
+			try {
+				getObservations(variableId).setLow(low);
+			} finally {
+				variablesId.writerSync().release();
+			}
+
+		} catch (InterruptedException e) {
+			logger.error("Interruped thread ", e);
+			Thread.currentThread().interrupt();
+			throw new RuntimeException(e.getMessage());
+		}
 	}
 
 	public void setVeryLow(String variableId, double verylow) {
-		Observations measures = (Observations) variablesId.get(variableId);
-		measures.setVeryLow(verylow);
+		try {
+			variablesId.writerSync().acquire();
+			try {
+				getObservations(variableId).setVeryLow(verylow);
+			} finally {
+				variablesId.writerSync().release();
+			}
+
+		} catch (InterruptedException e) {
+			logger.error("Interruped thread ", e);
+			Thread.currentThread().interrupt();
+			throw new RuntimeException(e.getMessage());
+		}
 	}
 
 	public void setHigh(String variableId, double high) {
-		Observations measures = (Observations) variablesId.get(variableId);
-		measures.setHigh(high);
+		try {
+			variablesId.writerSync().acquire();
+			try {
+				getObservations(variableId).setHigh(high);
+			} finally {
+				variablesId.writerSync().release();
+			}
+
+		} catch (InterruptedException e) {
+			logger.error("Interruped thread ", e);
+			Thread.currentThread().interrupt();
+			throw new RuntimeException(e.getMessage());
+		}
+
 	}
 
 	public void setVeryHigh(String variableId, double veryhigh) {
-		Observations measures = (Observations) variablesId.get(variableId);
-		measures.setVeryHigh(veryhigh);
+		try {
+			variablesId.writerSync().acquire();
+			try {
+				getObservations(variableId).setVeryHigh(veryhigh);
+			} finally {
+				variablesId.writerSync().release();
+			}
+
+		} catch (InterruptedException e) {
+			logger.error("Interruped thread ", e);
+			Thread.currentThread().interrupt();
+			throw new RuntimeException(e.getMessage());
+		}
 	}
 
 	public double getLow(String variableId) {
-		Observations measures = (Observations) variablesId.get(variableId);
-		return measures.getLow();
+		try {
+			variablesId.writerSync().acquire();
+			try {
+				return getObservations(variableId).getLow() ;
+			} finally {
+				variablesId.writerSync().release();
+			}
+
+		} catch (InterruptedException e) {
+			logger.error("Interruped thread ", e);
+			Thread.currentThread().interrupt();
+			throw new RuntimeException(e.getMessage());
+		}
 	}
 
 	public double getVeryLow(String variableId) {
-		Observations measures = (Observations) variablesId.get(variableId);
-		return measures.getVeryLow();
+		try {
+			variablesId.writerSync().acquire();
+			try {
+				return getObservations(variableId).getVeryLow() ;
+			} finally {
+				variablesId.writerSync().release();
+			}
+
+		} catch (InterruptedException e) {
+			logger.error("Interruped thread ", e);
+			Thread.currentThread().interrupt();
+			throw new RuntimeException(e.getMessage());
+		}
 	}
 
 	public double getHigh(String variableId) throws CiliaIllegalParameterException {
-		Observations measures = (Observations) variablesId.get(variableId);
-		if (measures == null)
-			throw new CiliaIllegalParameterException(
-					"Monitoring has not been set for this variable " + variableId);
-		return measures.getHigh();
+		try {
+			variablesId.writerSync().acquire();
+			try {
+				return getObservations(variableId).getHigh() ;
+			} finally {
+				variablesId.writerSync().release();
+			}
+
+		} catch (InterruptedException e) {
+			logger.error("Interruped thread ", e);
+			Thread.currentThread().interrupt();
+			throw new RuntimeException(e.getMessage());
+		}
 	}
 
 	public double getVeryHigh(String variableId) {
-		Observations measures = (Observations) variablesId.get(variableId);
-		return measures.getVeryHigh();
+		try {
+			variablesId.writerSync().acquire();
+			try {
+				return getObservations(variableId).getVeryHigh() ;
+			} finally {
+				variablesId.writerSync().release();
+			}
+
+		} catch (InterruptedException e) {
+			logger.error("Interruped thread ", e);
+			Thread.currentThread().interrupt();
+			throw new RuntimeException(e.getMessage());
+		}
 	}
 
 	/**
@@ -237,6 +316,10 @@ public class MediatorMonitoring implements ModelExtension {
 			for (int i = 0; i < NB_THRESHOLD; i++) {
 				threshold[i] = Double.NaN;
 			}
+		}
+
+		public Observations() {
+			this(Const.DEFAULT_QUEUE_SIZE);
 		}
 
 		/* circular fifo management */
@@ -274,9 +357,6 @@ public class MediatorMonitoring implements ModelExtension {
 			}
 		}
 
-		public Measure[] getVeryLowMeasure() {
-			throw new UnsupportedOperationException("not yet implemented");
-		}
 
 		public void setQueueSize(int queue) {
 			try {

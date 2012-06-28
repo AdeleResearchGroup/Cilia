@@ -23,10 +23,11 @@ import java.lang.reflect.Proxy;
 import fr.liglab.adele.cilia.Node;
 import fr.liglab.adele.cilia.exceptions.CiliaIllegalStateException;
 import fr.liglab.adele.cilia.model.Adapter;
+import fr.liglab.adele.cilia.model.Chain;
 import fr.liglab.adele.cilia.model.Mediator;
 
 /**
- * Build a Weak Reference proxy
+ * Build a Weak Reference proxy (Mediator, Adapter, Chain , Node) 
  * 
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project
  *         Team</a>
@@ -47,7 +48,7 @@ public class MediatorModelProxy {
 	private MediatorModelProxy() {
 	}
 
-	public Object make(Object object) {
+	public Object makeMediatorModel(Object object) {
 		Object proxy;
 		if (object instanceof Adapter)
 			proxy = makeAdapter(object);
@@ -78,6 +79,13 @@ public class MediatorModelProxy {
 
 	}
 
+	public Object makeChain(Object object) {
+		Handler handler = new Handler(object);
+		Object proxy = Proxy.newProxyInstance(Chain.class.getClassLoader(),
+				new Class[] { Chain.class }, handler);
+		return Chain.class.cast(proxy);
+
+	}
 	private class Handler implements InvocationHandler {
 		private final WeakReference resourceRef;
 
