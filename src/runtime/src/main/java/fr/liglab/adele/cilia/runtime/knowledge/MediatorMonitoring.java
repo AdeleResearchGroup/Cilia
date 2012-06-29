@@ -25,12 +25,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import fr.liglab.adele.cilia.Measure;
-import fr.liglab.adele.cilia.Node;
 import fr.liglab.adele.cilia.ThresholdsCallback;
 import fr.liglab.adele.cilia.exceptions.CiliaIllegalParameterException;
 import fr.liglab.adele.cilia.model.MediatorComponent;
 import fr.liglab.adele.cilia.model.ModelExtension;
-import fr.liglab.adele.cilia.runtime.Const;
+import fr.liglab.adele.cilia.runtime.ConstRuntime;
 import fr.liglab.adele.cilia.runtime.FirerEvents;
 import fr.liglab.adele.cilia.util.concurrent.ReentrantWriterPreferenceReadWriteLock;
 import fr.liglab.adele.cilia.util.concurrent.SyncList;
@@ -46,7 +45,8 @@ import fr.liglab.adele.cilia.util.concurrent.SyncMap;
 @SuppressWarnings({ "rawtypes", "unchecked" })
 public class MediatorMonitoring implements ModelExtension {
 
-	private final Logger logger = LoggerFactory.getLogger(Const.LOGGER_KNOWLEDGE);
+	private static final int DEFAULT_QUEUE_SIZE = 1 ;
+	private final Logger logger = LoggerFactory.getLogger(ConstRuntime.LOGGER_KNOWLEDGE);
 
 	public static final String NAME = "monitoring";
 
@@ -320,7 +320,7 @@ public class MediatorMonitoring implements ModelExtension {
 		}
 
 		public Observations() {
-			this(Const.DEFAULT_QUEUE_SIZE);
+			this(DEFAULT_QUEUE_SIZE);
 		}
 
 		/* circular fifo management */

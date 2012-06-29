@@ -34,13 +34,14 @@ import org.slf4j.LoggerFactory;
 import fr.liglab.adele.cilia.ChainCallback;
 import fr.liglab.adele.cilia.EventsConfiguration;
 import fr.liglab.adele.cilia.Measure;
-import fr.liglab.adele.cilia.VariableCallback;
 import fr.liglab.adele.cilia.Node;
 import fr.liglab.adele.cilia.NodeCallback;
 import fr.liglab.adele.cilia.ThresholdsCallback;
+import fr.liglab.adele.cilia.VariableCallback;
 import fr.liglab.adele.cilia.exceptions.CiliaIllegalParameterException;
 import fr.liglab.adele.cilia.exceptions.CiliaInvalidSyntaxException;
 import fr.liglab.adele.cilia.runtime.Const;
+import fr.liglab.adele.cilia.runtime.ConstRuntime;
 import fr.liglab.adele.cilia.runtime.FirerEvents;
 import fr.liglab.adele.cilia.util.SwingWorker;
 import fr.liglab.adele.cilia.util.concurrent.ConcurrentReaderHashMap;
@@ -59,7 +60,7 @@ public class EventsManagerImpl implements TrackerCustomizer, EventsConfiguration
 										 * second
 										 */
 
-	private final Logger logger = LoggerFactory.getLogger(Const.LOGGER_KNOWLEDGE);
+	private final Logger logger = LoggerFactory.getLogger(ConstRuntime.LOGGER_KNOWLEDGE);
 
 	private static final String NODE_APPLICATION_LISTENER = "cilia.application.node";
 	private static final String CHAIN_APPLICATION_LISTENER = "cilia.application.chain";
@@ -124,7 +125,7 @@ public class EventsManagerImpl implements TrackerCustomizer, EventsConfiguration
 
 		ArrayList array, old;
 		array = new ArrayList(1);
-		array.add(Const.createFilter(filter));
+		array.add(ConstRuntime.createFilter(filter));
 		old = (ArrayList) map.put(listener, array);
 		if (old != null) {
 			array.addAll(old);
@@ -209,7 +210,7 @@ public class EventsManagerImpl implements TrackerCustomizer, EventsConfiguration
 		protected Object construct() throws InterruptedException {
 			boolean tofire = false;
 			for (int i = 0; i < filters.size(); i++) {
-				if (Const.isFilterMatching((Filter) filters.get(i), node)) {
+				if (ConstRuntime.isFilterMatching((Filter) filters.get(i), node)) {
 					tofire = true;
 					break;
 				}
@@ -295,7 +296,7 @@ public class EventsManagerImpl implements TrackerCustomizer, EventsConfiguration
 			this.evt = evt;
 			this.callback = callback;
 			this.filters = filters;
-			dico.put(Const.CHAIN_ID, name);
+			dico.put(ConstRuntime.CHAIN_ID, name);
 		}
 
 		protected Object construct() throws Exception {
@@ -308,7 +309,7 @@ public class EventsManagerImpl implements TrackerCustomizer, EventsConfiguration
 			}
 			if (tofire) {
 
-				String chainId = (String) dico.get(Const.CHAIN_ID);
+				String chainId = (String) dico.get(ConstRuntime.CHAIN_ID);
 				switch (evt) {
 				case EVT_ARRIVAL:
 					callback.onAdded(chainId);
@@ -469,7 +470,7 @@ public class EventsManagerImpl implements TrackerCustomizer, EventsConfiguration
 
 		protected Object construct() throws InterruptedException {
 			for (int i = 0; i < filters.size(); i++) {
-				if (Const.isFilterMatching((Filter) filters.get(i), node)) {
+				if (ConstRuntime.isFilterMatching((Filter) filters.get(i), node)) {
 					callback.onUpdate(node, variableId, measure);
 					break;
 				}
@@ -533,7 +534,7 @@ public class EventsManagerImpl implements TrackerCustomizer, EventsConfiguration
 
 		protected Object construct() throws InterruptedException {
 			for (int i = 0; i < filters.size(); i++) {
-				if (Const.isFilterMatching((Filter) filters.get(i), node)) {
+				if (ConstRuntime.isFilterMatching((Filter) filters.get(i), node)) {
 					callback.onStateChange(node, variableId, enable);
 					break;
 				}
@@ -604,7 +605,7 @@ public class EventsManagerImpl implements TrackerCustomizer, EventsConfiguration
 
 		protected Object construct() throws InterruptedException {
 			for (int i = 0; i < filters.size(); i++) {
-				if (Const.isFilterMatching((Filter) filters.get(i), node)) {
+				if (ConstRuntime.isFilterMatching((Filter) filters.get(i), node)) {
 					callback.onThreshold(node, variableId, measure, evt);
 					break;
 				}

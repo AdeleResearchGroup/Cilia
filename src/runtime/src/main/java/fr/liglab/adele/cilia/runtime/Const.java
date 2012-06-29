@@ -113,8 +113,6 @@ public class Const implements ConstModel {
 	public final static String LOGGER_CORE = "cilia.runtime.core";
 
 	public final static String LOGGER_ADAPTATION = "cilia.runtime.adaptation";
-
-	public static final String LOGGER_KNOWLEDGE = "cilia.runtime.knowledge"; 
 	
 	/*
 	 * Build a default Cilia Qualified Name String
@@ -123,117 +121,6 @@ public class Const implements ConstModel {
 		StringBuffer sb = new StringBuffer().append(Const.CILIA_NAMESPACE);
 		sb.append(":").append(name);
 		return sb.toString();
-	}
-
-	/* ---- Runtime ---- */
-	/*
-	 * Unique ID identifier
-	 */
-	public static final String UUID = "uuid";
-	/*
-	 * chain
-	 */
-	public static final String CHAIN_ID = "chain";
-	/*
-	 * Cilia components (adapters, mediators)
-	 */
-	public static final String NODE_ID = "node";
-
-	/*
-	 * Node creation timeStamp
-	 */
-	public static final String TIMESTAMP = "timestamp";
-	/*
-	 * Variable
-	 */
-	public static final String VARIABLE_ID = "variable";
-	/*
-	 * logger name
-	 */
-
-	/*
-	 * #items stored per state variables
-	 */
-	public static final int DEFAULT_QUEUE_SIZE = 1;
-
-
-	/* Topic Event Admin between base level and monitoring model */
-	public static final String TOPIC_HEADER = "cilia/runtime/statevariable/";
-
-	public static final String EVENT_TYPE ="type" ;
-	public static final int TYPE_DATA = 0 ;
-	public static final int TYPE_STATUS_NODE = 1 ;
-	public static final int TYPE_STATUS_VARIABLE = 2 ;
-
-	
-	/**
-	 * concat 2 arrays
-	 * 
-	 * @param first
-	 * @param second
-	 * @return first+second
-	 */
-	public static final Node[] concat(Node[] first, Node[] second) {
-		Node[] result = (Node[]) Arrays.copyOf(first, first.length + second.length);
-		System.arraycopy(second, 0, result, first.length, second.length);
-		return result;
-	}
-
-	public static final Set ldapKeys;
-	static {
-		Set set = new HashSet();
-		set.add(UUID);
-		set.add(CHAIN_ID);
-		set.add(NODE_ID);
-		set.add(VARIABLE_ID);
-		ldapKeys = Collections.unmodifiableSet(set);
-	}
-
-	public synchronized static final Filter createFilter(String filter)
-			throws CiliaIllegalParameterException, CiliaInvalidSyntaxException {
-		if (filter == null)
-			throw new CiliaIllegalParameterException("filter is null !");
-		boolean found = false;
-		/* at least one keyword is required */
-		Iterator it = ldapKeys.iterator();
-		while (it.hasNext()) {
-			String key = (String) it.next();
-			if (filter.contains(key)) {
-				found = true;
-				break;
-			}
-		}
-		if (found == false)
-			throw new CiliaIllegalParameterException("missing ldap filter keyword "
-					+ ldapKeys.toString() + "!" + filter);
-		try {
-			return FrameworkUtil.createFilter(filter);
-		} catch (InvalidSyntaxException e) {
-			throw new CiliaInvalidSyntaxException(e.getMessage(), e.getFilter());
-		}
-	}
-
-	public static final boolean isFilterMatching(Filter filter, Node node) {
-		Dictionary dico = new Hashtable(4);
-
-		dico.put(UUID, node.uuid());
-		dico.put(CHAIN_ID, node.chainId());
-		dico.put(NODE_ID, node.nodeId());
-		dico.put(TIMESTAMP, new Long(node.timeStamp()));
-		return filter.match(dico);
-
-	}
-
-	public static final boolean isFilterMatching(Filter filter, Node node, String variable) {
-		Dictionary dico = new Hashtable(5);
-
-		dico.put(UUID, node.uuid());
-		dico.put(CHAIN_ID, node.chainId());
-		dico.put(NODE_ID, node.nodeId());
-		dico.put(TIMESTAMP, new Long(node.timeStamp()));
-		dico.put(VARIABLE_ID, variable);
-		return filter.match(dico);
-
 	}
 
 }

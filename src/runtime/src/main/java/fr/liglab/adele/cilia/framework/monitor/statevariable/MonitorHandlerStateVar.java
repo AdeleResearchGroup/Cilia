@@ -19,7 +19,6 @@ import java.util.Collections;
 import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -42,8 +41,9 @@ import org.slf4j.LoggerFactory;
 import fr.liglab.adele.cilia.Data;
 import fr.liglab.adele.cilia.framework.monitor.AbstractMonitor;
 import fr.liglab.adele.cilia.model.impl.ConstModel;
-import fr.liglab.adele.cilia.runtime.Const;
+import fr.liglab.adele.cilia.runtime.ConstRuntime;
 import fr.liglab.adele.cilia.runtime.WorkQueue;
+import fr.liglab.adele.cilia.util.FrameworkUtils;
 import fr.liglab.adele.cilia.util.Watch;
 import fr.liglab.adele.cilia.util.concurrent.ConcurrentReaderHashMap;
 
@@ -51,7 +51,7 @@ import fr.liglab.adele.cilia.util.concurrent.ConcurrentReaderHashMap;
 public class MonitorHandlerStateVar extends AbstractMonitor implements
 		InstanceStateListener {
 
-	private static Logger logger = LoggerFactory.getLogger(Const.LOGGER_KNOWLEDGE);
+	private static Logger logger = LoggerFactory.getLogger(ConstRuntime.LOGGER_KNOWLEDGE);
 
 	private BundleContext m_bundleContext;
 
@@ -82,14 +82,13 @@ public class MonitorHandlerStateVar extends AbstractMonitor implements
 		chainId = (String) configuration.get(ConstModel.PROPERTY_CHAIN_ID);
 		componentId = (String) configuration.get(ConstModel.PROPERTY_COMPONENT_ID);
 		uuid = (String) configuration.get(ConstModel.PROPERTY_UUID);
-		topic = Const.TOPIC_HEADER + chainId;
+		topic = ConstRuntime.TOPIC_HEADER + chainId;
 
 		configureStateVar(configuration);
 	}
 
 	private void configureStateVar(Dictionary configuration) {
-		Map configs = (Map) configuration.get("monitoring.base");
-		System.out.println("Monitoring Base :"+configs) ;
+		Map configs = (Map) configuration.get(ConstRuntime.MONITORING_CONFIGURATION);
 		/* Retreive all state var enabled */
 		/* Set the data flow for all state Var */
 		if (configs != null) {
@@ -245,11 +244,11 @@ public class MonitorHandlerStateVar extends AbstractMonitor implements
 		} else {
 			/* gather data to be published */
 			Map data = new HashMap(5);
-			data.put(Const.EVENT_TYPE, Const.TYPE_DATA);
-			data.put(Const.UUID, uuid);
-			data.put(Const.VARIABLE_ID, stateVarId);
-			data.put(Const.VALUE, value);
-			data.put(Const.TIMESTAMP, new Long(ticksCount));
+			data.put(ConstRuntime.EVENT_TYPE, ConstRuntime.TYPE_DATA);
+			data.put(ConstRuntime.UUID, uuid);
+			data.put(ConstRuntime.VARIABLE_ID, stateVarId);
+			data.put(ConstRuntime.VALUE, value);
+			data.put(ConstRuntime.TIMESTAMP, new Long(ticksCount));
 
 			StateVarItem item = (StateVarItem) m_statevar.get(stateVarId);
 			if (item != null)
@@ -258,6 +257,12 @@ public class MonitorHandlerStateVar extends AbstractMonitor implements
 			m_eventAdmin = (EventAdmin) m_bundleContext.getService(refEventAdmin);
 			m_eventAdmin.postEvent(new Event(topic, data));
 			m_bundleContext.ungetService(refEventAdmin);
+			if (logger.isDebugEnabled()) {
+				logger.debug("Node [{}] publish state variable  [{}]",
+						FrameworkUtils.makeQualifiedId(chainId, componentId, uuid) + ":"
+								+ stateVarId, value.toString());
+			}
+
 		}
 	}
 
@@ -269,10 +274,10 @@ public class MonitorHandlerStateVar extends AbstractMonitor implements
 		} else {
 			/* gather data to be published */
 			Map data = new HashMap(4);
-			data.put(Const.EVENT_TYPE, Const.TYPE_STATUS_VARIABLE);
-			data.put(Const.UUID, uuid);
-			data.put(Const.VARIABLE_ID, stateVarId);
-			data.put(Const.VALUE, new Boolean(value));
+			data.put(ConstRuntime.EVENT_TYPE, ConstRuntime.TYPE_STATUS_VARIABLE);
+			data.put(ConstRuntime.UUID, uuid);
+			data.put(ConstRuntime.VARIABLE_ID, stateVarId);
+			data.put(ConstRuntime.VALUE, new Boolean(value));
 
 			m_eventAdmin = (EventAdmin) m_bundleContext.getService(refEventAdmin);
 			m_eventAdmin.postEvent(new Event(topic, data));

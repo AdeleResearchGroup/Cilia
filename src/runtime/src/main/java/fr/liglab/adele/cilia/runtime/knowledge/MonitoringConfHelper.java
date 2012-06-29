@@ -15,20 +15,19 @@
 package fr.liglab.adele.cilia.runtime.knowledge;
 
 import java.util.Collections;
-import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
-import org.osgi.framework.Filter;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.InvalidSyntaxException;
 
 import fr.liglab.adele.cilia.exceptions.CiliaIllegalParameterException;
 import fr.liglab.adele.cilia.exceptions.CiliaInvalidSyntaxException;
 import fr.liglab.adele.cilia.model.MediatorComponent;
+import fr.liglab.adele.cilia.runtime.ConstRuntime;
 import fr.liglab.adele.cilia.util.FrameworkUtils;
 
 /**
@@ -207,13 +206,13 @@ public class MonitoringConfHelper {
 
 	
 	public static Map getRootConfig(MediatorComponent model) {
-		Map config =(Map) model.getProperties().get("monitoring.base") ;
+		Map config =(Map) model.getProperties().get(ConstRuntime.MONITORING_CONFIGURATION) ;
 		if (config==null) config = new HashMap() ;
 		return config ;
 	}
 
 	public static void storeRootConfig(MediatorComponent model, Map config) {
-		model.setProperty("monitoring.base", config) ;
+		model.setProperty(ConstRuntime.MONITORING_CONFIGURATION, config) ;
 	}
 	
 	

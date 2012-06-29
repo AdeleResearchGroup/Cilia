@@ -40,6 +40,7 @@ import fr.liglab.adele.cilia.model.Mediator;
 import fr.liglab.adele.cilia.model.MediatorComponent;
 import fr.liglab.adele.cilia.model.impl.PatternType;
 import fr.liglab.adele.cilia.runtime.Const;
+import fr.liglab.adele.cilia.runtime.ConstRuntime;
 
 /**
  * topological access
@@ -50,7 +51,7 @@ import fr.liglab.adele.cilia.runtime.Const;
  */
 @SuppressWarnings({ "rawtypes", "unchecked" })
 public class TopologyImpl implements Topology {
-	private final Logger logger = LoggerFactory.getLogger(Const.LOGGER_KNOWLEDGE);
+	private final Logger logger = LoggerFactory.getLogger(ConstRuntime.LOGGER_KNOWLEDGE);
 
 	protected CiliaContainer ciliaContext;
 
@@ -73,7 +74,7 @@ public class TopologyImpl implements Topology {
 	 */
 	public Node[] findNodeByFilter(String ldapFilter, boolean proxy)
 			throws CiliaInvalidSyntaxException, CiliaIllegalParameterException {
-		Filter filter = Const.createFilter(ldapFilter);
+		Filter filter = ConstRuntime.createFilter(ldapFilter);
 		MediatorComponent component;
 		Dictionary dico = new Hashtable();
 		Set componentSet = new HashSet();
@@ -85,14 +86,14 @@ public class TopologyImpl implements Topology {
 				for (int i = 0; i < chainId.length; i++) {
 
 					/* retreive all adapters per chain */
-					dico.put(Const.CHAIN_ID, chainId[i]);
+					dico.put(ConstRuntime.CHAIN_ID, chainId[i]);
 					/* Iterate over all adapters */
 					Iterator it = ciliaContext.getChain(chainId[i]).getAdapters()
 							.iterator();
 					while (it.hasNext()) {
 						component = (MediatorComponent) it.next();
-						dico.put(Const.UUID, component.uuid());
-						dico.put(Const.NODE_ID, component.getId());
+						dico.put(ConstRuntime.UUID, component.uuid());
+						dico.put(ConstRuntime.NODE_ID, component.getId());
 						if (filter.match(dico)) {
 							if (proxy)
 								componentSet.add(MediatorModelProxy.getInstance().makeMediatorModel(
@@ -105,8 +106,8 @@ public class TopologyImpl implements Topology {
 					it = ciliaContext.getChain(chainId[i]).getMediators().iterator();
 					while (it.hasNext()) {
 						component = (MediatorComponent) it.next();
-						dico.put(Const.UUID, component.uuid());
-						dico.put(Const.NODE_ID, component.getId());
+						dico.put(ConstRuntime.UUID, component.uuid());
+						dico.put(ConstRuntime.NODE_ID, component.getId());
 						if (filter.match(dico)) {
 							if (proxy)
 								componentSet.add(MediatorModelProxy.getInstance().makeMediatorModel(
@@ -154,7 +155,7 @@ public class TopologyImpl implements Topology {
 
 		Adapter adapter;
 		Set adapterResult = new HashSet();
-		Filter filter = Const.createFilter(ldapFilter);
+		Filter filter = ConstRuntime.createFilter(ldapFilter);
 
 		Dictionary dico = new Hashtable();
 		String chainId[] = getChainId();
@@ -163,13 +164,13 @@ public class TopologyImpl implements Topology {
 			try {
 				for (int i = 0; i < chainId.length; i++) {
 					/* retreive all adapters per all chain */
-					dico.put(Const.CHAIN_ID, chainId[i]);
+					dico.put(ConstRuntime.CHAIN_ID, chainId[i]);
 					/* Iterate over all adapters per chain */
 					Iterator it = ciliaContext.getChain(chainId[i]).getAdapters()
 							.iterator();
 					while (it.hasNext()) {
 						adapter = (Adapter) it.next();
-						dico.put(Const.NODE_ID, adapter.getId());
+						dico.put(ConstRuntime.NODE_ID, adapter.getId());
 						if (filter.match(dico)) {
 							/* verify the pattern */
 							PatternType pattern = adapter.getPattern();
@@ -201,8 +202,8 @@ public class TopologyImpl implements Topology {
 	 */
 	private static String makefilter(String chain, String node) {
 		StringBuffer sb = new StringBuffer("(&(");
-		sb.append(Const.CHAIN_ID).append("=").append(chain);
-		sb.append(")(").append(Const.NODE_ID).append("=").append(node);
+		sb.append(ConstRuntime.CHAIN_ID).append("=").append(chain);
+		sb.append(")(").append(ConstRuntime.NODE_ID).append("=").append(node);
 		sb.append("))");
 		return sb.toString();
 	}
@@ -224,7 +225,7 @@ public class TopologyImpl implements Topology {
 		Node[] source = findNodeByFilter(ldapFilter, false);
 		try {
 			for (int i = 0; i < source.length; i++) {
-				nodes = Const.concat(nodes, connectedTo(source[i], proxy));
+				nodes = ConstRuntime.concat(nodes, connectedTo(source[i], proxy));
 			}
 		} catch (CiliaIllegalStateException e) {
 		}

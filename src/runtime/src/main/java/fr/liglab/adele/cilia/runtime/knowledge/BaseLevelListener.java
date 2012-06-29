@@ -28,7 +28,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import fr.liglab.adele.cilia.exceptions.CiliaIllegalStateException;
-import fr.liglab.adele.cilia.runtime.Const;
+import fr.liglab.adele.cilia.runtime.ConstRuntime;
 import fr.liglab.adele.cilia.runtime.WorkQueue;
 
 /**
@@ -41,7 +41,7 @@ import fr.liglab.adele.cilia.runtime.WorkQueue;
 @SuppressWarnings({ "rawtypes", "unchecked" })
 public class BaseLevelListener implements EventHandler {
 
-	private final Logger logger = LoggerFactory.getLogger(Const.LOGGER_KNOWLEDGE);
+	private final Logger logger = LoggerFactory.getLogger(ConstRuntime.LOGGER_KNOWLEDGE);
 
 	private final BundleContext bundleContext;
 
@@ -66,7 +66,7 @@ public class BaseLevelListener implements EventHandler {
 	/* Register event admin */
 	private void registerEventAdmin() {
 		Dictionary dico = new Hashtable();
-		dico.put(EventConstants.EVENT_TOPIC, Const.TOPIC_HEADER + "*");
+		dico.put(EventConstants.EVENT_TOPIC, ConstRuntime.TOPIC_HEADER + "*");
 
 		if (serviceEventAdmin != null) {
 			serviceEventAdmin.unregister();
@@ -94,7 +94,7 @@ public class BaseLevelListener implements EventHandler {
 				}
 			}
 			/* Asynchronous execution */
-			Integer type = (Integer) dico.get(Const.EVENT_TYPE);
+			Integer type = (Integer) dico.get(ConstRuntime.EVENT_TYPE);
 			asynchronousExecution(new HandleDataReceived(dico, type.intValue()));
 		}
 	}
@@ -127,13 +127,13 @@ public class BaseLevelListener implements EventHandler {
 
 		public void run() {
 			switch (type) {
-			case Const.TYPE_DATA:
+			case ConstRuntime.TYPE_DATA:
 				eventData(dico);
 				break;
-			case Const.TYPE_STATUS_NODE:
+			case ConstRuntime.TYPE_STATUS_NODE:
 				eventStatusNode(dico);
 				break;
-			case Const.TYPE_STATUS_VARIABLE:
+			case ConstRuntime.TYPE_STATUS_VARIABLE:
 				eventStatusVariable(dico);
 				break;
 			}
@@ -145,13 +145,13 @@ public class BaseLevelListener implements EventHandler {
 			Object value;
 			long ticksCount;
 			/* state variable name */
-			stateVariable = (String) dico.get(Const.VARIABLE_ID);
+			stateVariable = (String) dico.get(ConstRuntime.VARIABLE_ID);
 			/* uuid : mediator / adapter source */
-			uuid = (String) dico.get(Const.UUID);
+			uuid = (String) dico.get(ConstRuntime.UUID);
 			/* value published */
-			value = dico.get(Const.VALUE);
+			value = dico.get(ConstRuntime.VALUE);
 			/* timestamp in ticks */
-			ticksCount = ((Long) dico.get(Const.TIMESTAMP)).longValue();
+			ticksCount = ((Long) dico.get(ConstRuntime.TIMESTAMP)).longValue();
 
 			/* Retrieve the node and insert a new measure */
 			MediatorMonitoring item;
@@ -171,9 +171,9 @@ public class BaseLevelListener implements EventHandler {
 			String uuid;
 			Object value;
 			/* uuid : mediator / adapter source */
-			uuid = (String) dico.get(Const.UUID);
+			uuid = (String) dico.get(ConstRuntime.UUID);
 			/* value published */
-			value = dico.get(Const.VALUE);
+			value = dico.get(ConstRuntime.VALUE);
 
 			/* Retrieve the node and insert a new measure */
 			MediatorMonitoring item;
@@ -192,11 +192,11 @@ public class BaseLevelListener implements EventHandler {
 			String uuid;
 			Object value;
 			/* state variable name */
-			String stateVariable = (String) dico.get(Const.VARIABLE_ID);
+			String stateVariable = (String) dico.get(ConstRuntime.VARIABLE_ID);
 			/* uuid : mediator / adapter source */
-			uuid = (String) dico.get(Const.UUID);
+			uuid = (String) dico.get(ConstRuntime.UUID);
 			/* value published */
-			value = dico.get(Const.VALUE);
+			value = dico.get(ConstRuntime.VALUE);
 			/* Retrieve the node and insert a new measure */
 			MediatorMonitoring item;
 			try {

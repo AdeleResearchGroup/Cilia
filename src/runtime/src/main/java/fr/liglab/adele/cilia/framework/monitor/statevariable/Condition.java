@@ -22,15 +22,13 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.Filter;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.util.measurement.Measurement;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import fr.liglab.adele.cilia.exceptions.CiliaInvalidSyntaxException;
-import fr.liglab.adele.cilia.runtime.Const;
 import fr.liglab.adele.cilia.util.FrameworkUtils;
 
+@SuppressWarnings({ "rawtypes", "unchecked" })
 public class Condition {
-	private static Logger logger = LoggerFactory.getLogger(Const.LOGGER_KNOWLEDGE);
+
 
 	private Filter filter;
 	private final Dictionary dico = new Hashtable(7);
@@ -117,11 +115,6 @@ public class Condition {
 				/* computes time elapsed */
 				dico.put(FrameworkUtils.TIME_ELAPSED, new Long(timeElapsed));
 				result = filter.matchCase(dico);
-
-				if (logger.isTraceEnabled()) {
-					logger.trace("condition match =" + result);
-					logger.trace("Dictionnary =" + dico.toString());
-				}
 			}
 		} else
 			result = false;
@@ -157,10 +150,6 @@ public class Condition {
 				dico.put(FrameworkUtils.TIME_ELAPSED, new Long(timeElapsed));
 				result = filter.matchCase(dico);
 
-				if (logger.isTraceEnabled()) {
-					logger.trace("condition match =" + result);
-					logger.trace("Dictionnary =" + dico.toString());
-				}
 			}
 		} else
 			result = false;
