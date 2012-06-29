@@ -107,6 +107,7 @@ public class MediatorControllerImpl implements Observer {
 		monitoring.setModel(mediatorModel) ;
 		monitoring.setFirerEvent(notifier) ;
 		mediatorModel.addModel(MediatorMonitoring.NAME, monitoring);
+		eventFirer = notifier ;
 	}
 
 	protected void updateProperties() {

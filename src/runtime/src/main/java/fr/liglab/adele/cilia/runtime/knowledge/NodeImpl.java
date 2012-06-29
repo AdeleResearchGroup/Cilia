@@ -48,7 +48,7 @@ public class NodeImpl implements Node {
 	public String toString() {
 		StringBuffer sb = new StringBuffer(FrameworkUtils.makeQualifiedId(chainId,
 				nodeId, uuid));
-		sb.append("creation date :" + Watch.formatDateIso8601(timestamp));
+		sb.append(", creation date :" + Watch.formatDateIso8601(timestamp));
 		return sb.toString();
 	}
 

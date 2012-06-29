@@ -16,11 +16,16 @@ package fr.liglab.adele.cilia.runtime.knowledge;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Hashtable;
+import java.util.Map;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import fr.liglab.adele.cilia.Measure;
+import fr.liglab.adele.cilia.Node;
 import fr.liglab.adele.cilia.ThresholdsCallback;
 import fr.liglab.adele.cilia.exceptions.CiliaIllegalParameterException;
 import fr.liglab.adele.cilia.model.MediatorComponent;
@@ -89,36 +94,6 @@ public class MediatorMonitoring implements ModelExtension {
 		firerEvents.fireEventVariableStatus(model, variableId, enable);
 	}
 
-	public Measure[] measures(String variableId) {
-		Measure[] m;
-		/* retreive the component */
-		Observations measures = (Observations) variablesId.get(variableId);
-		if (measures != null) {
-			m = measures.getMeasure();
-		} else
-			m = new Measure[0];
-		return m;
-	}
-
-	public void addMeasure(String variableId, Measure measure) {
-		/* retreive the component */
-		Observations measures = (Observations) variablesId.get(variableId);
-
-		if (measures == null) {
-			/* should never happen */
-			measures = new Observations();
-			variablesId.put(variableId, measures);
-		}
-		/* insert a new measure and checks the viability */
-		int thresoldEvent = measures.addMeasure(measure);
-		firerEvents.fireEventMeasure(model, variableId, measure);
-		if (thresoldEvent != ThresholdsCallback.NONE) {
-			/* fire event threshold reached */
-			firerEvents.fireThresholdEvent(model, variableId, measure, thresoldEvent);
-		}
-		logger.info("Received variable [{},{}]", variableId, measure.toString());
-	}
-
 	private Observations getObservations(String variableId) {
 		Observations observations  ;
 		if (!variablesId.containsKey(variableId)) {
@@ -130,6 +105,24 @@ public class MediatorMonitoring implements ModelExtension {
 		}
 		return observations;
 	}
+	
+	public Measure[] measures(String variableId) {	
+		return getObservations(variableId).getMeasure();
+	}
+
+	public void addMeasure(String variableId, Measure measure) {
+		/* retreive the component */
+		int thresoldEvent =getObservations(variableId).addMeasure(measure);
+		firerEvents.fireEventMeasure(model, variableId, measure);
+		
+		if (thresoldEvent != ThresholdsCallback.NONE) {
+			/* fire event threshold reached */
+			firerEvents.fireThresholdEvent(model, variableId, measure, thresoldEvent);
+		}
+		
+		logger.info("Received variable [{},{}]", variableId, measure.toString());
+	}
+
 	
 	public void setQueueSize(String variableId, int queueSize) {
 		try {
@@ -298,6 +291,14 @@ public class MediatorMonitoring implements ModelExtension {
 		}
 	}
 
+	public String[] getEnabledVariable() {
+		Hashtable props = model.getProperties();
+		Map config = (Map)props.get("monitoring.base") ;
+		Set enabled = (Set)config.get("enable") ;
+		if (enabled==null) enabled = new HashSet();
+		return (String[]) enabled.toArray(new String[enabled.size()]); 
+	}
+	
 	/**
 	 * Observation store measures from runtime
 	 * 
@@ -327,9 +328,9 @@ public class MediatorMonitoring implements ModelExtension {
 			try {
 				measures.writerSync().acquire();
 				try {
-					measures.add(0, m);
-					if (measures.size() > queueSize)
+					if (measures.size() >= queueSize)
 						measures.remove(queueSize - 1);
+					measures.add(0, m);
 					return viability(m);
 				} finally {
 					measures.writerSync().release();
@@ -360,10 +361,16 @@ public class MediatorMonitoring implements ModelExtension {
 
 		public void setQueueSize(int queue) {
 			try {
+				System.out.println("New queue Size "+queue+ "current size = "+measures.size()) ;
 				measures.writerSync().acquire();
 				try {
-					for (int i = queueSize; i < queue; i++)
-						measures.remove(i - 1);
+					if (measures.size() > queue) {
+						/* Remove oldest measures */
+						int over = measures.size() - queue ;
+						for (int i=0 ; i< over ; i++) {
+							measures.remove((measures.size()-1)) ;	
+						}
+					}
 					queueSize = queue;
 				} finally {
 					measures.writerSync().release();

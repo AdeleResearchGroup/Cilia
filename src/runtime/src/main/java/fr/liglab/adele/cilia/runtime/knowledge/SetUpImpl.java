@@ -14,8 +14,6 @@
 
 package fr.liglab.adele.cilia.runtime.knowledge;
 
-import java.util.Dictionary;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -25,6 +23,7 @@ import fr.liglab.adele.cilia.Thresholds;
 import fr.liglab.adele.cilia.exceptions.CiliaIllegalParameterException;
 import fr.liglab.adele.cilia.exceptions.CiliaIllegalStateException;
 import fr.liglab.adele.cilia.exceptions.CiliaInvalidSyntaxException;
+
 /**
  * Configure the Monitor Model ( Meta level ) or Base Monitor 
  * 
@@ -50,23 +49,27 @@ public class SetUpImpl extends NodeImpl implements SetUp, Thresholds {
 		return MonitoringConfHelper.variablesByCategory(category);
 	}
 
-	public void setMonitoring(String variableId, int queueSize, String LdapFilter,
+	public void setMonitoring(String variableId, int queueSize, String ldapfilter,
 			boolean enable) throws CiliaIllegalParameterException,
 			CiliaInvalidSyntaxException, CiliaIllegalStateException {
-		MediatorMonitoring m = registry.get(uuid);
+		MediatorMonitoring m = registry.getAndStore(uuid);
 		MonitoringConfHelper.checkStateVarId(variableId);
 		MonitoringConfHelper.checkQueueSize(queueSize);
-		MonitoringConfHelper.createFilterDataFlow(LdapFilter);
-
+		MonitoringConfHelper.checkDataFlowFilter(ldapfilter);
+		m.setQueueSize(variableId, queueSize);
+		Map config = MonitoringConfHelper.getRootConfig(m.getModel()) ;
+		MonitoringConfHelper.storeDataFlowControl(config, variableId, ldapfilter);
+		MonitoringConfHelper.storeEnable(config, variableId, enable);
+		MonitoringConfHelper.storeRootConfig(m.getModel(), config);
+		
 	}
 
 	public void setMonitoring(String variableId, int queueSize)
 			throws CiliaIllegalParameterException, CiliaIllegalStateException {
-		MediatorMonitoring m = registry.getAndStore(uuid);
+		MediatorMonitoring mo = registry.getAndStore(uuid);
 		MonitoringConfHelper.checkStateVarId(variableId);
 		MonitoringConfHelper.checkQueueSize(queueSize);
-		MediatorMonitoring monitoring = registry.getAndStore(uuid);
-		monitoring.setQueueSize(variableId, queueSize);
+		mo.setQueueSize(variableId, queueSize);
 	}
 
 	public void setMonitoring(String variableId, String ldapFilter)
@@ -74,41 +77,32 @@ public class SetUpImpl extends NodeImpl implements SetUp, Thresholds {
 			CiliaIllegalStateException {
 		MediatorMonitoring m = registry.getAndStore(uuid);
 		MonitoringConfHelper.checkDataFlowFilter(ldapFilter);
-		Dictionary props = m.getModel().getProperties() ;
-		Map configBase = (Map)props.get("monitoring.base") ;
-		MonitoringConfHelper.storeDataFlowControl(configBase, variableId, ldapFilter);
-		m.getModel().setProperty("monitoring.base", configBase) ;
+		Map config = MonitoringConfHelper.getRootConfig(m.getModel());
+		MonitoringConfHelper.storeDataFlowControl(config, variableId, ldapFilter);
+		MonitoringConfHelper.storeRootConfig(m.getModel(), config) ;
 	}
 
 	public void setMonitoring(String variableId, boolean enable)
 			throws CiliaIllegalParameterException, CiliaIllegalStateException {
 		MediatorMonitoring m = registry.getAndStore(uuid);
 		MonitoringConfHelper.checkStateVarId(variableId);
-		Dictionary props = m.getModel().getProperties() ;
-		
-		Map configBase = (Map)props.get("monitoring.base") ;
+		Map configBase = MonitoringConfHelper.getRootConfig(m.getModel());
 		MonitoringConfHelper.storeEnable(configBase, variableId, enable) ;
-		m.getModel().setProperty("monitoring.base", configBase) ;
+		MonitoringConfHelper.storeRootConfig(m.getModel(), configBase) ;
 	}
 
 	public String[] getEnabledVariable() throws CiliaIllegalStateException {
-		Set listEnabled = new HashSet() ;
+		Set listEnabled ;
 		MediatorMonitoring m = registry.getAndStore(uuid);
-		Map props = m.getModel().getProperties();
-		Map baseLevelConfig = (Map)props.get("monitoring.base") ;
-		if (baseLevelConfig !=null) {
-			Set enabled = (Set)baseLevelConfig.get("enable");
-			if (enabled !=null) {
-				listEnabled.addAll(enabled) ;
-			}
-		}
+		Map config = MonitoringConfHelper.getRootConfig(m.getModel()) ;
+		listEnabled = MonitoringConfHelper.getEnabledVariable(config) ;
 		return (String[]) listEnabled.toArray(new String[listEnabled.size()]);
 	}
 
 	public int getQueueSize(String variableId) throws CiliaIllegalParameterException,
 			CiliaIllegalStateException {
 		MediatorMonitoring m = registry.getAndStore(uuid);
-
+		MonitoringConfHelper.checkStateVarId(variableId);
 		return m.getQueueSize(variableId);
 	}
 
@@ -116,8 +110,8 @@ public class SetUpImpl extends NodeImpl implements SetUp, Thresholds {
 			CiliaIllegalStateException {
 		MediatorMonitoring m = registry.getAndStore(uuid);
 		MonitoringConfHelper.checkStateVarId(variableId);
-	    
-		return null;
+		Map config = MonitoringConfHelper.getRootConfig(m.getModel()) ;
+		return MonitoringConfHelper.getFlowControl(config, variableId);
 	}
 
 	public void setLow(String variableId, double low)

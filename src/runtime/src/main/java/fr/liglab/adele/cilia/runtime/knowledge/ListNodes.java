@@ -66,6 +66,7 @@ public class ListNodes {
 								.getModel(MediatorMonitoring.NAME);
 						registry.put(uuid, mc);
 					}
+
 				} else
 					throw new CiliaIllegalStateException("no node found with uuid="
 							+ uuid);

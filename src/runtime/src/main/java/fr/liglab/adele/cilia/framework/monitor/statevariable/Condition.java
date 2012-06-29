@@ -32,7 +32,6 @@ import fr.liglab.adele.cilia.util.FrameworkUtils;
 public class Condition {
 	private static Logger logger = LoggerFactory.getLogger(Const.LOGGER_KNOWLEDGE);
 
-
 	private Filter filter;
 	private final Dictionary dico = new Hashtable(7);
 	private final Object synchro = new Object();
@@ -90,6 +89,45 @@ public class Condition {
 		}
 	}
 
+	public boolean match(Double d, long timeCurrent, long timeElapsed) {
+		boolean result;
+		Long previousTime;
+		Double previousValue;
+
+		if (filter != null) {
+			synchronized (synchro) {
+				/* Current value */
+				previousValue = (Double) dico.get(FrameworkUtils.VALUE_CURRENT);
+				dico.put(FrameworkUtils.VALUE_PREVIOUS, previousValue);
+				dico.put(FrameworkUtils.VALUE_CURRENT, new Double(d));
+
+				/* Current time */
+				previousTime = (Long) dico.get(FrameworkUtils.TIME_CURRENT);
+				dico.put(FrameworkUtils.TIME_PREVIOUS, previousTime);
+				dico.put(FrameworkUtils.TIME_CURRENT, new Long(timeCurrent));
+
+				/* computes delta Absolute and delta relative */
+				if ((previousValue.doubleValue() != Double.NaN)
+						&& (d.doubleValue() != Double.NaN)) {
+					double dd = Math.abs(previousValue.doubleValue() - d.doubleValue());
+					dico.put(FrameworkUtils.DELTA_ABSOLUTE, new Double(dd));
+					dico.put(FrameworkUtils.DELTA_RELATIVE,
+							new Double(dd / Math.abs(d.doubleValue())));
+				}
+				/* computes time elapsed */
+				dico.put(FrameworkUtils.TIME_ELAPSED, new Long(timeElapsed));
+				result = filter.matchCase(dico);
+
+				if (logger.isTraceEnabled()) {
+					logger.trace("condition match =" + result);
+					logger.trace("Dictionnary =" + dico.toString());
+				}
+			}
+		} else
+			result = false;
+		return result;
+	}
+
 	public boolean match(Measurement m, long timeElapsed) {
 		boolean result;
 		Long previousTime;
@@ -112,7 +150,8 @@ public class Condition {
 						&& (m.getValue() != Double.NaN)) {
 					double d = Math.abs(previousValue.doubleValue() - m.getValue());
 					dico.put(FrameworkUtils.DELTA_ABSOLUTE, new Double(d));
-					dico.put(FrameworkUtils.DELTA_RELATIVE, new Double(d / Math.abs(m.getValue())));
+					dico.put(FrameworkUtils.DELTA_RELATIVE,
+							new Double(d / Math.abs(m.getValue())));
 				}
 				/* computes time elapsed */
 				dico.put(FrameworkUtils.TIME_ELAPSED, new Long(timeElapsed));

@@ -28,6 +28,7 @@ import org.osgi.framework.InvalidSyntaxException;
 
 import fr.liglab.adele.cilia.exceptions.CiliaIllegalParameterException;
 import fr.liglab.adele.cilia.exceptions.CiliaInvalidSyntaxException;
+import fr.liglab.adele.cilia.model.MediatorComponent;
 import fr.liglab.adele.cilia.util.FrameworkUtils;
 
 /**
@@ -142,11 +143,6 @@ public class MonitoringConfHelper {
 					+ variableId + "'");
 	}
 
-	/* verify the data flow filter */
-	public static void checkDataFlowFilter(String filter)
-			throws CiliaIllegalParameterException, CiliaInvalidSyntaxException {
-		createFilterDataFlow(filter);
-	}
 
 	public static void checkQueueSize(int queue) throws CiliaIllegalParameterException {
 		if (queue < 1)
@@ -154,10 +150,9 @@ public class MonitoringConfHelper {
 	}
 
 	/* build the ldap filter */
-	public synchronized static final Filter createFilterDataFlow(String filter)
+	public synchronized static final void checkDataFlowFilter(String filter)
 			throws CiliaIllegalParameterException, CiliaInvalidSyntaxException {
-		if (filter == null)
-			throw new CiliaIllegalParameterException("filter is null !");
+		if ((filter == null) || (filter.length()==0)) return  ;
 		boolean found = false;
 		/* at least one keyword is required */
 		Iterator it = dataflowKeys.iterator();
@@ -172,11 +167,12 @@ public class MonitoringConfHelper {
 			throw new CiliaIllegalParameterException("missing ldap filter keyword "
 					+ dataflowKeys.toString() + "!" + filter);
 		try {
-			return FrameworkUtil.createFilter(filter);
+			 FrameworkUtil.createFilter(filter);
 		} catch (InvalidSyntaxException e) {
 			throw new CiliaInvalidSyntaxException(e.getMessage(), e.getFilter());
 		}
 	}
+	
 
 	public static void storeEnable(Map props, String stateVarId, boolean enable) {
 		Set setEnable = (Set) props.get("enable");
@@ -188,14 +184,37 @@ public class MonitoringConfHelper {
 			setEnable.add(stateVarId);
 		} else
 			setEnable.remove(stateVarId);
+	}
 	
+	public static Set getEnabledVariable(Map props) {
+		Set set = (Set) props.get("enabled") ;
+		if (set==null) set = new HashSet();
+		return set;
+	}
+	
+	public static String getFlowControl(Map props,String variableId) {
+		String flowControl = (String)props.get(variableId);
+		if (flowControl==null) return "";
+		else return flowControl;
 	}
 
 
 	public static void storeDataFlowControl(Map props, String stateVarId,
 			String ldapfilter) {
-		props.put(stateVarId, ldapfilter);
+		if (ldapfilter ==null) props.put(stateVarId, "") ;
+		else props.put(stateVarId, ldapfilter);
 	}
 
+	
+	public static Map getRootConfig(MediatorComponent model) {
+		Map config =(Map) model.getProperties().get("monitoring.base") ;
+		if (config==null) config = new HashMap() ;
+		return config ;
+	}
 
+	public static void storeRootConfig(MediatorComponent model, Map config) {
+		model.setProperty("monitoring.base", config) ;
+	}
+	
+	
 }

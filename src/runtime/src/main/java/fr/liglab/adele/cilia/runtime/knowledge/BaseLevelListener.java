@@ -197,7 +197,6 @@ public class BaseLevelListener implements EventHandler {
 			uuid = (String) dico.get(Const.UUID);
 			/* value published */
 			value = dico.get(Const.VALUE);
-
 			/* Retrieve the node and insert a new measure */
 			MediatorMonitoring item;
 			try {

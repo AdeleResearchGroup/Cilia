@@ -25,6 +25,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeSet;
 
 import org.apache.felix.ipojo.ComponentInstance;
 import org.apache.felix.ipojo.ConfigurationException;
@@ -71,7 +72,8 @@ public class MonitorHandlerStateVar extends AbstractMonitor implements
 	private boolean isMediatorValid = false;
 	private String chainId, componentId, uuid;
 	private Map m_statevar = new ConcurrentReaderHashMap();
-	private Set m_listStateVarEnable = new HashSet();
+	private Set listStateVarEnabled = new HashSet();
+	private Set previousStateVarEnabled = new HashSet();
 	private String topic;
 
 	/* Handler configuration */
@@ -82,55 +84,47 @@ public class MonitorHandlerStateVar extends AbstractMonitor implements
 		uuid = (String) configuration.get(ConstModel.PROPERTY_UUID);
 		topic = Const.TOPIC_HEADER + chainId;
 
-		Dictionary dico = new Hashtable();
-		Map config = new HashMap();
-		dico.put("monitoring.base", config);
-		Set enabled = new HashSet();
-		enabled.add("process.entry.count");
-		config.put("enable", enabled);
-
-		configureStateVar(dico);
+		configureStateVar(configuration);
 	}
 
 	private void configureStateVar(Dictionary configuration) {
 		Map configs = (Map) configuration.get("monitoring.base");
+		System.out.println("Monitoring Base :"+configs) ;
 		/* Retreive all state var enabled */
 		/* Set the data flow for all state Var */
-		Iterator it = configs.entrySet().iterator();
-		while (it.hasNext()) {
-			Map.Entry pairs = (Map.Entry) it.next();
-			String key = (String) pairs.getKey();
+		if (configs != null) {
+			previousStateVarEnabled.clear();
+			previousStateVarEnabled.addAll(listStateVarEnabled);
+			Iterator it = configs.entrySet().iterator();
+			while (it.hasNext()) {
+				Map.Entry pairs = (Map.Entry) it.next();
+				String key = (String) pairs.getKey();
 
-			if (key.equalsIgnoreCase("enable")) {
-				/* Retreive all statevar */
-				Set enabled = (Set) pairs.getValue();
-				Iterator iter = enabled.iterator();
-				m_listStateVarEnable.clear();
-				while (iter.hasNext()) {
-					String stateVarId = (String) iter.next();
-					m_listStateVarEnable.add(stateVarId);
-					stateVarConfiguration(stateVarId);
+				if (key.equalsIgnoreCase("enable")) {
+					listStateVarEnabled.clear();
+					/* Retreive all state enable/disable */
+					Set enabled = (Set) pairs.getValue();
+					Iterator iter = enabled.iterator();
+					while (iter.hasNext()) {
+						String stateVarId = (String) iter.next();
+						listStateVarEnabled.add(stateVarId);
+						stateVarConfiguration(stateVarId);
+					}
+				} else {
+					/* Store the dataflow control */
+					String ldapfilter = (String) pairs.getValue();
+					stateVarConfiguration(key, ldapfilter);
 				}
-			} else {
-				String ldapfilter = (String) pairs.getValue();
-				stateVarConfiguration(key, ldapfilter);
 			}
-
 		}
 	}
 
 	public void validate() {
 		retreiveEventAdmin();
-		/* publish initial statevar state enabled */
-		Iterator it = m_listStateVarEnable.iterator();
-		while (it.hasNext()) {
-			String variableId = (String) it.next();
-			firerVariableStatus(variableId, true);
-		}
+		fireStatusChange();
 	}
 
 	public void unvalidate() {
-
 	}
 
 	public void start() {
@@ -141,7 +135,7 @@ public class MonitorHandlerStateVar extends AbstractMonitor implements
 	public void stop() {
 		// super.getInstanceManager().addInstanceStateListener(this);
 		/* Clear state var */
-		m_listStateVarEnable.clear();
+		listStateVarEnabled.clear();
 	}
 
 	/* retreive EventAdmin reference */
@@ -170,6 +164,27 @@ public class MonitorHandlerStateVar extends AbstractMonitor implements
 		m_statevar.put(stateVarId, item);
 	}
 
+	private void fireStatusChange() {
+		Set union = new TreeSet(previousStateVarEnabled);
+		union.addAll(listStateVarEnabled);
+
+		Iterator it = union.iterator();
+		String variableId;
+		while (it.hasNext()) {
+			variableId = (String) it.next();
+			if ((previousStateVarEnabled.contains(variableId))
+					&& (!listStateVarEnabled.contains(variableId)))
+				firerVariableStatus(variableId, false);
+
+			else {
+				if ((!previousStateVarEnabled.contains(variableId))
+						&& (listStateVarEnabled.contains(variableId)))
+					firerVariableStatus(variableId, true);
+			}
+		}
+
+	}
+
 	private void stateVarConfiguration(String stateVarId, String ldapFilter) {
 
 		Condition cond = null;
@@ -192,7 +207,7 @@ public class MonitorHandlerStateVar extends AbstractMonitor implements
 	}
 
 	private boolean isEnabled(String stateVarId) {
-		return m_listStateVarEnable.contains(stateVarId);
+		return listStateVarEnabled.contains(stateVarId);
 	}
 
 	private void publish(String stateVarId, Object data, long ticksCount) {
@@ -204,7 +219,6 @@ public class MonitorHandlerStateVar extends AbstractMonitor implements
 		if (item != null) {
 			fire = true;
 		} else {
-
 			cond = item.condition;
 			if (cond != null) {
 				last_ticksCount = item.lastpublish.longValue();
@@ -312,7 +326,7 @@ public class MonitorHandlerStateVar extends AbstractMonitor implements
 	}
 
 	public void onCollect(Data data) {
-		if (m_listStateVarEnable.isEmpty())
+		if (listStateVarEnabled.isEmpty())
 			return;
 
 		gatherIncommingHistory(data);
@@ -352,7 +366,7 @@ public class MonitorHandlerStateVar extends AbstractMonitor implements
 
 	public void onProcessEntry(List data) {
 
-		if (m_listStateVarEnable.isEmpty())
+		if (listStateVarEnabled.isEmpty())
 			return;
 
 		snapShotHistory();
@@ -378,7 +392,7 @@ public class MonitorHandlerStateVar extends AbstractMonitor implements
 
 	public void onProcessExit(List data) {
 
-		if (m_listStateVarEnable.isEmpty())
+		if (listStateVarEnabled.isEmpty())
 			return;
 
 		if (isEnabled("message.history") || isEnabled("transmission.delay"))
@@ -398,7 +412,7 @@ public class MonitorHandlerStateVar extends AbstractMonitor implements
 
 	public void onDispatch(List data) {
 
-		if (m_listStateVarEnable.isEmpty())
+		if (listStateVarEnabled.isEmpty())
 			return;
 
 		if (isEnabled("dispatch.count")) {
@@ -420,7 +434,7 @@ public class MonitorHandlerStateVar extends AbstractMonitor implements
 
 	public void onProcessError(Data data, Exception ex) {
 
-		if (m_listStateVarEnable.isEmpty())
+		if (listStateVarEnabled.isEmpty())
 			return;
 
 		m_counters[4]++;
@@ -440,7 +454,7 @@ public class MonitorHandlerStateVar extends AbstractMonitor implements
 	 */
 	public void fireEvent(Map info) {
 
-		if (m_listStateVarEnable.isEmpty())
+		if (listStateVarEnabled.isEmpty())
 			return;
 
 		if (isEnabled("fire.event")) {
@@ -458,7 +472,7 @@ public class MonitorHandlerStateVar extends AbstractMonitor implements
 	 */
 	public void onServiceArrival(Map info) {
 
-		if (m_listStateVarEnable.isEmpty())
+		if (listStateVarEnabled.isEmpty())
 			return;
 
 		if (isEnabled("service.arrival")) {
@@ -476,7 +490,7 @@ public class MonitorHandlerStateVar extends AbstractMonitor implements
 	 */
 	public void onServiceDeparture(Map info) {
 
-		if (m_listStateVarEnable.isEmpty())
+		if (listStateVarEnabled.isEmpty())
 			return;
 
 		if (isEnabled("service.departure")) {
@@ -491,7 +505,7 @@ public class MonitorHandlerStateVar extends AbstractMonitor implements
 
 	public void onFieldGet(String field, Object o) {
 
-		if (m_listStateVarEnable.isEmpty())
+		if (listStateVarEnabled.isEmpty())
 			return;
 
 		if (isEnabled("field.get")) {
@@ -508,7 +522,7 @@ public class MonitorHandlerStateVar extends AbstractMonitor implements
 
 	public void onFieldSet(String field, Object o) {
 
-		if (m_listStateVarEnable.isEmpty())
+		if (listStateVarEnabled.isEmpty())
 			return;
 
 		if (isEnabled("field.set")) {
@@ -521,7 +535,6 @@ public class MonitorHandlerStateVar extends AbstractMonitor implements
 					m_counters[11])));
 		}
 	}
-
 
 	/**
 	 * Asynchronous execution
@@ -561,6 +574,7 @@ public class MonitorHandlerStateVar extends AbstractMonitor implements
 	/* Reconfigure */
 	public void reconfigure(Dictionary configuration) {
 		configureStateVar(configuration);
+		fireStatusChange();
 	}
 
 	/* -- State var configuration */
@@ -572,7 +586,6 @@ public class MonitorHandlerStateVar extends AbstractMonitor implements
 			lastpublish = new Long(0);
 			condition = null;
 		}
-
 	}
 
 }

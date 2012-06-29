@@ -15,7 +15,6 @@
 
 package fr.liglab.adele.cilia;
 
-
 /**
  * Callback on data received from the monitoring
  * 
@@ -26,13 +25,25 @@ package fr.liglab.adele.cilia;
  */
 public interface VariableCallback {
 
-
-	void onStateChange(Node node, String variable , boolean enable) ;
 	/**
 	 * 
-	 * @param node 
-	 * @param variable , variable id updated
-	 * @param Measure measure received :
+	 * @param node
+	 *            , node hosting the variable
+	 * 
+	 * @param variable
+	 *            , variable Id
+	 * @param enable
+	 *            true -> state enable , false -> state disable
 	 */
-	void onUpdate(Node node, String variable,Measure m);
+	void onStateChange(Node node, String variable, boolean enable);
+
+	/**
+	 * 
+	 * @param node
+	 * @param variable
+	 *            , variable id updated
+	 * @param Measure
+	 *            measure stored in the model 
+	 */
+	void onUpdate(Node node, String variable, Measure m);
 }

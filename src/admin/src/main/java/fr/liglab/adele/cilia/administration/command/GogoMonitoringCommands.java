@@ -21,6 +21,7 @@ import fr.liglab.adele.cilia.ChainCallback;
 import fr.liglab.adele.cilia.CiliaContext;
 import fr.liglab.adele.cilia.ApplicationRuntime;
 import fr.liglab.adele.cilia.Measure;
+import fr.liglab.adele.cilia.RawData;
 import fr.liglab.adele.cilia.VariableCallback;
 import fr.liglab.adele.cilia.Node;
 import fr.liglab.adele.cilia.NodeCallback;
@@ -63,7 +64,7 @@ public class GogoMonitoringCommands {
 		// app_callback_node("(&(!chain=admin-chain)(node=*))") ;
 		app_callback_chain("(chain=*)");
 		app_callback_node("(&(chain=*)(node=*))");
-		app_callback_measure("(chain=*)");
+		// app_callback_measure("(chain=*)");
 
 	}
 
@@ -422,22 +423,23 @@ public class GogoMonitoringCommands {
 		try {
 
 			runtime.addListener("(node=mediator_1)", (VariableCallback) callbacks);
-			// SetUp[] rt = runtime.nodeSetup("(node=mediator_1)");
-			//
-			// if (rt.length != 0) {
-			// for (int i = 0; i < rt.length; i++) {
-			// rt[i].setMonitoring("process.entry.count", 100, "", true);
-			// System.out.println("isValid " + rt[i].nodeId() + " "
-			// + rt[i].isValid());
-			// }
-			// }
-			// node_rawdata("(node=mediator_1)", "process.entry.count");
-			// rt = runtime.nodeSetup("(node=mediator_2)");
-			// if (rt.length != 0) {
-			// for (int i = 0; i < rt.length; i++) {
-			// rt[i].setMonitoring("process.entry.count", 100, "", true);
-			// }
-			// }
+
+			SetUp[] rt = runtime.nodeSetup("(node=mediator_1)");
+
+			if (rt.length != 0) {
+				for (int i = 0; i < rt.length; i++)
+					rt[i].setMonitoring("process.entry.count", 10, "", true);
+			}
+
+			RawData[] data = runtime.nodeRawData("(node=mediator_1)") ;
+			if (data.length != 0) {
+				for (int i=0 ; i<data.length ; i++) {
+					Measure [] measures = data[i].measures("process.entry.count") ;
+					for (int j=0  ; j<measures.length ; j++) {
+						System.out.println ("Measure #"+j +" :"+measures[j].toString()) ;
+					}
+				}
+			}
 		} catch (Throwable e) {
 			e.printStackTrace();
 		}
