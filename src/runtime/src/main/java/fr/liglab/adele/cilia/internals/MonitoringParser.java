@@ -16,13 +16,11 @@
 package fr.liglab.adele.cilia.internals;
 
 import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
 import fr.liglab.adele.cilia.exceptions.CiliaParserException;
 import fr.liglab.adele.cilia.knowledge.configuration.ParserConfiguration;
 import fr.liglab.adele.cilia.model.Component;
 import fr.liglab.adele.cilia.model.MediatorComponent;
-import fr.liglab.adele.cilia.model.impl.ComponentImpl;
 import fr.liglab.adele.cilia.util.CiliaExtenderParser;
 
 /**
