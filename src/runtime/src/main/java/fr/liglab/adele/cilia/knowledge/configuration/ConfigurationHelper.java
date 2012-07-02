@@ -32,7 +32,7 @@ import fr.liglab.adele.cilia.runtime.ConstRuntime;
 import fr.liglab.adele.cilia.util.FrameworkUtils;
 
 /**
- * Configuration utilities 
+ * Configuration utilities
  * 
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project
  *         Team</a>
@@ -142,7 +142,6 @@ public class ConfigurationHelper {
 					+ variableId + "'");
 	}
 
-
 	public static void checkQueueSize(int queue) throws CiliaIllegalParameterException {
 		if (queue < 1)
 			throw new CiliaIllegalParameterException("queue size must be >1");
@@ -151,7 +150,8 @@ public class ConfigurationHelper {
 	/* build the ldap filter */
 	public synchronized static final void checkDataFlowFilter(String filter)
 			throws CiliaIllegalParameterException, CiliaInvalidSyntaxException {
-		if ((filter == null) || (filter.length()==0)) return  ;
+		if ((filter == null) || (filter.length() == 0))
+			return;
 		boolean found = false;
 		/* at least one keyword is required */
 		Iterator it = dataflowKeys.iterator();
@@ -166,12 +166,11 @@ public class ConfigurationHelper {
 			throw new CiliaIllegalParameterException("missing ldap filter keyword "
 					+ dataflowKeys.toString() + "!" + filter);
 		try {
-			 FrameworkUtil.createFilter(filter);
+			FrameworkUtil.createFilter(filter);
 		} catch (InvalidSyntaxException e) {
 			throw new CiliaInvalidSyntaxException(e.getMessage(), e.getFilter());
 		}
 	}
-	
 
 	public static void storeEnable(Map props, String stateVarId, boolean enable) {
 		Set setEnable = (Set) props.get("enable");
@@ -184,38 +183,51 @@ public class ConfigurationHelper {
 		} else
 			setEnable.remove(stateVarId);
 	}
-	
+
 	public static Set getEnabledVariable(Map props) {
-		Set set = (Set) props.get("enabled") ;
-		if (set==null) set = new HashSet();
+		Set set = (Set) props.get("enabled");
+		if (set == null)
+			set = new HashSet();
 		return set;
 	}
-	
-	public static String getFlowControl(Map props,String variableId) {
-		String flowControl = (String)props.get(variableId);
-		if (flowControl==null) return "";
-		else return flowControl;
-	}
 
+	public static String getFlowControl(Map props, String variableId) {
+		String flowControl = (String) props.get(variableId);
+		if (flowControl == null)
+			return "";
+		else
+			return flowControl;
+	}
 
 	public static void storeDataFlowControl(Map props, String stateVarId,
 			String ldapfilter) {
-		if (ldapfilter ==null) props.put(stateVarId, "") ;
-		else props.put(stateVarId, ldapfilter);
+		if (ldapfilter == null)
+			props.put(stateVarId, "");
+		else
+			props.put(stateVarId, ldapfilter);
 	}
 
-	
 	public static Map getRootConfig(MediatorComponent model) {
-		Map config =(Map) model.getProperties().get(ConstRuntime.MONITORING_CONFIGURATION) ;
-		if (config==null) config = new HashMap() ;
-		return config ;
+
+		MediatorMonitoring monitoring = getModelMonitoring(model);
+		if (monitoring == null) {
+			monitoring = new MediatorMonitoring();
+			monitoring.setModel(model);
+			model.addModel(MediatorMonitoring.NAME, monitoring);
+		}
+		Map config = (Map) model.getProperties().get(
+				ConstRuntime.MONITORING_CONFIGURATION);
+		if (config == null)
+			config = new HashMap();
+		return config;
 	}
 
 	public static void storeRootConfig(MediatorComponent model, Map config) {
-		model.setProperty(ConstRuntime.MONITORING_CONFIGURATION, config) ;
+		if (!config.isEmpty())
+			model.setProperty(ConstRuntime.MONITORING_CONFIGURATION, config);
 	}
-	
+
 	public static final MediatorMonitoring getModelMonitoring(MediatorComponent model) {
-		return (MediatorMonitoring)model.getModel(MediatorMonitoring.NAME) ;
+		return (MediatorMonitoring) model.getModel(MediatorMonitoring.NAME);
 	}
 }

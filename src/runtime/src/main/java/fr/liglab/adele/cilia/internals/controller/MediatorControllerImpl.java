@@ -103,11 +103,16 @@ public class MediatorControllerImpl implements Observer {
 		updateProperties();
 		mediatorModel.addObserver(this);
 		/* add extended Model : "monitoring" */
-		MediatorMonitoring monitoring = new MediatorMonitoring() ;
-		monitoring.setModel(mediatorModel) ;
-		monitoring.setFirerEvent(notifier) ;
-		mediatorModel.addModel(MediatorMonitoring.NAME, monitoring);
-		eventFirer = notifier ;
+		MediatorMonitoring monitoring = (MediatorMonitoring) mediatorModel
+				.getModel(MediatorMonitoring.NAME);
+		if (monitoring == null) {
+			monitoring = new MediatorMonitoring();
+			mediatorModel.addModel(MediatorMonitoring.NAME, monitoring);
+			monitoring.setModel(mediatorModel);
+		}
+		monitoring.setFirerEvent(notifier);
+
+		eventFirer = notifier;
 	}
 
 	protected void updateProperties() {
@@ -257,8 +262,7 @@ public class MediatorControllerImpl implements Observer {
 					"Updating Mediator instance when object is not valid" + getState());
 		}
 		mediatorInstance.updateInstanceProperties(properties);
-		eventFirer.fireEventNode(FirerEvents.EVT_MODIFIED,
-				mediatorModel);
+		eventFirer.fireEventNode(FirerEvents.EVT_MODIFIED, mediatorModel);
 	}
 
 	/**
@@ -270,7 +274,8 @@ public class MediatorControllerImpl implements Observer {
 			if (mediatorInstance != null) {
 				mediatorInstance.deleteObserver(this);
 				mediatorInstance.stop();
-				logger.info("Component [{}] stopped",FrameworkUtils.makeQualifiedId(mediatorModel));
+				logger.info("Component [{}] stopped",
+						FrameworkUtils.makeQualifiedId(mediatorModel));
 			}
 		}
 	}
@@ -282,7 +287,8 @@ public class MediatorControllerImpl implements Observer {
 		createMediatorInstance();
 		updateMediatorModel();
 		updateMediatorInstance();
-		logger.info("Component [{}] started", FrameworkUtils.makeQualifiedId(mediatorModel));
+		logger.info("Component [{}] started",
+				FrameworkUtils.makeQualifiedId(mediatorModel));
 	}
 
 	/**

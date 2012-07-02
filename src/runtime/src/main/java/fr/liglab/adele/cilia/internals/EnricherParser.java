@@ -34,7 +34,7 @@ public class EnricherParser extends DomExtenderParser implements CiliaExtenderPa
 	 * @see fr.liglab.adele.cilia.model.impl.parser.CiliaExtenderParser#getComponent(java.lang.Object, fr.liglab.adele.cilia.model.impl.IComponent)
 	 */
 	public EnricherParser() {
-		NAMESPACE = "fr.imag.adele.cilia.processor.enricher";
+		//NAMESPACE = "fr.imag.adele.cilia.processor.enricher";
 		NAME = "enricher";
 	}
 	public Component getComponent(Object componentDescription,

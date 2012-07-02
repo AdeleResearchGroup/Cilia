@@ -433,7 +433,9 @@ public abstract class MediatorComponentImpl extends ComponentImpl implements
 	}
 
 	public String chainId() {
-		return getChain().getId();
+		Chain chain =getChain() ;
+		if (chain !=null) return chain.getId();
+		else return "";
 	}
 
 	public String uuid() {
@@ -466,6 +468,7 @@ public abstract class MediatorComponentImpl extends ComponentImpl implements
 		}
 		return modelExtension ;
 	}
+	
 	
 	public void addModel(String modelName,ModelExtension modelExtension) {
 		if ((modelName !=null) && (modelName.length()>0))

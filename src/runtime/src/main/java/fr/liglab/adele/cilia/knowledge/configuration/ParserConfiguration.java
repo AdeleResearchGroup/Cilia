@@ -44,13 +44,11 @@ public class ParserConfiguration {
 		try {
 			int q = Integer.parseInt(queue);
 			ConfigurationHelper.checkQueueSize(q);
-			ConfigurationHelper.getModelMonitoring(mc).setQueueSize(variableId, q) ;
-		} catch (Exception e) {
-		}
-		try {
 			ConfigurationHelper.checkDataFlowFilter(dataFlow);
+			/* store if no error */
+			ConfigurationHelper.getModelMonitoring(mc).setQueueSize(variableId, q) ;
 			ConfigurationHelper.storeDataFlowControl(config, variableId, dataFlow);
-		} catch (Exception e) {
+		} catch (Exception e) {	
 		}
 	}
 
@@ -74,8 +72,8 @@ public class ParserConfiguration {
 				dveryhigh = Integer.parseInt(veryHigh);
 			}else dveryhigh = Double.NaN ;
 
-			/* No error Set all Thresolds configured */
-			
+			/* Store if no error  */
+		
 			if (dlow !=Double.NaN) {
 				ConfigurationHelper.getModelMonitoring(mc).setLow(variableId, dlow) ;	
 			}

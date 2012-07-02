@@ -16,6 +16,7 @@
 package fr.liglab.adele.cilia.internals;
 
 import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 import fr.liglab.adele.cilia.exceptions.CiliaParserException;
 import fr.liglab.adele.cilia.knowledge.configuration.ParserConfiguration;
@@ -24,33 +25,19 @@ import fr.liglab.adele.cilia.model.MediatorComponent;
 import fr.liglab.adele.cilia.model.impl.ComponentImpl;
 import fr.liglab.adele.cilia.util.CiliaExtenderParser;
 
-
 /**
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project
  *         Team</a>
  * 
  */
 public class MonitoringParser extends DomExtenderParser implements CiliaExtenderParser {
-	private static final String TAG_MONITORING = "monitoring";
-	private static final String ATTR_ENABLE = "enable";
-	private static final String TAG_STATEVAR = "state-variable";
-	private static final String TAG_SETUP = "setup";
-	private static final String TAG_THRESHOLD = "threshold";
-	private static final String ATTR_ID = "id";
-	private static final String ATTR_FLOWCONTROL = "flow-control";
-	private static final String ATTR_VERYLOW = "very-low";
-	private static final String ATTR_LOW = "low";
-	private static final String ATTR_HIGH = "high";
-	private static final String ATTR_VERYHIGH = "very-high";
-	private static final String ATTR_QUEUE = "queue";
 
 	public MonitoringParser() {
-		NAMESPACE = "fr.liglab.adele.cilia";
 		NAME = "state-variable";
 	}
 
 	public boolean canHandle(Object elementDescription) {
-		Node disp = getNode(TAG_MONITORING, elementDescription);
+		Node disp = getNode("monitoring", elementDescription);
 		if (disp == null) {
 			return false;
 		}
@@ -67,45 +54,48 @@ public class MonitoringParser extends DomExtenderParser implements CiliaExtender
 		return enable;
 	}
 
-	public Component getComponent(Object componentDescription, Component current)
+	public Component getComponent(Object componentDescription, Component currentComponent)
 			throws CiliaParserException {
-
-		ComponentImpl currentComponent = (ComponentImpl) current;
-
-		ParserConfiguration monitoringConfig = new ParserConfiguration(
-				(MediatorComponent) current);
-		Node node = getNode(TAG_STATEVAR, componentDescription);
-
-		while (node != null) {
-			Node conf;
-
-			String variableId = getAttributeValue(node, ATTR_ID);
-			boolean enable = getAttributeBoolean(node, ATTR_ENABLE);
-
-			if (monitoringConfig.addVariable(variableId, enable)) {
-				conf = node.getFirstChild();
-			} else
-				conf = null;
-
-			while (conf != null) {
-				if (conf.getLocalName() != null
-						&& conf.getLocalName().equalsIgnoreCase(TAG_SETUP)) {
-					String queue = getAttributeValue(conf, ATTR_QUEUE);
-					String dataflow = getAttributeValue(conf, ATTR_FLOWCONTROL);
-					monitoringConfig.addSetUp(variableId, queue, dataflow);
+		ParserConfiguration monitoringConfig = null;
+		Node node = getNode("monitoring", componentDescription);
+		if (node != null) {
+			monitoringConfig = new ParserConfiguration((MediatorComponent) currentComponent);
+			/* Tag state-variable */
+			while (node != null) {		
+				String variableId = getAttributeValue(node, "id");
+				boolean enable = getAttributeBoolean(node, "enable");
+				
+				if (monitoringConfig.addVariable(variableId, enable)) {
+					Node child = node.getFirstChild();
+					/* tag setup and tag Threshold */
+					while (child != null) {
+						if (child.getLocalName() != null
+								&& child.getLocalName().equalsIgnoreCase("setup")) {
+							String queue = getAttributeValue(child, "queue");
+							String dataflow = getAttributeValue(child, "flow-control");
+							System.out.println(">>>Variable =" + variableId
+									+ " enable = " + enable + " queue=" + queue
+									+ "dataflow =" + dataflow);
+							monitoringConfig.addSetUp(variableId, queue, dataflow);
+						} else {
+							if (child.getLocalName() != null
+									&& child.getLocalName().equalsIgnoreCase(
+											"threshold")) {
+								String low = getAttributeValue(child, "low");
+								String veryLow = getAttributeValue(child, "very-low");
+								String high = getAttributeValue(child, "high");
+								String veryhigh = getAttributeValue(child, "very-high");
+								monitoringConfig.addThreshold(variableId, low, veryLow,
+										high, veryhigh);
+								System.out.println("Thresolhld low =" + low);
+							}
+						}
+						child = child.getNextSibling();
+					}
 				}
-				if (conf.getLocalName() != null
-						&& conf.getLocalName().equalsIgnoreCase(TAG_THRESHOLD)) {
-					String low = getAttributeValue(conf, ATTR_LOW);
-					String veryLow = getAttributeValue(conf, ATTR_VERYLOW);
-					String high = getAttributeValue(conf, ATTR_HIGH);
-					String veryhigh = getAttributeValue(conf, ATTR_VERYHIGH);
-					monitoringConfig.addThreshold(variableId, low, veryLow, high,
-							veryhigh);
-				}
+				node = node.getNextSibling();
 			}
 			monitoringConfig.configure();
-			node = node.getNextSibling();
 		}
 		return currentComponent;
 	}
