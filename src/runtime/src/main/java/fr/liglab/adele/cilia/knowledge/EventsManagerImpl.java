@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-package fr.liglab.adele.cilia.runtime.knowledge;
+package fr.liglab.adele.cilia.knowledge;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -40,7 +40,6 @@ import fr.liglab.adele.cilia.ThresholdsCallback;
 import fr.liglab.adele.cilia.VariableCallback;
 import fr.liglab.adele.cilia.exceptions.CiliaIllegalParameterException;
 import fr.liglab.adele.cilia.exceptions.CiliaInvalidSyntaxException;
-import fr.liglab.adele.cilia.runtime.Const;
 import fr.liglab.adele.cilia.runtime.ConstRuntime;
 import fr.liglab.adele.cilia.runtime.FirerEvents;
 import fr.liglab.adele.cilia.util.SwingWorker;
@@ -318,10 +317,10 @@ public class EventsManagerImpl implements TrackerCustomizer, EventsConfiguration
 					callback.onRemoved(chainId);
 					break;
 				case EVT_STARTED:
-					callback.onStarted(chainId);
+					callback.onStateChange(chainId,true);
 					break;
 				case EVT_STOPPED:
-					callback.onStopped(chainId);
+					callback.onStateChange(chainId,false);
 					break;
 				}
 			}
@@ -590,7 +589,6 @@ public class EventsManagerImpl implements TrackerCustomizer, EventsConfiguration
 		private Measure measure;
 		private String variableId;
 		private int evt;
-		private Object o = new Object();
 
 		public ThresholdFirerTimed(Node node, String variableId, Measure m, int evt,
 				ThresholdsCallback callback, ArrayList filters) {

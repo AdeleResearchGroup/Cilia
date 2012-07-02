@@ -128,11 +128,11 @@ public class MonitorHandlerStateVar extends AbstractMonitor implements
 
 	public void start() {
 		m_bundleContext = getFactory().getBundleContext();
-		// super.getInstanceManager().addInstanceStateListener(this);
+		//getInstanceManager().addInstanceStateListener(this);
 	}
 
 	public void stop() {
-		// super.getInstanceManager().addInstanceStateListener(this);
+		// getInstanceManager().addInstanceStateListener(this);
 		/* Clear state var */
 		listStateVarEnabled.clear();
 	}

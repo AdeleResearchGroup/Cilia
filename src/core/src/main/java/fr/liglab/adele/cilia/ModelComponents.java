@@ -1,5 +1,7 @@
 package fr.liglab.adele.cilia;
 
+import java.util.Dictionary;
+
 import fr.liglab.adele.cilia.exceptions.CiliaIllegalParameterException;
 import fr.liglab.adele.cilia.exceptions.CiliaIllegalStateException;
 import fr.liglab.adele.cilia.model.Chain;
@@ -13,6 +15,27 @@ import fr.liglab.adele.cilia.model.MediatorComponent;
  * 
  */
 public interface ModelComponents {
+	/**
+	 * Return all properties for a node 
+	 * @param node
+	 * @return unmodifiable Dictionary
+	 * @throws CiliaIllegalStateException
+	 * @throws CiliaIllegalParameterException
+	 */
+	Dictionary getProperties(Node node) throws CiliaIllegalStateException,
+	CiliaIllegalParameterException ;
+	
+	/**
+	 * Return a specified property
+	 * @param node
+	 * @param key
+	 * @return null if the kety is not a node propertie
+	 * @throws CiliaIllegalStateException
+	 * @throws CiliaIllegalParameterException
+	 */
+	Object getProperty(Node node, String key) throws CiliaIllegalStateException,
+	CiliaIllegalParameterException ;
+	
 	/**
 	 * 
 	 * @param node

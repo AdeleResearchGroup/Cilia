@@ -22,8 +22,8 @@ import fr.liglab.adele.cilia.CiliaContext;
 import fr.liglab.adele.cilia.ApplicationRuntime;
 import fr.liglab.adele.cilia.builder.Builder;
 import fr.liglab.adele.cilia.builder.impl.BuilderImpl;
-import fr.liglab.adele.cilia.runtime.knowledge.EventsManagerImpl;
-import fr.liglab.adele.cilia.runtime.knowledge.KEngineImpl;
+import fr.liglab.adele.cilia.knowledge.EventsManagerImpl;
+import fr.liglab.adele.cilia.knowledge.KEngineImpl;
 
 /**
  * Main Cilia Service implementation. It contains methods to retrieve information of mediation

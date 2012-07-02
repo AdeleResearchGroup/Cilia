@@ -27,24 +27,26 @@ import fr.liglab.adele.cilia.exceptions.CiliaRuntimeException;
  * 
  */
 public interface RawData extends Node {
-	
+
 	/**
-	 * validity of a mediator 
-	 * @return true if the mediator is valid 
+	 * validity of a mediator
+	 * 
+	 * @return true if the mediator is valid
 	 */
-	boolean isValid() throws CiliaIllegalStateException ;
-	
-	/**
-	 * @param variableId
-	 * @return list of measures stored
-	 * @throws CiliaRuntimeException
-	 */
-	Measure[] measures(String variableId) throws CiliaIllegalParameterException, CiliaIllegalStateException;
+	boolean isValid() throws CiliaIllegalStateException;
 
 	/**
 	 * 
 	 * @return list of state variable enabled
 	 */
-	String[] getEnabledVariable() throws CiliaIllegalStateException ;
-	
+	String[] getEnabledVariable() throws CiliaIllegalStateException;
+
+	/**
+	 * @param variableId
+	 * @return list of measures stored
+	 * @throws CiliaRuntimeException
+	 */
+	Measure[] measures(String variableId) throws CiliaIllegalParameterException,
+			CiliaIllegalStateException;
+
 }

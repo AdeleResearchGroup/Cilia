@@ -60,12 +60,9 @@ public class GogoMonitoringCommands {
 
 	public void start() {
 		runtime = ciliaContext.getApplicationRuntime();
-		// app_callback_chain("(!chain=admin-chain)") ;
-		// app_callback_node("(&(!chain=admin-chain)(node=*))") ;
-		app_callback_chain("(chain=*)");
-		app_callback_node("(&(chain=*)(node=*))");
-		// app_callback_measure("(chain=*)");
-
+		app_callback_chain("(!chain=admin-chain)");
+		app_callback_node("(&(!chain=admin-chain)(node=*))");
+		app_callback_variable("(&(!chain=admin-chain)(node=*))");
 	}
 
 	public void stop() {
@@ -127,50 +124,49 @@ public class GogoMonitoringCommands {
 	@Descriptor("Configure the setup of the node")
 	public void node_setup(String nodeLdap, String variable, int queueSize, String flow,
 			boolean enable) {
-		// try {
-		// SetUp[] nodes = runtime.nodeSetup(nodeLdap);
-		// if (nodes.length == 0) {
-		// System.out.println("no node matching filter :" + nodeLdap);
-		// return;
-		// }
-		// for (int i = 0; i < nodes.length; i++) {
-		// nodes[i].setMonitoring(variable, queueSize, flow, enable);
-		// }
-		// printSetupNode(nodes);
-		//
-		// } catch (Throwable e) {
-		// System.out
-		// .println("Syntax \n\tnode_setup ldap variable queueSize flow enable");
-		// e.printStackTrace();
-		// }
+		try {
+			SetUp[] nodes = runtime.nodeSetup(nodeLdap);
+			if (nodes.length == 0) {
+				System.out.println("no node matching filter :" + nodeLdap);
+				return;
+			}
+			for (int i = 0; i < nodes.length; i++) {
+				nodes[i].setMonitoring(variable, queueSize, flow, enable);
+			}
+			printSetupNode(nodes);
+
+		} catch (Throwable e) {
+			System.out
+					.println("Syntax \n\tnode_setup ldap variable queueSize flow enable");
+			e.printStackTrace();
+		}
 	}
 
 	@Descriptor("Configure the setup of the node")
 	public void node_rawdata(String nodeLdap, String variable) {
-		// try {
-		// RawData[] nodes = runtime.nodeRawData(nodeLdap);
-		// if (nodes.length != 0) {
-		// System.out.println(HEADER);
-		// for (int i = 0; i < nodes.length; i++) {
-		// Measure[] measure = nodes[i].measures(variable);
-		//
-		// System.out.println("| Node #" + ((Node) nodes[i]).qualifiedId());
-		// System.out.println("| Variable '" + variable + "'");
-		// for (int j = 0; j < measure.length; j++) {
-		// System.out
-		// .println("| Value #" + j + " =" + measure[j].toString());
-		// }
-		// }
-		// System.out.println(HEADER);
-		// } else {
-		// System.out.println("No node matching filter :" + nodeLdap);
-		// }
-		//
-		// } catch (Throwable e) {
-		// System.out
-		// .println("Syntax \n\tnode_setup ldap variable queueSize flow enable");
-		// e.printStackTrace();
-		// }
+		try {
+			RawData[] nodes = runtime.nodeRawData(nodeLdap);
+			if (nodes.length != 0) {
+				System.out.println(HEADER);
+				for (int i = 0; i < nodes.length; i++) {
+					Measure[] measure = nodes[i].measures(variable);
+					System.out.println("| Node #" + FrameworkUtils.makeQualifiedId(nodes[i]));
+					System.out.println("| Variable '" + variable + "'");
+					for (int j = 0; j < measure.length; j++) {
+						System.out
+								.println("| Value #" + j + " =" + measure[j].toString());
+					}
+				}
+				System.out.println(HEADER);
+			} else {
+				System.out.println("No node matching filter :" + nodeLdap);
+			}
+
+		} catch (Throwable e) {
+			System.out
+					.println("Syntax \n\tnode_setup ldap variable queueSize flow enable");
+			e.printStackTrace();
+		}
 	}
 
 	@Descriptor("Configure all Threshold for node matching the filter")
@@ -192,7 +188,7 @@ public class GogoMonitoringCommands {
 	}
 
 	@Descriptor("Dump the state of the chain")
-	public void runtime_chain_state(String chainId) {
+	public void app_chain_state(String chainId) {
 		try {
 			System.out.println(HEADER);
 			int state = runtime.getChainState(chainId);
@@ -292,73 +288,74 @@ public class GogoMonitoringCommands {
 
 	@Descriptor("Dump all chainId")
 	public void app_chains() {
-		// try {
-		// String[] chains = application.getChainId();
-		// System.out.println(HEADER);
-		// for (int i = 0; i < chains.length; i++) {
-		// System.out.println("ChainID =" + chains[i]);
-		// }
-		// System.out.println(HEADER);
-		// } catch (Throwable e) {
-		// e.printStackTrace();
-		// }
+		try {
+			String[] chains = runtime.getChainId();
+			System.out.println(HEADER);
+			for (int i = 0; i < chains.length; i++) {
+				System.out.println("ChainID =" + chains[i]);
+			}
+			System.out.println(HEADER);
+		} catch (Throwable e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Descriptor("List adapters In")
 	public void app_endpoints_in(String ldapFilter) {
-		// endpoints(application, ldapFilter, true);
+		endpoints(runtime, ldapFilter, true);
 	}
 
 	@Descriptor("List adapters Out")
 	public void app_endpoints_out(String ldapFilter) {
-		// endpoints(application, ldapFilter, false);
+		endpoints(runtime, ldapFilter, false);
 	}
 
 	@Descriptor("Dump all successors to the adapter/mediator defined by ldapfiter")
 	public void app_connected_to(String ldap) {
-		// try {
-		// System.out.println(HEADER);
-		// printSuccessor(application.connectedTo(ldap));
-		// System.out.println(HEADER);
-		//
-		// } catch (Throwable e) {
-		// e.printStackTrace();
-		// }
+		try {
+			System.out.println(HEADER);
+			printSuccessor(runtime.connectedTo(ldap));
+			System.out.println(HEADER);
+
+		} catch (Throwable e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Descriptor("Dump all adapters in to the node defined by ldapfiter")
 	public void app_find_node(String ldapFilter) {
-		// try {
-		// Node[] nodes;
-		// System.out.println(HEADER);
-		// nodes = application.findNodeByFilter(ldapFilter);
-		// if (nodes.length == 0) {
-		// System.out.println("No node matching the filter " + ldapFilter);
-		// } else {
-		// for (int i = 0; i < nodes.length; i++) {
-		// System.out.println("| Node ->" + nodes[i].qualifiedId());
-		// }
-		// }
-		// System.out.println(HEADER);
-		// } catch (Throwable e) {
-		// e.printStackTrace();
-		// }
+		try {
+			Node[] nodes;
+			System.out.println(HEADER);
+			nodes = runtime.findNodeByFilter(ldapFilter);
+			if (nodes.length == 0) {
+				System.out.println("No node matching the filter " + ldapFilter);
+			} else {
+				for (int i = 0; i < nodes.length; i++) {
+					System.out.println("| Node ->"
+							+ FrameworkUtils.makeQualifiedId(nodes[i]));
+				}
+			}
+			System.out.println(HEADER);
+		} catch (Throwable e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Descriptor("Regiter/Unregister chain callback")
 	public void app_event_chain(String ldapFilter) {
-		// try {
-		// if ((ldapFilter != null) && (ldapFilter.length() > 0)) {
-		// System.out
-		// .println("Registering events level chain, filter=" + ldapFilter);
-		// application.addListener(ldapFilter, (ChainCallback) callbacksMeta);
-		// } else {
-		// System.out.println("UnRegistering events level chain");
-		// application.removeListener((ChainCallback) callbacksMeta);
-		// }
-		// } catch (Throwable e) {
-		// e.printStackTrace();
-		// }
+		try {
+			if ((ldapFilter != null) && (ldapFilter.length() > 0)) {
+				System.out
+						.println("Registering events level chain, filter=" + ldapFilter);
+				runtime.addListener(ldapFilter, (ChainCallback) callbacks);
+			} else {
+				System.out.println("UnRegistering events level chain");
+				runtime.removeListener((ChainCallback) callbacks);
+			}
+		} catch (Throwable e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Descriptor("Regiter/Unregister chain callback")
@@ -392,7 +389,7 @@ public class GogoMonitoringCommands {
 	}
 
 	@Descriptor("Regiter/Unregister measure callback")
-	public void app_callback_measure(String ldapFilter) {
+	public void app_callback_variable(String ldapFilter) {
 		try {
 			if ((ldapFilter != null) && (ldapFilter.length() > 0)) {
 				System.out.println("Registering events measure, filter=" + ldapFilter);
@@ -404,18 +401,6 @@ public class GogoMonitoringCommands {
 		} catch (Throwable e) {
 			e.printStackTrace();
 		}
-	}
-
-	public void testApplication() {
-		// app_callback_chain("(!chain=admin-chain)");
-		// app_callback_node("(&(!chain=admin-chain)(node=*))");
-		// String[] array = application.getChainId();
-		// for (int i = 0; i < array.length; i++) {
-		// System.out.println("Chain ID :" + array[i]);
-		// }
-		// app_endpoints_in("(chain=Chain1)");
-		// app_endpoints_out("(chain=Chain1)");
-		// app_connected_to("(&(chain=Chain1)(node=mediator_1))");
 	}
 
 	@Descriptor("Entry for test")
@@ -431,12 +416,13 @@ public class GogoMonitoringCommands {
 					rt[i].setMonitoring("process.entry.count", 10, "", true);
 			}
 
-			RawData[] data = runtime.nodeRawData("(node=mediator_1)") ;
+			RawData[] data = runtime.nodeRawData("(node=mediator_1)");
 			if (data.length != 0) {
-				for (int i=0 ; i<data.length ; i++) {
-					Measure [] measures = data[i].measures("process.entry.count") ;
-					for (int j=0  ; j<measures.length ; j++) {
-						System.out.println ("Measure #"+j +" :"+measures[j].toString()) ;
+				for (int i = 0; i < data.length; i++) {
+					Measure[] measures = data[i].measures("process.entry.count");
+					for (int j = 0; j < measures.length; j++) {
+						System.out.println("Measure #" + j + " :"
+								+ measures[j].toString());
 					}
 				}
 			}
@@ -496,12 +482,6 @@ public class GogoMonitoringCommands {
 
 		}
 
-		public void onStateChange(Node node, boolean isValid) {
-
-			System.out.println("GogoCommand-->" + " onStateChange "
-					+ FrameworkUtils.makeQualifiedId(node) + "valid=" + isValid);
-
-		}
 
 		public void onAdded(String chainId) {
 			System.out.println("GogoCommand-->" + " Chain Added " + chainId);
@@ -511,17 +491,20 @@ public class GogoMonitoringCommands {
 			System.out.println("GogoCommand-->" + " Chain Removed " + chainId);
 		}
 
-		public void onStarted(String chainId) {
-			System.out.println("GogoCommand-->" + " Chain Strated " + chainId);
+		public void onStateChange(String chaindId,boolean type) {
+			if (type==true) 
+				System.out.println("GogoCommand-->" + " Chain Started " + chaindId);
+			else System.out.println("GogoCommand-->" + " Chain Stopped " + chaindId);
 
 		}
 
-		public void onStopped(String chainId) {
-			System.out.println("GogoCommand-->" + " Chain Stopped " + chainId);
+		public void onStateChange(Node node, boolean isValid) {
+			System.out.println("GogoCommand-->" + " Node state changed "
+					+ FrameworkUtils.makeQualifiedId(node) + "valid=" + isValid);
 		}
 
 		public void onStateChange(Node node, String variable, boolean enable) {
-			System.out.println("GogoCommand--> onVariableStatus "
+			System.out.println("GogoCommand--> variable state changed "
 					+ FrameworkUtils.makeQualifiedId(node) + ", variable :" + variable
 					+ ", enable =" + enable);
 		}

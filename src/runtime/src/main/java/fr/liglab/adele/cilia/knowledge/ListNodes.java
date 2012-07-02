@@ -12,7 +12,7 @@
  * limitations under the License.
  */
 
-package fr.liglab.adele.cilia.runtime.knowledge;
+package fr.liglab.adele.cilia.knowledge;
 
 import java.util.Map;
 

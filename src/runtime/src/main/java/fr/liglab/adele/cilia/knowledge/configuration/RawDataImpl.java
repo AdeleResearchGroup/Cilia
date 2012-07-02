@@ -12,13 +12,16 @@
  * limitations under the License.
  */
 
-package fr.liglab.adele.cilia.runtime.knowledge;
+package fr.liglab.adele.cilia.knowledge.configuration;
 
 import fr.liglab.adele.cilia.Measure;
 import fr.liglab.adele.cilia.Node;
 import fr.liglab.adele.cilia.RawData;
 import fr.liglab.adele.cilia.exceptions.CiliaIllegalParameterException;
 import fr.liglab.adele.cilia.exceptions.CiliaIllegalStateException;
+import fr.liglab.adele.cilia.knowledge.ListNodes;
+import fr.liglab.adele.cilia.knowledge.MediatorMonitoring;
+import fr.liglab.adele.cilia.knowledge.NodeImpl;
 
 /**
  * Access to data stored in the Monitor Model

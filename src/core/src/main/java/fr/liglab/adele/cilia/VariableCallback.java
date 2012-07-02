@@ -24,6 +24,16 @@ package fr.liglab.adele.cilia;
  * 
  */
 public interface VariableCallback {
+	
+	/**
+	 * 
+	 * @param node
+	 * @param variable
+	 *            , variable id updated
+	 * @param Measure
+	 *            measure stored in the model 
+	 */
+	void onUpdate(Node node, String variable, Measure m);
 
 	/**
 	 * 
@@ -37,13 +47,4 @@ public interface VariableCallback {
 	 */
 	void onStateChange(Node node, String variable, boolean enable);
 
-	/**
-	 * 
-	 * @param node
-	 * @param variable
-	 *            , variable id updated
-	 * @param Measure
-	 *            measure stored in the model 
-	 */
-	void onUpdate(Node node, String variable, Measure m);
 }

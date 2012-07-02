@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-package fr.liglab.adele.cilia.runtime.knowledge;
+package fr.liglab.adele.cilia.knowledge;
 
 import java.util.Collections;
 import java.util.Dictionary;
@@ -31,7 +31,6 @@ import fr.liglab.adele.cilia.Topology;
 import fr.liglab.adele.cilia.exceptions.CiliaIllegalParameterException;
 import fr.liglab.adele.cilia.exceptions.CiliaIllegalStateException;
 import fr.liglab.adele.cilia.exceptions.CiliaInvalidSyntaxException;
-
 import fr.liglab.adele.cilia.model.Adapter;
 import fr.liglab.adele.cilia.model.Binding;
 import fr.liglab.adele.cilia.model.Chain;
@@ -39,7 +38,6 @@ import fr.liglab.adele.cilia.model.CiliaContainer;
 import fr.liglab.adele.cilia.model.Mediator;
 import fr.liglab.adele.cilia.model.MediatorComponent;
 import fr.liglab.adele.cilia.model.impl.PatternType;
-import fr.liglab.adele.cilia.runtime.Const;
 import fr.liglab.adele.cilia.runtime.ConstRuntime;
 
 /**

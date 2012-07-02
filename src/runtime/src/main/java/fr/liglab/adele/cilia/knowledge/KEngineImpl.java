@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-package fr.liglab.adele.cilia.runtime.knowledge;
+package fr.liglab.adele.cilia.knowledge;
 
 import java.util.Date;
 import java.util.Dictionary;
@@ -35,6 +35,8 @@ import fr.liglab.adele.cilia.VariableCallback;
 import fr.liglab.adele.cilia.exceptions.CiliaIllegalParameterException;
 import fr.liglab.adele.cilia.exceptions.CiliaIllegalStateException;
 import fr.liglab.adele.cilia.exceptions.CiliaInvalidSyntaxException;
+import fr.liglab.adele.cilia.knowledge.configuration.RawDataImpl;
+import fr.liglab.adele.cilia.knowledge.configuration.SetUpImpl;
 import fr.liglab.adele.cilia.model.CiliaContainer;
 import fr.liglab.adele.cilia.model.MediatorComponent;
 import fr.liglab.adele.cilia.model.impl.ChainRuntime;
@@ -215,15 +217,20 @@ public class KEngineImpl extends TopologyImpl implements ApplicationRuntime {
 
 	public Thresholds[] nodeMonitoring(String ldapFilter)
 			throws CiliaIllegalParameterException, CiliaInvalidSyntaxException {
-		// TODO Auto-generated method stub
-		return null;
+		Node[] nodes = findNodeByFilter(ldapFilter, false);
+		Set set = new HashSet();
+		for (int i = 0; i < nodes.length; i++) {
+			try {
+				set.add(nodeSetup(nodes[i]));
+			} catch (CiliaIllegalStateException e) {
+			}
+		}
+		return (Thresholds[]) set.toArray(new Thresholds[set.size()]);
 	}
 
 	public Thresholds nodeMonitoring(Node node) throws CiliaIllegalParameterException,
 			CiliaIllegalStateException {
-		// TODO Auto-generated method stub
-
-		return null;
+			return new SetUpImpl(registry, new NodeImpl(node));
 	}
 
 }

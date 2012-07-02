@@ -69,10 +69,9 @@
 							fr.liglab.adele.cilia.framework.components,
 							fr.liglab.adele.cilia.framework.monitor.statevariable,
 							fr.liglab.adele.cilia.runtime,
-							fr.liglab.adele.cilia.runtime.dependency,
-							fr.liglab.adele.cilia.runtime.application,
-							fr.liglab.adele.cilia.runtime.dynamic,
-							fr.liglab.adele.cilia.runtime.knowledge
+							fr.liglab.adele.cilia.dependency,
+							fr.liglab.adele.cilia.knowledge,
+							fr.liglab.adele.cilia.knowledge.configuration		
 						</Export-Package>
 						<Private-Package>
 							fr.liglab.adele.cilia.internals,

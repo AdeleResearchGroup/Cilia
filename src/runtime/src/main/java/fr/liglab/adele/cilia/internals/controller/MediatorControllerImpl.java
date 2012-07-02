@@ -30,6 +30,7 @@ import org.slf4j.LoggerFactory;
 import fr.liglab.adele.cilia.framework.IDispatcher;
 import fr.liglab.adele.cilia.framework.IScheduler;
 import fr.liglab.adele.cilia.internals.factories.MediatorManager;
+import fr.liglab.adele.cilia.knowledge.MediatorMonitoring;
 import fr.liglab.adele.cilia.model.Component;
 import fr.liglab.adele.cilia.model.Mediator;
 import fr.liglab.adele.cilia.model.MediatorComponent;
@@ -45,7 +46,6 @@ import fr.liglab.adele.cilia.runtime.Const;
 import fr.liglab.adele.cilia.runtime.FirerEvents;
 import fr.liglab.adele.cilia.runtime.impl.DispatcherHandler;
 import fr.liglab.adele.cilia.runtime.impl.SchedulerHandler;
-import fr.liglab.adele.cilia.runtime.knowledge.MediatorMonitoring;
 import fr.liglab.adele.cilia.util.FrameworkUtils;
 
 /**

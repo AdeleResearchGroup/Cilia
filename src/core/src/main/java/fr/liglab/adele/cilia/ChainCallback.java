@@ -41,19 +41,10 @@ public interface ChainCallback {
 	void onRemoved(String chainId);
 
 	/**
-	 * Chain started
 	 * 
-	 * @param chaindId
-	 *            chain identificator
+	 * @param chainId  chain idenficator
+	 * @param event true started , false stopped 
 	 */
-	void onStarted(String chainId);
-
-	/**
-	 * Chain stopped
-	 * 
-	 * @param chaindId
-	 *            chain identificator
-	 */
-	void onStopped(String chainId);
+	void onStateChange(String chainId,boolean event );
 
 }

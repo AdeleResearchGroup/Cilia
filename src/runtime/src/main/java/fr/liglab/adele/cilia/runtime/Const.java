@@ -15,21 +15,6 @@
 
 package fr.liglab.adele.cilia.runtime;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Dictionary;
-import java.util.HashSet;
-import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.Set;
-
-import org.osgi.framework.Filter;
-import org.osgi.framework.FrameworkUtil;
-import org.osgi.framework.InvalidSyntaxException;
-
-import fr.liglab.adele.cilia.Node;
-import fr.liglab.adele.cilia.exceptions.CiliaIllegalParameterException;
-import fr.liglab.adele.cilia.exceptions.CiliaInvalidSyntaxException;
 import fr.liglab.adele.cilia.framework.ICollector;
 import fr.liglab.adele.cilia.framework.IDispatcher;
 import fr.liglab.adele.cilia.framework.IProcessor;

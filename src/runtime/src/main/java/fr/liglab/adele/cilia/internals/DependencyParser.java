@@ -14,7 +14,7 @@
  */
 package fr.liglab.adele.cilia.internals;
 
-import static fr.liglab.adele.cilia.runtime.dependency.DependencyHandler.DEFAULT_FILTER_NAME;
+import static fr.liglab.adele.cilia.dependency.DependencyHandler.DEFAULT_FILTER_NAME;
 
 import java.util.Properties;
 
@@ -39,27 +39,23 @@ public class DependencyParser extends DomExtenderParser implements CiliaExtender
 	private static final String ATTR_IMMEDIATE="immediate" ;
 
 	private DependencyParser() {
+		NAMESPACE = "fr.liglab.adele.cilia";
+		NAME = TAG_DEPENDENCY;
 	}
 
 	public boolean canHandle(Object elementDescription) {
-		if ((elementDescription != null) && (elementDescription instanceof Node)) {
-
-			Node parent = ((Node) elementDescription);
-			if (parent != null && parent.getLocalName() != null) {
-				if (parent.getLocalName().equalsIgnoreCase("adapter-instance"))
-					return true;
-				if (parent.getLocalName().equalsIgnoreCase("processor"))
-					return true;
-			}
+		Node disp = getNode(TAG_DEPENDENCY,elementDescription);
+		if(disp == null) {
+			return false;
 		}
-		return false;
+		return true;
 	}
 
 	public Component getComponent(Object componentDescription,
 			Component component) throws CiliaParserException {
 		ComponentImpl currentComponent = (ComponentImpl)component ;
 		if ((componentDescription != null) && (componentDescription instanceof Node)) {
-			Node node = getElement(TAG_DEPENDENCY, ((Node) (componentDescription)));
+			Node node = getNode(TAG_DEPENDENCY, ((Node) (componentDescription)));
 			if (node != null) {
 				String id = getAttributeValue(node, ATTR_ID);
 				if (id == null) {

@@ -47,15 +47,6 @@ public interface NodeCallback {
 	void onModified(Node node);
 	
 	/**
-	 * New executing state of a node ,
-	 * Event fired only by the runtime 
-	 * @param isValid
-	 *            true if the new state is valid.<br>
-	 *            Valid means Scheduler/Processor/Dispatcher are all valid 
-	 */
-	void onStateChange(Node node,boolean isValid);
-
-	/**
 	 * bind between nodes 'from -> to' 
 	 * Event fired only by the applicationSpecification
 	 * 
@@ -74,5 +65,13 @@ public interface NodeCallback {
 	 * @param dest
 	 */
 	void onUnBind(Node from, Node to);
+
+	/**
+	 * New executing state of a node ,
+	 * @param isValid
+	 *            true if the new state is valid.<br>
+	 *            Valid means Scheduler/Processor/Dispatcher are all valid 
+	 */
+	void onStateChange(Node node,boolean isValid);
 
 }

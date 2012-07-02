@@ -12,7 +12,7 @@
  * limitations under the License.
  */
 
-package fr.liglab.adele.cilia.runtime.knowledge;
+package fr.liglab.adele.cilia.knowledge.configuration;
 
 import java.util.Map;
 import java.util.Set;
@@ -23,6 +23,9 @@ import fr.liglab.adele.cilia.Thresholds;
 import fr.liglab.adele.cilia.exceptions.CiliaIllegalParameterException;
 import fr.liglab.adele.cilia.exceptions.CiliaIllegalStateException;
 import fr.liglab.adele.cilia.exceptions.CiliaInvalidSyntaxException;
+import fr.liglab.adele.cilia.knowledge.ListNodes;
+import fr.liglab.adele.cilia.knowledge.MediatorMonitoring;
+import fr.liglab.adele.cilia.knowledge.NodeImpl;
 
 /**
  * Configure the Monitor Model ( Meta level ) or Base Monitor 
@@ -42,33 +45,33 @@ public class SetUpImpl extends NodeImpl implements SetUp, Thresholds {
 	}
 
 	public String[] getCategories() {
-		return MonitoringConfHelper.getCategories();
+		return ConfigurationHelper.getCategories();
 	}
 
 	public String[] variablesByCategory(String category) {
-		return MonitoringConfHelper.variablesByCategory(category);
+		return ConfigurationHelper.variablesByCategory(category);
 	}
 
 	public void setMonitoring(String variableId, int queueSize, String ldapfilter,
 			boolean enable) throws CiliaIllegalParameterException,
 			CiliaInvalidSyntaxException, CiliaIllegalStateException {
 		MediatorMonitoring m = registry.getAndStore(uuid);
-		MonitoringConfHelper.checkStateVarId(variableId);
-		MonitoringConfHelper.checkQueueSize(queueSize);
-		MonitoringConfHelper.checkDataFlowFilter(ldapfilter);
+		ConfigurationHelper.checkStateVarId(variableId);
+		ConfigurationHelper.checkQueueSize(queueSize);
+		ConfigurationHelper.checkDataFlowFilter(ldapfilter);
 		m.setQueueSize(variableId, queueSize);
-		Map config = MonitoringConfHelper.getRootConfig(m.getModel()) ;
-		MonitoringConfHelper.storeDataFlowControl(config, variableId, ldapfilter);
-		MonitoringConfHelper.storeEnable(config, variableId, enable);
-		MonitoringConfHelper.storeRootConfig(m.getModel(), config);
+		Map config = ConfigurationHelper.getRootConfig(m.getModel()) ;
+		ConfigurationHelper.storeDataFlowControl(config, variableId, ldapfilter);
+		ConfigurationHelper.storeEnable(config, variableId, enable);
+		ConfigurationHelper.storeRootConfig(m.getModel(), config);
 		
 	}
 
 	public void setMonitoring(String variableId, int queueSize)
 			throws CiliaIllegalParameterException, CiliaIllegalStateException {
 		MediatorMonitoring mo = registry.getAndStore(uuid);
-		MonitoringConfHelper.checkStateVarId(variableId);
-		MonitoringConfHelper.checkQueueSize(queueSize);
+		ConfigurationHelper.checkStateVarId(variableId);
+		ConfigurationHelper.checkQueueSize(queueSize);
 		mo.setQueueSize(variableId, queueSize);
 	}
 
@@ -76,48 +79,48 @@ public class SetUpImpl extends NodeImpl implements SetUp, Thresholds {
 			throws CiliaIllegalParameterException, CiliaInvalidSyntaxException,
 			CiliaIllegalStateException {
 		MediatorMonitoring m = registry.getAndStore(uuid);
-		MonitoringConfHelper.checkDataFlowFilter(ldapFilter);
-		Map config = MonitoringConfHelper.getRootConfig(m.getModel());
-		MonitoringConfHelper.storeDataFlowControl(config, variableId, ldapFilter);
-		MonitoringConfHelper.storeRootConfig(m.getModel(), config) ;
+		ConfigurationHelper.checkDataFlowFilter(ldapFilter);
+		Map config = ConfigurationHelper.getRootConfig(m.getModel());
+		ConfigurationHelper.storeDataFlowControl(config, variableId, ldapFilter);
+		ConfigurationHelper.storeRootConfig(m.getModel(), config) ;
 	}
 
 	public void setMonitoring(String variableId, boolean enable)
 			throws CiliaIllegalParameterException, CiliaIllegalStateException {
 		MediatorMonitoring m = registry.getAndStore(uuid);
-		MonitoringConfHelper.checkStateVarId(variableId);
-		Map configBase = MonitoringConfHelper.getRootConfig(m.getModel());
-		MonitoringConfHelper.storeEnable(configBase, variableId, enable) ;
-		MonitoringConfHelper.storeRootConfig(m.getModel(), configBase) ;
+		ConfigurationHelper.checkStateVarId(variableId);
+		Map configBase = ConfigurationHelper.getRootConfig(m.getModel());
+		ConfigurationHelper.storeEnable(configBase, variableId, enable) ;
+		ConfigurationHelper.storeRootConfig(m.getModel(), configBase) ;
 	}
 
 	public String[] getEnabledVariable() throws CiliaIllegalStateException {
 		Set listEnabled ;
 		MediatorMonitoring m = registry.getAndStore(uuid);
-		Map config = MonitoringConfHelper.getRootConfig(m.getModel()) ;
-		listEnabled = MonitoringConfHelper.getEnabledVariable(config) ;
+		Map config = ConfigurationHelper.getRootConfig(m.getModel()) ;
+		listEnabled = ConfigurationHelper.getEnabledVariable(config) ;
 		return (String[]) listEnabled.toArray(new String[listEnabled.size()]);
 	}
 
 	public int getQueueSize(String variableId) throws CiliaIllegalParameterException,
 			CiliaIllegalStateException {
 		MediatorMonitoring m = registry.getAndStore(uuid);
-		MonitoringConfHelper.checkStateVarId(variableId);
+		ConfigurationHelper.checkStateVarId(variableId);
 		return m.getQueueSize(variableId);
 	}
 
 	public String getFlowControl(String variableId) throws CiliaIllegalParameterException,
 			CiliaIllegalStateException {
 		MediatorMonitoring m = registry.getAndStore(uuid);
-		MonitoringConfHelper.checkStateVarId(variableId);
-		Map config = MonitoringConfHelper.getRootConfig(m.getModel()) ;
-		return MonitoringConfHelper.getFlowControl(config, variableId);
+		ConfigurationHelper.checkStateVarId(variableId);
+		Map config = ConfigurationHelper.getRootConfig(m.getModel()) ;
+		return ConfigurationHelper.getFlowControl(config, variableId);
 	}
 
 	public void setLow(String variableId, double low)
 			throws CiliaIllegalParameterException, CiliaIllegalStateException {
 		MediatorMonitoring m = registry.getAndStore(uuid);
-		MonitoringConfHelper.checkStateVarId(variableId);
+		ConfigurationHelper.checkStateVarId(variableId);
 		m.setLow(variableId, low);
 
 	}
@@ -125,49 +128,49 @@ public class SetUpImpl extends NodeImpl implements SetUp, Thresholds {
 	public void setVeryLow(String variableId, double veryLow)
 			throws CiliaIllegalParameterException, CiliaIllegalStateException {
 		MediatorMonitoring m = registry.getAndStore(uuid);
-		MonitoringConfHelper.checkStateVarId(variableId);
+		ConfigurationHelper.checkStateVarId(variableId);
 		m.setVeryLow(variableId, veryLow);
 	}
 
 	public void setHigh(String variableId, double high)
 			throws CiliaIllegalParameterException, CiliaIllegalStateException {
 		MediatorMonitoring m = registry.getAndStore(uuid);
-		MonitoringConfHelper.checkStateVarId(variableId);
+		ConfigurationHelper.checkStateVarId(variableId);
 		m.setHigh(variableId, high);
 	}
 
 	public void setVeryHigh(String variableId, double veryHigh)
 			throws CiliaIllegalParameterException, CiliaIllegalStateException {
 		MediatorMonitoring m = registry.getAndStore(uuid);
-		MonitoringConfHelper.checkStateVarId(variableId);
+		ConfigurationHelper.checkStateVarId(variableId);
 		m.setVeryHigh(variableId, veryHigh);
 	}
 
 	public double getLow(String variableId) throws CiliaIllegalParameterException,
 			CiliaIllegalStateException {
 		MediatorMonitoring m = registry.getAndStore(uuid);
-		MonitoringConfHelper.checkStateVarId(variableId);
+		ConfigurationHelper.checkStateVarId(variableId);
 		return m.getLow(variableId);
 	}
 
 	public double getVeryLow(String variableId) throws CiliaIllegalParameterException,
 			CiliaIllegalStateException {
 		MediatorMonitoring m = registry.getAndStore(uuid);
-		MonitoringConfHelper.checkStateVarId(variableId);
+		ConfigurationHelper.checkStateVarId(variableId);
 		return m.getVeryLow(variableId);
 	}
 
 	public double getHigh(String variableId) throws CiliaIllegalParameterException,
 			CiliaIllegalStateException {
 		MediatorMonitoring m = registry.getAndStore(uuid);
-		MonitoringConfHelper.checkStateVarId(variableId);
+		ConfigurationHelper.checkStateVarId(variableId);
 		return m.getHigh(variableId);
 	}
 
 	public double getVeryHigh(String variableId) throws CiliaIllegalParameterException,
 			CiliaIllegalStateException {
 		MediatorMonitoring m = registry.getAndStore(uuid);
-		MonitoringConfHelper.checkStateVarId(variableId);
+		ConfigurationHelper.checkStateVarId(variableId);
 		return m.getVeryHigh(variableId);
 	}
 

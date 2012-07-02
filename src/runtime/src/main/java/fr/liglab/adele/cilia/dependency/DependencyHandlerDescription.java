@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package fr.liglab.adele.cilia.runtime.dependency;
+package fr.liglab.adele.cilia.dependency;
 
 import java.util.Iterator;
 import java.util.List;

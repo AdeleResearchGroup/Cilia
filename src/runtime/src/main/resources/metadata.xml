@@ -241,7 +241,7 @@
 	<instance component="Cilia-Chain-Parser" name="Cilia-Chain-Parser" />
 	<instance component="Cilia-File-Manager" name="Cilia-File-Manager" />
 
-	<handler classname="fr.liglab.adele.cilia.runtime.dependency.DependencyHandler"
+	<handler classname="fr.liglab.adele.cilia.dependency.DependencyHandler"
 		namespace="fr.liglab.adele.cilia" name="dependency" level="0"
 		architecture="false">
 	</handler>

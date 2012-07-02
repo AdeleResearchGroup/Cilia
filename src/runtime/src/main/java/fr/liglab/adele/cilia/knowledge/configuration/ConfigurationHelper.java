@@ -12,7 +12,7 @@
  * limitations under the License.
  */
 
-package fr.liglab.adele.cilia.runtime.knowledge;
+package fr.liglab.adele.cilia.knowledge.configuration;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -26,24 +26,24 @@ import org.osgi.framework.InvalidSyntaxException;
 
 import fr.liglab.adele.cilia.exceptions.CiliaIllegalParameterException;
 import fr.liglab.adele.cilia.exceptions.CiliaInvalidSyntaxException;
+import fr.liglab.adele.cilia.knowledge.MediatorMonitoring;
 import fr.liglab.adele.cilia.model.MediatorComponent;
 import fr.liglab.adele.cilia.runtime.ConstRuntime;
 import fr.liglab.adele.cilia.util.FrameworkUtils;
 
 /**
- * Checks the Configuration Meta-level and base-level
+ * Configuration utilities 
  * 
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project
  *         Team</a>
  * 
  */
 @SuppressWarnings({ "rawtypes", "unchecked" })
-public class MonitoringConfHelper {
+public class ConfigurationHelper {
 	/* Liste of state var */
 	private static final Set setStateVar, setDependencyCall, setEventing, setSystemCall,
 			setFunctionnalCall, dataflowKeys;
 	static {
-
 		/* State var Event fired by dependency Manager */
 		setDependencyCall = new HashSet();
 		setDependencyCall.add("service.arrival");
@@ -215,5 +215,7 @@ public class MonitoringConfHelper {
 		model.setProperty(ConstRuntime.MONITORING_CONFIGURATION, config) ;
 	}
 	
-	
+	public static final MediatorMonitoring getModelMonitoring(MediatorComponent model) {
+		return (MediatorMonitoring)model.getModel(MediatorMonitoring.NAME) ;
+	}
 }

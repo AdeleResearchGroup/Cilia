@@ -78,13 +78,6 @@ public class ApplSpecification implements ChainCallback, NodeCallback {
 		chain_departure = chainId;
 	}
 
-	public void onStarted(String chainId) {
-		chain_started = chainId;
-	}
-
-	public void onStopped(String chainId) {
-		chain_stopped = chainId;
-	}
 
 	public void onBind(Node from, Node to) {
 		// TODO Auto-generated method stub
@@ -99,5 +92,8 @@ public class ApplSpecification implements ChainCallback, NodeCallback {
 	public void onStateChange(Node node, boolean isValid) {
 		// TODO Auto-generated method stub
 	}
-
+	public void onStateChange(String chainId, boolean isValid) {
+		if (isValid) chain_started = chainId; 
+		else chain_stopped = chainId;
+	}
 }

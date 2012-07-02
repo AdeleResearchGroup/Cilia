@@ -202,11 +202,8 @@
 			<property name="osgi.command.scope" type="String" value="cilia" />
 			<property name="osgi.command.function" type="String[]"
 				value="{
-				        runtime_endpoints_in,runtime_endpoints_out,runtime_connected_to,
-				        runtime_find_node,
-				        runtime_chain_state,runtime_chains,
-				        node_setup,node_rawdata,node_monitoring,node_dump,
-				        app_chains,app_endpoints_in,app_endpoints_out,app_connected_to,
+				        node_setup,node_rawdata,node_monitoring,
+				        app_chains,app_chain_state,app_endpoints_in,app_endpoints_out,app_connected_to,
 				        app_find_node,
 				        app_callback_chain,app_callback_node,app_callback_measure,
 				        my_entry
@@ -282,8 +279,9 @@
 	<instance component="Cilia-Deployer" name="Cilia-Deployer" />
 
 	<instance component="Monitoring_Commands.gogo" name="Monitoring_Commands.gogo"/>
+<!-- 
 	<instance component="ApplicationSpecification.jmx" name="ApplicationSpecification.jmx" />
 	<instance component="ApplicationRuntime.jmx" name="ApplicationRuntime.jmx" />
-
+ -->
 
 </cilia>

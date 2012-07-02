@@ -15,17 +15,21 @@
 
 package fr.liglab.adele.cilia.internals;
 
-
 import org.w3c.dom.Node;
 
 import fr.liglab.adele.cilia.exceptions.CiliaParserException;
-import fr.liglab.adele.cilia.ext.MonitoringHandler;
-import fr.liglab.adele.cilia.ext.StateVarConfigurationImpl;
+import fr.liglab.adele.cilia.knowledge.configuration.ParserConfiguration;
 import fr.liglab.adele.cilia.model.Component;
+import fr.liglab.adele.cilia.model.MediatorComponent;
 import fr.liglab.adele.cilia.model.impl.ComponentImpl;
-import fr.liglab.adele.cilia.model.impl.MediatorComponentImpl;
 import fr.liglab.adele.cilia.util.CiliaExtenderParser;
 
+
+/**
+ * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project
+ *         Team</a>
+ * 
+ */
 public class MonitoringParser extends DomExtenderParser implements CiliaExtenderParser {
 	private static final String TAG_MONITORING = "monitoring";
 	private static final String ATTR_ENABLE = "enable";
@@ -41,52 +45,15 @@ public class MonitoringParser extends DomExtenderParser implements CiliaExtender
 	private static final String ATTR_QUEUE = "queue";
 
 	public MonitoringParser() {
-		System.out.println(">>>>>> PARSERUR MONITORING");
+		NAMESPACE = "fr.liglab.adele.cilia";
+		NAME = "state-variable";
 	}
-	
 
-	protected Node getNode(String parentName, Object componentDescription) {
-		if (componentDescription == null || !(componentDescription instanceof Node)) {
-			return null;
-		}
-		Node parent = ((Node) componentDescription).getFirstChild();
-		Node child = null;
-		while (parent != null) {
-			if (parent.getLocalName() != null
-					&& parent.getLocalName().equalsIgnoreCase(parentName)) {
-				child = parent.cloneNode(true).getFirstChild();
-				break;
-			}
-			parent = parent.getNextSibling();
-		}
-
-		while (child != null) {
-			if (child.getNamespaceURI() != null
-					&& child.getLocalName().equalsIgnoreCase(NAME)) {
-				return child;
-			}
-			child = child.getNextSibling();
-		}
-		return null;
-	}
 	public boolean canHandle(Object elementDescription) {
-		System.out.println(">>>>>>CAN HANDLE ") ;
-		//if ((elementDescription != null) && (elementDescription instanceof Node)) {
-		//	Node parent = ((Node) elementDescription);
-		//	if (parent != null && parent.getLocalName() != null) {
-		//		if (parent.getLocalName().equalsIgnoreCase("adapter-instance"))
-		//			return true;
-		//		if (parent.getLocalName().equalsIgnoreCase("mediator-instance"))
-		//			return true;
-		//	}
-		//}
-		Node disp = getNode(TAG_MONITORING,elementDescription);
-		if(disp == null) {
-			System.out.println(">>>>>>>>> MONITORING FALSE ") ;
-
+		Node disp = getNode(TAG_MONITORING, elementDescription);
+		if (disp == null) {
 			return false;
 		}
-		System.out.println(">>>>>>>>> MONITORING TRUE ") ;
 		return true;
 	}
 
@@ -99,93 +66,46 @@ public class MonitoringParser extends DomExtenderParser implements CiliaExtender
 			enable = false;
 		return enable;
 	}
-	
-	
 
 	public Component getComponent(Object componentDescription, Component current)
 			throws CiliaParserException {
-		
+
 		ComponentImpl currentComponent = (ComponentImpl) current;
-		Node child = getNode(TAG_STATEVAR,componentDescription) ;
-		System.out.println(">>>>>GET MONITORING __> STATE VAR") ;
-		if (child != null) {
-			MonitoringHandler monitorConfig = new MonitoringHandler(
-					(MediatorComponentImpl) currentComponent);
 
-			Node conf = child.getFirstChild();
+		ParserConfiguration monitoringConfig = new ParserConfiguration(
+				(MediatorComponent) current);
+		Node node = getNode(TAG_STATEVAR, componentDescription);
+
+		while (node != null) {
+			Node conf;
+
+			String variableId = getAttributeValue(node, ATTR_ID);
+			boolean enable = getAttributeBoolean(node, ATTR_ENABLE);
+
+			if (monitoringConfig.addVariable(variableId, enable)) {
+				conf = node.getFirstChild();
+			} else
+				conf = null;
+
 			while (conf != null) {
-
-				/* Tag STATE VAR attribute enable & id */
 				if (conf.getLocalName() != null
-						&& conf.getLocalName().equalsIgnoreCase(TAG_STATEVAR)) {
-					System.out.println("GET STATE VAR ");
-					String id = getAttributeValue(conf, ATTR_ID);
-					/* tag mandatory */
-					if (id != null) {
-						boolean enable = getAttributeBoolean(conf, ATTR_ENABLE);
-						StateVarConfigurationImpl statevarConfig = monitorConfig.addId(
-								id, enable);
-						Node statevar = conf.getFirstChild();
-						while (statevar != null) {
-							/* TAG setup & TAG threshold */
-							if (statevar.getLocalName() != null) {
-								String attr;
-								if (statevar.getLocalName().equalsIgnoreCase(TAG_SETUP)) {
-									attr = getAttributeValue(statevar, ATTR_QUEUE);
-									if (attr != null) {
-										try {
-											int queue = Integer.parseInt(attr);
-											statevarConfig.setQueueSize(queue);
-										} catch (NumberFormatException e) {
-										}
-									}
-									attr = getAttributeValue(statevar, ATTR_FLOWCONTROL);
-									statevarConfig.setControlFlow(attr);
-								}
-								if (statevar.getLocalName().equalsIgnoreCase(
-										TAG_THRESHOLD)) {
-									attr = getAttributeValue(statevar, ATTR_VERYLOW);
-									if (attr != null) {
-										try {
-											Double d = Double.parseDouble(attr);
-											statevarConfig.setVeryLow(d);
-										} catch (NumberFormatException e) {
-										}
-									}
-									attr = getAttributeValue(statevar, ATTR_LOW);
-									if (attr != null) {
-										try {
-											Double d = Double.parseDouble(attr);
-											statevarConfig.setLow(d);
-										} catch (NumberFormatException e) {
-										}
-									}
-									attr = getAttributeValue(statevar, ATTR_HIGH);
-									if (attr != null) {
-										try {
-											Double d = Double.parseDouble(attr);
-											statevarConfig.setHigh(d);
-										} catch (NumberFormatException e) {
-										}
-									}
-									attr = getAttributeValue(statevar, ATTR_VERYHIGH);
-									if (attr != null) {
-										try {
-											Double d = Double.parseDouble(attr);
-											statevarConfig.setVeryHigh(d);
-										} catch (NumberFormatException e) {
-										}
-									}
-								}
-							}
-						}
-						statevar = statevar.getNextSibling();
-					}
-
+						&& conf.getLocalName().equalsIgnoreCase(TAG_SETUP)) {
+					String queue = getAttributeValue(conf, ATTR_QUEUE);
+					String dataflow = getAttributeValue(conf, ATTR_FLOWCONTROL);
+					monitoringConfig.addSetUp(variableId, queue, dataflow);
 				}
-				conf = conf.getNextSibling();
+				if (conf.getLocalName() != null
+						&& conf.getLocalName().equalsIgnoreCase(TAG_THRESHOLD)) {
+					String low = getAttributeValue(conf, ATTR_LOW);
+					String veryLow = getAttributeValue(conf, ATTR_VERYLOW);
+					String high = getAttributeValue(conf, ATTR_HIGH);
+					String veryhigh = getAttributeValue(conf, ATTR_VERYHIGH);
+					monitoringConfig.addThreshold(variableId, low, veryLow, high,
+							veryhigh);
+				}
 			}
-			monitorConfig.done();
+			monitoringConfig.configure();
+			node = node.getNextSibling();
 		}
 		return currentComponent;
 	}
