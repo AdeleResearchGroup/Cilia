@@ -282,10 +282,10 @@ public class ChainImpl extends ComponentImpl implements Chain{
 			System.err.println("Mediators in bind doesn't belong to the same chain " + this + " " + sourcePort.getMediator().getChain());
 			return null;
 		}
-		if (!sourcePort.getType().equals(PortType.OUTPUT)) { 
+		if (!sourcePort.getPortType().equals(PortType.OUTPUT)) { 
 			throw new RuntimeException("PortImpl type not compatible, it must be PortType.OUTPUT");
 		}
-		if (!targetPort.getType().equals(PortType.INPUT)) { 
+		if (!targetPort.getPortType().equals(PortType.INPUT)) { 
 			throw new RuntimeException("PortImpl type not compatible, it must be PortType.INPUT");
 		}
 		//set the ports.
@@ -304,7 +304,7 @@ public class ChainImpl extends ComponentImpl implements Chain{
 
 
 	public Binding bind(Port inoutPort, Binding binding) {
-		if (inoutPort.getType().equals(PortType.INPUT)) {
+		if (inoutPort.getPortType().equals(PortType.INPUT)) {
 			return inputBind(inoutPort, binding);
 		} else {
 			return outputBind(inoutPort, binding);
@@ -313,7 +313,7 @@ public class ChainImpl extends ComponentImpl implements Chain{
 
 	public Binding inputBind(Port inPort, Binding binding) {
 		boolean result = false;
-		if (!inPort.getType().equals(PortType.INPUT)) { 
+		if (!inPort.getPortType().equals(PortType.INPUT)) { 
 			throw new RuntimeException("PortImpl type not compatible, it must be PortType.INPUT");
 		}
 		((BindingImpl)binding).setTargetPort(inPort);
@@ -329,7 +329,7 @@ public class ChainImpl extends ComponentImpl implements Chain{
 
 	public Binding outputBind(Port outPort, Binding binding) {
 		boolean result = false;
-		if (!outPort.getType().equals(PortType.OUTPUT)) { 
+		if (!outPort.getPortType().equals(PortType.OUTPUT)) { 
 			throw new RuntimeException("PortImpl type not compatible, it must be PortType.OUTPUT");
 		}
 

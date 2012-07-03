@@ -153,6 +153,7 @@ InstanceStateListener, Observer, Runnable {
 			}
 
 		} else {
+			System.out.println("Componnent metadata" + metadata);
 			throw new ConfigurationException("Error in configuration"
 					+ " this handler should be configured with one handler name:"
 					+ HANDLER_NAME + " and HandlerNamespace:" + Const.CILIA_NAMESPACE);

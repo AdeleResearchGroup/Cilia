@@ -14,14 +14,17 @@
  */
 package fr.liglab.adele.cilia.administration.adapter;
 
+import fr.liglab.adele.cilia.CiliaContext;
 import fr.liglab.adele.cilia.Data;
 import fr.liglab.adele.cilia.administration.CiliaAdminService;
 import fr.liglab.adele.cilia.administration.util.CiliaInstructionConverter;
 import fr.liglab.adele.cilia.administration.util.ParserUtils;
+import fr.liglab.adele.cilia.builder.Builder;
+import fr.liglab.adele.cilia.exceptions.BuilderException;
+import fr.liglab.adele.cilia.exceptions.BuilderPerformerException;
 import fr.liglab.adele.cilia.framework.AbstractCollector;
 import fr.liglab.adele.cilia.model.Adapter;
 import fr.liglab.adele.cilia.model.Chain;
-import fr.liglab.adele.cilia.model.CiliaContainer;
 import fr.liglab.adele.cilia.model.Mediator;
 import fr.liglab.adele.cilia.model.impl.ChainImpl;
 
@@ -31,12 +34,12 @@ import fr.liglab.adele.cilia.model.impl.ChainImpl;
  */
 public class CiliaAdminServiceImpl extends AbstractCollector implements CiliaAdminService  {
 
-	CiliaContainer ccontext;
+	CiliaContext ccontext;
 	/* (non-Javadoc)
 	 * @see fr.liglab.adele.cilia.administration.CiliaAdminService#getChain(java.lang.String)
 	 */
-	public Chain getChain(String chainid) {
-		return ccontext.getChain(chainid);
+	public Chain getChain(String chainId) {
+		return ccontext.getApplicationSpecification().get(chainId);
 
 	}
 
@@ -44,7 +47,7 @@ public class CiliaAdminServiceImpl extends AbstractCollector implements CiliaAdm
 	 * @see fr.liglab.adele.cilia.administration.CiliaAdminService#getMediator(java.lang.String, java.lang.String)
 	 */
 	public Mediator getMediator(String chainId, String mediatorId) {
-		Chain ch = ccontext.getChain(chainId);
+		Chain ch = getChain(chainId);
 		if (ch != null)
 			return ch.getMediator(mediatorId);
 		return null;
@@ -54,7 +57,7 @@ public class CiliaAdminServiceImpl extends AbstractCollector implements CiliaAdm
 	 * @see fr.liglab.adele.cilia.administration.CiliaAdminService#getAdapter(java.lang.String, java.lang.String)
 	 */
 	public Adapter getAdapter(String chainId, String adapterId) {
-		Chain ch = ccontext.getChain(chainId);
+		Chain ch = getChain(chainId);
 		if (ch != null)
 			return ch.getAdapter(adapterId);
 		return null;
@@ -64,7 +67,16 @@ public class CiliaAdminServiceImpl extends AbstractCollector implements CiliaAdm
 	 * @see fr.liglab.adele.cilia.administration.CiliaAdminService#createEmptyChain(java.lang.String)
 	 */
 	public void createEmptyChain(String chainId) {
-		ccontext.addChain(new ChainImpl(chainId, null, null, null));
+		Builder builder = ccontext.getBuilder();
+		try {
+			builder.create(chainId);
+			builder.done();
+		} catch (BuilderException e) {
+			e.printStackTrace();
+		} catch (BuilderPerformerException e) {
+			e.printStackTrace();
+		}
+		
 	}
 
 	/* (non-Javadoc)

@@ -24,7 +24,7 @@ import fr.liglab.adele.cilia.runtime.Const;
 import fr.liglab.adele.cilia.runtime.impl.DispatcherHandler;
 import fr.liglab.adele.cilia.runtime.impl.SchedulerHandler;
 
-public class AdapterFactory extends MediatorComponentFactory {
+public class AdapterFactory extends MediatorFactory {
 
 	private static final Logger logger = LoggerFactory
 			.getLogger("cilia.ipojo.runtime");
@@ -67,6 +67,7 @@ public class AdapterFactory extends MediatorComponentFactory {
 			throw new ConfigurationException(msg.toString());
 		}
 		computeConstituantsDescriptions();
+		computePorts();
 	}
 
 	public List getRequiredHandlerList() {

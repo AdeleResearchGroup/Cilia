@@ -1,4 +1,4 @@
-	<cilia>
+	<cilia xmlns:cbd="fr.imag.adele.cilia.dispatcher">
 		<chain type="split-aggregate" id="DemoSplitAggregate">
 			<mediators>
 				<mediator-instance type="XsltTransformer" id="xslt-transformer-1" >
@@ -12,6 +12,12 @@
 						<property name="separator" value="//suiviconso-requete" />
 					</processor>
 					<dispatcher>
+						<cbd:content-based language="xpath">
+							<cbd:when condition="//suiviconso-requete[@produit='fixe']" sendTo="fixe" />
+							<cbd:when condition="//suiviconso-requete[@produit='mobile']" sendTo="mobile" />
+							<cbd:when condition="//suiviconso-requete[@produit='internet']" sendTo="internet" />
+						</cbd:content-based>
+					<!--
 					<property name="language" value="xpath" />
 					<property name="conditions">
 						<item key="//suiviconso-requete[@produit='fixe']"
@@ -21,6 +27,7 @@
 						<item key="//suiviconso-requete[@produit='internet']"
 							value="internet" />
 					</property>
+					-->
 					</dispatcher>
 				</mediator-instance>
 				<mediator-instance type="Translator" id="translator-1" >
@@ -69,26 +76,26 @@
 				<mediator-instance type="UC1Aggregator" id="uc1-aggregator-1" />
 			</mediators>
 			<adapters>
-				<adapter-instance type="SplitAggregateEndpoint" id="adapter">
+				<adapter-instance type="SplitAggregateEndpoint" id="getPriceAdapter">
 		          <property name="endpoint.id" type="String" value="toto"/>
 				</adapter-instance>
 			</adapters>
 			<bindings>
-				<binding from="adapter" to="xslt-transformer-1" />
-				<binding from="xslt-transformer-1:to-splitter" to="xml-splitter-1:from-transformer" />
-				<binding from="xml-splitter-1:mobile" to="translator-3" />
-				<binding from="xml-splitter-1:internet" to="translator-1" />
-				<binding from="xml-splitter-1:fixe" to="translator-2" />
-				<binding from="translator-1" to="xslt-transformer-2" />
-				<binding from="translator-2" to="xslt-transformer-3" />
-				<binding from="translator-3" to="xslt-transformer-4" />
-				<binding from="xslt-transformer-2" to="facturation-internet-1" />
-				<binding from="xslt-transformer-3" to="facturation-fixe-1" />
-				<binding from="xslt-transformer-4" to="facturation-mobile-1" />
-				<binding from="facturation-mobile-1" to="uc1-aggregator-1" />
-				<binding from="facturation-internet-1" to="uc1-aggregator-1" />
-				<binding from="facturation-fixe-1" to="uc1-aggregator-1" />
-				<binding from="uc1-aggregator-1" to="adapter" />
+				<binding from="getPriceAdapter:unique" to="xslt-transformer-1:unique" />
+				<binding from="xslt-transformer-1:unique" to="xml-splitter-1:unique" />
+				<binding from="xml-splitter-1:mobile" to="translator-3:unique" />
+				<binding from="xml-splitter-1:internet" to="translator-1:unique" />
+				<binding from="xml-splitter-1:fixe" to="translator-2:unique" />
+				<binding from="translator-1:unique" to="xslt-transformer-2:unique" />
+				<binding from="translator-2:unique" to="xslt-transformer-3:unique" />
+				<binding from="translator-3:unique" to="xslt-transformer-4:unique" />
+				<binding from="xslt-transformer-2:unique" to="facturation-internet-1:unique" />
+				<binding from="xslt-transformer-3:unique" to="facturation-fixe-1:unique" />
+				<binding from="xslt-transformer-4:unique" to="facturation-mobile-1:unique" />
+				<binding from="facturation-mobile-1:unique" to="uc1-aggregator-1:mobile" />
+				<binding from="facturation-internet-1:unique" to="uc1-aggregator-1:internet" />
+				<binding from="facturation-fixe-1:unique" to="uc1-aggregator-1:fixe" />
+				<binding from="uc1-aggregator-1:unique" to="getPriceAdapter:unique" />
 			</bindings>
 		</chain>
 	</cilia>

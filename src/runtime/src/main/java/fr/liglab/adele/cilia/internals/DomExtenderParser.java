@@ -26,7 +26,7 @@ import org.w3c.dom.NodeList;
  */
 public class DomExtenderParser {
 
-	protected String NAMESPACE = "fr.imag.adele.cilia.dispatcher";
+	protected String NAMESPACE = "fr.imag.adele.cilia";
 	protected String NAME = "extender";
 
 	protected Node getNode(String parentName, Object componentDescription) {

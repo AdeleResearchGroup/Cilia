@@ -50,11 +50,11 @@ public class PortImpl implements Port{
      * @param ptype Type of port.
      * @param mediator MediatorImpl which contain this port.
      */
-    protected PortImpl (String name, PortType ptype, MediatorComponent med ) {
+    public PortImpl (String name, PortType ptype, MediatorComponent med ) {
         this(name, ANY_DATA_TYPE, ptype, med);
     }
     
-    protected PortImpl (String name, String dt, PortType ptype, MediatorComponent med ) {
+    public PortImpl (String name, String dt, PortType ptype, MediatorComponent med ) {
         portName = name;
         portType = ptype;
         mediator = med;
@@ -64,8 +64,12 @@ public class PortImpl implements Port{
      * Get the port Tyoe.
      * @return
      */
-    public PortType getType() {
+    public PortType getPortType() {
         return portType;
+    }
+    
+    public String getDataType(){
+    	return dataType;
     }
     /**
      * Get the port name.

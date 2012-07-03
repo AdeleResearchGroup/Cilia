@@ -20,13 +20,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import fr.liglab.adele.cilia.framework.monitor.IMonitor;
+import fr.liglab.adele.cilia.model.Port;
 import fr.liglab.adele.cilia.runtime.Const;
 import fr.liglab.adele.cilia.runtime.MediatorHandler;
 import fr.liglab.adele.cilia.runtime.impl.DispatcherHandler;
 import fr.liglab.adele.cilia.runtime.impl.MonitorHandler;
 import fr.liglab.adele.cilia.runtime.impl.SchedulerHandler;
 
-public class MediatorManager extends InstanceManager implements ComponentInstance, InstanceStateListener {
+public class MediatorManager extends MediatorComponentManager implements ComponentInstance, InstanceStateListener {
 
 	private static final Logger logger = LoggerFactory.getLogger("cilia.ipojo.runtime");
 	/**
@@ -39,7 +40,7 @@ public class MediatorManager extends InstanceManager implements ComponentInstanc
 	 */
 	private final ProcessorFactory pfactory;
 
-	private final MediatorComponentFactory mfactory;
+	
 
 	private BundleContext m_context;
 
@@ -65,10 +66,9 @@ public class MediatorManager extends InstanceManager implements ComponentInstanc
 
 	public MediatorManager(MediatorComponentFactory mefactory, ProcessorFactory factory, BundleContext context,
 			HandlerManager[] handlers) {
-		super(factory, context, handlers);
+		super(mefactory, context, handlers);
 		this.m_handlers = handlers;
 		this.pfactory = factory;
-		this.mfactory = mefactory;
 		this.m_context = context;
 
 	}
@@ -396,5 +396,7 @@ public class MediatorManager extends InstanceManager implements ComponentInstanc
 	public ComponentInstance getProcessorInstance() {
 		return pinstance;
 	}
+	
+
 
 }

@@ -81,6 +81,7 @@ public class CiliaCreatorProcessor {
 	private void createChain(String chainId) {
 		Builder builder = ccontext.getBuilder();
 		try {
+			builder.create(chainId);
 			builder.done();
 		} catch (BuilderException e) {
 			e.printStackTrace();

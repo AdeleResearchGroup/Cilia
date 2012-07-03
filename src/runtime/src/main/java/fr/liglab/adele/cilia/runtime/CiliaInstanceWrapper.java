@@ -156,7 +156,7 @@ public class CiliaInstanceWrapper extends Observable implements CiliaInstance,
 			}
 		}
 		if (object == null) {
-			log.error("Is not valid");
+			log.error("Component {} is not valid", getName());
 		}
 		return object;
 	}

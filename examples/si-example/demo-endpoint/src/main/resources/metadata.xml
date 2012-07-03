@@ -1,10 +1,15 @@
-<ipojo>
+<cilia>
+
 
 	<io-adapter classname="fr.liglab.adele.cilia.demo.endpoint.DemoEndpointImpl"
 		name="SplitAggregateEndpoint" pattern="in-out">
 		<provides />
 		<properties propagation="true" />
+		<ports>
+			<in-port name="unique" type="XML" />
+			<out-port name="unique" type="XML" />
+		</ports>
 	</io-adapter>
 
 	
-</ipojo> 
+</cilia> 

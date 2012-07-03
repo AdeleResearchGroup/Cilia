@@ -49,7 +49,7 @@ public class BindingControllerImpl implements TrackerCustomizer {
 	private MediatorControllerImpl sourceController;
 
 	private MediatorControllerImpl targetController;
-	
+
 	private final Object lockObject = new Object();
 
 	public void setSourceController(MediatorControllerImpl sourceController) {
@@ -124,14 +124,14 @@ public class BindingControllerImpl implements TrackerCustomizer {
 		Port port2 = modelBinding.getTargetPort();
 		if (port1 != null) {
 			if (log.isDebugEnabled())
-				log.debug("Source Port in model binding is NOT null" + port1.getType()
+				log.debug("Source Port in model binding is NOT null" + port1.getPortType()
 						+ " " + port1.getName());
 		} else {
 			senderModel = null;
 		}
 		if (port2 != null) {
 			if (log.isDebugEnabled())
-				log.debug("Target Port in model binding is NOT null " + port2.getType()
+				log.debug("Target Port in model binding is NOT null " + port2.getPortType()
 						+ " " + port2.getName());
 		} else {
 			collectorModel = null;
@@ -141,7 +141,7 @@ public class BindingControllerImpl implements TrackerCustomizer {
 				+ modelBinding.getSourcePort().getName() + ":"
 				+ modelBinding.getTargetMediator().getId() + ":"
 				+ modelBinding.getTargetPort().getName() ;
-				
+
 
 		if (collectorModel != null) {
 			colProps.put("cilia.collector.identifier", bindingId);
@@ -169,6 +169,7 @@ public class BindingControllerImpl implements TrackerCustomizer {
 	private void addModels(Component senderm, Component collectorm) {
 		MediatorComponent sm = modelBinding.getSourceMediator();
 		MediatorComponent tm = modelBinding.getTargetMediator();
+
 
 		if (sm != null && senderm != null) {
 			synchronized (lockObject) {
@@ -270,8 +271,10 @@ public class BindingControllerImpl implements TrackerCustomizer {
 	 * Methods from TrackerCustomizer.
 	 */
 	public void addedService(ServiceReference reference) {
+		boolean performBinding = true;
 		try {
-			createModels(reference);
+			if (validatePort(modelBinding.getSourcePort(), modelBinding.getTargetPort()))
+				createModels(reference);
 		} catch (CiliaException e) {
 			e.printStackTrace();
 		}
@@ -297,5 +300,41 @@ public class BindingControllerImpl implements TrackerCustomizer {
 			targetController.removeCollector(modelBinding.getCollector());
 		}
 	}
+
+	private boolean validatePort(Port exitPort, Port entryPort) {
+		boolean forceBinding;
+		boolean valid = true;
+		try {
+			String fb = bcontext.getProperty("cilia.forcebindings");
+			forceBinding = Boolean.parseBoolean(fb);
+		} catch (Exception ex) {
+			forceBinding = false;
+		}
+
+		Port componentExitPort = sourceController.getOutPort(exitPort.getName());
+		Port componentEntryPort = targetController.getInPort(entryPort.getName());
+		if (componentExitPort == null) {
+			log.error("Mediator {} does not have a port named {}", exitPort.getMediator().getId(), exitPort.getName() );
+			valid = false;
+		}
+		if (valid && componentExitPort.getDataType() == null) {
+			log.error("Mediator port {} in {} does not have a well defined data type",  exitPort.getName(), exitPort.getMediator().getId() );
+			valid = false;
+		}
+		if (valid && componentEntryPort == null) {
+			log.error("Mediator {} does not have a port named {}", entryPort.getMediator().getId(), entryPort.getName() );
+			valid = false;
+		}
+		if (valid && componentEntryPort.getDataType() == null) {
+			log.error("Mediator port {} in {} does not have a well defined data type",entryPort.getName(), entryPort.getMediator().getId() );
+			valid = false;
+		}
+		if (valid && componentEntryPort.getDataType().compareToIgnoreCase(componentExitPort.getDataType()) !=0 ) {
+			log.error("Trying to bind incompatible ports: ExitPort[" + componentExitPort.getName() + " = "+componentExitPort.getDataType()+"] & EntryPort[" + componentEntryPort.getName() + " = "+componentEntryPort.getDataType()+"]");
+			valid = false;
+		}
+		return valid || forceBinding;
+	}
+
 
 }

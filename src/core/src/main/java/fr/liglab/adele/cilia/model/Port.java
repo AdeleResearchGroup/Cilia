@@ -20,10 +20,16 @@ import fr.liglab.adele.cilia.model.impl.PortType;
 public interface Port {
 
 	/**
-	 * Get the port Tyoe.
+	 * Get the port Type.
 	 * @return
 	 */
-	public PortType getType();
+	public PortType getPortType();
+	
+	/**
+	 * Get the Data Type
+	 * @return the data type accepted on the port.
+	 */
+	public String getDataType();
 
 	/**
 	 * Get the port name.

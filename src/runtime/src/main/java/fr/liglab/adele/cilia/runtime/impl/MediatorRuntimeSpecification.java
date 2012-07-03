@@ -19,7 +19,7 @@ import org.apache.felix.ipojo.metadata.Attribute;
 import org.apache.felix.ipojo.metadata.Element;
 import org.osgi.framework.BundleContext;
 
-import fr.liglab.adele.cilia.internals.factories.MediatorComponentFactory;
+import fr.liglab.adele.cilia.internals.factories.MediatorFactory;
 import fr.liglab.adele.cilia.specification.AbstractMediatorSpecification;
 import fr.liglab.adele.cilia.specification.MediatorSpecification;
 /**
@@ -32,7 +32,7 @@ public class MediatorRuntimeSpecification extends AbstractMediatorSpecification 
 
 	BundleContext context;
 	
-	private MediatorComponentFactory factory;
+	private MediatorFactory factory;
 	
 	public MediatorRuntimeSpecification(String name, String namespace,
 			String category) {
@@ -52,7 +52,7 @@ public class MediatorRuntimeSpecification extends AbstractMediatorSpecification 
 	public MediatorSpecification initializeSpecification()  {
 		Element meta = generateMetadata();
 		try {
-			factory = new MediatorComponentFactory(context, meta);
+			factory = new MediatorFactory(context, meta);
 		} catch (ConfigurationException e) {
 			e.printStackTrace();
 		}

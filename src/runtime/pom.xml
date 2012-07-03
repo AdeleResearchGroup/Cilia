@@ -87,7 +87,7 @@
 							META-INF/NOTICE = NOTICE
 						</Include-Resource>
 						<IPOJO-Extension>
-							mediator-component:fr.liglab.adele.cilia.internals.factories.MediatorComponentFactory,
+							mediator-component:fr.liglab.adele.cilia.internals.factories.MediatorFactory,
 							scheduler:fr.liglab.adele.cilia.internals.factories.SchedulerFactory,
 							dispatcher:fr.liglab.adele.cilia.internals.factories.DispatcherFactory,
 							processor:fr.liglab.adele.cilia.internals.factories.ProcessorFactory,

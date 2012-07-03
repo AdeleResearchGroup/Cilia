@@ -27,14 +27,14 @@ import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 import fr.liglab.adele.cilia.framework.IDispatcher;
 import fr.liglab.adele.cilia.framework.IScheduler;
+import fr.liglab.adele.cilia.internals.factories.MediatorComponentManager;
 import fr.liglab.adele.cilia.internals.factories.MediatorManager;
-import fr.liglab.adele.cilia.model.Binding;
 import fr.liglab.adele.cilia.model.Component;
 import fr.liglab.adele.cilia.model.Mediator;
 import fr.liglab.adele.cilia.model.MediatorComponent;
+import fr.liglab.adele.cilia.model.Port;
 import fr.liglab.adele.cilia.model.impl.BindingImpl;
 import fr.liglab.adele.cilia.model.impl.ConstModel;
 import fr.liglab.adele.cilia.model.impl.Dispatcher;
@@ -79,7 +79,7 @@ public class MediatorControllerImpl implements Observer {
 	protected static Logger log = LoggerFactory.getLogger("cilia.ipojo.runtime");
 
 	private static Logger logger = LoggerFactory.getLogger(Const.LOGGER_CORE);
-	
+
 	protected CreatorThread creator;
 
 	protected final Object lockObject = new Object();
@@ -107,7 +107,7 @@ public class MediatorControllerImpl implements Observer {
 
 	protected void updateProperties() {
 		mediatorModel
-				.setProperty(ConstModel.PROPERTY_COMPONENT_ID, mediatorModel.nodeId());
+		.setProperty(ConstModel.PROPERTY_COMPONENT_ID, mediatorModel.nodeId());
 		mediatorModel.setProperty(ConstModel.PROPERTY_CHAIN_ID, mediatorModel.chainId());
 		mediatorModel.setProperty(ConstModel.PROPERTY_UUID, mediatorModel.uuid());
 	}
@@ -322,7 +322,7 @@ public class MediatorControllerImpl implements Observer {
 		// get collector information.
 		if (readytoAdd) {
 			String collectorType = collector.getType();
-			String collectorId = collector.getId();
+			String portName = collector.getId();
 			Dictionary properties = collector.getProperties();
 			// add collector to the mediator instance only if it exists.
 			// if (!scheduler.existsCollector(collectorId)) {
@@ -333,10 +333,10 @@ public class MediatorControllerImpl implements Observer {
 				} else {
 					toAdd = false;
 					log.warn(" (addCollector) Object instance in " + mediatorModel
-							+ "already exist" + collectorId);
+							+ "already exist" + portName);
 				}
 				if (toAdd) { // create
-					scheduler.addCollector(collectorType, collectorId, properties);
+					scheduler.addCollector(collectorType, portName, properties);
 				}
 			}
 		} else { // Add to thread to wait
@@ -414,11 +414,10 @@ public class MediatorControllerImpl implements Observer {
 	 *            Collector to remove.
 	 */
 	public void removeCollector(Component collector) {
-		String id = (String) collector.getProperty("cilia.collector.identifier");
-		String port = (String) collector.getProperty("cilia.collector.port");
-		;
 		synchronized (lockObject) {
 			if (collector != null) {
+				String id = (String) collector.getProperty("cilia.collector.identifier");
+				String port = (String) collector.getProperty("cilia.collector.port");
 				addedCollectors.remove(collector);
 				SchedulerHandler sc = getScheduler();
 				if (sc != null && collector != null) {
@@ -435,10 +434,10 @@ public class MediatorControllerImpl implements Observer {
 	 *            Sender to remove.
 	 */
 	public void removeSender(Component sender) {
-		String id = (String) sender.getProperty("cilia.sender.identifier");
-		String port = (String) sender.getProperty("cilia.sender.port");
 		synchronized (lockObject) {
 			if (sender != null) {
+				String id = (String) sender.getProperty("cilia.sender.identifier");
+				String port = (String) sender.getProperty("cilia.sender.port");
 				addedSenders.remove(sender);
 				DispatcherHandler d = getDispatcher();
 				if (d != null && sender != null) {
@@ -533,49 +532,49 @@ public class MediatorControllerImpl implements Observer {
 					log.debug(" update instance property");
 					updateInstanceProperties(md.getProperties());
 				}
-					// break;
-					// case UpdateActions.UPDATE_SCHEDULER: {
-					// log.debug(" update scheduler");
-					// Scheduler s = md.getScheduler();
-					// if (s == null) {
-					// setScheduler(null);
-					// } else {
-					// setScheduler(s);
-					// }
-					// }
-					// break;
-					// case UpdateActions.ADD_COLLECTOR: {
-					// Collector collector = (Collector) event.getSource();
-					// log.debug(" add collector");
-					// if (collector != null) {
-					// createCollector(collector);
-					// }
-					// }
-					// break;
-					// case UpdateActions.REMOVE_COLLECTOR: {
-					// Collector collector = (Collector) event.getSource();
-					// log.debug(" remove collector");
-					// if (collector != null) {
-					// removeCollector(collector);
-					// }
-					// }
-					// break;
-					// case UpdateActions.ADD_SENDER: {
-					// Sender sender = (Sender) event.getSource();
-					// log.debug(" add sender");
-					// if (sender != null) {
-					// createSender(sender);
-					// }
-					// }
-					// break;
-					// case UpdateActions.REMOVE_SENDER: {
-					// Sender sender = (Sender) event.getSource();
-					// log.debug(" remove sender");
-					// if (sender != null) {
-					// removeSender(sender);
-					// }
-					// }
-					// break;
+				// break;
+				// case UpdateActions.UPDATE_SCHEDULER: {
+				// log.debug(" update scheduler");
+				// Scheduler s = md.getScheduler();
+				// if (s == null) {
+				// setScheduler(null);
+				// } else {
+				// setScheduler(s);
+				// }
+				// }
+				// break;
+				// case UpdateActions.ADD_COLLECTOR: {
+				// Collector collector = (Collector) event.getSource();
+				// log.debug(" add collector");
+				// if (collector != null) {
+				// createCollector(collector);
+				// }
+				// }
+				// break;
+				// case UpdateActions.REMOVE_COLLECTOR: {
+				// Collector collector = (Collector) event.getSource();
+				// log.debug(" remove collector");
+				// if (collector != null) {
+				// removeCollector(collector);
+				// }
+				// }
+				// break;
+				// case UpdateActions.ADD_SENDER: {
+				// Sender sender = (Sender) event.getSource();
+				// log.debug(" add sender");
+				// if (sender != null) {
+				// createSender(sender);
+				// }
+				// }
+				// break;
+				// case UpdateActions.REMOVE_SENDER: {
+				// Sender sender = (Sender) event.getSource();
+				// log.debug(" remove sender");
+				// if (sender != null) {
+				// removeSender(sender);
+				// }
+				// }
+				// break;
 				}
 			}
 		} else if (mediator instanceof CiliaInstanceWrapper) {
@@ -585,13 +584,13 @@ public class MediatorControllerImpl implements Observer {
 				updateMediatorModel();
 				updateMediatorInstance();
 			}
-				break;
+			break;
 			case ComponentInstance.DISPOSED:
 			case ComponentInstance.STOPPED:
 			case ComponentInstance.INVALID: {
 				cleanInstances();
 			}
-				break;
+			break;
 			}
 		}
 		synchronized (creator) {
@@ -614,4 +613,33 @@ public class MediatorControllerImpl implements Observer {
 			}
 		}
 	}
+	/**
+	 * Get the In port description of the executing component.
+	 * @param name Name of the port.
+	 * @return the port.
+	 */
+	public Port getInPort(String name){
+		if(mediatorInstance.getInstanceManager() instanceof MediatorComponentManager) {
+			MediatorComponentManager mm = (MediatorComponentManager)mediatorInstance.getInstanceManager();
+			return mm.getInPort(name);
+		}
+		logger.error("Unable to retrieve In-port '{}' on '{}'", name, this.mediatorModel.getId());
+		logger.error("Instance Manager {} ", mediatorInstance.getInstanceManager());
+		return null;
+	}
+	/**
+	 * Get the Out port description of the executing component.
+	 * @param name Name of the port.
+	 * @return the port.
+	 */	
+	public Port getOutPort(String name) {
+		if(mediatorInstance.getInstanceManager() instanceof MediatorComponentManager) {
+			MediatorComponentManager mm = (MediatorComponentManager)mediatorInstance.getInstanceManager();
+			return mm.getOutPort(name);
+		}
+		logger.error("Unable to retrieve Out-port '{}' on '{}' ", name, this.mediatorModel.getId());
+		logger.error("Instance Manager {} ", mediatorInstance.getInstanceManager());
+		return null;
+	}
+
 }
