@@ -26,6 +26,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.felix.ipojo.ConfigurationException;
 import org.apache.felix.ipojo.IPojoContext;
@@ -659,6 +661,7 @@ public class DependencyHandler extends PrimitiveHandler implements
 				/* Force Flag aggregation */
 				aggregate = true;
 				/* Force flag optional if min cardinality is 0 */
+				checkCardinality(m_cardinality) ;
 				if (isMinCardinalityOptionnal(m_cardinality)) {
 					optional = true;
 				}
@@ -821,7 +824,7 @@ public class DependencyHandler extends PrimitiveHandler implements
 		boolean optional = false;
 		if ((aCardinality == null) || (aCardinality.length() == 0))
 			return optional;
-		int idx = aCardinality.indexOf(":");
+		int idx = aCardinality.indexOf(".");
 		if (idx > 0) {
 			try {
 				if (Math.abs(Integer.parseInt(aCardinality.substring(0, idx))) == 0)
@@ -849,9 +852,9 @@ public class DependencyHandler extends PrimitiveHandler implements
 		if ((aCardinality == null) || (aCardinality.length() == 0))
 			return max;
 
-		int idx = aCardinality.indexOf(":");
+		int idx = aCardinality.indexOf(".");
 		if (idx > 0) {
-			cardinality = aCardinality.substring(idx + 1);
+			cardinality = aCardinality.substring(idx + 2);
 		} else {
 			cardinality = aCardinality;
 		}
@@ -863,6 +866,14 @@ public class DependencyHandler extends PrimitiveHandler implements
 					+ aCardinality);
 		}
 		return max;
+	}
+	
+	/* check the syntax '0|1 ..b' or '0|1..*' */
+	public static void checkCardinality(String aCardinality) throws ConfigurationException {
+		if ((aCardinality ==null) || (aCardinality.length()==0) )return ;
+		Pattern p = Pattern.compile("(0|1)..(\\d|\\*)");
+		Matcher m = p.matcher(aCardinality);
+		if (!m.matches()) throw new ConfigurationException("Cardinality syntax error "+aCardinality);
 	}
 
 }

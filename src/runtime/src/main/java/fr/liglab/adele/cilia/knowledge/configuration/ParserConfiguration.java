@@ -17,10 +17,13 @@ package fr.liglab.adele.cilia.knowledge.configuration;
 import java.util.Map;
 
 import fr.liglab.adele.cilia.exceptions.CiliaIllegalParameterException;
+import fr.liglab.adele.cilia.exceptions.CiliaInvalidSyntaxException;
+import fr.liglab.adele.cilia.exceptions.CiliaParserException;
 import fr.liglab.adele.cilia.model.MediatorComponent;
 
 public class ParserConfiguration {
 	MediatorComponent mc;
+	@SuppressWarnings("rawtypes")
 	Map config;
 
 	public ParserConfiguration(MediatorComponent mc) {
@@ -28,69 +31,82 @@ public class ParserConfiguration {
 		config = ConfigurationHelper.getRootConfig(mc);
 	}
 
-	public boolean addVariable(String variableId, boolean enable) {
-		boolean isInserted  ;
+	public void addVariable(String variableId, boolean enable)
+			throws CiliaParserException {
 		try {
 			ConfigurationHelper.checkStateVarId(variableId);
 			ConfigurationHelper.storeEnable(config, variableId, enable);
-			isInserted = true ;
 		} catch (CiliaIllegalParameterException e) {
-			isInserted=false ;
+			throw new CiliaParserException("Variable [" + variableId + "] is undefined, "+e.getMessage());
 		}
-		return isInserted;
 	}
 
-	public void addSetUp(String variableId, String queue, String dataFlow) {
+	public void addSetUp(String variableId, String queue, String dataFlow)
+			throws CiliaParserException {
 		try {
 			int q = Integer.parseInt(queue);
 			ConfigurationHelper.checkQueueSize(q);
 			ConfigurationHelper.checkDataFlowFilter(dataFlow);
 			/* store if no error */
-			ConfigurationHelper.getModelMonitoring(mc).setQueueSize(variableId, q) ;
+			ConfigurationHelper.getModelMonitoring(mc).setQueueSize(variableId, q);
 			ConfigurationHelper.storeDataFlowControl(config, variableId, dataFlow);
-		} catch (Exception e) {	
+		} catch (CiliaIllegalParameterException e) {
+			throw new CiliaParserException("Variable " + variableId
+					+ " Setup is not valid ,"+e.getMessage());
+
+		} catch (CiliaInvalidSyntaxException e) {
+			throw new CiliaParserException("Variable " + variableId
+					+ " Setup is not valid ,"+e.getMessage());
 		}
 	}
 
 	public void addThreshold(String variableId, String low, String veryLow, String high,
-			String veryHigh) {
+			String veryHigh) throws CiliaParserException {
 		double dlow, dhigh, dverylow, dveryhigh;
 		try {
 			if (low != null) {
 				dlow = Integer.parseInt(low);
-			} else dlow = Double.NaN ;
-			
+			} else
+				dlow = Double.NaN;
+
 			if (veryLow != null) {
 				dverylow = Integer.parseInt(veryLow);
-			}else dverylow = Double.NaN ;
-			
+			} else
+				dverylow = Double.NaN;
+
 			if (high != null) {
 				dhigh = Integer.parseInt(high);
-			}else dhigh = Double.NaN ;
-			
+			} else
+				dhigh = Double.NaN;
+
 			if (veryHigh != null) {
 				dveryhigh = Integer.parseInt(veryHigh);
-			}else dveryhigh = Double.NaN ;
+			} else
+				dveryhigh = Double.NaN;
 
-			/* Store if no error  */
-		
-			if (dlow !=Double.NaN) {
-				ConfigurationHelper.getModelMonitoring(mc).setLow(variableId, dlow) ;	
+			/* Store if no error */
+
+			if (dlow != Double.NaN) {
+				ConfigurationHelper.getModelMonitoring(mc).setLow(variableId, dlow);
 			}
-			if (dverylow !=Double.NaN) {
-				ConfigurationHelper.getModelMonitoring(mc).setVeryLow(variableId, dverylow) ;	
+			if (dverylow != Double.NaN) {
+				ConfigurationHelper.getModelMonitoring(mc).setVeryLow(variableId,
+						dverylow);
 			}
-			if (dhigh !=Double.NaN) {
-				ConfigurationHelper.getModelMonitoring(mc).setHigh(variableId, dhigh) ;	
+			if (dhigh != Double.NaN) {
+				ConfigurationHelper.getModelMonitoring(mc).setHigh(variableId, dhigh);
 			}
-			if (dveryhigh !=Double.NaN) {
-				ConfigurationHelper.getModelMonitoring(mc).setVeryHigh(variableId, dveryhigh) ;	
+			if (dveryhigh != Double.NaN) {
+				ConfigurationHelper.getModelMonitoring(mc).setVeryHigh(variableId,
+						dveryhigh);
 			}
 		} catch (NumberFormatException e) {
+			throw new CiliaParserException("Variable " + variableId
+					+ " threshold is not valid ,"+e.getMessage());
 		}
 	}
-	
+
 	public void configure() {
-		ConfigurationHelper.storeRootConfig(mc, config) ;
+		ConfigurationHelper.storeRootConfig(mc, config);
 	}
 }

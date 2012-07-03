@@ -18,12 +18,13 @@ package fr.liglab.adele.cilia.internals;
 import static fr.liglab.adele.cilia.dependency.DependencyHandler.DEFAULT_FILTER_NAME;
 
 import java.util.Properties;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.w3c.dom.Node;
 
 import fr.liglab.adele.cilia.exceptions.CiliaParserException;
 import fr.liglab.adele.cilia.model.Component;
-
 import fr.liglab.adele.cilia.util.CiliaExtenderParser;
 
 /**
@@ -45,11 +46,16 @@ public class DependencyParser extends DomExtenderParser implements CiliaExtender
 		return true;
 	}
 
-	public Component getComponent(Object componentDescription,  Component currentComponent)
+	public Component getComponent(Object componentDescription, Component currentComponent)
 			throws CiliaParserException {
 
 		Node node = getNode("external", componentDescription);
 		if (node != null) {
+			String cardinality = getAttributeValue(node, "cardinality");
+			if (cardinality != null) {
+				checkCardinality(cardinality);
+				currentComponent.setProperty("cardinality", cardinality);
+			}
 			String id = getAttributeValue(node, "id");
 			if (id == null) {
 				id = DEFAULT_FILTER_NAME;
@@ -61,10 +67,7 @@ public class DependencyParser extends DomExtenderParser implements CiliaExtender
 				/* override the filter value */
 				currentComponent.setProperty("requires.filters", props);
 			}
-			String cardinality = getAttributeValue(node, "cardinality");
-			if (cardinality != null) {
-				currentComponent.setProperty("cardinality", cardinality);
-			}
+
 			String ranking = getAttributeValue(node, "ranking");
 			if (ranking != null) {
 				if (ranking.equalsIgnoreCase("true")) {
@@ -88,4 +91,12 @@ public class DependencyParser extends DomExtenderParser implements CiliaExtender
 		}
 		return currentComponent;
 	}
+	
+	/* Cardinality  'a..b' or 'a..*" */
+	private void checkCardinality( String aCardinality) throws CiliaParserException {
+		Pattern p = Pattern.compile("(0|1)..(\\d|\\*)");
+		Matcher m = p.matcher(aCardinality) ;
+		if (!m.matches()) throw new CiliaParserException("invalid cardinality syntax "+aCardinality) ;
+	}
+
 }

@@ -54,47 +54,43 @@ public class MonitoringParser extends DomExtenderParser implements CiliaExtender
 
 	public Component getComponent(Object componentDescription, Component currentComponent)
 			throws CiliaParserException {
-		ParserConfiguration monitoringConfig = null;
+		ParserConfiguration monitoringConfig;
 		Node node = getNode("monitoring", componentDescription);
-		if (node != null) {
-			monitoringConfig = new ParserConfiguration((MediatorComponent) currentComponent);
-			/* Tag state-variable */
-			while (node != null) {		
-				String variableId = getAttributeValue(node, "id");
-				boolean enable = getAttributeBoolean(node, "enable");
-				
-				if (monitoringConfig.addVariable(variableId, enable)) {
-					Node child = node.getFirstChild();
-					/* tag setup and tag Threshold */
-					while (child != null) {
-						if (child.getLocalName() != null
-								&& child.getLocalName().equalsIgnoreCase("setup")) {
-							String queue = getAttributeValue(child, "queue");
-							String dataflow = getAttributeValue(child, "flow-control");
-							System.out.println(">>>Variable =" + variableId
-									+ " enable = " + enable + " queue=" + queue
-									+ "dataflow =" + dataflow);
-							monitoringConfig.addSetUp(variableId, queue, dataflow);
-						} else {
-							if (child.getLocalName() != null
-									&& child.getLocalName().equalsIgnoreCase(
-											"threshold")) {
-								String low = getAttributeValue(child, "low");
-								String veryLow = getAttributeValue(child, "very-low");
-								String high = getAttributeValue(child, "high");
-								String veryhigh = getAttributeValue(child, "very-high");
-								monitoringConfig.addThreshold(variableId, low, veryLow,
-										high, veryhigh);
-								System.out.println("Thresolhld low =" + low);
-							}
-						}
-						child = child.getNextSibling();
+		
+		do {
+			monitoringConfig = new ParserConfiguration(
+					(MediatorComponent) currentComponent);
+			String variableId = getAttributeValue(node, "id");
+			boolean enable = getAttributeBoolean(node, "enable");
+
+			monitoringConfig.addVariable(variableId, enable);
+			Node child = node.getFirstChild();
+			/* tag setup and tag Threshold */
+			while (child != null) {
+				if (child.getLocalName() != null
+						&& child.getLocalName().equalsIgnoreCase("setup")) {
+					String queue = getAttributeValue(child, "queue");
+					String dataflow = getAttributeValue(child, "flow-control");
+					monitoringConfig.addSetUp(variableId, queue, dataflow);
+				} else {
+					if (child.getLocalName() != null
+							&& child.getLocalName().equalsIgnoreCase("threshold")) {
+						String low = getAttributeValue(child, "low");
+						String veryLow = getAttributeValue(child, "very-low");
+						String high = getAttributeValue(child, "high");
+						String veryhigh = getAttributeValue(child, "very-high");
+						monitoringConfig.addThreshold(variableId, low, veryLow, high,
+								veryhigh);
 					}
 				}
-				node = node.getNextSibling();
+				child = nextElementSibling(child);
 			}
-			monitoringConfig.configure();
-		}
+			node = nextElementSibling(node);
+		} while (node != null);
+		
+		monitoringConfig.configure();
+
 		return currentComponent;
 	}
+
 }
