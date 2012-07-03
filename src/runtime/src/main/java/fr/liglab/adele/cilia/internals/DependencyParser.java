@@ -21,6 +21,8 @@ import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.osgi.framework.FrameworkUtil;
+import org.osgi.framework.InvalidSyntaxException;
 import org.w3c.dom.Node;
 
 import fr.liglab.adele.cilia.exceptions.CiliaParserException;
@@ -52,15 +54,18 @@ public class DependencyParser extends DomExtenderParser implements CiliaExtender
 		Node node = getNode("external", componentDescription);
 		if (node != null) {
 			String cardinality = getAttributeValue(node, "cardinality");
+			checkCardinality(cardinality);
+			String filter = getAttributeValue(node, "filter");
+			checkLdap(filter);
+
 			if (cardinality != null) {
-				checkCardinality(cardinality);
 				currentComponent.setProperty("cardinality", cardinality);
 			}
 			String id = getAttributeValue(node, "id");
 			if (id == null) {
 				id = DEFAULT_FILTER_NAME;
 			}
-			String filter = getAttributeValue(node, "filter");
+
 			if (filter != null) {
 				Properties props = new Properties();
 				props.put(id, filter);
@@ -91,12 +96,25 @@ public class DependencyParser extends DomExtenderParser implements CiliaExtender
 		}
 		return currentComponent;
 	}
-	
-	/* Cardinality  'a..b' or 'a..*" */
-	private void checkCardinality( String aCardinality) throws CiliaParserException {
+
+	/* Cardinality '(0|1..[0..9]*' or '(0|1)..*" */
+	private void checkCardinality(String aCardinality) throws CiliaParserException {
 		Pattern p = Pattern.compile("(0|1)..(\\d|\\*)");
-		Matcher m = p.matcher(aCardinality) ;
-		if (!m.matches()) throw new CiliaParserException("invalid cardinality syntax "+aCardinality) ;
+		Matcher m = p.matcher(aCardinality);
+		if (!m.matches())
+			throw new CiliaParserException("Ivalid cardinality syntax :" + aCardinality);
+	}
+
+	/* check ldap syntax */
+	private void checkLdap(String ldap) throws CiliaParserException {
+		if ((ldap != null) && (ldap.length() > 0)) {
+			try {
+				FrameworkUtil.createFilter(ldap);
+			} catch (InvalidSyntaxException e) {
+				throw new CiliaParserException("Invalid ldap syntax " + ldap + " : "
+						+ e.getMessage());
+			}
+		}
 	}
 
 }
