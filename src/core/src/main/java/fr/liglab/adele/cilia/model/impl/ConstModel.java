@@ -31,8 +31,5 @@ public interface ConstModel {
 	public String SET_LOCK ="lock" ;
 	public String SET_UNLOCK = "unlock" ;
 	
-	/* Properties related to the monitoring */
-	//public String MONTORING_STATEVARIABLE_CONF = "state.variable.configuration" ;
-	//public String MONITORING_STATUS = "state.variable.status" ;
 
 }

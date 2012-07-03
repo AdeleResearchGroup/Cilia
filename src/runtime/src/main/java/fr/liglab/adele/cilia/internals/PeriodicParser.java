@@ -30,7 +30,7 @@ CiliaExtenderParser {
 
 	public PeriodicParser(){
 		NAME="periodic";
-		NAMESPACE="fr.liglab.adele.cilia.scheduler";
+		//NAMESPACE="fr.liglab.adele.cilia.scheduler";
 	}
 	/* (non-Javadoc)
 	 * @see fr.liglab.adele.cilia.model.impl.parser.CiliaExtenderParser#getComponent(java.lang.Object, fr.liglab.adele.cilia.model.impl.IComponent)

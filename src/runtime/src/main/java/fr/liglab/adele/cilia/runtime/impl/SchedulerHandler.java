@@ -254,19 +254,21 @@ InstanceStateListener, Observer, Runnable {
 		}
 	}
 
-	private void configureHandler(InstanceManager im, String handlerName) {
-		Handler handler = null;
-		if (im != null) {
-			handler = (Handler) (im).getHandler(Const.ciliaQualifiedName(handlerName));
-		}
-
+	private void configureHandlerMonitoring(InstanceManager im, String handlerName) {
+		Handler handler = (Handler) (im).getHandler(Const.ciliaQualifiedName(handlerName));
 		if (handler != null) {
 			Properties props = new Properties();
 			props.put("cilia.monitor.handler", getMonitor());
-			/* Set monitor handler reference to the handler */
 			handler.reconfigure(props);
 		}
 	}
+	
+	private void configureHandlersMonitoring(CiliaInstance instance) {
+		ComponentInstance im =((CiliaInstanceWrapper)instance).getInstanceManager();
+		configureHandlerMonitoring((InstanceManager)im,"dependency") ;
+		configureHandlerMonitoring((InstanceManager)im,"audit") ;
+	}
+	
 
 	/**
 	 * Add collector Instance.
@@ -308,8 +310,8 @@ InstanceStateListener, Observer, Runnable {
 				collectorsManager.addInstance(portname, ciliaCollector);
 			}
 			ciliaCollector.start();
-
-
+			// TODO FIXE ME : 
+			configureHandlersMonitoring(ciliaCollector);
 			ICollector col = (ICollector) ciliaCollector.getObject();
 			if (col != null) {
 				col.setScheduler(this);
@@ -643,11 +645,15 @@ InstanceStateListener, Observer, Runnable {
 		addCollector(m_metadata.getElements(HANDLER_NAME, Const.CILIA_NAMESPACE)[0],
 				(Map) m_dictionary);
 		startCollectors();
+
 		synchronized (lockObject) {
 			if (schedulerComponent != null) {
+				/* Configure standard Handlers 'audit' and 'dependency' */
 				schedulerComponent.start();
+				configureHandlersMonitoring(schedulerComponent);
 			}
 		}
+	
 	}
 
 	private void storeMessage(Data data) {

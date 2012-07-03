@@ -5,11 +5,12 @@ import org.osgi.framework.BundleContext;
 import fr.liglab.adele.cilia.model.Adapter;
 import fr.liglab.adele.cilia.model.MediatorComponent;
 import fr.liglab.adele.cilia.model.impl.ConstModel;
+import fr.liglab.adele.cilia.runtime.FirerEvents;
 
 public class AdapterControllerImpl extends MediatorControllerImpl {
 
-	public AdapterControllerImpl(BundleContext context, Adapter model, CreatorThread creat) {
-		super(context, model, creat);
+	public AdapterControllerImpl(BundleContext context, Adapter model, CreatorThread creat,FirerEvents notifier) {
+		super(context, model, creat,notifier);
 	}
 
 	protected void updateProperties(){

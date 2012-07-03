@@ -16,8 +16,9 @@
 package fr.liglab.adele.cilia.runtime.impl;
 
 import java.util.Date;
+
+import fr.liglab.adele.cilia.ApplicationRuntime;
 import fr.liglab.adele.cilia.model.impl.ChainRuntime;
-import fr.liglab.adele.cilia.util.Uuid;
 
 /**
  * 
@@ -30,7 +31,7 @@ public class ChainRuntimeImpl implements ChainRuntime {
 	private Date lastCommand ;
 
 	public ChainRuntimeImpl() {
-		state = STATE_IDLE;
+		state = ApplicationRuntime.CHAIN_STATE_IDLE ;
 
 	}
 

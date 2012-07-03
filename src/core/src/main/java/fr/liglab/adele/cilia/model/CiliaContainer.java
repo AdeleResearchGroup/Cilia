@@ -37,8 +37,6 @@ import fr.liglab.adele.cilia.util.concurrent.ReadWriteLock;
 //@SuppressWarnings("rawtypes")
 public interface CiliaContainer {
 
-		
-
 	Chain addChain(Chain chain) ;
 	
 	Chain getChain(String chainId) ;
@@ -68,6 +66,6 @@ public interface CiliaContainer {
 
 
 	/*  Runtime informations , level chain */ 
-	public ChainRuntime getChainRuntime(String chainId) ;
+	ChainRuntime getChainRuntime(String chainId) ;
 	
 }

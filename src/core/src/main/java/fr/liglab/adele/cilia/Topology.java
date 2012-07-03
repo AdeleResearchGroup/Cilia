@@ -45,6 +45,20 @@ public interface Topology {
 			CiliaInvalidSyntaxException;
 
 	/**
+	 * Retreives all nodes matching the filter
+	 * 
+	 * @param ldapFilter
+	 *            , keywords = chain, node, uuid
+	 * 
+	 * @return array of node matching the filter, array size 0 if no node
+	 *         matching the filterá
+	 * @throws CiliaInvalidSyntaxException
+	 *             , ldap syntax error
+	 */
+	Node[] findNodeByFilter(String ldapFilter, boolean proxy)
+			throws CiliaIllegalParameterException, CiliaInvalidSyntaxException;
+
+	/**
 	 * 
 	 * @param ldapFilter
 	 *            ldap filters keywords (chain,node,uuid) uuid is relevant only
@@ -63,6 +77,20 @@ public interface Topology {
 	 * @param ldapFilter
 	 *            ldap filters keywords (chain,node,uuid) uuid is relevant only
 	 *            for dynamic components ( SetUp,RawData,Threshold)
+	 * @return list of adapter In ,
+	 * @throws CiliaInvalidSyntaxException
+	 *             LDAP syntax error
+	 * @throws CiliaIllegalParameterException
+	 *             null parameter
+	 */
+	Node[] endpointIn(String ldapFilter, boolean proxy)
+			throws CiliaIllegalParameterException, CiliaInvalidSyntaxException;
+
+	/**
+	 * 
+	 * @param ldapFilter
+	 *            ldap filters keywords (chain,node,uuid) uuid is relevant only
+	 *            for dynamic components ( SetUp,RawData,Threshold)
 	 * @return list of adapter Out
 	 * @throws CiliaInvalidSyntaxException
 	 *             LDAP syntax error
@@ -74,16 +102,37 @@ public interface Topology {
 
 	/**
 	 * 
+	 * @param ldapFilter
+	 *            ldap filters keywords (chain,node,uuid) uuid is relevant only
+	 *            for dynamic components ( SetUp,RawData,Threshold)
+	 * @return list of adapter Out
+	 * @throws CiliaInvalidSyntaxException
+	 *             LDAP syntax error
+	 * @throws CiliaIllegalParameterException
+	 *             null parameter
+	 */
+	Node[] endpointOut(String ldapFilter, boolean proxy)
+			throws CiliaIllegalParameterException, CiliaInvalidSyntaxException;
+
+	/**
+	 * 
 	 * @param node
 	 *            node reference
 	 * @return array of successors , size = 0 if no successor
 	 * @throws CiliaIllegalStateException
 	 *             the node doesn't exist
-	 * @throws CiliaIllegalParameterException
-	 *             null parameter
 	 */
-	Node[] connectedTo(Node node) throws CiliaIllegalParameterException,
-			CiliaIllegalStateException;
+	Node[] connectedTo(Node node) throws CiliaIllegalStateException;
+
+	/**
+	 * 
+	 * @param node
+	 *            node reference
+	 * @return array of successors , size = 0 if no successor
+	 * @throws CiliaIllegalStateException
+	 *             the node doesn't exist
+	 */
+	Node[] connectedTo(Node node, boolean proxy) throws CiliaIllegalStateException;
 
 	/**
 	 * 
@@ -98,5 +147,19 @@ public interface Topology {
 	 */
 	Node[] connectedTo(String ldapFilter) throws CiliaIllegalParameterException,
 			CiliaInvalidSyntaxException;
+
+	/**
+	 * 
+	 * @param ldapFilter
+	 *            ldap filters keywords (chain,node,uuid) uuid is relevant only
+	 *            for dynamic components ( SetUp,RawData,Threshold)
+	 * @return array of successors, size=0 if no node matching the filter
+	 * @throws CiliaIllegalParameterException
+	 *             null parameter
+	 * @throws CiliaInvalidSyntaxException
+	 *             LDAP syntax error
+	 */
+	Node[] connectedTo(String ldapFilter, boolean proxy)
+			throws CiliaIllegalParameterException, CiliaInvalidSyntaxException;
 
 }

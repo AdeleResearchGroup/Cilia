@@ -31,6 +31,7 @@ import fr.liglab.adele.cilia.model.impl.ChainImpl;
 import fr.liglab.adele.cilia.model.impl.MediatorImpl;
 import fr.liglab.adele.cilia.runtime.AdminData;
 import fr.liglab.adele.cilia.runtime.Const;
+import fr.liglab.adele.cilia.util.FrameworkUtils;
 
 public class CiliaReplacerProcessor {
 	private static final Logger logger = LoggerFactory.getLogger(Const.LOGGER_ADAPTATION);
@@ -133,7 +134,8 @@ public class CiliaReplacerProcessor {
 			return;
 		}
 		logger.info("Command 'replace mediator' [{}] by [{}]",
-				mediatorSource.getQualifiedId(), mediatorDest.getQualifiedId());
+				FrameworkUtils.makeQualifiedId(mediatorSource),
+				FrameworkUtils.makeQualifiedId(mediatorDest));
 
 		bindings = mediatorSource.getInBindings();
 
@@ -190,7 +192,8 @@ public class CiliaReplacerProcessor {
 		}
 
 		logger.info("Command 'replace adapter' [{}] by [{}]",
-				adapter.getQualifiedId(), adapterNew.getQualifiedId());
+				FrameworkUtils.makeQualifiedId(adapter),
+				FrameworkUtils.makeQualifiedId(adapterNew));
 
 		bindings = adapter.getInBindings();
 

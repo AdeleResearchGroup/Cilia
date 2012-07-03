@@ -14,8 +14,9 @@
  */
 package fr.liglab.adele.cilia;
 
+import java.util.Date;
+
 import fr.liglab.adele.cilia.builder.Builder;
-import fr.liglab.adele.cilia.dynamic.ApplicationRuntime;
 import fr.liglab.adele.cilia.model.impl.ChainRuntime;
 
 /**
@@ -35,6 +36,11 @@ public interface CiliaContext {
 	 * @return the version as an String.
 	 */
 	String getVersion();
+	
+	/** 
+	 * @return the date of start up of the Executing Cilia 
+	 */
+	Date getDateStartUp() ;
 
 	/**
 	 * Retrieve a builder instance to modify/create a mediation chain and its
@@ -44,14 +50,7 @@ public interface CiliaContext {
 	 * @return the new Builder object.
 	 */
 	Builder getBuilder();
-	
-	/**
-	 * Retrieve the ApplicationSpecification instance which allows to inspect the structure
-	 * of mediation chains and its properties. 
-	 * @return the ApplicationSpecification instance.
-	 */
-	ApplicationSpecification getApplicationSpecification();
-	
+		
 	/**
 	 * Retrieve the ApplicationRuntime instance which allows to inspect the runtime information
 	 * of mediation chains. 

@@ -27,8 +27,6 @@ public abstract class InternalComponent extends ComponentImpl {
 	 */
 	private volatile MediatorComponentImpl mediator;
 	
-	
-	
 	private final Object lockObject = new Object(); 
 	
 	public InternalComponent(String id, String type, String nspace,

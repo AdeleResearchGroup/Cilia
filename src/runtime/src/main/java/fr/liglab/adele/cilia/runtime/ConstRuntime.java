@@ -1,18 +1,3 @@
-/*
- * Copyright Adele Team LIG
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package fr.liglab.adele.cilia.runtime;
 
 import java.util.Arrays;
@@ -31,17 +16,13 @@ import fr.liglab.adele.cilia.Node;
 import fr.liglab.adele.cilia.exceptions.CiliaIllegalParameterException;
 import fr.liglab.adele.cilia.exceptions.CiliaInvalidSyntaxException;
 
-/**
- * Privates constants and static methods used for runtime (dynamic and application)
- * 
- * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project
- *         Team</a>
- * 
- */
-@SuppressWarnings({ "rawtypes", "unchecked" })
-public final class ConstRuntime {
+public class ConstRuntime extends Const {
+	
+	public static final String LOGGER_KNOWLEDGE = "cilia.runtime.knowledge"; 
+	
+	/* ---- Runtime ---- */
 	/*
-	 * Unique ID identifier 
+	 * Unique ID identifier
 	 */
 	public static final String UUID = "uuid";
 	/*
@@ -53,24 +34,35 @@ public final class ConstRuntime {
 	 */
 	public static final String NODE_ID = "node";
 
-	/* 
-	 * Variable 
+	/*
+	 * Node creation timeStamp
 	 */
-	public static final String VARIABLE_ID ="variable" ;
+	public static final String TIMESTAMP = "timestamp";
+	/*
+	 * Variable
+	 */
+	public static final String VARIABLE_ID = "variable";
+	
+	/* 
+	 * Value published 
+	 */
+	public static final String VALUE ="value" ;
 	/*
 	 * logger name
 	 */
-	public static final String LOG_NAME = "cilia.runtime.knowledge";
 
-	/*
-	 * #items stored per state variables
-	 */
-	public static final int DEFAULT_QUEUE_SIZE = 10;
-	/*
-	 * State var default condition (none)
-	 */
-	public static final String DEFAULT_CONDITION = null;
+	/* Properties providing the base level monitoring configuration */
+	public static final String MONITORING_CONFIGURATION ="monitoring.base.level.config" ;
 
+ 	/* Topic Event Admin between base level and monitoring model */
+	public static final String TOPIC_HEADER = "cilia/runtime/statevariable/";
+
+	public static final String EVENT_TYPE ="type" ;
+	public static final int TYPE_DATA = 0 ;
+	public static final int TYPE_STATUS_NODE = 1 ;
+	public static final int TYPE_STATUS_VARIABLE = 2 ;
+
+	
 	/**
 	 * concat 2 arrays
 	 * 
@@ -84,14 +76,13 @@ public final class ConstRuntime {
 		return result;
 	}
 
-
 	public static final Set ldapKeys;
 	static {
 		Set set = new HashSet();
 		set.add(UUID);
 		set.add(CHAIN_ID);
 		set.add(NODE_ID);
-		set.add(VARIABLE_ID) ;
+		set.add(VARIABLE_ID);
 		ldapKeys = Collections.unmodifiableSet(set);
 	}
 
@@ -114,25 +105,32 @@ public final class ConstRuntime {
 					+ ldapKeys.toString() + "!" + filter);
 		try {
 			return FrameworkUtil.createFilter(filter);
-		}catch (InvalidSyntaxException e) {
+		} catch (InvalidSyntaxException e) {
 			throw new CiliaInvalidSyntaxException(e.getMessage(), e.getFilter());
 		}
 	}
 
 	public static final boolean isFilterMatching(Filter filter, Node node) {
-		Dictionary dico = new Hashtable(3);
-		dico.put(UUID, node.uuid());
-		dico.put(CHAIN_ID, node.chainId());
-		dico.put(NODE_ID, node.nodeId());
-		return filter.match(dico);
-	}
-	public static final boolean isFilterMatching(Filter filter, Node node,String variable) {
 		Dictionary dico = new Hashtable(4);
+
 		dico.put(UUID, node.uuid());
 		dico.put(CHAIN_ID, node.chainId());
 		dico.put(NODE_ID, node.nodeId());
-		dico.put(VARIABLE_ID, variable) ;
+		dico.put(TIMESTAMP, new Long(node.timeStamp()));
 		return filter.match(dico);
+
 	}
-	
+
+	public static final boolean isFilterMatching(Filter filter, Node node, String variable) {
+		Dictionary dico = new Hashtable(5);
+
+		dico.put(UUID, node.uuid());
+		dico.put(CHAIN_ID, node.chainId());
+		dico.put(NODE_ID, node.nodeId());
+		dico.put(TIMESTAMP, new Long(node.timeStamp()));
+		dico.put(VARIABLE_ID, variable);
+		return filter.match(dico);
+
+	}
+
 }

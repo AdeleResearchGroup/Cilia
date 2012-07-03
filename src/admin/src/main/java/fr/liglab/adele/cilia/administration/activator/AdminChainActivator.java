@@ -14,19 +14,16 @@
  */
 package fr.liglab.adele.cilia.administration.activator;
 
+import fr.liglab.adele.cilia.ApplicationRuntime;
 import fr.liglab.adele.cilia.CiliaContext;
 import fr.liglab.adele.cilia.builder.Architecture;
 import fr.liglab.adele.cilia.builder.Builder;
-import fr.liglab.adele.cilia.dynamic.ApplicationRuntime;
 import fr.liglab.adele.cilia.exceptions.BuilderConfigurationException;
 import fr.liglab.adele.cilia.exceptions.BuilderException;
 import fr.liglab.adele.cilia.exceptions.BuilderPerformerException;
 import fr.liglab.adele.cilia.exceptions.CiliaIllegalParameterException;
+import fr.liglab.adele.cilia.exceptions.CiliaIllegalStateException;
 import fr.liglab.adele.cilia.ext.ContentBasedRouting;
-import fr.liglab.adele.cilia.model.impl.AdapterImpl;
-import fr.liglab.adele.cilia.model.impl.ChainImpl;
-import fr.liglab.adele.cilia.model.impl.MediatorImpl;
-import fr.liglab.adele.cilia.model.impl.PatternType;
 
 /**
  * AdminChainActivator: Generate and initialize the cilia-admin chan.
@@ -51,7 +48,8 @@ public class AdminChainActivator {
 	protected void start() {
 		try {
 			createChain();
-			ccontext.getApplicationRuntime().start(chainName);
+
+			ccontext.getApplicationRuntime().startChain(chainName) ;
 		} catch (CiliaIllegalParameterException e) {
 			e.printStackTrace();
 		} catch (BuilderConfigurationException e) {
@@ -59,6 +57,9 @@ public class AdminChainActivator {
 		} catch (BuilderException e) {
 			e.printStackTrace();
 		} catch (BuilderPerformerException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (CiliaIllegalStateException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -70,12 +71,16 @@ public class AdminChainActivator {
 	protected void stop() {
 		if (ccontext != null) {
 			try {
+
 				ApplicationRuntime ar = ccontext.getApplicationRuntime();
 				if (ar != null){
-					ar.stop(chainName);
+					ar.stopChain(chainName);
 				}
 				removeChain();
 			} catch (CiliaIllegalParameterException e) {
+				e.printStackTrace();
+			} catch (CiliaIllegalStateException e) {
+				e.printStackTrace();
 			}
 		}
 	}
@@ -84,8 +89,11 @@ public class AdminChainActivator {
 		ApplicationRuntime ar = ccontext.getApplicationRuntime();
 		if (ar != null){
 			try {
-				ar.stop(chainName);
+				ar.stopChain(chainName);
 			} catch (CiliaIllegalParameterException e) {
+				e.printStackTrace();
+			} catch (CiliaIllegalStateException e) {
+				e.printStackTrace();
 			}
 		}
 	}

@@ -1,4 +1,4 @@
-	<cilia xmlns:cbd="fr.imag.adele.cilia.dispatcher">
+	<cilia xmlns:cbd="fr.imag.adele.cilia.compendium">
 		<chain type="split-aggregate" id="DemoSplitAggregate">
 			<mediators>
 				<mediator-instance type="XsltTransformer" id="xslt-transformer-1" >

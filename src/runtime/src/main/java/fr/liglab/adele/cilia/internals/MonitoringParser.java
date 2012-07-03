@@ -15,72 +15,82 @@
 
 package fr.liglab.adele.cilia.internals;
 
-import java.util.HashMap;
-
 import org.w3c.dom.Node;
 
 import fr.liglab.adele.cilia.exceptions.CiliaParserException;
+import fr.liglab.adele.cilia.knowledge.configuration.ParserConfiguration;
 import fr.liglab.adele.cilia.model.Component;
-import fr.liglab.adele.cilia.model.impl.ComponentImpl;
+import fr.liglab.adele.cilia.model.MediatorComponent;
 import fr.liglab.adele.cilia.util.CiliaExtenderParser;
 
+/**
+ * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project
+ *         Team</a>
+ * 
+ */
 public class MonitoringParser extends DomExtenderParser implements CiliaExtenderParser {
-	private static final String TAG_MONITORING = "monitoring";
-	private static final String ATTR_ENABLE = "enable";
-	private static final String TAG_STATEVAR = "state-variable";
-	private static final String ATTR_ID = "id";
-	private static final String ATTR_CONDITION = "condition";
 
 	public MonitoringParser() {
-
+		NAME = "state-variable";
 	}
 
 	public boolean canHandle(Object elementDescription) {
-		if ((elementDescription != null) && (elementDescription instanceof Node)) {
-			Node parent = ((Node) elementDescription);
-			if (parent != null && parent.getLocalName() != null) {
-				if (parent.getLocalName().equalsIgnoreCase("adapter-instance"))
-					return true;
-				if (parent.getLocalName().equalsIgnoreCase("mediator-instance"))
-					return true;
-			}
+		Node disp = getNode("monitoring", elementDescription);
+		if (disp == null) {
+			return false;
 		}
-		return false;
+		return true;
 	}
 
-	public Component getComponent(Object componentDescription,
-			Component current) throws CiliaParserException {
-		HashMap stateVarList = null;
-		ComponentImpl currentComponent = (ComponentImpl)current;
-		Node child = getElement(TAG_MONITORING,(Node) componentDescription);
-		if (child != null) {
-			String enable = getAttributeValue(child, ATTR_ENABLE);
-			if (enable != null) {
-				if (enable.equalsIgnoreCase("true")) {
-					currentComponent.setProperty("state.variable.status", "true");
-				} else currentComponent.setProperty("state.variable.status", "false");
-			} else currentComponent.setProperty("state.variable.status", "true");
-			
-			Node conf = child.getFirstChild();
-			while (conf != null) {
-				if (conf.getLocalName() != null
-						&& conf.getLocalName().equalsIgnoreCase(TAG_STATEVAR)) {
-					String id = getAttributeValue(conf, ATTR_ID);
-					String condition = getAttributeValue(conf, ATTR_CONDITION);
-					if (id != null) {
-						if (stateVarList == null)
-							stateVarList = new HashMap();
-						if (condition == null)
-							condition = "";
-						stateVarList.put(id, condition);
+	private boolean getAttributeBoolean(Node node, String attribute) {
+		String enableStr = getAttributeValue(node, attribute);
+		boolean enable = false;
+		if ((enableStr != null) && (enableStr.equalsIgnoreCase("true")))
+			enable = true;
+		else
+			enable = false;
+		return enable;
+	}
+
+	public Component getComponent(Object componentDescription, Component currentComponent)
+			throws CiliaParserException {
+		ParserConfiguration monitoringConfig;
+		Node node = getNode("monitoring", componentDescription);
+		
+		do {
+			monitoringConfig = new ParserConfiguration(
+					(MediatorComponent) currentComponent);
+			String variableId = getAttributeValue(node, "id");
+			boolean enable = getAttributeBoolean(node, "enable");
+
+			monitoringConfig.addVariable(variableId, enable);
+			Node child = node.getFirstChild();
+			/* tag setup and tag Threshold */
+			while (child != null) {
+				if (child.getLocalName() != null
+						&& child.getLocalName().equalsIgnoreCase("setup")) {
+					String queue = getAttributeValue(child, "queue");
+					String dataflow = getAttributeValue(child, "flow-control");
+					monitoringConfig.addSetUp(variableId, queue, dataflow);
+				} else {
+					if (child.getLocalName() != null
+							&& child.getLocalName().equalsIgnoreCase("threshold")) {
+						String low = getAttributeValue(child, "low");
+						String veryLow = getAttributeValue(child, "very-low");
+						String high = getAttributeValue(child, "high");
+						String veryhigh = getAttributeValue(child, "very-high");
+						monitoringConfig.addThreshold(variableId, low, veryLow, high,
+								veryhigh);
 					}
 				}
-				conf = conf.getNextSibling();
+				child = nextElementSibling(child);
 			}
-			if (stateVarList != null)
-				currentComponent
-						.setProperty("state.variable.configuration", stateVarList);
-		}
+			node = nextElementSibling(node);
+		} while (node != null);
+		
+		monitoringConfig.configure();
+
 		return currentComponent;
 	}
+
 }

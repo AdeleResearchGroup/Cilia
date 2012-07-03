@@ -26,12 +26,9 @@ import java.util.Set;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
-import org.osgi.service.event.Event;
-import org.osgi.service.event.EventAdmin;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import fr.liglab.adele.cilia.event.CiliaEvent;
 import fr.liglab.adele.cilia.model.Adapter;
 import fr.liglab.adele.cilia.model.Binding;
 import fr.liglab.adele.cilia.model.Chain;
@@ -40,10 +37,10 @@ import fr.liglab.adele.cilia.model.MediatorComponent;
 import fr.liglab.adele.cilia.model.impl.ChainImpl;
 import fr.liglab.adele.cilia.model.impl.UpdateActions;
 import fr.liglab.adele.cilia.model.impl.UpdateEvent;
-import fr.liglab.adele.cilia.runtime.CiliaInstanceWrapper;
 import fr.liglab.adele.cilia.runtime.AdminData;
 import fr.liglab.adele.cilia.runtime.CiliaInstance;
-import fr.liglab.adele.cilia.runtime.impl.CiliaFrameworkEventPublisher;
+import fr.liglab.adele.cilia.runtime.CiliaInstanceWrapper;
+import fr.liglab.adele.cilia.runtime.FirerEvents;
 
 /**
  * This class is used to control a model chain and will act as an intermediator
@@ -84,7 +81,7 @@ public class ChainControllerImpl implements Observer {
 
 	private final Object lockObject = new Object();
 
-	private CiliaFrameworkEventPublisher eventNotifier;
+	private FirerEvents eventFirer;
 
 	private static final Logger log = LoggerFactory.getLogger("cilia.ipojo.runtime");
 
@@ -96,11 +93,12 @@ public class ChainControllerImpl implements Observer {
 	 * @param model
 	 *            chain model.
 	 */
-	public ChainControllerImpl(BundleContext context, Chain model, CreatorThread crea) {
+	public ChainControllerImpl(BundleContext context, Chain model, CreatorThread crea,
+			FirerEvents notifier) {
 		bcontext = context;
-		modelChain = (ChainImpl)model;
+		modelChain = (ChainImpl) model;
 		creator = crea;
-		eventNotifier = new CiliaFrameworkEventPublisher(context);
+		eventFirer = notifier;
 	}
 
 	private void createControllers() {
@@ -342,24 +340,27 @@ public class ChainControllerImpl implements Observer {
 			return;
 		}
 
-		BindingControllerImpl bindingController = new BindingControllerImpl(bcontext, binding);
+		BindingControllerImpl bindingController = new BindingControllerImpl(bcontext,
+				binding);
 		MediatorComponent smediator = binding.getSourceMediator();
 		MediatorComponent tmediator = binding.getTargetMediator();
 		MediatorControllerImpl targetController = null;
 		MediatorControllerImpl sourceController = null;
 		synchronized (lockObject) {
 			if (smediator != null) {
-				sourceController = (MediatorControllerImpl) mediators.get(smediator.getId());
+				sourceController = (MediatorControllerImpl) mediators.get(smediator
+						.getId());
 				if (sourceController == null) {
-					sourceController = (AdapterControllerImpl) adapters
-							.get(smediator.getId());
+					sourceController = (AdapterControllerImpl) adapters.get(smediator
+							.getId());
 				}
 			}
 			if (tmediator != null) {
-				targetController = (MediatorControllerImpl) mediators.get(tmediator.getId());
+				targetController = (MediatorControllerImpl) mediators.get(tmediator
+						.getId());
 				if (targetController == null) {
-					targetController = (AdapterControllerImpl) adapters
-							.get(tmediator.getId());
+					targetController = (AdapterControllerImpl) adapters.get(tmediator
+							.getId());
 				}
 			}
 
@@ -369,6 +370,8 @@ public class ChainControllerImpl implements Observer {
 				bindingController.start();
 			}
 			bindings.put(binding.getId(), bindingController);
+			eventFirer.fireEventNode(FirerEvents.EVT_BIND,
+					smediator, tmediator);
 		}
 	}
 
@@ -377,9 +380,10 @@ public class ChainControllerImpl implements Observer {
 		MediatorControllerImpl mc = null;
 		synchronized (lockObject) {
 			if (!mediators.containsKey(mediator.getId())) {
-				mc = new MediatorControllerImpl(bcontext, mediator, creator);
+				mc = new MediatorControllerImpl(bcontext, mediator, creator,eventFirer);
 				mediators.put(mediator.getId(), mc);
-				eventNotifier.publish(mediator, CiliaEvent.EVENT_MEDIATOR_ADDED);
+				eventFirer.fireEventNode(FirerEvents.EVT_ARRIVAL,
+						mediator);
 				if (isStarted) {
 					localStarted = true;
 				}
@@ -398,12 +402,14 @@ public class ChainControllerImpl implements Observer {
 		AdapterControllerImpl mc = null;
 		synchronized (lockObject) {
 			if (!adapters.containsKey(adapter.getId())) {
-				mc = new AdapterControllerImpl(bcontext, adapter, creator);
+				mc = new AdapterControllerImpl(bcontext, adapter, creator,eventFirer);
 				if (isStarted) {
 					localStarted = true;
 				}
 				adapters.put(adapter.getId(), mc);
-				eventNotifier.publish(adapter, CiliaEvent.EVENT_ADAPTER_ADDED);
+				eventFirer.fireEventNode(FirerEvents.EVT_ARRIVAL,
+						adapter);
+
 			}
 		}
 		// Initialize the component in a block separate from the synchronized
@@ -417,8 +423,12 @@ public class ChainControllerImpl implements Observer {
 		if (!bindings.containsKey(binding.getId())) {
 			return;
 		}
-		BindingControllerImpl bindingController = (BindingControllerImpl) bindings.remove(binding
-				.getId());
+		eventFirer.fireEventNode(FirerEvents.EVT_UNBIND,
+				binding.getSourceMediator(), binding.getTargetMediator());
+
+		BindingControllerImpl bindingController = (BindingControllerImpl) bindings
+				.remove(binding.getId());
+
 		if (bindingController != null) {
 			bindingController.stop();
 		}
@@ -434,8 +444,9 @@ public class ChainControllerImpl implements Observer {
 			mediatorController.stop();
 		}
 		clearDataMediator(mediatorId);
-		eventNotifier.publish(modelChain.getId(), mediatorId,
-				CiliaEvent.EVENT_MEDIATOR_REMOVED);
+		eventFirer.fireEventNode(FirerEvents.EVT_DEPARTURE,
+				mediator);
+
 	}
 
 	public void removeAdapter(Adapter adapter) {
@@ -447,8 +458,8 @@ public class ChainControllerImpl implements Observer {
 			adapterController.stop();
 		}
 		clearDataMediator(adapter.getId());
-		eventNotifier.publish(modelChain.getId(), adapterId,
-				CiliaEvent.EVENT_ADAPTER_REMOVED);
+		eventFirer.fireEventNode(FirerEvents.EVT_DEPARTURE,
+				adapter);
 	}
 
 	public void updateInstanceProperties(Dictionary properties) {

@@ -40,8 +40,6 @@
 			<artifactId>org.osgi.compendium</artifactId>
 			<version>4.2.0</version>
 		</dependency>
-
-
 		<dependency>
 			<groupId>fr.liglab.adele.cilia</groupId>
 			<artifactId>cilia-core</artifactId>
@@ -71,9 +69,9 @@
 							fr.liglab.adele.cilia.framework.components,
 							fr.liglab.adele.cilia.framework.monitor.statevariable,
 							fr.liglab.adele.cilia.runtime,
-							fr.liglab.adele.cilia.runtime.dependency,
-							fr.liglab.adele.cilia.runtime.application,
-							fr.liglab.adele.cilia.runtime.dynamic
+							fr.liglab.adele.cilia.dependency,
+							fr.liglab.adele.cilia.knowledge,
+							fr.liglab.adele.cilia.knowledge.configuration		
 						</Export-Package>
 						<Private-Package>
 							fr.liglab.adele.cilia.internals,

@@ -26,6 +26,7 @@ import org.slf4j.LoggerFactory;
 import fr.liglab.adele.cilia.Data;
 import fr.liglab.adele.cilia.framework.AbstractScheduler;
 import fr.liglab.adele.cilia.framework.IScheduler;
+import fr.liglab.adele.cilia.runtime.WorkQueue;
 /**
  * 
  *
@@ -35,7 +36,8 @@ import fr.liglab.adele.cilia.framework.IScheduler;
 public class ImmediateScheduler extends AbstractScheduler {
 
 	IScheduler scheduler;
-
+	public String testAudit ;
+	public WorkQueue wq ;
 	protected Map dataMap = new HashMap();
 
 	protected static Logger logger = LoggerFactory.getLogger("cilia.ipojo.runtime");
@@ -56,6 +58,7 @@ public class ImmediateScheduler extends AbstractScheduler {
 			logger.error("Unable to process data, Scheduler reference is not valid.");
 			return;
 		}
+		testAudit =" testScheduler"+System.currentTimeMillis() ;
 		scheduler.process(dataSet);
 	}
 

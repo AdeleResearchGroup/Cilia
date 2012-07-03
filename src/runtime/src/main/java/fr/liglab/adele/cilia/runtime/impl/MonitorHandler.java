@@ -21,6 +21,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.felix.ipojo.ComponentInstance;
 import org.apache.felix.ipojo.ConfigurationException;
 import org.apache.felix.ipojo.PrimitiveHandler;
 import org.apache.felix.ipojo.metadata.Element;
@@ -75,6 +76,7 @@ public class MonitorHandler extends PrimitiveHandler implements IProcessorMonito
 
 	public void start() {
 	}
+	
 
 
 	public void addListener(IMonitor listener) {
@@ -170,4 +172,5 @@ public class MonitorHandler extends PrimitiveHandler implements IProcessorMonito
 		while (it.hasNext())
 			((IMonitor )it.next()).onFieldSet(field, o);		
 	}
+	
 }

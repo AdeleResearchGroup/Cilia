@@ -28,6 +28,8 @@ import java.util.Set;
 
 import org.apache.felix.ipojo.ComponentInstance;
 import org.apache.felix.ipojo.ConfigurationException;
+import org.apache.felix.ipojo.Handler;
+import org.apache.felix.ipojo.InstanceManager;
 import org.apache.felix.ipojo.InstanceStateListener;
 import org.apache.felix.ipojo.PrimitiveHandler;
 import org.apache.felix.ipojo.architecture.ComponentTypeDescription;
@@ -102,9 +104,24 @@ Observer, IDispatcherHandler {
 	/* This reference will be injected by iPOJO */
 	private WorkQueue m_applicationQueue;
 	/*
-	 * Private class holding autonomic properties
+	 * Private class holding asynchronous properties
 	 */
 	ExtendedProperties extendedProperties;
+
+	private void configureHandlerMonitoring(InstanceManager im, String handlerName) {
+		Handler handler = (Handler) (im).getHandler(Const.ciliaQualifiedName(handlerName));
+		if (handler != null) {
+			Properties props = new Properties();
+			props.put("cilia.monitor.handler", getMonitor());
+			handler.reconfigure(props);
+		}
+	}
+	
+	private void configureHandlersMonitoring(CiliaInstance instance) {
+		ComponentInstance im =((CiliaInstanceWrapper)instance).getInstanceManager();
+		configureHandlerMonitoring((InstanceManager)im,"dependency") ;
+		configureHandlerMonitoring((InstanceManager)im,"audit") ;
+	}
 
 	/**
 	 * Check if the handler is well configured.
@@ -218,6 +235,8 @@ Observer, IDispatcherHandler {
 			ciliaSender = new CiliaInstanceWrapper(getInstanceManager().getContext(),
 					identifier, filter, dictionary, senderManager);
 			ciliaSender.start();
+			// TODO FIXE ME :
+			configureHandlersMonitoring(ciliaSender) ;
 			senderManager.addInstance(portname, ciliaSender);
 		}
 	}
@@ -627,6 +646,7 @@ Observer, IDispatcherHandler {
 			synchronized (dispatcherComponent) {
 				dispatcherComponent.start();
 				updateDispatcherReference();
+				configureHandlersMonitoring(dispatcherComponent);
 			}
 		}
 	}

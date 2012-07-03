@@ -46,14 +46,12 @@
 							fr.liglab.adele.cilia.ext,
 							fr.liglab.adele.cilia.util,
 							fr.liglab.adele.cilia.util.concurrent,
-							fr.liglab.adele.cilia.event,
 							fr.liglab.adele.cilia.model,
 							fr.liglab.adele.cilia.model.impl,
 							fr.liglab.adele.cilia.builder,
 							fr.liglab.adele.cilia.builder.impl,
 							fr.liglab.adele.cilia.exceptions,
-							fr.liglab.adele.cilia.specification,
-                            fr.liglab.adele.cilia.dynamic,
+							fr.liglab.adele.cilia.specification
 						</Export-Package>
 						<Private-Package>
 						</Private-Package>

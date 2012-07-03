@@ -18,8 +18,7 @@
 		<callback transition="validate" method="start" />
 		<callback transition="invalidate" method="stop" />
 	</component>
-
-
+	
 	<!-- Declare the handlers -->
 	<handler
 		classname="fr.liglab.adele.cilia.internals.factories.MediatorDummyHandler"
@@ -53,18 +52,16 @@
 		classname="fr.liglab.adele.cilia.framework.monitor.AuditHandler"
 		name="audit" namespace="fr.liglab.adele.cilia" architecture="true">
 	</handler>
-	
+
 	<handler
 		classname="fr.liglab.adele.cilia.framework.monitor.statevariable.MonitorHandlerStateVar"
 		name="monitor-statevar-handler" namespace="fr.liglab.adele.cilia"
-		architecture="true">
-		<provides>
-			<property name="mediator.service" value="monitor" type="String" />
-		</provides>
+		architecture="false">
 		<requires field="m_systemQueue" specification="fr.liglab.adele.cilia.runtime.WorkQueue"
-			filter="(cilia.pool.scope=application)" />
+			filter="(cilia.pool.scope=system)" />	
 		<callback transition="validate" method="validate" />
 		<callback transition="invalidate" method="unvalidate" />
+
 	</handler>
 
 	<handler classname="fr.liglab.adele.cilia.runtime.impl.SchedulerHandler"
@@ -81,6 +78,13 @@
 		classname="fr.liglab.adele.cilia.framework.components.ImmediateScheduler"
 		name="immediate-scheduler" namespace="fr.liglab.adele.cilia"
 		architecture="false">
+<!--  
+		<cilia:audit field="testAudit" namespace ="scheduler" access="rw" />
+		
+		<requires field="wq" specification="fr.liglab.adele.cilia.runtime.WorkQueue"
+			filter="(cilia.pool.scope=error)" />
+-->
+
 	</scheduler>
 	<!-- Declaring Multicast Dispatcher -->
 	<dispatcher
@@ -237,7 +241,7 @@
 	<instance component="Cilia-Chain-Parser" name="Cilia-Chain-Parser" />
 	<instance component="Cilia-File-Manager" name="Cilia-File-Manager" />
 
-	<handler classname="fr.liglab.adele.cilia.runtime.dependency.DependencyHandler"
+	<handler classname="fr.liglab.adele.cilia.dependency.DependencyHandler"
 		namespace="fr.liglab.adele.cilia" name="dependency" level="0"
 		architecture="false">
 	</handler>

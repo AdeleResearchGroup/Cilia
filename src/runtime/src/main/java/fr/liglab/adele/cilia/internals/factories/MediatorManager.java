@@ -279,7 +279,7 @@ public class MediatorManager extends MediatorComponentManager implements Compone
 			m_handlers[i].init(this, metadata, configuration);
 			//Add subscription.
 			Handler handler = m_handlers[i].getHandler();
-			//add the monitor, to listen the scheduler/dispatcher events.
+			// add the monitor, to listen the scheduler/dispatcher events.
 			if (handler instanceof IMonitor) {
 				if (monitor != null) {
 					monitor.addListener((IMonitor)handler);
@@ -376,12 +376,6 @@ public class MediatorManager extends MediatorComponentManager implements Compone
 	}
 
 
-	public Object getFieldValue(String fieldName) {
-		return null;
-	}
-	public Object getFieldValue(String fieldName, Object pojo) {
-		return null;
-	}
 	public Object[] getPojoObjects() {
 		return null;
 	}

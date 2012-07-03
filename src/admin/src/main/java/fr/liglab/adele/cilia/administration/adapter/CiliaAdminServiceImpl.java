@@ -22,11 +22,11 @@ import fr.liglab.adele.cilia.administration.util.ParserUtils;
 import fr.liglab.adele.cilia.builder.Builder;
 import fr.liglab.adele.cilia.exceptions.BuilderException;
 import fr.liglab.adele.cilia.exceptions.BuilderPerformerException;
+import fr.liglab.adele.cilia.exceptions.CiliaIllegalParameterException;
 import fr.liglab.adele.cilia.framework.AbstractCollector;
 import fr.liglab.adele.cilia.model.Adapter;
 import fr.liglab.adele.cilia.model.Chain;
 import fr.liglab.adele.cilia.model.Mediator;
-import fr.liglab.adele.cilia.model.impl.ChainImpl;
 
 /**
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project Team</a>
@@ -39,8 +39,12 @@ public class CiliaAdminServiceImpl extends AbstractCollector implements CiliaAdm
 	 * @see fr.liglab.adele.cilia.administration.CiliaAdminService#getChain(java.lang.String)
 	 */
 	public Chain getChain(String chainId) {
-		return ccontext.getApplicationSpecification().get(chainId);
-
+		try {
+			return ccontext.getApplicationRuntime().getChain(chainId);
+		} catch (CiliaIllegalParameterException e) {
+			e.printStackTrace();
+			return null;
+		}
 	}
 
 	/* (non-Javadoc)

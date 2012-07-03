@@ -34,7 +34,7 @@ public class MonitorErrorHandlerParser extends DomExtenderParser implements
 	private static final String TO = "send-to";
 	
 	public MonitorErrorHandlerParser(){
-		NAMESPACE = "fr.imag.adele.cilia.monitor";
+		//NAMESPACE = "fr.imag.adele.cilia.monitor";
 		NAME = "error-handler";
 	}
 	

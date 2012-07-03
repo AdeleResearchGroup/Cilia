@@ -37,7 +37,7 @@ public class ContentBasedParser extends DomExtenderParser implements CiliaExtend
 	 * @see fr.liglab.adele.cilia.model.impl.parser.CiliaExtenderParser#getComponent(java.lang.Object, fr.liglab.adele.cilia.model.impl.IComponent)
 	 */
 	public ContentBasedParser(){
-		NAMESPACE = "fr.imag.adele.cilia.dispatcher";
+		//NAMESPACE = "fr.imag.adele.cilia.dispatcher";
 		NAME = "content-based";
 	}
 	public Component getComponent(Object componentDescription,

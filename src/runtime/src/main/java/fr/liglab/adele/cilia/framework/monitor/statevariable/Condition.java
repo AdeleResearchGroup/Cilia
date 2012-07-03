@@ -22,21 +22,13 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.Filter;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.util.measurement.Measurement;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import fr.liglab.adele.cilia.exceptions.CiliaInvalidSyntaxException;
+import fr.liglab.adele.cilia.util.FrameworkUtils;
 
+@SuppressWarnings({ "rawtypes", "unchecked" })
 public class Condition {
-	private static Logger logger = LoggerFactory
-			.getLogger("cilia.ipojo.runtime.monitoring");
-	public static final String VALUE_CURRENT = "value.current";
-	public static final String VALUE_PREVIOUS = "value.previous";
-	public static final String DELTA_ABSOLUTE = "delta.absolute";
-	public static final String DELTA_RELATIVE = "value.relative";
-	public static final String TIME_ELAPSED = "time.elapsed";
-	public static final String TIME_CURRENT = "time.current";
-	public static final String TIME_PREVIOUS = "time.previous";
+
 
 	private Filter filter;
 	private final Dictionary dico = new Hashtable(7);
@@ -53,14 +45,14 @@ public class Condition {
 	 */
 	public Condition(BundleContext bc, String ldapfilter)
 			throws CiliaInvalidSyntaxException {
-		dico.put(VALUE_CURRENT, new Double(Double.NaN));
-		dico.put(TIME_CURRENT, new Long(0));
+		dico.put(FrameworkUtils.VALUE_CURRENT, new Double(Double.NaN));
+		dico.put(FrameworkUtils.TIME_CURRENT, new Long(0));
 		setCondition(bc, ldapfilter);
 	}
 
 	public Condition(Filter filter) {
-		dico.put(VALUE_CURRENT, new Double(Double.NaN));
-		dico.put(TIME_CURRENT, new Long(0));
+		dico.put(FrameworkUtils.VALUE_CURRENT, new Double(Double.NaN));
+		dico.put(FrameworkUtils.TIME_CURRENT, new Long(0));
 		setCondition(filter);
 	}
 
@@ -72,7 +64,7 @@ public class Condition {
 			} else
 				strFilter = filter.toString();
 		}
-		return strFilter;
+		return new String(strFilter);
 	}
 
 	public void setCondition(BundleContext bc, String expression)
@@ -95,6 +87,40 @@ public class Condition {
 		}
 	}
 
+	public boolean match(Double d, long timeCurrent, long timeElapsed) {
+		boolean result;
+		Long previousTime;
+		Double previousValue;
+
+		if (filter != null) {
+			synchronized (synchro) {
+				/* Current value */
+				previousValue = (Double) dico.get(FrameworkUtils.VALUE_CURRENT);
+				dico.put(FrameworkUtils.VALUE_PREVIOUS, previousValue);
+				dico.put(FrameworkUtils.VALUE_CURRENT, new Double(d));
+
+				/* Current time */
+				previousTime = (Long) dico.get(FrameworkUtils.TIME_CURRENT);
+				dico.put(FrameworkUtils.TIME_PREVIOUS, previousTime);
+				dico.put(FrameworkUtils.TIME_CURRENT, new Long(timeCurrent));
+
+				/* computes delta Absolute and delta relative */
+				if ((previousValue.doubleValue() != Double.NaN)
+						&& (d.doubleValue() != Double.NaN)) {
+					double dd = Math.abs(previousValue.doubleValue() - d.doubleValue());
+					dico.put(FrameworkUtils.DELTA_ABSOLUTE, new Double(dd));
+					dico.put(FrameworkUtils.DELTA_RELATIVE,
+							new Double(dd / Math.abs(d.doubleValue())));
+				}
+				/* computes time elapsed */
+				dico.put(FrameworkUtils.TIME_ELAPSED, new Long(timeElapsed));
+				result = filter.matchCase(dico);
+			}
+		} else
+			result = false;
+		return result;
+	}
+
 	public boolean match(Measurement m, long timeElapsed) {
 		boolean result;
 		Long previousTime;
@@ -103,30 +129,27 @@ public class Condition {
 		if (filter != null) {
 			synchronized (synchro) {
 				/* Current value */
-				previousValue = (Double) dico.get(VALUE_CURRENT);
-				dico.put(VALUE_PREVIOUS, previousValue);
-				dico.put(VALUE_CURRENT, new Double(m.getValue()));
+				previousValue = (Double) dico.get(FrameworkUtils.VALUE_CURRENT);
+				dico.put(FrameworkUtils.VALUE_PREVIOUS, previousValue);
+				dico.put(FrameworkUtils.VALUE_CURRENT, new Double(m.getValue()));
 
 				/* Current time */
-				previousTime = (Long) dico.get(TIME_CURRENT);
-				dico.put(TIME_PREVIOUS, previousTime);
-				dico.put(TIME_CURRENT, new Long(m.getTime()));
+				previousTime = (Long) dico.get(FrameworkUtils.TIME_CURRENT);
+				dico.put(FrameworkUtils.TIME_PREVIOUS, previousTime);
+				dico.put(FrameworkUtils.TIME_CURRENT, new Long(m.getTime()));
 
 				/* computes delta Absolute and delta relative */
 				if ((previousValue.doubleValue() != Double.NaN)
 						&& (m.getValue() != Double.NaN)) {
 					double d = Math.abs(previousValue.doubleValue() - m.getValue());
-					dico.put(DELTA_ABSOLUTE, new Double(d));
-					dico.put(DELTA_RELATIVE, new Double(d / Math.abs(m.getValue())));
+					dico.put(FrameworkUtils.DELTA_ABSOLUTE, new Double(d));
+					dico.put(FrameworkUtils.DELTA_RELATIVE,
+							new Double(d / Math.abs(m.getValue())));
 				}
 				/* computes time elapsed */
-				dico.put(TIME_ELAPSED, new Long(timeElapsed));
+				dico.put(FrameworkUtils.TIME_ELAPSED, new Long(timeElapsed));
 				result = filter.matchCase(dico);
 
-				if (logger.isTraceEnabled()) {
-					logger.trace("condition match =" + result);
-					logger.trace("Dictionnary =" + dico.toString());
-				}
 			}
 		} else
 			result = false;
@@ -143,10 +166,10 @@ public class Condition {
 
 		if (filter != null) {
 			synchronized (synchro) {
-				previousTime = (Long) dico.get(TIME_CURRENT);
-				dico.put(TIME_PREVIOUS, previousTime);
-				dico.put(TIME_CURRENT, new Long(timestamp));
-				dico.put(TIME_ELAPSED, new Long(timeElapsed));
+				previousTime = (Long) dico.get(FrameworkUtils.TIME_CURRENT);
+				dico.put(FrameworkUtils.TIME_PREVIOUS, previousTime);
+				dico.put(FrameworkUtils.TIME_CURRENT, new Long(timestamp));
+				dico.put(FrameworkUtils.TIME_ELAPSED, new Long(timeElapsed));
 				result = filter.matchCase(dico);
 			}
 		} else

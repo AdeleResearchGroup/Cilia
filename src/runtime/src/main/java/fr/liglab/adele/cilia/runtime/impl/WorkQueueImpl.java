@@ -22,6 +22,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import fr.liglab.adele.cilia.exceptions.CiliaIllegalParameterException;
+import fr.liglab.adele.cilia.runtime.Const;
 import fr.liglab.adele.cilia.runtime.WorkQueue;
 
 /**
@@ -41,8 +42,7 @@ public class WorkQueueImpl implements WorkQueue {
 	private int m_size;
 	private int m_priority;
 
-	private static final Logger logger = LoggerFactory.getLogger("cilia.ipojo.runtime");
-
+	private static final Logger logger = LoggerFactory.getLogger(Const.LOGGER_CORE);
 
 	/*
 	 * (non-Javadoc)
@@ -99,7 +99,7 @@ public class WorkQueueImpl implements WorkQueue {
 	 * 
 	 * @see fr.liglab.adele.cilia.framework.utils.WorkQueue#setPriority(int)
 	 */
-	public void setPriority(int newPriority) throws CiliaIllegalParameterException{
+	public void setPriority(int newPriority) throws CiliaIllegalParameterException {
 
 		if ((m_priority < Thread.MIN_PRIORITY) || (m_priority > Thread.MAX_PRIORITY)) {
 			String msg = "priority out of bounds =" + m_priority;
@@ -138,8 +138,9 @@ public class WorkQueueImpl implements WorkQueue {
 	 * 
 	 * @see fr.liglab.adele.cilia.framework.utils.WorkQueue#size(int)
 	 */
-	public int size(int newSize) throws CiliaIllegalParameterException{
-		if (newSize<0) throw new CiliaIllegalParameterException("size cannot be a negative value" );
+	public int size(int newSize) throws CiliaIllegalParameterException {
+		if (newSize < 0)
+			throw new CiliaIllegalParameterException("size cannot be a negative value");
 		synchronized (threads) {
 			if (newSize > threads.size()) {
 				for (int i = threads.size(); i < newSize; i++) {
@@ -205,8 +206,8 @@ public class WorkQueueImpl implements WorkQueue {
 		public boolean stopped = false;
 
 		public void run() {
-			Runnable r;
 			while (true) {
+				Runnable r;
 				synchronized (queue) {
 					while (queue.isEmpty()) {
 						try {
@@ -221,9 +222,10 @@ public class WorkQueueImpl implements WorkQueue {
 				try {
 					r.run();
 				} catch (Throwable e) {
-					logger.error("Exception Worker(" + this.getName() + ")=" + e);
+					logger.error("Exception Worker [{}] ", this.getName(), e);
 				}
 			}
 		}
 	}
+
 }

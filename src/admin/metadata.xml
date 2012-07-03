@@ -8,7 +8,8 @@
 	the specific language governing permissions and limitations under the License. -->
 
 
-<cilia xmlns:cilia="fr.liglab.adele.cilia" xmlns:jmx="org.apache.felix.ipojo.handlers.jmx" xmlns:ipojo="org.apache.felix.ipojo">
+<cilia xmlns:cilia="fr.liglab.adele.cilia" xmlns:jmx="org.apache.felix.ipojo.handlers.jmx"
+	xmlns:ipojo="org.apache.felix.ipojo">
 	<!-- Processors to add cilia elements -->
 	<processor name="ciliaCreatorProcessor"
 		classname="fr.liglab.adele.cilia.administration.processors.CiliaCreatorProcessor"
@@ -210,7 +211,8 @@
 		immediate="true" architecture="true">
 		<ipojo:provides
 			specifications="{fr.liglab.adele.cilia.administration.command.CiliaAdminGogoCommandAdapter}">
-			<ipojo:property name="osgi.command.scope" type="String" value="cilia" />
+			<ipojo:property name="osgi.command.scope" type="String"
+				value="cilia" />
 			<ipojo:property name="osgi.command.function" type="String[]"
 				value="{create,modify,remove,start,stop,show,load,help}" />
 		</ipojo:provides>
@@ -226,11 +228,13 @@
 
 
 
+
 	<ipojo:component name="ChainActivator"
+
 		classname="fr.liglab.adele.cilia.administration.activator.AdminChainActivator"
 		architecture="true">
 		<ipojo:requires field="ccontext">
-			<ipojo:callback type="unbind" method="unbindContext"/>
+			<ipojo:callback type="unbind" method="unbindContext" />
 		</ipojo:requires>
 		<ipojo:callback transition="validate" method="start" />
 		<ipojo:callback transition="invalidate" method="stop" />
@@ -251,21 +255,21 @@
 		name="Monitoring_Commands.gogo">
 		<ipojo:provides
 			specifications="fr.liglab.adele.cilia.administration.command.GogoMonitoringCommands">
-			<ipojo:property name="osgi.command.scope" type="String" value="cilia" />
+			<ipojo:property name="osgi.command.scope" type="String"
+				value="cilia" />
 			<ipojo:property name="osgi.command.function" type="String[]"
 				value="{
-				        runtime_endpoints_in,runtime_endpoints_out,runtime_connected_to,
-				        runtime_find_node,
-				        runtime_chain_state,runtime_chains,
-				        node_setup,node_rawdata,node_monitoring,node_dump,
-				        app_chains,app_endpoints_in,app_endpoints_out,app_connected_to,
+				        node_setup,node_rawdata,node_monitoring,
+				        app_chains,app_chain_state,app_endpoints_in,app_endpoints_out,app_connected_to,
 				        app_find_node,
-				        imported_services,
+				        app_callback_chain,app_callback_node,app_callback_measure,
 				        my_entry
 				        }" />
+
 		</ipojo:provides>
-		<ipojo:requires field="runtime" />
-		<ipojo:requires field="application" />
+		<ipojo:requires field="ciliaContext" />
+		<ipojo:callback transition="validate" method="start" />
+		<ipojo:callback transition="invalidate" method="stop" />
 		<!-- <requires field="adminService" optional="true" /> -->
 	</ipojo:component>
 
@@ -278,12 +282,12 @@
 		<ipojo:provides>
 			<ipojo:property name="cilia.runtime.node.data" type="java.lang.String"
 				value="(node=*)" />
-			<ipojo:property name="cilia.runtime.node.threshold" type="java.lang.String"
-				value="(node=*)" />
+			<ipojo:property name="cilia.runtime.node.threshold"
+				type="java.lang.String" value="(node=*)" />
 			<ipojo:property name="cilia.runtime.node" type="java.lang.String"
 				value="(node=*)" />
 		</ipojo:provides>
-		<ipojo:requires field="runtime" />
+		<ipojo:requires field="ciliaContext" />
 		<jmx:config domain="cilia.application" name="runtime">
 			<jmx:method name="getChainIDs" description="Get chains ID" />
 			<jmx:method name="getEndpointsIn"
@@ -314,7 +318,8 @@
 	<ipojo:instance component="Runtime.listeners" name="Runtime.listeners" />
 
 	<!-- JMX interface : ApplicatioSpecification -->
-	<ipojo:component classname="fr.liglab.adele.cilia.administration.jmx.ApplSpecification"
+	<ipojo:component
+		classname="fr.liglab.adele.cilia.administration.jmx.ApplSpecification"
 		name="ApplicationSpecification.jmx">
 		<ipojo:provides specifications="fr.liglab.adele.cilia.NodeCallback" />
 		<ipojo:provides specifications="fr.liglab.adele.cilia.ChainCallback" />
@@ -324,7 +329,8 @@
 			<ipojo:property name="cilia.application.chain" type="java.lang.String"
 				value="(chain=*)" />
 		</ipojo:provides>
-		<ipojo:requires field="application" />
+		<ipojo:requires field="ciliaContext" />
+
 		<jmx:config domain="cilia.application" name="specification">
 			<jmx:method name="getChainIDs" description="Get chains ID" />
 			<jmx:method name="getEndpointsIn"
@@ -354,14 +360,17 @@
 	</ipojo:component>
 
 
+
 	<!-- INSTANCES -->
 
 	<ipojo:instance component="ChainActivator" name="chain-activator" />
 	<ipojo:instance component="Cilia-Deployer" name="Cilia-Deployer" />
 
-	<ipojo:instance component="Monitoring_Commands.gogo" name="Monitoring_Commands.gogo" />
-	<ipojo:instance component="ApplicationSpecification.jmx" name="ApplicationSpecification.jmx" />
-	<ipojo:instance component="ApplicationRuntime.jmx" name="ApplicationRuntime.jmx" />
+	<ipojo:instance component="Monitoring_Commands.gogo"
+		name="Monitoring_Commands.gogo" />
+	<!-- <ipojo:instance component="ApplicationSpecification.jmx" name="ApplicationSpecification.jmx" 
+		/> <ipojo:instance component="ApplicationRuntime.jmx" name="ApplicationRuntime.jmx" 
+		/> -->
 
 
 </cilia>

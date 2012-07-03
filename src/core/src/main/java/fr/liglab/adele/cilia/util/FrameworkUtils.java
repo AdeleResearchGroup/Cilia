@@ -17,6 +17,9 @@ package fr.liglab.adele.cilia.util;
 
 import java.util.regex.Pattern;
 
+import fr.liglab.adele.cilia.Node;
+
+
 /**
  * Set of usefull statics methods
  * 
@@ -57,4 +60,21 @@ public final class FrameworkUtils {
 		}
 		return sb.toString();
 	}
+	
+	public static final String makeQualifiedId(Node node) {
+		StringBuffer sb = new StringBuffer(node.chainId());
+		sb.append("/").append(node.nodeId());
+		sb.append("/").append(node.uuid());
+		return sb.toString();
+	}
+	
+	/* Data flow management ldap keys word */
+	public static final String VALUE_CURRENT = "value.current";
+	public static final String VALUE_PREVIOUS = "value.previous";
+	public static final String DELTA_ABSOLUTE = "delta.absolute";
+	public static final String DELTA_RELATIVE = "value.relative";
+	public static final String TIME_ELAPSED = "time.elapsed";
+	public static final String TIME_CURRENT = "time.current";
+	public static final String TIME_PREVIOUS = "time.previous";
+	
 }

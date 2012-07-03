@@ -17,106 +17,272 @@ package fr.liglab.adele.cilia.framework.monitor.statevariable;
 
 import java.util.Collections;
 import java.util.Dictionary;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeSet;
 
+import org.apache.felix.ipojo.ComponentInstance;
 import org.apache.felix.ipojo.ConfigurationException;
+import org.apache.felix.ipojo.InstanceStateListener;
 import org.apache.felix.ipojo.metadata.Element;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.InvalidSyntaxException;
+import org.osgi.framework.ServiceReference;
+import org.osgi.service.event.Event;
+import org.osgi.service.event.EventAdmin;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import fr.liglab.adele.cilia.Data;
+import fr.liglab.adele.cilia.framework.monitor.AbstractMonitor;
+import fr.liglab.adele.cilia.model.impl.ConstModel;
+import fr.liglab.adele.cilia.runtime.ConstRuntime;
 import fr.liglab.adele.cilia.runtime.WorkQueue;
+import fr.liglab.adele.cilia.util.FrameworkUtils;
 import fr.liglab.adele.cilia.util.Watch;
+import fr.liglab.adele.cilia.util.concurrent.ConcurrentReaderHashMap;
 
-public class MonitorHandlerStateVar extends AbstractStateVariable {
+@SuppressWarnings({ "rawtypes", "unchecked" })
+public class MonitorHandlerStateVar extends AbstractMonitor implements
+		InstanceStateListener {
+
+	private static Logger logger = LoggerFactory.getLogger(ConstRuntime.LOGGER_KNOWLEDGE);
+
+	private BundleContext m_bundleContext;
 
 	/* TAG for storing message history */
 	private static final String PROPERTY_MSG_HISTORY = "cilia.message.history";
 	private static final String PROPERTY_BINDING_TIME = "cilia.message.time.bind";
-	/* Liste of state var */
-
-	private static final Set setStateVar, setDependencyCall, setEventing, setSystemCall,
-			setFunctionnalCall;
-
-	static {
-		/* State var Event fired by dependency Manager */
-		setDependencyCall = new HashSet();
-		setDependencyCall.add("service.arrival");
-		setDependencyCall.add("service.departure");
-		setDependencyCall.add("service.arrival.count");
-		setDependencyCall.add("service.departure.count");
-
-		/* state var type eventing */
-		setEventing = new HashSet();
-		setEventing.add("fire.event");
-		setEventing.add("fire.event.count");
-
-		/* State var type SyemCall */
-		setSystemCall = new HashSet();
-		/* Phase Collect */
-		setSystemCall.add("scheduler.count");
-		setSystemCall.add("scheduler.data");
-		/* Phase Processing */
-		setSystemCall.add("process.entry.count");
-		setSystemCall.add("process.entry.data");
-		setSystemCall.add("process.exit.count");
-		setSystemCall.add("process.exit.data");
-		setSystemCall.add("process.err.count");
-		setSystemCall.add("process.err.data");
-		setSystemCall.add("process.msg.treated");
-		/* number of ticks for the phase Process */
-		setSystemCall.add("processing.delay");
-		/* Phase dispatching */
-		setSystemCall.add("dispatch.count");
-		setSystemCall.add("dispatch.data");
-		setSystemCall.add("dispatch.msg.treated");
-		/* Message history */
-		setSystemCall.add("message.history");
-		/* time between dispatch and collect */
-		setSystemCall.add("transmission.delay");
-
-		setFunctionnalCall = new HashSet();
-		setFunctionnalCall.add("field.set");
-		setFunctionnalCall.add("field.set.count");
-		setFunctionnalCall.add("field.get");
-		setFunctionnalCall.add("field.get.count");
-
-		/* All state variables */
-		setStateVar = new HashSet(setSystemCall);
-		setStateVar.addAll(setDependencyCall);
-		setStateVar.addAll(setEventing);
-		setStateVar.addAll(setFunctionnalCall);
-
-	}
 
 	/* This reference will be injected by iPOJO */
 	private WorkQueue m_systemQueue;
+
+	/* Internal variables */
 	private long[] m_counters = new long[12];
 	private LinkedList m_gatherMsgIn = new LinkedList();
 	private LinkedList m_snapshootMsg = new LinkedList();
 	private LinkedList m_historyList = new LinkedList();
 	private Object _lock = new Object();
 	private Watch processTime;
+	private boolean isMediatorValid = false;
+	private String chainId, componentId, uuid;
+	private Map m_statevar = new ConcurrentReaderHashMap();
+	private Set listStateVarEnabled = new HashSet();
+	private Set previousStateVarEnabled = new HashSet();
+	private String topic;
 
+	/* Handler configuration */
 	public void configure(Element metadata, Dictionary configuration)
 			throws ConfigurationException {
-		super.configure(metadata, configuration);
-		Iterator it = setStateVar.iterator();
-		while (it.hasNext()) {
-			String id = (String) it.next();
-			addStateVarId(id, null);
+		chainId = (String) configuration.get(ConstModel.PROPERTY_CHAIN_ID);
+		componentId = (String) configuration.get(ConstModel.PROPERTY_COMPONENT_ID);
+		uuid = (String) configuration.get(ConstModel.PROPERTY_UUID);
+		topic = ConstRuntime.TOPIC_HEADER + chainId;
+
+		configureStateVar(configuration);
+	}
+
+	private void configureStateVar(Dictionary configuration) {
+		Map configs = (Map) configuration.get(ConstRuntime.MONITORING_CONFIGURATION);
+		/* Retreive all state var enabled */
+		/* Set the data flow for all state Var */
+		if (configs != null) {
+			previousStateVarEnabled.clear();
+			previousStateVarEnabled.addAll(listStateVarEnabled);
+			Iterator it = configs.entrySet().iterator();
+			while (it.hasNext()) {
+				Map.Entry pairs = (Map.Entry) it.next();
+				String key = (String) pairs.getKey();
+
+				if (key.equalsIgnoreCase("enable")) {
+					listStateVarEnabled.clear();
+					/* Retreive all state enable/disable */
+					Set enabled = (Set) pairs.getValue();
+					Iterator iter = enabled.iterator();
+					while (iter.hasNext()) {
+						String stateVarId = (String) iter.next();
+						listStateVarEnabled.add(stateVarId);
+						stateVarConfiguration(stateVarId);
+					}
+				} else {
+					/* Store the dataflow control */
+					String ldapfilter = (String) pairs.getValue();
+					stateVarConfiguration(key, ldapfilter);
+				}
+			}
 		}
 	}
 
 	public void validate() {
-		super.validate();
+		retreiveEventAdmin();
+		fireStatusChange();
 	}
 
 	public void unvalidate() {
-		super.unvalidate();
+	}
+
+	public void start() {
+		m_bundleContext = getFactory().getBundleContext();
+		//getInstanceManager().addInstanceStateListener(this);
+	}
+
+	public void stop() {
+		// getInstanceManager().addInstanceStateListener(this);
+		/* Clear state var */
+		listStateVarEnabled.clear();
+	}
+
+	/* retreive EventAdmin reference */
+	private ServiceReference retreiveEventAdmin() {
+		ServiceReference[] refs = null;
+		ServiceReference refEventAdmin;
+		try {
+			refs = m_bundleContext.getServiceReferences(EventAdmin.class.getName(), null);
+		} catch (InvalidSyntaxException e) {
+			logger.error("Event Admin  service lookup unrecoverable error");
+			throw new RuntimeException("Event Adminservice lookup unrecoverable error");
+		}
+		if (refs != null)
+			refEventAdmin = refs[0];
+		else
+			refEventAdmin = null;
+		return refEventAdmin;
+	}
+
+	private void stateVarConfiguration(String stateVarId) {
+
+		StateVarItem item = (StateVarItem) m_statevar.get(stateVarId);
+		if (item == null) {
+			item = new StateVarItem();
+		}
+		m_statevar.put(stateVarId, item);
+	}
+
+	private void fireStatusChange() {
+		Set union = new TreeSet(previousStateVarEnabled);
+		union.addAll(listStateVarEnabled);
+
+		Iterator it = union.iterator();
+		String variableId;
+		while (it.hasNext()) {
+			variableId = (String) it.next();
+			if ((previousStateVarEnabled.contains(variableId))
+					&& (!listStateVarEnabled.contains(variableId)))
+				firerVariableStatus(variableId, false);
+
+			else {
+				if ((!previousStateVarEnabled.contains(variableId))
+						&& (listStateVarEnabled.contains(variableId)))
+					firerVariableStatus(variableId, true);
+			}
+		}
+
+	}
+
+	private void stateVarConfiguration(String stateVarId, String ldapFilter) {
+
+		Condition cond = null;
+
+		if ((ldapFilter != null) && (ldapFilter.length() > 0)) {
+			try {
+				cond = new Condition(getInstanceManager().getContext(), ldapFilter);
+			} catch (Exception ex) {
+				logger.error("Invalid LDAP syntax '" + ldapFilter + "' ,state variable '"
+						+ stateVarId + "'");
+				cond = null;
+			}
+		}
+		StateVarItem item = (StateVarItem) m_statevar.get(stateVarId);
+		if (item == null) {
+			item = new StateVarItem();
+		}
+		item.condition = cond;
+		m_statevar.put(stateVarId, item);
+	}
+
+	private boolean isEnabled(String stateVarId) {
+		return listStateVarEnabled.contains(stateVarId);
+	}
+
+	private void publish(String stateVarId, Object data, long ticksCount) {
+		long last_ticksCount;
+		Condition cond;
+		boolean fire;
+
+		StateVarItem item = (StateVarItem) m_statevar.get(stateVarId);
+		if (item != null) {
+			fire = true;
+		} else {
+			cond = item.condition;
+			if (cond != null) {
+				last_ticksCount = item.lastpublish.longValue();
+				fire = cond.match(
+						ticksCount,
+						Watch.fromTicksToMs(ticksCount)
+								- Watch.fromTicksToMs(last_ticksCount));
+			} else {
+				fire = true;
+				item.lastpublish = new Long(ticksCount);
+			}
+
+		}
+		if (fire)
+			firer(stateVarId, data, ticksCount);
+
+	}
+
+	private void firer(String stateVarId, Object value, long ticksCount) {
+		EventAdmin m_eventAdmin;
+		ServiceReference refEventAdmin = retreiveEventAdmin();
+		if (refEventAdmin == null) {
+			logger.error("Unable to retrieve Event Admin");
+		} else {
+			/* gather data to be published */
+			Map data = new HashMap(5);
+			data.put(ConstRuntime.EVENT_TYPE, ConstRuntime.TYPE_DATA);
+			data.put(ConstRuntime.UUID, uuid);
+			data.put(ConstRuntime.VARIABLE_ID, stateVarId);
+			data.put(ConstRuntime.VALUE, value);
+			data.put(ConstRuntime.TIMESTAMP, new Long(ticksCount));
+
+			StateVarItem item = (StateVarItem) m_statevar.get(stateVarId);
+			if (item != null)
+				item.lastpublish = new Long(ticksCount);
+
+			m_eventAdmin = (EventAdmin) m_bundleContext.getService(refEventAdmin);
+			m_eventAdmin.postEvent(new Event(topic, data));
+			m_bundleContext.ungetService(refEventAdmin);
+			if (logger.isDebugEnabled()) {
+				logger.debug("Node [{}] publish state variable  [{}]",
+						FrameworkUtils.makeQualifiedId(chainId, componentId, uuid) + ":"
+								+ stateVarId, value.toString());
+			}
+
+		}
+	}
+
+	private void firerVariableStatus(String stateVarId, boolean value) {
+		EventAdmin m_eventAdmin;
+		ServiceReference refEventAdmin = retreiveEventAdmin();
+		if (refEventAdmin == null) {
+			logger.error("Unable to retrieve Event Admin");
+		} else {
+			/* gather data to be published */
+			Map data = new HashMap(4);
+			data.put(ConstRuntime.EVENT_TYPE, ConstRuntime.TYPE_STATUS_VARIABLE);
+			data.put(ConstRuntime.UUID, uuid);
+			data.put(ConstRuntime.VARIABLE_ID, stateVarId);
+			data.put(ConstRuntime.VALUE, new Boolean(value));
+
+			m_eventAdmin = (EventAdmin) m_bundleContext.getService(refEventAdmin);
+			m_eventAdmin.postEvent(new Event(topic, data));
+			m_bundleContext.ungetService(refEventAdmin);
+		}
 	}
 
 	private void gatherIncommingHistory(Data data) {
@@ -150,7 +316,7 @@ public class MonitorHandlerStateVar extends AbstractStateVariable {
 				m_historyList.addAll(m_snapshootMsg);
 				m_snapshootMsg.clear();
 			}
-			watch = new Watch(getId());
+			watch = new Watch(componentId);
 			m_historyList.addLast(watch);
 		}
 		if (!m_historyList.isEmpty()) {
@@ -165,7 +331,7 @@ public class MonitorHandlerStateVar extends AbstractStateVariable {
 	}
 
 	public void onCollect(Data data) {
-		if (m_listStateVarEnable.isEmpty())
+		if (listStateVarEnabled.isEmpty())
 			return;
 
 		gatherIncommingHistory(data);
@@ -205,7 +371,7 @@ public class MonitorHandlerStateVar extends AbstractStateVariable {
 
 	public void onProcessEntry(List data) {
 
-		if (m_listStateVarEnable.isEmpty())
+		if (listStateVarEnabled.isEmpty())
 			return;
 
 		snapShotHistory();
@@ -231,7 +397,7 @@ public class MonitorHandlerStateVar extends AbstractStateVariable {
 
 	public void onProcessExit(List data) {
 
-		if (m_listStateVarEnable.isEmpty())
+		if (listStateVarEnabled.isEmpty())
 			return;
 
 		if (isEnabled("message.history") || isEnabled("transmission.delay"))
@@ -250,7 +416,8 @@ public class MonitorHandlerStateVar extends AbstractStateVariable {
 	}
 
 	public void onDispatch(List data) {
-		if (m_listStateVarEnable.isEmpty())
+
+		if (listStateVarEnabled.isEmpty())
 			return;
 
 		if (isEnabled("dispatch.count")) {
@@ -271,7 +438,8 @@ public class MonitorHandlerStateVar extends AbstractStateVariable {
 	}
 
 	public void onProcessError(Data data, Exception ex) {
-		if (m_listStateVarEnable.isEmpty())
+
+		if (listStateVarEnabled.isEmpty())
 			return;
 
 		m_counters[4]++;
@@ -290,7 +458,8 @@ public class MonitorHandlerStateVar extends AbstractStateVariable {
 	 * receive events from the framework
 	 */
 	public void fireEvent(Map info) {
-		if (m_listStateVarEnable.isEmpty())
+
+		if (listStateVarEnabled.isEmpty())
 			return;
 
 		if (isEnabled("fire.event")) {
@@ -307,7 +476,8 @@ public class MonitorHandlerStateVar extends AbstractStateVariable {
 	 * receive event service from dependency handler
 	 */
 	public void onServiceArrival(Map info) {
-		if (m_listStateVarEnable.isEmpty())
+
+		if (listStateVarEnabled.isEmpty())
 			return;
 
 		if (isEnabled("service.arrival")) {
@@ -324,7 +494,8 @@ public class MonitorHandlerStateVar extends AbstractStateVariable {
 	 * receive event service form dependency handler
 	 */
 	public void onServiceDeparture(Map info) {
-		if (m_listStateVarEnable.isEmpty())
+
+		if (listStateVarEnabled.isEmpty())
 			return;
 
 		if (isEnabled("service.departure")) {
@@ -338,8 +509,10 @@ public class MonitorHandlerStateVar extends AbstractStateVariable {
 	}
 
 	public void onFieldGet(String field, Object o) {
-		if (m_listStateVarEnable.isEmpty())
+
+		if (listStateVarEnabled.isEmpty())
 			return;
+
 		if (isEnabled("field.get")) {
 			m_systemQueue.equals(new AsynchronousExec("field.get", Collections
 					.singletonMap(field, o)));
@@ -353,8 +526,10 @@ public class MonitorHandlerStateVar extends AbstractStateVariable {
 	}
 
 	public void onFieldSet(String field, Object o) {
-		if (m_listStateVarEnable.isEmpty())
+
+		if (listStateVarEnabled.isEmpty())
 			return;
+
 		if (isEnabled("field.set")) {
 			m_systemQueue.equals(new AsynchronousExec("field.set", Collections
 					.singletonMap(field, o)));
@@ -364,35 +539,6 @@ public class MonitorHandlerStateVar extends AbstractStateVariable {
 			m_systemQueue.execute(new AsynchronousExec("field.set.count", new Long(
 					m_counters[11])));
 		}
-	}
-
-	public String[] getCategories() {
-		String[] array = { "SystemCall", "DependencyCall", "EventingCall",
-				"FunctionnalCall" };
-		return array;
-	}
-
-	@SuppressWarnings("unchecked")
-	public String[] getStateVarIdCategory(String category) {
-		String[] array;
-		if (category == null) {
-			array = (String[]) setStateVar.toArray(new String[setStateVar.size()]);
-		} else {
-			if (category.equalsIgnoreCase("SystemCall"))
-				array = (String[]) setSystemCall
-						.toArray(new String[setSystemCall.size()]);
-			else if (category.equalsIgnoreCase("DependencyCall")) {
-				array = (String[]) setDependencyCall.toArray(new String[setDependencyCall
-						.size()]);
-			} else if (category.equalsIgnoreCase("EventingCall")) {
-				array = (String[]) setEventing.toArray(new String[setEventing.size()]);
-			} else if (category.equalsIgnoreCase("FunctionnalCall")) {
-				array = (String[]) setEventing.toArray(new String[setFunctionnalCall
-						.size()]);
-			} else
-				array = new String[0];
-		}
-		return array;
 	}
 
 	/**
@@ -411,6 +557,39 @@ public class MonitorHandlerStateVar extends AbstractStateVariable {
 
 		public void run() {
 			publish(stateVar, data, tickCount);
+		}
+	}
+
+	/* Return the mediator/adapteur instance validity */
+	public boolean isComponentValid() {
+		return isMediatorValid;
+	}
+
+	/* Publish the new state */
+	public void stateChanged(ComponentInstance instance, int newState) {
+		Boolean valid;
+		if (newState == ComponentInstance.VALID)
+			valid = new Boolean(true);
+		else
+			valid = new Boolean(false);
+		isMediatorValid = valid.booleanValue();
+		m_systemQueue.execute(new AsynchronousExec("mediator.state", valid));
+	}
+
+	/* Reconfigure */
+	public void reconfigure(Dictionary configuration) {
+		configureStateVar(configuration);
+		fireStatusChange();
+	}
+
+	/* -- State var configuration */
+	private final class StateVarItem {
+		Condition condition;
+		Long lastpublish;
+
+		public StateVarItem() {
+			lastpublish = new Long(0);
+			condition = null;
 		}
 	}
 

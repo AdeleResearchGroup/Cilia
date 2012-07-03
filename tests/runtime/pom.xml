@@ -142,8 +142,8 @@
 			<scope>test</scope>
 		</dependency>
 
-
 	</dependencies>
+	
 
 	<build>
 		<plugins>
@@ -155,6 +155,22 @@
 					<target>1.5</target>
 				</configuration>
 			</plugin>
+			<!-- begin added -->
+			<plugin>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>maven-junit4osgi-plugin</artifactId>
+				<executions>
+					<execution>
+						<goals>
+							<goal>test</goal>
+						</goals>
+						<configuration>
+							<deployprojectartifact>true</deployprojectartifact>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<!-- End added -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>

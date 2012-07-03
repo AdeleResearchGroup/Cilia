@@ -40,6 +40,7 @@ public abstract class AbstractScheduler implements IScheduler {
 
 	public void setConnectedScheduler(IScheduler sched) {
 		scheduler = sched;
+		
 	}
 
 	public void notifyData(Data data) {
