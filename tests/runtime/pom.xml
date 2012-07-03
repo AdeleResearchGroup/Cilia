@@ -142,11 +142,6 @@
 			<scope>test</scope>
 		</dependency>
 
-		<dependency>
-			<artifactId>cilia-runtime-tests</artifactId>
-			<groupId>fr.liglab.adele.cilia</groupId>
-			<version>1.2.2-SNAPSHOT</version>
-		</dependency>
 	</dependencies>
 	
 
