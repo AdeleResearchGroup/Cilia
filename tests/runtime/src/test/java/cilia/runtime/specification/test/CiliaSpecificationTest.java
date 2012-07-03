@@ -38,10 +38,11 @@ import org.ops4j.pax.exam.OptionUtils;
 import org.ops4j.pax.exam.junit.Configuration;
 import org.ops4j.pax.exam.junit.JUnit4TestRunner;
 import org.ops4j.pax.exam.junit.JUnitOptions;
+import org.ops4j.pax.exam.options.FrameworkStartLevelOption;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 
-import fr.liglab.adele.cilia.ApplicationSpecification;
+import fr.liglab.adele.cilia.ApplicationRuntime;
 import fr.liglab.adele.cilia.ChainCallback;
 import fr.liglab.adele.cilia.CiliaContext;
 import fr.liglab.adele.cilia.Node;
@@ -57,6 +58,7 @@ import fr.liglab.adele.cilia.exceptions.CiliaIllegalStateException;
 import fr.liglab.adele.cilia.exceptions.CiliaInvalidSyntaxException;
 import fr.liglab.adele.cilia.model.Chain;
 import fr.liglab.adele.cilia.model.MediatorComponent;
+import fr.liglab.adele.cilia.util.FrameworkUtils;
 
 @RunWith(JUnit4TestRunner.class)
 public class CiliaSpecificationTest {
@@ -137,7 +139,8 @@ public class CiliaSpecificationTest {
 			if (!(nodes[i] instanceof MediatorComponent)) {
 				Assert.fail("Not instance of Mediator Component");
 			}
-			if (!nodes[i].qualifiedId().startsWith(prefix)) {
+			String qualifiedId = FrameworkUtils.makeQualifiedId(nodes[i]) ;
+			if (!qualifiedId.startsWith(prefix)) {
 				Assert.fail("Wrong node retrieved ");
 			}
 		}
@@ -167,7 +170,7 @@ public class CiliaSpecificationTest {
 		}
 	}
 
-	private void api_findNodeByFilter(ApplicationSpecification application) {
+	private void api_findNodeByFilter(ApplicationRuntime application) {
 
 		/* Invalid Syntax Exception */
 		try {
@@ -253,7 +256,7 @@ public class CiliaSpecificationTest {
 		}
 	}
 
-	private void api_getChainId(ApplicationSpecification application) {
+	private void api_getChainId(ApplicationRuntime application) {
 		/* Checks the API chainID */
 		String[] ids = application.getChainId();
 		Assert.assertNotNull("get chain return null", ids);
@@ -265,7 +268,7 @@ public class CiliaSpecificationTest {
 		}
 	}
 
-	private void api_getChain(ApplicationSpecification application) {
+	private void api_getChain(ApplicationRuntime application) {
 		/* Exception : invalid parameter */
 		try {
 			Chain chain = application.getChain(null);
@@ -295,7 +298,7 @@ public class CiliaSpecificationTest {
 		}
 	}
 
-	public void api_getModel(ApplicationSpecification application) {
+	public void api_getModel(ApplicationRuntime application) {
 
 		Chain chain = null;
 		try {
@@ -309,7 +312,8 @@ public class CiliaSpecificationTest {
 			Node node = chain.getMediator("mediator_1");
 			Assert.assertNotNull(node);
 			MediatorComponent mediatorModel = application.getModel(node);
-			if (!mediatorModel.qualifiedId().startsWith("Chain1/mediator_1")) {
+			String qualifiedId = FrameworkUtils.makeQualifiedId(mediatorModel) ;
+			if (!qualifiedId.startsWith("Chain1/mediator_1")) {
 				Assert.fail("Wrong node");
 			}
 		} catch (Exception e) {
@@ -320,7 +324,8 @@ public class CiliaSpecificationTest {
 			Node[] node = application.findNodeByFilter("(node=mediator_1)");
 			Assert.assertNotNull(node);
 			MediatorComponent mediatorModel = application.getModel(node[0]);
-			if (!mediatorModel.qualifiedId().startsWith("Chain1/mediator_1")) {
+			String qualifiedId = FrameworkUtils.makeQualifiedId(mediatorModel) ;
+			if (!qualifiedId.startsWith("Chain1/mediator_1")) {
 				Assert.fail("Wrong node");
 			}
 		} catch (Exception e) {
@@ -340,7 +345,7 @@ public class CiliaSpecificationTest {
 
 	}
 
-	private void api_getPropertie(ApplicationSpecification application) {
+	private void api_getPropertie(ApplicationRuntime application) {
 		Node[] node = null;
 		try {
 			node = application.findNodeByFilter("(node=mediator_1)");
@@ -375,7 +380,7 @@ public class CiliaSpecificationTest {
 		}
 	}
 
-	private void api_endpointsIn(ApplicationSpecification application) {
+	private void api_endpointsIn(ApplicationRuntime application) {
 
 		try {
 			Node[] nodes = application.endpointIn(null);
@@ -427,7 +432,7 @@ public class CiliaSpecificationTest {
 
 	}
 
-	private void api_endpointsOut(ApplicationSpecification application) {
+	private void api_endpointsOut(ApplicationRuntime application) {
 
 		try {
 			Node[] nodes = application.endpointOut(null);
@@ -480,7 +485,7 @@ public class CiliaSpecificationTest {
 
 	}
 
-	private void api_connectedTo(ApplicationSpecification application) {
+	private void api_connectedTo(ApplicationRuntime application) {
 		/* connectedTo(ldap) */
 		try {
 			Node node = null;
@@ -609,7 +614,7 @@ public class CiliaSpecificationTest {
 
 	}
 
-	private void api_registerListener(ApplicationSpecification application) {
+	private void api_registerListener(ApplicationRuntime application) {
 		 CountDownLatch done = new CountDownLatch(1) ;
 		 ChainCallbacks callback = new ChainCallbacks(done);
 		/* checks illegal parameters */
@@ -654,7 +659,7 @@ public class CiliaSpecificationTest {
 	}
 
 
-	private void illegalStateException(ApplicationSpecification application) {
+	private void illegalStateException(ApplicationRuntime application) {
 		Node[] nodes = null ;
 		try {
 			nodes = application.findNodeByFilter("(&(chain=Chain1)(node=adapter_in))");
@@ -719,13 +724,6 @@ public class CiliaSpecificationTest {
 			stop();	
 		}
 
-		public void onStarted(String chainId) {
-			 stop();
-	 }
-
-		public void onStopped(String chainId) {
-			 stop();
-		}
 
 		public void onArrival(Node node) {
 			stop();	
@@ -755,13 +753,18 @@ public class CiliaSpecificationTest {
 			
 		}
 
+
+		public void onStateChange(String chainId, boolean event) {
+			stop();
+		}
+
 	}
 
 	@Test
 	public void testBuildChain() {
 		CiliaTools.waitToInitialize();
 		CiliaContext ciliaContext = getCiliaContextService();
-		ApplicationSpecification application = ciliaContext.getApplicationSpecification();
+		ApplicationRuntime application = ciliaContext.getApplicationRuntime();
 		assertNotNull(application);
 		buildChain();
 	}
@@ -769,7 +772,7 @@ public class CiliaSpecificationTest {
 	public void testGetChainId() {
 		CiliaTools.waitToInitialize();
 		CiliaContext ciliaContext = getCiliaContextService();
-		ApplicationSpecification application = ciliaContext.getApplicationSpecification();
+		ApplicationRuntime application = ciliaContext.getApplicationRuntime();
 		assertNotNull(application);
 		buildChain();
 		api_getChainId(application);
@@ -780,7 +783,7 @@ public class CiliaSpecificationTest {
 	public void testFindNodeByFilter() {
 		CiliaTools.waitToInitialize();
 		CiliaContext ciliaContext = getCiliaContextService();
-		ApplicationSpecification application = ciliaContext.getApplicationSpecification();
+		ApplicationRuntime application = ciliaContext.getApplicationRuntime();
 		assertNotNull(application);
 		buildChain();
 		api_findNodeByFilter(application);
@@ -790,7 +793,7 @@ public class CiliaSpecificationTest {
 	public void testGetChain() {
 		CiliaTools.waitToInitialize();
 		CiliaContext ciliaContext = getCiliaContextService();
-		ApplicationSpecification application = ciliaContext.getApplicationSpecification();
+		ApplicationRuntime application = ciliaContext.getApplicationRuntime();
 		assertNotNull(application);
 		buildChain();
 		api_getChain(application);
@@ -800,7 +803,7 @@ public class CiliaSpecificationTest {
 	public void testGetModel() {
 		CiliaTools.waitToInitialize();
 		CiliaContext ciliaContext = getCiliaContextService();
-		ApplicationSpecification application = ciliaContext.getApplicationSpecification();
+		ApplicationRuntime application = ciliaContext.getApplicationRuntime();
 		assertNotNull(application);
 		buildChain();
 		api_getModel(application);
@@ -810,7 +813,7 @@ public class CiliaSpecificationTest {
 	public void testGetPropertie() {
 		CiliaTools.waitToInitialize();
 		CiliaContext ciliaContext = getCiliaContextService();
-		ApplicationSpecification application = ciliaContext.getApplicationSpecification();
+		ApplicationRuntime application = ciliaContext.getApplicationRuntime();
 		assertNotNull(application);
 		buildChain();
 		api_getPropertie(application);
@@ -820,7 +823,7 @@ public class CiliaSpecificationTest {
 	public void testEndpointsIn() {
 		CiliaTools.waitToInitialize();
 		CiliaContext ciliaContext = getCiliaContextService();
-		ApplicationSpecification application = ciliaContext.getApplicationSpecification();
+		ApplicationRuntime application = ciliaContext.getApplicationRuntime();
 		assertNotNull(application);
 		buildChain();
 		api_endpointsIn(application);
@@ -830,7 +833,7 @@ public class CiliaSpecificationTest {
 	public void testEndpointsOut() {
 		CiliaTools.waitToInitialize();
 		CiliaContext ciliaContext = getCiliaContextService();
-		ApplicationSpecification application = ciliaContext.getApplicationSpecification();
+		ApplicationRuntime application = ciliaContext.getApplicationRuntime();
 		assertNotNull(application);
 		buildChain();
 		api_endpointsOut(application);
@@ -840,7 +843,7 @@ public class CiliaSpecificationTest {
 	public void testConnectedTo() {
 		CiliaTools.waitToInitialize();
 		CiliaContext ciliaContext = getCiliaContextService();
-		ApplicationSpecification application = ciliaContext.getApplicationSpecification();
+		ApplicationRuntime application = ciliaContext.getApplicationRuntime();
 		assertNotNull(application);
 		buildChain();
 		api_connectedTo(application);
@@ -851,7 +854,7 @@ public class CiliaSpecificationTest {
 	public void testIllegalStateException() {
 		CiliaTools.waitToInitialize();
 		CiliaContext ciliaContext = getCiliaContextService();
-		ApplicationSpecification application = ciliaContext.getApplicationSpecification();
+		ApplicationRuntime application = ciliaContext.getApplicationRuntime();
 		assertNotNull(application);
 		buildChain();
 		illegalStateException(application);
@@ -861,7 +864,7 @@ public class CiliaSpecificationTest {
 	public void testRegisterListener() {
 		CiliaTools.waitToInitialize();
 		CiliaContext ciliaContext = getCiliaContextService();
-		ApplicationSpecification application = ciliaContext.getApplicationSpecification();
+		ApplicationRuntime application = ciliaContext.getApplicationRuntime();
 		assertNotNull(application);
 		buildChain();
 		api_registerListener(application);
@@ -871,7 +874,7 @@ public class CiliaSpecificationTest {
 	public void api_all() {
 		CiliaTools.waitToInitialize();
 		CiliaContext ciliaContext = getCiliaContextService();
-		ApplicationSpecification application = ciliaContext.getApplicationSpecification();
+		ApplicationRuntime application = ciliaContext.getApplicationRuntime();
 		assertNotNull(application);
 		buildChain();
 		api_getChainId(application);

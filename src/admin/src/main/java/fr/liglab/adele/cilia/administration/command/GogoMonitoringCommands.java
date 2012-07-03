@@ -17,19 +17,18 @@ package fr.liglab.adele.cilia.administration.command;
 
 import org.apache.felix.service.command.Descriptor;
 
+import fr.liglab.adele.cilia.ApplicationRuntime;
 import fr.liglab.adele.cilia.ChainCallback;
 import fr.liglab.adele.cilia.CiliaContext;
-import fr.liglab.adele.cilia.ApplicationRuntime;
 import fr.liglab.adele.cilia.Measure;
-import fr.liglab.adele.cilia.RawData;
-import fr.liglab.adele.cilia.VariableCallback;
 import fr.liglab.adele.cilia.Node;
 import fr.liglab.adele.cilia.NodeCallback;
+import fr.liglab.adele.cilia.RawData;
 import fr.liglab.adele.cilia.SetUp;
 import fr.liglab.adele.cilia.ThresholdsCallback;
 import fr.liglab.adele.cilia.Topology;
+import fr.liglab.adele.cilia.VariableCallback;
 import fr.liglab.adele.cilia.exceptions.CiliaIllegalStateException;
-import fr.liglab.adele.cilia.model.MediatorComponent;
 import fr.liglab.adele.cilia.util.FrameworkUtils;
 
 /**
@@ -450,7 +449,6 @@ public class GogoMonitoringCommands {
 		}
 
 		public void onArrival(Node node) {
-
 			System.out.println("GogoCommand--> onArrival "
 					+ FrameworkUtils.makeQualifiedId(node));
 
@@ -462,7 +460,6 @@ public class GogoMonitoringCommands {
 		}
 
 		public void onModified(Node node) {
-
 			System.out.println("GogoCommand-->" + " onModified "
 					+ FrameworkUtils.makeQualifiedId(node));
 		}

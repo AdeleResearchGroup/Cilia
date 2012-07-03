@@ -42,7 +42,6 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 
 import fr.liglab.adele.cilia.ApplicationRuntime;
-import fr.liglab.adele.cilia.ApplicationSpecification;
 import fr.liglab.adele.cilia.ChainCallback;
 import fr.liglab.adele.cilia.CiliaContext;
 import fr.liglab.adele.cilia.Node;
@@ -56,13 +55,12 @@ import fr.liglab.adele.cilia.exceptions.BuilderPerformerException;
 import fr.liglab.adele.cilia.exceptions.CiliaIllegalParameterException;
 import fr.liglab.adele.cilia.exceptions.CiliaIllegalStateException;
 import fr.liglab.adele.cilia.exceptions.CiliaInvalidSyntaxException;
-import fr.liglab.adele.cilia.model.Chain;
 import fr.liglab.adele.cilia.model.MediatorComponent;
+import fr.liglab.adele.cilia.util.FrameworkUtils;
 
 @RunWith(JUnit4TestRunner.class)
 public class CiliaDynamicTest {
 
-	
 	@Inject
 	private BundleContext context;
 
@@ -138,7 +136,8 @@ public class CiliaDynamicTest {
 			if (!(nodes[i] instanceof MediatorComponent)) {
 				Assert.fail("Not instance of Mediator Component");
 			}
-			if (!nodes[i].qualifiedId().startsWith(prefix)) {
+			String qualifiedId = FrameworkUtils.makeQualifiedId(nodes[i]);
+			if (!qualifiedId.startsWith(prefix)) {
 				Assert.fail("Wrong node retrieved ");
 			}
 		}
@@ -172,8 +171,7 @@ public class CiliaDynamicTest {
 
 		/* Invalid Syntax Exception */
 		try {
-			Node[] nodes = runtime
-					.findNodeByFilter("&(chain=Chain1)(node=mediator_3))");
+			Node[] nodes = runtime.findNodeByFilter("&(chain=Chain1)(node=mediator_3))");
 			Assert.fail("No Exception thrown : ldap syntax error");
 		} catch (CiliaIllegalParameterException e) {
 			Assert.fail("Invalid exception thrown " + e.getMessage());
@@ -211,8 +209,7 @@ public class CiliaDynamicTest {
 
 		/* Return 0 value , no exception */
 		try {
-			Node[] nodes = runtime
-					.findNodeByFilter("(&(chain=Chain1)(node=mediator_3))");
+			Node[] nodes = runtime.findNodeByFilter("(&(chain=Chain1)(node=mediator_3))");
 			Assert.assertNotNull(nodes);
 			Assert.assertArrayEquals(new Node[0], nodes);
 		} catch (Exception e) {
@@ -220,8 +217,7 @@ public class CiliaDynamicTest {
 		}
 		/* Return 1 value , no exception */
 		try {
-			Node[] nodes = runtime
-					.findNodeByFilter("(&(chain=Chain1)(node=mediator_1))");
+			Node[] nodes = runtime.findNodeByFilter("(&(chain=Chain1)(node=mediator_1))");
 			Assert.assertNotNull(nodes);
 			checkNode(nodes, 1, "Chain1/mediator_");
 		} catch (Exception e) {
@@ -229,8 +225,7 @@ public class CiliaDynamicTest {
 		}
 		/* Return 2 values , no Exception */
 		try {
-			Node[] nodes = runtime
-					.findNodeByFilter("(&(chain=Chain1)(node=mediator_*))");
+			Node[] nodes = runtime.findNodeByFilter("(&(chain=Chain1)(node=mediator_*))");
 			Assert.assertNotNull(nodes);
 			checkNode(nodes, 2, "Chain1/mediator_");
 		} catch (Exception e) {
@@ -268,8 +263,8 @@ public class CiliaDynamicTest {
 
 	private void api_getChainState(ApplicationRuntime runtime) {
 		/* Exception : invalid parameter */
-		try  { 
-			int state = runtime.getChainState(null) ;
+		try {
+			int state = runtime.getChainState(null);
 			Assert.fail("no exception thrown invalid parameter");
 		} catch (CiliaIllegalParameterException e) {
 			assertNotNull(e.getMessage());
@@ -279,7 +274,7 @@ public class CiliaDynamicTest {
 
 		/* Exception illegalStateException */
 		try {
-			int  state = runtime.getChainState("Chain100") ;
+			int state = runtime.getChainState("Chain100");
 			Assert.fail("no exception thrown invalid parameter");
 		} catch (CiliaIllegalStateException e) {
 			assertNotNull(e.getMessage());
@@ -289,39 +284,37 @@ public class CiliaDynamicTest {
 		/* return the instance */
 		try {
 			int state = runtime.getChainState("Chain1");
-			if (state !=ApplicationRuntime.IDLE) {
+			if (state != ApplicationRuntime.CHAIN_STATE_IDLE) {
 				Assert.fail("Illegate chain state exptected IDLE");
 			}
-			
+
 		} catch (Exception e) {
 			Assert.fail("Invalid exception thrown " + e.getMessage());
 		}
-		/* test start  */
+		/* test start */
 		try {
-			runtime.start("Chain1") ;
+			runtime.startChain("Chain1");
 			int state = runtime.getChainState("Chain1");
-			if (state !=ApplicationRuntime.STARTED) {
+			if (state != ApplicationRuntime.CHAIN_STATE_STARTED) {
 				Assert.fail("Illegate chain state expected STARTED");
 			}
 		} catch (Exception e) {
 			Assert.fail("Invalid exception thrown " + e.getMessage());
 		}
-		
+
 		try {
-			runtime.stop("Chain1") ;
+			runtime.stopChain("Chain1");
 			int state = runtime.getChainState("Chain1");
-			if (state !=ApplicationRuntime.STOPPED) {
+			if (state != ApplicationRuntime.CHAIN_STATE_STOPPED) {
 				Assert.fail("Illegate chain state expected STOPPED");
 			}
 		} catch (Exception e) {
 			Assert.fail("Invalid exception thrown " + e.getMessage());
 		}
-		
+
 	}
 
-
-
-	private void api_endpointsIn(ApplicationSpecification application) {
+	private void api_endpointsIn(ApplicationRuntime application) {
 
 		try {
 			Node[] nodes = application.endpointIn(null);
@@ -373,7 +366,7 @@ public class CiliaDynamicTest {
 
 	}
 
-	private void api_endpointsOut(ApplicationSpecification application) {
+	private void api_endpointsOut(ApplicationRuntime application) {
 
 		try {
 			Node[] nodes = application.endpointOut(null);
@@ -426,7 +419,7 @@ public class CiliaDynamicTest {
 
 	}
 
-	private void api_connectedTo(ApplicationSpecification application) {
+	private void api_connectedTo(ApplicationRuntime application) {
 		/* connectedTo(ldap) */
 		try {
 			Node node = null;
@@ -556,12 +549,12 @@ public class CiliaDynamicTest {
 
 	}
 
-	private void api_registerListener(ApplicationSpecification application) {
-		 CountDownLatch done = new CountDownLatch(1) ;
-		 ChainCallbacks callback = new ChainCallbacks(done);
+	private void api_registerListener(ApplicationRuntime application) {
+		CountDownLatch done = new CountDownLatch(1);
+		ChainCallbacks callback = new ChainCallbacks(done);
 		/* checks illegal parameters */
 		try {
-			application.addListener(null, (ChainCallback)callback);
+			application.addListener(null, (ChainCallback) callback);
 			Assert.fail("Exception not thrown");
 		} catch (CiliaIllegalParameterException e) {
 			/* OK */
@@ -570,7 +563,7 @@ public class CiliaDynamicTest {
 		}
 
 		try {
-			application.addListener("(chain=",(ChainCallback) callback);
+			application.addListener("(chain=", (ChainCallback) callback);
 			Assert.fail("Exception not thrown");
 		} catch (CiliaInvalidSyntaxException e) {
 			/* OK */
@@ -581,80 +574,75 @@ public class CiliaDynamicTest {
 
 		/* Check callback */
 		try {
-			callback.result=false ;
-			application.addListener("(&(chain=*)(node=*))", (NodeCallback)callback);
+			callback.result = false;
+			application.addListener("(&(chain=*)(node=*))", (NodeCallback) callback);
 
 			Builder builder = getCiliaContextService().getBuilder();
 			builder.create("Chain2");
 			builder.done();
 			synchronized (done) {
-				done.await(5000, TimeUnit.MILLISECONDS) ;
+				done.await(5000, TimeUnit.MILLISECONDS);
 			}
-			Assert.assertTrue("Callback never received " + callback.result, callback.result) ;
-			//builder.remove("Chain2") ;
-			//builder.done();
+			Assert.assertTrue("Callback never received " + callback.result,
+					callback.result);
+			// builder.remove("Chain2") ;
+			// builder.done();
 		} catch (Exception e) {
 			Assert.fail("Invalid exception thrown " + e.getMessage());
 		}
 
 	}
 
-
-	private void illegalStateException(ApplicationSpecification application) {
-		Node[] nodes = null ;
+	private void illegalStateException(ApplicationRuntime application) {
+		Node[] nodes = null;
 		try {
 			nodes = application.findNodeByFilter("(&(chain=Chain1)(node=adapter_in))");
-			Assert.assertNotNull(nodes) ;
+			Assert.assertNotNull(nodes);
 			Builder builder = getCiliaContextService().getBuilder();
-			Architecture chain = builder.get("Chain1") ;
+			Architecture chain = builder.get("Chain1");
 			chain.remove().adapter().id("adapter_in");
 			builder.done();
-			Node [] nodeTests = application.connectedTo(nodes[0]);
+			Node[] nodeTests = application.connectedTo(nodes[0]);
 			Assert.fail("No Exception thrown ");
-		}catch (CiliaIllegalStateException e) {
+		} catch (CiliaIllegalStateException e) {
 			/* OK */
 			assertNotNull(e.getMessage());
 		} catch (Exception e) {
 			Assert.fail("Invalid exception thrown " + e.getMessage());
-		} 	
+		}
 		try {
 			MediatorComponent component = application.getModel(nodes[0]);
-			Assert.fail("No Exception thrown ");		
-		}
-		catch (CiliaIllegalStateException e) {
+			Assert.fail("No Exception thrown ");
+		} catch (CiliaIllegalStateException e) {
 			/* OK */
 			assertNotNull(e.getMessage());
-		}
-		catch (Exception e) {
+		} catch (Exception e) {
 			Assert.fail("Invalid exception thrown " + e.getMessage());
 		}
 		try {
 			Dictionary dico = application.getProperties(nodes[0]);
-			Assert.fail("No Exception thrown ");		
-		}
-		catch (CiliaIllegalStateException e) {
+			Assert.fail("No Exception thrown ");
+		} catch (CiliaIllegalStateException e) {
 			/* OK */
 			assertNotNull(e.getMessage());
-		}
-		catch (Exception e) {
+		} catch (Exception e) {
 			Assert.fail("Invalid exception thrown " + e.getMessage());
 		}
 	}
 
 	private class ChainCallbacks implements ChainCallback, NodeCallback {
 		public volatile boolean result;
-		public CountDownLatch lock ;
+		public CountDownLatch lock;
 
 		public ChainCallbacks(CountDownLatch done) {
-			lock = done ;
+			lock = done;
 		}
 
-		
 		private void stop() {
-			 synchronized(lock) {
-				 result=true;
-				 lock.countDown();
-			 }
+			synchronized (lock) {
+				result = true;
+				lock.countDown();
+			}
 		}
 
 		public void onAdded(String chainId) {
@@ -662,131 +650,122 @@ public class CiliaDynamicTest {
 		}
 
 		public void onRemoved(String chainId) {
-			stop();	
-		}
-
-		public void onStarted(String chainId) {
-			 stop();
-	 }
-
-		public void onStopped(String chainId) {
-			 stop();
+			stop();
 		}
 
 		public void onArrival(Node node) {
-			stop();	
-	    }
+			stop();
+		}
 
 		public void onDeparture(Node node) {
 			stop();
-	  }
-
-		public void onModified(Node node) {
-			stop() ;
 		}
 
+		public void onModified(Node node) {
+			stop();
+		}
 
 		public void onBind(Node from, Node to) {
 			stop();
 		}
 
-
 		public void onUnBind(Node from, Node to) {
-			stop() ;
+			stop();
 		}
 
-
 		public void onStateChange(Node node, boolean isValid) {
-			// TODO Auto-generated method stub
-			
+			stop();
+		}
+
+		public void onStateChange(String chainId, boolean event) {
+			stop();
 		}
 
 	}
-	
+
 	@Test
 	public void testGetBuildChain() {
 		CiliaTools.waitToInitialize();
 		CiliaContext ciliaContext = getCiliaContextService();
-		ApplicationSpecification application = ciliaContext.getApplicationSpecification();
+		ApplicationRuntime application = ciliaContext.getApplicationRuntime();
 		assertNotNull(application);
 		ApplicationRuntime runtime = ciliaContext.getApplicationRuntime();
 		assertNotNull(application);
 		buildChain();
 	}
-	
+
 	@Test
 	public void testGetChainId() {
 		CiliaTools.waitToInitialize();
 		CiliaContext ciliaContext = getCiliaContextService();
-		ApplicationSpecification application = ciliaContext.getApplicationSpecification();
+		ApplicationRuntime application = ciliaContext.getApplicationRuntime();
 		assertNotNull(application);
 		ApplicationRuntime runtime = ciliaContext.getApplicationRuntime();
 		assertNotNull(application);
 		buildChain();
 		api_getChainId(runtime);
 	}
-	
+
 	@Test
 	public void testfindNodeByFilter() {
 		CiliaTools.waitToInitialize();
 		CiliaContext ciliaContext = getCiliaContextService();
-		ApplicationSpecification application = ciliaContext.getApplicationSpecification();
+		ApplicationRuntime application = ciliaContext.getApplicationRuntime();
 		assertNotNull(application);
 		ApplicationRuntime runtime = ciliaContext.getApplicationRuntime();
 		assertNotNull(application);
 		buildChain();
 		api_findNodeByFilter(runtime);
 	}
-	
-	
+
 	public void testGetChainState() {
 		CiliaTools.waitToInitialize();
 		CiliaContext ciliaContext = getCiliaContextService();
-		ApplicationSpecification application = ciliaContext.getApplicationSpecification();
+		ApplicationRuntime application = ciliaContext.getApplicationRuntime();
 		assertNotNull(application);
 		ApplicationRuntime runtime = ciliaContext.getApplicationRuntime();
 		assertNotNull(application);
 		buildChain();
 		api_getChainState(runtime);
 
-		//api_endpointsIn(application);
-		//api_endpointsOut(application);
-		//api_connectedTo(application);
-		//api_registerListener(application);
-		//illegalStateException(application);
+		// api_endpointsIn(application);
+		// api_endpointsOut(application);
+		// api_connectedTo(application);
+		// api_registerListener(application);
+		// illegalStateException(application);
 	}
-	
+
 	public void testEndpointsIn() {
 		CiliaTools.waitToInitialize();
 		CiliaContext ciliaContext = getCiliaContextService();
-		ApplicationSpecification application = ciliaContext.getApplicationSpecification();
+		ApplicationRuntime application = ciliaContext.getApplicationRuntime();
 		assertNotNull(application);
 		ApplicationRuntime runtime = ciliaContext.getApplicationRuntime();
 		assertNotNull(application);
 		buildChain();
 		api_getChainState(runtime);
-		//api_endpointsIn(application);
-		//api_endpointsOut(application);
-		//api_connectedTo(application);
-		//api_registerListener(application);
-		//illegalStateException(application);
+		// api_endpointsIn(application);
+		// api_endpointsOut(application);
+		// api_connectedTo(application);
+		// api_registerListener(application);
+		// illegalStateException(application);
 	}
-	
+
 	public void testEndpointsOut() {
 		CiliaTools.waitToInitialize();
 		CiliaContext ciliaContext = getCiliaContextService();
-		ApplicationSpecification application = ciliaContext.getApplicationSpecification();
+		ApplicationRuntime application = ciliaContext.getApplicationRuntime();
 		assertNotNull(application);
 		ApplicationRuntime runtime = ciliaContext.getApplicationRuntime();
 		assertNotNull(application);
 		buildChain();
 		api_getChainState(runtime);
 
-		//api_endpointsIn(application);
-		//api_endpointsOut(application);
-		//api_connectedTo(application);
-		//api_registerListener(application);
-		//illegalStateException(application);
+		// api_endpointsIn(application);
+		// api_endpointsOut(application);
+		// api_connectedTo(application);
+		// api_registerListener(application);
+		// illegalStateException(application);
 	}
 
 }

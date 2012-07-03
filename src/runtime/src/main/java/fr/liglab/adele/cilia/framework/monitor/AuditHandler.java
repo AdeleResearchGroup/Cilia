@@ -16,6 +16,7 @@
 package fr.liglab.adele.cilia.framework.monitor;
 
 import java.util.Dictionary;
+
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -32,6 +33,7 @@ import org.slf4j.LoggerFactory;
 
 import fr.liglab.adele.cilia.runtime.Const;
 
+@SuppressWarnings({ "rawtypes", "unchecked" })
 public class AuditHandler extends PrimitiveHandler {
 	private final Logger logger = LoggerFactory.getLogger("cilia.runtime.audit-handler");
 
@@ -41,6 +43,7 @@ public class AuditHandler extends PrimitiveHandler {
 
 	private IFieldMonitor monitor = null;
 	private Object _lock = new Object();
+
 
 	public void configure(Element metadata, Dictionary configuration)
 			throws ConfigurationException {
