@@ -122,7 +122,7 @@ public interface Topology {
 	 * @throws CiliaIllegalStateException
 	 *             the node doesn't exist
 	 */
-	Node[] connectedTo(Node node) throws CiliaIllegalStateException;
+	Node[] connectedTo(Node node) throws CiliaIllegalParameterException,CiliaIllegalStateException;
 
 	/**
 	 * 
@@ -132,7 +132,7 @@ public interface Topology {
 	 * @throws CiliaIllegalStateException
 	 *             the node doesn't exist
 	 */
-	Node[] connectedTo(Node node, boolean proxy) throws CiliaIllegalStateException;
+	Node[] connectedTo(Node node, boolean proxy) throws CiliaIllegalParameterException,CiliaIllegalStateException;
 
 	/**
 	 * 

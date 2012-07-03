@@ -489,13 +489,15 @@ public class CiliaSpecificationTest {
 		/* connectedTo(ldap) */
 		try {
 			Node node = null;
-			Node[] nodes = application.connectedTo(node);
-			Assert.assertNotNull(nodes);
-			if (nodes.length != 0) {
-				Assert.fail("Length expected =0, recevied = " + nodes.length);
+			try {
+				Node[] nodes = application.connectedTo(node);
+				Assert.fail("Exception not thrown");
+			} catch (CiliaIllegalStateException e) {
+				Assert.fail("Invalid exception thrown " + e.getMessage());
 			}
-		} catch (Exception e) {
-			Assert.fail("Invalid exception thrown " + e.getMessage());
+		} catch (CiliaIllegalParameterException e) {
+			/* OK */
+			assertNotNull(e.getMessage());
 		}
 
 		try {
@@ -664,6 +666,11 @@ public class CiliaSpecificationTest {
 		try {
 			nodes = application.findNodeByFilter("(&(chain=Chain1)(node=adapter_in))");
 			Assert.assertNotNull(nodes) ;
+			MediatorComponent mediatorModel = application.getModel(nodes[0]);
+			String qualifiedId = FrameworkUtils.makeQualifiedId(mediatorModel) ;
+			if (!qualifiedId.startsWith("Chain1/adapter_in")) {
+				Assert.fail("Wrong node");
+			}
 			Builder builder = getCiliaContextService().getBuilder();
 			Architecture chain = builder.get("Chain1") ;
 			chain.remove().adapter().id("adapter_in");
