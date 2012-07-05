@@ -14,6 +14,7 @@ import fr.liglab.adele.cilia.model.MediatorComponent;
  *         Team</a>
  * 
  */
+@SuppressWarnings("rawtypes")
 public interface ModelComponents {
 	/**
 	 * Return all properties for a node 
