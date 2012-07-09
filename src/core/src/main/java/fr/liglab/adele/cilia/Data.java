@@ -115,6 +115,8 @@ public class Data {
 	 */
 	public static final String RETURN_ADDRESS = "data.return.address";
 
+	private static final String DATA_TARGET = "data.source";
+
 	/**
 	 * Private verbatim copy constructor.
 	 * 
@@ -353,19 +355,37 @@ public class Data {
 	 * 
 	 * @return
 	 */
-	public final String getSource() {
+	public final String getLastReceivingPort() {
 		return (String) getProperty(DATA_SOURCE);
 	}
 
 	/**
 	 * Set the data source
 	 * 
+	 * @param port
+	 */
+	public final void setLastReceivingPort(final String port) {
+		setProperty(DATA_SOURCE, port);
+	}
+	
+	/**
+	 * Set the data source
+	 * 
 	 * @param source
 	 */
-	public final void setSource(final String source) {
-		setProperty(DATA_SOURCE, source);
+	public final void setLastDeliveryPort(final String port) {
+		setProperty(DATA_TARGET, port);
 	}
 
+	/**
+	 * Get the data source
+	 * 
+	 * @return
+	 */
+	public final String getLastDeliveryPort() {
+		return (String) getProperty(DATA_TARGET);
+	}
+	
 	/**
 	 * Get data timestamp
 	 * 

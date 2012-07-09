@@ -383,6 +383,7 @@ Observer, IDispatcherHandler {
 	 */
 	public void send(final String senderName, final Data data) throws CiliaException {
 		lastSenderName = senderName;
+		data.setLastDeliveryPort(senderName);
 		lastDataSended = data;
 		boolean synchronous = extendedProperties.isModeSynchronous;
 		List pojoList = (List) senderManager.getPojo(senderName);
@@ -602,13 +603,13 @@ Observer, IDispatcherHandler {
 		im.setDispatcher(this);
 	}
 
-	public void dispatch(Data dataset) throws CiliaException {
+	public void dispatch(Data data) throws CiliaException {
 		IDispatcher dispatcher = (IDispatcher) dispatcherComponent.getObject();
 		if (dispatcher == null) {
 			logger.warn("Dispatcher is not valid when dispatching, waiting to be valid");
 			return;
 		}
-		dispatcher.dispatch(dataset);
+		dispatcher.dispatch(data);
 	}
 
 	private void dispatch(List dataset) throws CiliaException {

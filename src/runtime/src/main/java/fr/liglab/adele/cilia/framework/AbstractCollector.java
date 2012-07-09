@@ -41,7 +41,7 @@ public abstract class AbstractCollector implements ICollector {
 	 */
 	public Data notifyDataArrival(Data data) {
 	    if (dataSource != null && data != null) {
-	        data.setSource(dataSource);
+	        data.setLastReceivingPort(dataSource);
 	    }
 		if (m_scheduler != null) {
 		    m_scheduler.notifyData(data);
