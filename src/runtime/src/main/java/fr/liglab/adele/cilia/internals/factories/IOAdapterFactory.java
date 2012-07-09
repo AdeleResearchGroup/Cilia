@@ -16,6 +16,7 @@ import org.apache.felix.ipojo.util.Logger;
 import org.osgi.framework.BundleContext;
 
 import fr.liglab.adele.cilia.Data;
+import fr.liglab.adele.cilia.framework.AbstractAsyncIOAdapter;
 import fr.liglab.adele.cilia.framework.AbstractIOAdapter;
 import fr.liglab.adele.cilia.framework.monitor.IMonitor;
 import fr.liglab.adele.cilia.runtime.Const;
@@ -61,7 +62,7 @@ public class IOAdapterFactory extends MediatorComponentFactory {
 		}
 
 		// Check if the manipulated class herite from CiliaAdapter
-		if (AbstractIOAdapter.class.isAssignableFrom(clazz)) {
+		if ((AbstractIOAdapter.class.isAssignableFrom(clazz)) || (AbstractAsyncIOAdapter.class.isAssignableFrom(clazz))) {
 			dispatcher.addAttribute(new Attribute("method", "dispatchData"));
 			dispatcher.addAttribute(new Attribute("data.type", Data.class
 					.getName()));
