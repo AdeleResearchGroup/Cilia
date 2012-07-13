@@ -75,7 +75,7 @@ public class AdapterHelper extends AbstractAsyncIOAdapter implements MediatorTes
 	 * Get the last received Data.
 	 */
 	public synchronized Data getLastData() {
-		return super.currentData.get(currentData.size());
+		return super.currentData.get(currentData.size()-1);
 	}
 
 	/**

@@ -13,4 +13,15 @@
 			<out-port name="unique" type="*" />
 		</ports>
 	</io-adapter>
+	
+	<mediator-component name="Mock"
+		namespace="fr.liglab.adele.cilia.test">
+		<ports>
+			<in-port name="unique" type="*" />
+			<out-port name="unique" type="*" />
+		</ports>
+		<scheduler name="immediate-scheduler" namespace="fr.liglab.adele.cilia" />
+		<processor name="simple-processor" namespace="fr.liglab.adele.cilia" />
+		<dispatcher name="multicast-dispatcher" namespace="fr.liglab.adele.cilia" />
+	</mediator-component>
 </cilia>
