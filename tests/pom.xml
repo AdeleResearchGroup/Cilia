@@ -24,6 +24,7 @@
 	<modules>
 		<module>core</module>
 		<module>runtime</module>
+		<module>cilia-helper</module>
 	</modules>
 
 </project>

@@ -14,8 +14,10 @@
  */
 package fr.liglab.adele.cilia.jms;
 import java.util.Enumeration;
+import java.util.Hashtable;
 
 import javax.jms.JMSException;
+import javax.jms.MapMessage;
 import javax.jms.Message;
 import javax.jms.MessageListener;
 import javax.jms.ObjectMessage;
@@ -92,18 +94,28 @@ public class JMSCollector extends AbstractCollector implements MessageListener {
 		try {
 			enume = msg.getPropertyNames();
 			Object content = null;
+			Hashtable dico = new Hashtable();
+			String name = "jms-message";
 			if (msg instanceof TextMessage) {
 				content = ((TextMessage) msg).getText();
 			} else if (msg instanceof ObjectMessage) {
 				content = ((ObjectMessage) msg).getObject();
+			} else if (msg instanceof MapMessage) {
+				MapMessage message = (MapMessage)msg;
+				enume = message.getMapNames();
+				if (message.getObject(Data.DATA_CONTENT) != null) {
+					content = message.getObject(Data.DATA_CONTENT);
+				}
+				if (message.getString(Data.DATA_NAME) != null){
+					name = message.getString(Data.DATA_NAME);
+				}
+				while (enume.hasMoreElements()){
+					String propname = (String)enume.nextElement();
+					Object ob = ((MapMessage) msg).getObject(propname);
+					dico.put(propname, ob);
+				}
 			}
-			Data ndata = new Data(content, "jms-message");
-			while (enume.hasMoreElements()){
-				String propname = (String)enume.nextElement();
-				Object ob = msg.getObjectProperty(propname);
-				ndata.setProperty(propname, ob);
-			}
-			System.out.println("message received:"+ndata.getAllData());
+			Data ndata = new Data(content, name, dico);
 			notifyDataArrival(ndata);
 			
 		} catch (JMSException e) {

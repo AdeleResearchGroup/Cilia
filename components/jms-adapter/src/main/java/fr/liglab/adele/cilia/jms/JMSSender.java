@@ -107,7 +107,6 @@ public class JMSSender implements ISender{
 					message.setObject(key, dobj.getTime());
 				}
 			}
-
 			publisher.publish(message);
 		} catch (JMSException e) {
 			e.printStackTrace();

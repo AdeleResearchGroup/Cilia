@@ -166,8 +166,7 @@
 						<Include-Resource>
 							{maven-resources},
 							META-INF/LICENSE = LICENSE,
-							META-INF/NOTICE = NOTICE,
-							jndi.properties
+							META-INF/NOTICE = NOTICE
 						</Include-Resource>
 					</instructions>
 				</configuration>
