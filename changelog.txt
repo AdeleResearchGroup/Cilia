@@ -1,5 +1,5 @@
 =======================================================================================
-RELEASE CILIA 2.0.0
+CILIA 2.0.0 (next release)
 =======================================================================================
 + Added cilia.forcebindings property to skip port validation
 + Added a Builder pattern to build mediation chains at runtime
