@@ -22,9 +22,9 @@
 	<version>1.0.0</version>
 
 	<modules>
+		<module>cilia-helper</module>
 		<module>core</module>
 		<module>runtime</module>
-		<module>cilia-helper</module>
-	</modules>
+		</modules>
 
 </project>
