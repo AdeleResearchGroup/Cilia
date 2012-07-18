@@ -81,7 +81,7 @@ InstanceStateListener, Observer, Runnable {
 	 */
 	private MethodMetadata methodMetadata;
 
-	private final CiliaInstanceManager collectorsManager = new CiliaInstanceManagerSet();
+	private SchedulerInstanceManager collectorsManager;
 
 	private final Object lockObject = new Object();
 
@@ -185,7 +185,7 @@ InstanceStateListener, Observer, Runnable {
 		this.m_metadata = metadata;
 		// //////////////////////////////////////////////////////////
 		getInstanceManager().addInstanceStateListener(this);
-
+		collectorsManager = new SchedulerInstanceManager(getInstanceManager().getContext(), this);
 		((Observable) collectorsManager).addObserver(this);
 
 		Element procesorMetadata = null;
