@@ -58,8 +58,8 @@ public abstract class ConstituentInstanceManager extends CiliaInstanceManagerSet
 
 	protected abstract String createFilter() ;
 
-	public void addComponent(String port, Component collector) {
-		CiliaInstanceWrapper collectorInstance = new CiliaInstanceWrapper(bcontext, collector.getId(), createFilter(), collector.getProperties(), this);
+	public void addComponent(String port, Component component) {
+		CiliaInstanceWrapper collectorInstance = new CiliaInstanceWrapper(bcontext, component.getId(), createFilter(), component.getProperties(), this);
 		collectorInstance.start();
 		synchronized (lockObject) {
 			elementCount++;
@@ -67,9 +67,9 @@ public abstract class ConstituentInstanceManager extends CiliaInstanceManagerSet
 		}
 	}
 
-	public boolean removeComponent(String port, Component collector){
+	public boolean removeComponent(String port, Component component){
 		synchronized (lockObject) {
-			return super.removeInstance(port, collector.getId());
+			return super.removeInstance(port, component.getId());
 		}
 	}
 
