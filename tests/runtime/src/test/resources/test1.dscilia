@@ -1,0 +1,8 @@
+<cilia>
+	<chain id="toto">
+		<mediators>
+			<mediator-instance id="toto" type="inexistant-mediator" />
+			<mediator-instance id="validToto" type="Mock" />
+		</mediators>
+	</chain>
+</cilia>

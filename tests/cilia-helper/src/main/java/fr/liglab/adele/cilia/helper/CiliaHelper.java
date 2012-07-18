@@ -241,7 +241,7 @@ public class CiliaHelper {
 		return found;
 	}
 	
-	private void waitSomeTime(int l) {
+	public static void waitSomeTime(int l) {
 		try {
 			Thread.sleep(l);//wait to be registered
 		} catch (InterruptedException e) {
