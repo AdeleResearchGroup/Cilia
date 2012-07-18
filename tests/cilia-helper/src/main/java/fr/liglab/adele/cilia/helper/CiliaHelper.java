@@ -26,7 +26,6 @@ import org.apache.felix.ipojo.test.helpers.OSGiHelper;
 import org.osgi.framework.BundleContext;
 
 import fr.liglab.adele.cilia.CiliaContext;
-import fr.liglab.adele.cilia.administration.CiliaAdminService;
 import fr.liglab.adele.cilia.builder.Architecture;
 import fr.liglab.adele.cilia.builder.Builder;
 import fr.liglab.adele.cilia.exceptions.CiliaException;
@@ -38,6 +37,7 @@ import fr.liglab.adele.cilia.model.Mediator;
 import fr.liglab.adele.cilia.runtime.CiliaInstance;
 import fr.liglab.adele.cilia.runtime.CiliaInstanceWrapper;
 import fr.liglab.adele.cilia.runtime.Const;
+import fr.liglab.adele.cilia.util.CiliaFileManager;
 
 /**
  * 
@@ -211,9 +211,10 @@ public class CiliaHelper {
 			e1.printStackTrace();
 		}
 		System.out.println("chain to be loaded...");
-		ohelper.waitForService(CiliaAdminService.class.getName(), null, 1000);
-		CiliaAdminService service = (CiliaAdminService)ohelper.getServiceObject(CiliaAdminService.class.getName(), null);
-		service.loadChain(file.getAbsolutePath());
+		ohelper.waitForService(CiliaFileManager.class.getName(), null, 1000);
+		CiliaFileManager service = (CiliaFileManager)ohelper.getServiceObject(CiliaFileManager.class.getName(), null);
+		
+		service.loadChain(file);
 		System.out.println("chain loaded");
 	}
 

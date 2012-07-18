@@ -66,11 +66,6 @@
 			<version>1.2.2-SNAPSHOT</version>
 		</dependency>
 		<dependency>
-			<groupId>fr.liglab.adele.cilia</groupId>
-			<artifactId>cilia-admin</artifactId>
-			<version>1.2.2-SNAPSHOT</version>
-		</dependency>
-		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
 			<version>1.6.1</version>
