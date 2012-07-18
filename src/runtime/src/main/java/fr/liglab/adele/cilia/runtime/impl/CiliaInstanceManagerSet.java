@@ -141,8 +141,9 @@ public class CiliaInstanceManagerSet extends Observable implements CiliaInstance
 		}
 	}
 
-	public void removeInstance(String portname, String instanceName) {
+	public boolean removeInstance(String portname, String instanceName) {
 		List instanceList = null ;
+		boolean removed = false;
 		synchronized (lockObject) {
 			if (portname != null) {
 				instanceList = (List) instances.get(portname);
@@ -155,10 +156,11 @@ public class CiliaInstanceManagerSet extends Observable implements CiliaInstance
 				if (component.getName().compareTo(instanceName) == 0) {
 					component.stop();
 					componentsInstances.remove();
+					removed = true;
 				}
 			}
 		}
-		//instanceList.clear();
+		return removed;
 	}
 
 

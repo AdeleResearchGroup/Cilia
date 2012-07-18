@@ -43,6 +43,7 @@ import fr.liglab.adele.cilia.model.impl.MediatorComponentImpl;
 import fr.liglab.adele.cilia.model.impl.Scheduler;
 import fr.liglab.adele.cilia.model.impl.UpdateActions;
 import fr.liglab.adele.cilia.model.impl.UpdateEvent;
+import fr.liglab.adele.cilia.runtime.CiliaInstance;
 import fr.liglab.adele.cilia.runtime.CiliaInstanceWrapper;
 import fr.liglab.adele.cilia.runtime.Const;
 import fr.liglab.adele.cilia.runtime.FirerEvents;
@@ -272,6 +273,7 @@ public class MediatorControllerImpl implements Observer {
 	public void stop() {
 		synchronized (lockObject) {
 			mediatorModel.deleteObserver(this);
+			mediatorModel.dispose();
 			if (mediatorInstance != null) {
 				mediatorInstance.deleteObserver(this);
 				mediatorInstance.stop();
@@ -285,6 +287,7 @@ public class MediatorControllerImpl implements Observer {
 	 * Start the mediator instance.
 	 */
 	public void start() {
+		mediatorModel.setRunningState(MediatorComponent.INVALID);
 		createMediatorInstance();
 		updateMediatorModel();
 		updateMediatorInstance();
@@ -518,7 +521,7 @@ public class MediatorControllerImpl implements Observer {
 		if (mediatorInstance != null) {
 			return mediatorInstance.getState();
 		}
-		return ComponentInstance.INVALID;
+		return CiliaInstance.INVALID;
 	}
 
 	/**
@@ -531,9 +534,9 @@ public class MediatorControllerImpl implements Observer {
 	 */
 	public void update(Observable mediator, Object arg) {
 		log.debug(" update");
-		if (mediator instanceof Mediator) {
+		if (mediator instanceof MediatorComponent) {
 			log.debug(" update, OK");
-			Mediator md = ((Mediator) mediator);
+			MediatorComponent md = ((MediatorComponent) mediator);
 			UpdateEvent event = (UpdateEvent) arg;
 			if (event != null) {
 				int action = event.getUpdateAction();
@@ -589,15 +592,16 @@ public class MediatorControllerImpl implements Observer {
 			}
 		} else if (mediator instanceof CiliaInstanceWrapper) {
 			int state = getState();
+			mediatorModel.setRunningState(state);
 			switch (state) {
-			case ComponentInstance.VALID: {
+			case CiliaInstance.VALID: {
 				updateMediatorModel();
 				updateMediatorInstance();
 			}
 			break;
-			case ComponentInstance.DISPOSED:
-			case ComponentInstance.STOPPED:
-			case ComponentInstance.INVALID: {
+			case CiliaInstance.DISPOSED:
+			case CiliaInstance.STOPPED:
+			case CiliaInstance.INVALID: {
 				cleanInstances();
 			}
 			break;

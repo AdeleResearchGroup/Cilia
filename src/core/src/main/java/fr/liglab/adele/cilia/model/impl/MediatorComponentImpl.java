@@ -82,6 +82,8 @@ public abstract class MediatorComponentImpl extends ComponentImpl implements
 	private final static long creationTimeStamp = System.currentTimeMillis();
 	
 	private Map additionnalModel = new HashMap(1);
+	
+	private volatile int runningState = MediatorComponent.STOPPED;
 
 	/**
 	 * 
@@ -396,21 +398,23 @@ public abstract class MediatorComponentImpl extends ComponentImpl implements
 	}
 
 	public void dispose() {
-		super.dispose();
-		this.category = null;
-		this.chain = null;
-		this.dispatcher = null;
-		this.scheduler = null;
+		synchronized (lockObject) {
+			runningState = MediatorComponent.DISPOSED;
+			super.dispose();
+			this.category = null;
+			this.chain = null;
+			this.dispatcher = null;
+			this.scheduler = null;
 
-		this.entryBindings.clear();
-		this.entryBindings = null;
+			this.entryBindings.clear();
+			this.entryBindings = null;
 
-		this.exitBindings.clear();
-		this.exitBindings = null;
+			this.exitBindings.clear();
+			this.exitBindings = null;
 
-		this.inPorts.clear();
-		this.outPorts.clear();
-
+			this.inPorts.clear();
+			this.outPorts.clear();
+		}
 	}
 
 	/**
@@ -480,5 +484,25 @@ public abstract class MediatorComponentImpl extends ComponentImpl implements
 			additionnalModel.remove(modelName) ;
 	}
 	
+
+	public int getState(){
+		synchronized (lockObject) {
+			return runningState;
+		}
+	}
+
+	public boolean isRunning(){
+		if (getState() == MediatorComponent.VALID) {
+			return true;
+		}
+		return false;
+	}
+	
+	public void setRunningState(int state){
+		synchronized (lockObject) {
+			runningState = state;
+		}
+		//System.out.println("Change running state " + getState() + " " + getId());
+	}
 	
 }

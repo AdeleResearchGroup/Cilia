@@ -21,7 +21,33 @@ import fr.liglab.adele.cilia.Node;
  *
  */
 public interface MediatorComponent extends Node,Component { 
-	
+    /**
+     * Component Instance State : DISPOSED. The component instance was disposed.
+     */
+    final static int DISPOSED = -1;
+    
+    /**
+     * Component Instance State : STOPPED. The component instance is not
+     * started.
+     */
+    final static int STOPPED = 0;
+
+    /**
+     * Component Instance State : INVALID. The component instance is invalid when it
+     * starts or when a component dependency is invalid.
+     */
+    final static int INVALID = 1;
+
+    /**
+     * Component Instance State : VALID. The component instance is resolved when it is
+     * running and all its attached handlers are valid.
+     */
+    final static int VALID = 2;
+    /**
+     * Component instance state: SEMIVALID. the component instance is resolved and is running but
+     * there are at least one binding that is not working.
+     */
+    final static int SEMIVALID = 3;
 	/**
 	 * 
 	 * @return
@@ -100,4 +126,9 @@ public interface MediatorComponent extends Node,Component {
 	void addModel(String modelName,ModelExtension modelExtension) ;
 	
 	void removeModel(String modelName) ;
+	
+	
+	int getState();
+	
+	boolean isRunning();
 }

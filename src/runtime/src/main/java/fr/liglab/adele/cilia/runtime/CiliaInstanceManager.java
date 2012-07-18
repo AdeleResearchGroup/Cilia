@@ -57,7 +57,7 @@ public interface CiliaInstanceManager extends Observer {
      */
     void reconfigurePOJOS(Dictionary props);
 
-    void removeInstance(String group, String instanceName);
+    boolean removeInstance(String group, String instanceName);
 
     void startInstances();
     
