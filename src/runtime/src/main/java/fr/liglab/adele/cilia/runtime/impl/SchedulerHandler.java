@@ -589,11 +589,11 @@ InstanceStateListener, Observer, Runnable {
 	}
 
 	public void update(Observable o, Object arg) {
-		Boolean state = (Boolean) arg;
-		if (state.booleanValue()) {
+		Integer state = (Integer) arg;
+		if (state.intValue() == CiliaInstance.VALID) {
 			updateSchedulerReference();
 			/* --> Teste l'etat du Scheduler --- */
-			getHandlerManager().setState(ComponentInstance.VALID);
+			getHandlerManager().setState(CiliaInstance.VALID);
 
 			addSchedulerToCollectors();
 		} else {

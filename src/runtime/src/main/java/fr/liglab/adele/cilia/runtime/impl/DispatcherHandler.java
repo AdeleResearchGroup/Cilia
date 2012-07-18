@@ -577,9 +577,9 @@ Observer, IDispatcherHandler {
 	}
 
 	public void update(Observable o, Object arg) {
-		Boolean state = (Boolean) arg;
-		if (state.booleanValue()) {
-			getHandlerManager().setState(ComponentInstance.VALID);
+		Integer state = (Integer) arg;
+		if (state.intValue() == CiliaInstance.VALID) {
+			getHandlerManager().setState(CiliaInstance.VALID);
 			/* il faut tester ici ..l'etat du dispatcher */
 			updateDispatcherReference();
 		} else {

@@ -27,6 +27,8 @@ import java.util.Observable;
 import java.util.Set;
 
 import org.apache.felix.ipojo.ComponentInstance;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 import fr.liglab.adele.cilia.runtime.CiliaInstanceWrapper;
@@ -48,7 +50,9 @@ public class CiliaInstanceManagerSet extends Observable implements CiliaInstance
 
 	private Boolean generalState = null;
 
-	private final Object lockObject = new Object();
+	protected final Object lockObject = new Object();
+	
+	protected Logger logger = LoggerFactory.getLogger("cilia.ipojo.runtime"); 
 
 	public CiliaInstanceManagerSet(){
 		instances = Collections.synchronizedMap(new HashMap()) ;
@@ -72,6 +76,7 @@ public class CiliaInstanceManagerSet extends Observable implements CiliaInstance
 
 	public boolean checkAvailability() {
 		boolean valid = true;
+		Integer state ;
 		CiliaInstance component = null;
 		synchronized (lockObject) {
 			Iterator it = instances.keySet().iterator();
@@ -86,9 +91,14 @@ public class CiliaInstanceManagerSet extends Observable implements CiliaInstance
 				}
 			}
 		}
+		if(valid){
+			state = ComponentInstance.VALID;
+		} else {
+			state = ComponentInstance.INVALID;
+		}
 		generalState =  Boolean.valueOf(valid);
 		setChanged();
-		notifyObservers(generalState);
+		notifyObservers(state);
 
 		return valid;
 	}
