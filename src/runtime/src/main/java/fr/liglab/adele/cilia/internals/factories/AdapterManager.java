@@ -14,16 +14,11 @@
  */
 package fr.liglab.adele.cilia.internals.factories;
 
-import java.util.Dictionary;
-
-import org.apache.felix.ipojo.ComponentFactory;
-import org.apache.felix.ipojo.ComponentInstance;
-import org.apache.felix.ipojo.ConfigurationException;
 import org.apache.felix.ipojo.HandlerManager;
-import org.apache.felix.ipojo.IPojoContext;
-import org.apache.felix.ipojo.InstanceManager;
-import org.apache.felix.ipojo.util.Logger;
 import org.osgi.framework.BundleContext;
+
+import fr.liglab.adele.cilia.runtime.impl.DispatcherInstanceManager;
+import fr.liglab.adele.cilia.runtime.impl.SchedulerInstanceManager;
 
 /**
  *
@@ -42,7 +37,13 @@ public class AdapterManager extends MediatorComponentManager {
 		super(factory, context, handlers);
 	}
 	
+	public void stop(){
+		super.stop();
+		super.stopManagers();
+	}
 	
-	
-
+	public void start(){
+		super.startManagers();
+		super.start();
+	}
 }

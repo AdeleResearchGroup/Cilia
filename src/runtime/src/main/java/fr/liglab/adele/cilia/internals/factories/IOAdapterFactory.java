@@ -32,7 +32,6 @@ public class IOAdapterFactory extends MediatorComponentFactory {
 	public IOAdapterFactory(BundleContext context, Element element)
 			throws ConfigurationException {
 		super(context, element);
-        updateMetadata();
 	}
 
 	protected void updateMetadata() {
@@ -47,6 +46,11 @@ public class IOAdapterFactory extends MediatorComponentFactory {
 					DEFAULT_NAMESPACE)[0];
 		}
 
+		if (!scheduler.containsAttribute("name")) {
+			scheduler.addAttribute(new Attribute("name", "immediate-scheduler"));
+			scheduler.addAttribute(new Attribute("namespace", DEFAULT_NAMESPACE));
+		}
+
 		if (!m_componentMetadata.containsElement("dispatcher",
 				DEFAULT_NAMESPACE)) {
 			dispatcher = new Element("dispatcher", DEFAULT_NAMESPACE);
@@ -54,6 +58,12 @@ public class IOAdapterFactory extends MediatorComponentFactory {
 			dispatcher = m_componentMetadata.getElements("dispatcher",
 					DEFAULT_NAMESPACE)[0];
 		}
+		
+		if (!dispatcher.containsAttribute("name")) {
+			dispatcher.addAttribute(new Attribute("name", "multicast-dispatcher"));
+			dispatcher.addAttribute(new Attribute("namespace", DEFAULT_NAMESPACE));
+		}
+		
 		try {
 			clazz = super.loadClass(getClassName());
 		} catch (ClassNotFoundException e) {
@@ -63,6 +73,7 @@ public class IOAdapterFactory extends MediatorComponentFactory {
 
 		// Check if the manipulated class herite from CiliaAdapter
 		if ((AbstractIOAdapter.class.isAssignableFrom(clazz)) || (AbstractAsyncIOAdapter.class.isAssignableFrom(clazz))) {
+			
 			dispatcher.addAttribute(new Attribute("method", "dispatchData"));
 			dispatcher.addAttribute(new Attribute("data.type", Data.class
 					.getName()));
@@ -81,10 +92,18 @@ public class IOAdapterFactory extends MediatorComponentFactory {
 	 */
 	public void check(Element element) throws ConfigurationException {
 		super.check(element);
+		updateMetadata();
 		System.out.println("Computing IO ports in IOAdapterFactory");
+		computeConstituantsDescriptions();
 		computePorts();
 	}
 
+	protected void computeConstituantsDescriptions()
+			throws ConfigurationException {
+		schedulerDescription = computeDescription("scheduler");
+		dispatcherDescription = computeDescription("dispatcher");
+	}
+	
 	public String getComponentType() {
 		return COMPONENT_TYPE;
 	}
@@ -137,10 +156,10 @@ public class IOAdapterFactory extends MediatorComponentFactory {
 	public ComponentInstance createInstance(Dictionary config,
 			IPojoContext context, HandlerManager[] handlers)
 					throws org.apache.felix.ipojo.ConfigurationException {
-		config.put("cilia.scheduler.name", "immediate-scheduler");
-		config.put("cilia.scheduler.namespace", DEFAULT_NAMESPACE);
-		config.put("cilia.dispatcher.name", "multicast-dispatcher");
-		config.put("cilia.dispatcher.namespace", DEFAULT_NAMESPACE);
+//		config.put("cilia.scheduler.name", "immediate-scheduler");
+//		config.put("cilia.scheduler.namespace", DEFAULT_NAMESPACE);
+//		config.put("cilia.dispatcher.name", "multicast-dispatcher");
+//		config.put("cilia.dispatcher.namespace", DEFAULT_NAMESPACE);
 		AdapterManager im = (AdapterManager) createAdapterInstance(config,
 				context, handlers);
 
@@ -185,8 +204,7 @@ public class IOAdapterFactory extends MediatorComponentFactory {
 			instance.start();
 			return instance;
 		} catch (ConfigurationException e) {
-			// An exception occurs while executing the configure or start
-			// methods.
+			e.printStackTrace();
 			if (instance != null) {
 				instance.dispose();
 				instance = null;
@@ -197,6 +215,7 @@ public class IOAdapterFactory extends MediatorComponentFactory {
 				instance.dispose();
 				instance = null;
 			}
+			e.printStackTrace();
 			m_logger.log(Logger.ERROR, e.getMessage(), e);
 			throw new ConfigurationException(e.getMessage());
 		}

@@ -14,14 +14,25 @@
  */
 package fr.liglab.adele.cilia.internals.factories;
 
-import org.apache.felix.ipojo.ComponentFactory;
+import java.util.Dictionary;
+
 import org.apache.felix.ipojo.ComponentInstance;
 import org.apache.felix.ipojo.HandlerManager;
 import org.apache.felix.ipojo.InstanceManager;
 import org.apache.felix.ipojo.InstanceStateListener;
 import org.osgi.framework.BundleContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import fr.liglab.adele.cilia.model.Component;
 import fr.liglab.adele.cilia.model.Port;
+import fr.liglab.adele.cilia.model.impl.Dispatcher;
+import fr.liglab.adele.cilia.model.impl.Scheduler;
+import fr.liglab.adele.cilia.runtime.Const;
+import fr.liglab.adele.cilia.runtime.impl.DispatcherHandler;
+import fr.liglab.adele.cilia.runtime.impl.DispatcherInstanceManager;
+import fr.liglab.adele.cilia.runtime.impl.SchedulerHandler;
+import fr.liglab.adele.cilia.runtime.impl.SchedulerInstanceManager;
 
 /**
  *
@@ -32,6 +43,14 @@ public abstract class MediatorComponentManager extends InstanceManager implement
 		ComponentInstance, InstanceStateListener {
 
 	protected final MediatorComponentFactory mfactory;
+	
+	protected SchedulerInstanceManager schedulerManager;
+	
+	protected DispatcherInstanceManager dispatcherManager;
+
+	private static Logger logger = LoggerFactory.getLogger(Const.LOGGER_CORE);
+	
+	Dictionary configuration;
 	
 	/**
 	 * @param factory
@@ -52,4 +71,109 @@ public abstract class MediatorComponentManager extends InstanceManager implement
 		return this.mfactory.getOutPort(name);
 	}
 	
+	public void startManagers() {
+		updateSchedulerManager();
+		updateDispatcherManager();
+	}
+	
+	public void stopManagers(){
+		stopSchedulerManager();
+		stopDispatcherManager();
+		
+	}
+	
+	private synchronized void updateSchedulerManager(){
+		if (schedulerManager != null) {
+			return;
+		}
+		String schedulerName = mfactory.getSchedulerDescription().getId();
+		String schedulerNS = mfactory.getSchedulerDescription().getNamespace();
+
+		Scheduler schedulerDescription = new Scheduler("scheduler", schedulerName, schedulerNS,
+				configuration);
+		
+		schedulerManager = new SchedulerInstanceManager(getContext(), getScheduler(), schedulerDescription);
+		schedulerManager.start();
+	}
+	
+	private synchronized void stopSchedulerManager(){
+		if (schedulerManager != null) {
+			schedulerManager.stop();
+		}
+	}
+	
+	private synchronized void updateDispatcherManager(){
+		if (dispatcherManager != null){
+			return;
+		}
+			
+		String dispatcherName = mfactory.getDispatcherDescription().getId();
+		String dispatcherNS = mfactory.getDispatcherDescription().getNamespace();
+
+		Dispatcher dispatcherDescription = new Dispatcher("dispatcher", dispatcherName, dispatcherNS,
+				configuration);
+		
+		dispatcherManager = new DispatcherInstanceManager(getContext(), getDispatcher(),dispatcherDescription);
+		dispatcherManager.start();
+	}
+	
+	private synchronized void stopDispatcherManager(){
+		if (dispatcherManager != null){
+			dispatcherManager.stop();
+		}
+	}
+	
+	public synchronized void removeCollector(String port, Component collector){
+		if (schedulerManager == null) {
+			logger.warn("Unable to remove Collector {} : Manager is invalid", collector.getId());
+			return;
+		}
+		schedulerManager.removeComponent(port, collector);
+	}
+	
+	public synchronized  void addCollector(String port, Component collector){
+		updateSchedulerManager();
+		schedulerManager.addComponent(port, collector);
+	}
+	public synchronized  void removeSender(String port, Component sender){
+		if (dispatcherManager == null) {
+			logger.warn("Unable to remove Sender {} : Manager is invalid", sender.getId());
+			return;
+		}
+		dispatcherManager.removeComponent(port, sender);
+	}
+	
+	public synchronized  void addSender(String port, Component sender){
+		updateDispatcherManager();
+		dispatcherManager.addComponent(port, sender);
+	}
+	
+	private SchedulerHandler getScheduler() {
+		SchedulerHandler r = null;
+		InstanceManager im = getInstanceManager();
+		r = (SchedulerHandler) im.getHandler(Const.ciliaQualifiedName("scheduler"));
+		return r;
+	}
+	
+	private DispatcherHandler getDispatcher() {
+		DispatcherHandler r = null;
+		InstanceManager im = getInstanceManager();
+		r = (DispatcherHandler) im.getHandler(Const.ciliaQualifiedName("dispatcher"));
+		return r;
+	}
+	
+	private InstanceManager getInstanceManager(){
+		InstanceManager im = null;
+		ComponentInstance componentInstance = this;
+		if (componentInstance instanceof InstanceManager) {
+			im = (InstanceManager) componentInstance;
+		}
+		if (componentInstance instanceof MediatorManager) {
+			MediatorManager mm = (MediatorManager) componentInstance;
+			if (mm != null) {
+				im = (InstanceManager) mm.getProcessorInstance();
+			}
+		}
+		return im;
+	}
 }

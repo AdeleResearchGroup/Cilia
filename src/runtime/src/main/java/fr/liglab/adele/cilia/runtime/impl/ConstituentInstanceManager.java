@@ -46,25 +46,43 @@ public abstract class ConstituentInstanceManager extends CiliaInstanceManagerSet
 
 	BundleContext bcontext;
 
-	public ConstituentInstanceManager(BundleContext context) {
+	public ConstituentInstanceManager(BundleContext context, Component schedulerInfo) {
 		bcontext = context;
+		constituantInfo = schedulerInfo;
 	}
 
 	public void start (){
 		constituant = new CiliaInstanceWrapper(bcontext, constituantInfo.getId(), createFilter(), constituantInfo.getProperties(), this);
 		constituant.start();
+		this.startInstances();
 	}
 
+	public void stop(){
+		constituant.stop();
+		this.removeAllInstances();
+	}
 
 	protected abstract String createFilter() ;
+	
+	protected abstract String createConstituantFilter(Component component) ;
+	
+	protected abstract void organizeReferences(CiliaInstanceWrapper instance);
 
-	public void addComponent(String port, Component component) {
-		CiliaInstanceWrapper collectorInstance = new CiliaInstanceWrapper(bcontext, component.getId(), createFilter(), component.getProperties(), this);
-		collectorInstance.start();
+	
+	public CiliaInstanceWrapper addComponent(String port, Component component) {
+		return addComponent(port, component, true);
+	}
+	
+	public CiliaInstanceWrapper addComponent(String port, Component component, boolean start) {
+		CiliaInstanceWrapper collectorInstance = new CiliaInstanceWrapper(bcontext, component.getId(), createConstituantFilter(component), component.getProperties(), this);
+		if (start) {
+			collectorInstance.start();
+		}
 		synchronized (lockObject) {
 			elementCount++;
 			super.addInstance(port, collectorInstance);
 		}
+		return collectorInstance;
 	}
 
 	public boolean removeComponent(String port, Component component){
@@ -91,6 +109,7 @@ public abstract class ConstituentInstanceManager extends CiliaInstanceManagerSet
 				}
 			}
 		}
+		organizeReferences(instance);
 	}
 	public int getState(){
 		synchronized (lockObject) {

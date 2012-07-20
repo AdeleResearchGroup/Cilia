@@ -156,7 +156,7 @@ public class CiliaInstanceWrapper extends Observable implements CiliaInstance,
 			}
 		}
 		if (object == null) {
-			log.error("Component {} is not valid", getName());
+			log.error("Component {} is not valid {}", getName());
 		}
 		return object;
 	}
@@ -167,6 +167,7 @@ public class CiliaInstanceWrapper extends Observable implements CiliaInstance,
 	public int getState() {
 		synchronized (lockObject) {
 			if (componentInstance == null) {
+				System.out.println("Component Instance is null");
 				return CiliaInstance.INVALID;
 			}
 			return componentInstance.getState();

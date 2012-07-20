@@ -20,12 +20,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import fr.liglab.adele.cilia.framework.monitor.IMonitor;
-import fr.liglab.adele.cilia.model.Port;
 import fr.liglab.adele.cilia.runtime.Const;
 import fr.liglab.adele.cilia.runtime.MediatorHandler;
 import fr.liglab.adele.cilia.runtime.impl.DispatcherHandler;
+import fr.liglab.adele.cilia.runtime.impl.DispatcherInstanceManager;
 import fr.liglab.adele.cilia.runtime.impl.MonitorHandler;
 import fr.liglab.adele.cilia.runtime.impl.SchedulerHandler;
+import fr.liglab.adele.cilia.runtime.impl.SchedulerInstanceManager;
 
 public class MediatorManager extends MediatorComponentManager implements ComponentInstance, InstanceStateListener {
 
@@ -63,7 +64,6 @@ public class MediatorManager extends MediatorComponentManager implements Compone
 	private List m_listeners;
 
 
-
 	public MediatorManager(MediatorComponentFactory mefactory, ProcessorFactory factory, BundleContext context,
 			HandlerManager[] handlers) {
 		super(mefactory, context, handlers);
@@ -74,6 +74,7 @@ public class MediatorManager extends MediatorComponentManager implements Compone
 	}
 
 	public void start() {
+		super.startManagers();
 		synchronized (this) {
 			if (m_state != STOPPED) { // Instance already started
 				return;
@@ -207,6 +208,7 @@ public class MediatorManager extends MediatorComponentManager implements Compone
 		synchronized (this) {
 			m_state = STOPPED;
 		}
+		super.stopManagers();
 	}
 
 	public void dispose() {
@@ -265,10 +267,11 @@ public class MediatorManager extends MediatorComponentManager implements Compone
 		return m_name; // Immutable
 	}
 
-	public void configure(Element metadata, Dictionary configuration) throws ConfigurationException {
+	public void configure(Element metadata, Dictionary config) throws ConfigurationException {
 
+		this.configuration = config;
 		// Add the name
-		m_name = (String) configuration.get("instance.name");
+		m_name = (String) config.get("instance.name");
 		m_name = m_name + "-Mediator";
 
 		// Create the standard handlers and add these handlers to the list
@@ -276,7 +279,7 @@ public class MediatorManager extends MediatorComponentManager implements Compone
 		MonitorHandler monitor = (MonitorHandler) ((InstanceManager)pinstance).getHandler(Const.ciliaQualifiedName("monitor-handler"));
 		DispatcherHandler dsp = (DispatcherHandler) ((InstanceManager)pinstance).getHandler(Const.ciliaQualifiedName("dispatcher"));
 		for (int i = 0; i < m_handlers.length; i++) {
-			m_handlers[i].init(this, metadata, configuration);
+			m_handlers[i].init(this, metadata, config);
 			//Add subscription.
 			Handler handler = m_handlers[i].getHandler();
 			// add the monitor, to listen the scheduler/dispatcher events.
@@ -302,12 +305,13 @@ public class MediatorManager extends MediatorComponentManager implements Compone
 		return m_state > STOPPED;
 	}
 
-	public void reconfigure(Dictionary configuration) {
+	public void reconfigure(Dictionary config) {
+		this.configuration = config;
 		for (int i = 0; i < m_handlers.length; i++) {
-			m_handlers[i].getHandler().reconfigure(configuration);
+			m_handlers[i].getHandler().reconfigure(config);
 		}
 		if (pinstance != null) {
-			pinstance.reconfigure(configuration);
+			pinstance.reconfigure(config);
 		}
 		// We synchronized the state computation.
 		synchronized (this) {
@@ -390,7 +394,4 @@ public class MediatorManager extends MediatorComponentManager implements Compone
 	public ComponentInstance getProcessorInstance() {
 		return pinstance;
 	}
-	
-
-
 }

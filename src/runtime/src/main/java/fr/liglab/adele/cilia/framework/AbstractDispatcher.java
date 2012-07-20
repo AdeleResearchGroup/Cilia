@@ -47,12 +47,12 @@ public abstract class AbstractDispatcher implements IDispatcher{
 		dispatcher = hdispatcher;
 	}
 
-	public void addSender(String senderName, String senderId, Dictionary props) {
-		if (log.isTraceEnabled()) {
-			log.trace("Add sender '" + senderName + "'");
-		}
-		dispatcher.addSender(senderName, senderId, props);
-	}
+//	public void addSender(String senderName, String senderId, Dictionary props) {
+//		if (log.isTraceEnabled()) {
+//			log.trace("Add sender '" + senderName + "'");
+//		}
+//		dispatcher.addSender(senderName, senderId, props);
+//	}
 
 	public abstract void dispatch(Data data) throws CiliaException  ;
 
@@ -60,10 +60,10 @@ public abstract class AbstractDispatcher implements IDispatcher{
 		return dispatcher.getSendersIds();
 	}
 
-	public void removeSender(String portname, String senderName) {
-		log.debug("remove sender '" + senderName + "'");
-		dispatcher.removeSender(portname, senderName);
-	}
+//	public void removeSender(String portname, String senderName) {
+//		log.debug("remove sender '" + senderName + "'");
+//		dispatcher.removeSender(portname, senderName);
+//	}
 
 	public void send(String portname, Data data) throws CiliaException {
 		if (log.isTraceEnabled())

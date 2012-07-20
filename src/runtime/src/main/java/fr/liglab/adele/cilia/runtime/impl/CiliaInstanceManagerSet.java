@@ -97,8 +97,8 @@ public class CiliaInstanceManagerSet extends Observable implements CiliaInstance
 			state = ComponentInstance.INVALID;
 		}
 		generalState =  Boolean.valueOf(valid);
-		setChanged();
-		notifyObservers(state);
+		//setChanged();
+		//notifyObservers(state);
 
 		return valid;
 	}

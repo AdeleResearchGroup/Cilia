@@ -23,7 +23,9 @@ import org.osgi.framework.BundleContext;
 import fr.liglab.adele.cilia.framework.AbstractScheduler;
 import fr.liglab.adele.cilia.framework.ICollector;
 import fr.liglab.adele.cilia.framework.IScheduler;
+import fr.liglab.adele.cilia.model.Component;
 import fr.liglab.adele.cilia.runtime.CiliaInstance;
+import fr.liglab.adele.cilia.runtime.CiliaInstanceWrapper;
 import fr.liglab.adele.cilia.runtime.ISchedulerHandler;
 
 /**
@@ -38,10 +40,14 @@ public class SchedulerInstanceManager extends ConstituentInstanceManager {
 	/**
 	 * @param context
 	 */
-	public SchedulerInstanceManager(BundleContext context, ISchedulerHandler handler) {
-		super(context);
-		this.handler = handler;
-
+	public SchedulerInstanceManager(BundleContext context, ISchedulerHandler sched, Component schedulerInfo) {
+		super(context, schedulerInfo);
+		setSchedulerHandler(sched);
+	}
+	
+	private void setSchedulerHandler(ISchedulerHandler hand){
+		handler = hand;
+		handler.setSchedulerManager(this);
 	}
 
 	public IScheduler getScheduler(){
@@ -61,6 +67,18 @@ public class SchedulerInstanceManager extends ConstituentInstanceManager {
 			filter.append("(scheduler.namespace=" + constituantInfo.getNamespace()
 					+ ")");
 		}
+		filter.append(")");
+		return filter.toString();
+	}
+	
+	protected String createConstituantFilter(Component component){
+		StringBuffer filter = new StringBuffer();
+		filter.append("(&");
+		filter.append("(");
+		filter.append("collector.name=");
+		filter.append(component.getType());
+		filter.append(")");
+		filter.append("(factory.state=1)");
 		filter.append(")");
 		return filter.toString();
 	}
@@ -103,5 +121,17 @@ public class SchedulerInstanceManager extends ConstituentInstanceManager {
 		}
 	}
 	
+	protected void organizeReferences(CiliaInstanceWrapper instance){
+		updateSchedulerReference();
+		IScheduler sched = getScheduler();
+		synchronized (lockObject) {
+			if (sched != null) {
+				Object col = instance.getObject();
+				if (col instanceof ICollector) {
+					((ICollector) col).setScheduler(sched);
+				}
+			}
+		}
+	}
 
 }

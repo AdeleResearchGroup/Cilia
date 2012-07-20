@@ -7,19 +7,18 @@ import java.util.List;
 
 import org.apache.felix.ipojo.ComponentInstance;
 import org.apache.felix.ipojo.ConfigurationException;
-import org.apache.felix.ipojo.Handler;
 import org.apache.felix.ipojo.HandlerManager;
 import org.apache.felix.ipojo.IPojoContext;
 import org.apache.felix.ipojo.InstanceManager;
-
 import org.apache.felix.ipojo.metadata.Attribute;
 import org.apache.felix.ipojo.metadata.Element;
-
 import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import fr.liglab.adele.cilia.model.impl.CollectorImpl;
 import fr.liglab.adele.cilia.model.impl.PatternType;
+import fr.liglab.adele.cilia.model.impl.SenderImpl;
 import fr.liglab.adele.cilia.runtime.Const;
 import fr.liglab.adele.cilia.runtime.impl.DispatcherHandler;
 import fr.liglab.adele.cilia.runtime.impl.SchedulerHandler;
@@ -177,8 +176,9 @@ public class AdapterFactory extends MediatorFactory {
 			if (scheduler == null) {
 				logger.debug("scheduler handler is null");
 			}
-			scheduler.addCollector(constituent.getAttribute("type"),
-					constituent.getAttribute("type"), config);
+			mi.addCollector("std", new CollectorImpl(constituent.getAttribute("type"), constituent.getAttribute("type"), null, config));
+			//scheduler.addCollector(constituent.getAttribute("type"),constituent.getAttribute("type"), config);
+			
 		}
 		if (adapterType.equals(PatternType.OUT_ONLY)) {
 			logger.debug("Adding out only " + constituent.getAttribute("type"));
@@ -187,8 +187,8 @@ public class AdapterFactory extends MediatorFactory {
 			if (dispatcher == null) {
 				logger.debug("dispatcher handler is null");
 			}
-			dispatcher.addSender(constituent.getAttribute("type"),
-					constituent.getAttribute("type"), config);
+			mi.addSender("std", new SenderImpl(constituent.getAttribute("type"), constituent.getAttribute("type"), null, config));
+			//dispatcher.addSender(constituent.getAttribute("type"),constituent.getAttribute("type"), config);
 		}
 		return mi;
 	}
