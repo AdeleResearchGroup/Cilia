@@ -17,9 +17,6 @@ package fr.liglab.adele.cilia.internals.factories;
 import org.apache.felix.ipojo.HandlerManager;
 import org.osgi.framework.BundleContext;
 
-import fr.liglab.adele.cilia.runtime.impl.DispatcherInstanceManager;
-import fr.liglab.adele.cilia.runtime.impl.SchedulerInstanceManager;
-
 /**
  *
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project Team</a>

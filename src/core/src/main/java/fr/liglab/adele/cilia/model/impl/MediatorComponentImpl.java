@@ -20,19 +20,18 @@ import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Hashtable;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Observer;
 import java.util.Set;
-import fr.liglab.adele.cilia.util.FrameworkUtils;
-import fr.liglab.adele.cilia.util.Watch;
+
 import fr.liglab.adele.cilia.model.Binding;
 import fr.liglab.adele.cilia.model.Chain;
 import fr.liglab.adele.cilia.model.MediatorComponent;
 import fr.liglab.adele.cilia.model.ModelExtension;
 import fr.liglab.adele.cilia.model.Port;
+import fr.liglab.adele.cilia.util.FrameworkUtils;
 import fr.liglab.adele.cilia.util.Uuid;
+import fr.liglab.adele.cilia.util.Watch;
 
 /**
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project
@@ -402,7 +401,6 @@ public abstract class MediatorComponentImpl extends ComponentImpl implements
 			runningState = MediatorComponent.DISPOSED;
 			super.dispose();
 			this.category = null;
-			this.chain = null;
 			this.dispatcher = null;
 			this.scheduler = null;
 
@@ -502,7 +500,6 @@ public abstract class MediatorComponentImpl extends ComponentImpl implements
 		synchronized (lockObject) {
 			runningState = state;
 		}
-		//System.out.println("Change running state " + getState() + " " + getId());
 	}
 	
 }

@@ -24,16 +24,15 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Observable;
+import java.util.Observer;
 import java.util.Set;
 
 import org.apache.felix.ipojo.ComponentInstance;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
-import fr.liglab.adele.cilia.runtime.CiliaInstanceWrapper;
 import fr.liglab.adele.cilia.runtime.CiliaInstance;
-import fr.liglab.adele.cilia.runtime.CiliaInstanceManager;
+import fr.liglab.adele.cilia.runtime.CiliaInstanceWrapper;
 
 
 /**
@@ -43,7 +42,7 @@ import fr.liglab.adele.cilia.runtime.CiliaInstanceManager;
  *
  */
 @SuppressWarnings({"rawtypes", "unchecked"})
-public class CiliaInstanceManagerSet extends Observable implements CiliaInstanceManager{
+public abstract class CiliaInstanceManagerSet implements Observer{
 
 
 	private Map /*<String,List<CiliaInstance>>*/instances ;
@@ -58,7 +57,7 @@ public class CiliaInstanceManagerSet extends Observable implements CiliaInstance
 		instances = Collections.synchronizedMap(new HashMap()) ;
 	}
 
-	public void addInstance(String key, Object _obj) {
+	protected void addInstance(String key, Object _obj) {
 		List instancesList = null;
 		synchronized (lockObject) {
 			if(instances.containsKey(key)) {
@@ -97,8 +96,7 @@ public class CiliaInstanceManagerSet extends Observable implements CiliaInstance
 			state = ComponentInstance.INVALID;
 		}
 		generalState =  Boolean.valueOf(valid);
-		//setChanged();
-		//notifyObservers(state);
+
 
 		return valid;
 	}

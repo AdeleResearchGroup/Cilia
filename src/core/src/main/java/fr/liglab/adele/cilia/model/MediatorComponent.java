@@ -77,32 +77,7 @@ public interface MediatorComponent extends Node,Component {
 
 	Binding[] getOutBindings();
 
-	/**
-	 * @param bindingImpl
-	 */
-	//void addOutBinding(Binding binding);
-
-	/**
-	 * @param bindingImpl
-	 */
-	//void addInBinding(Binding bindingImpl); 
-	/**
-	 * 
-	 * @param chain
-	 */
-	//void setChain(Chain chain);
-
-	/**
-	 * @param binding
-	 * @return 
-	 */
-	//boolean removeInBinding(Binding binding);
-
-	/**
-	 * @param binding
-	 */
-	//boolean removeOutBinding(Binding binding);
-
+	
 	/**
 	 * @param outPort
 	 * @return

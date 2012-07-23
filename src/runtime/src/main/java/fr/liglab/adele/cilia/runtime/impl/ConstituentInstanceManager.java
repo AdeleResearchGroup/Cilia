@@ -14,15 +14,17 @@
  */
 package fr.liglab.adele.cilia.runtime.impl;
 
+import java.util.Iterator;
+import java.util.List;
 import java.util.Observable;
 
 import org.osgi.framework.BundleContext;
 
+import fr.liglab.adele.cilia.internals.factories.MediatorComponentManager;
 import fr.liglab.adele.cilia.model.Component;
 import fr.liglab.adele.cilia.model.MediatorComponent;
 import fr.liglab.adele.cilia.runtime.CiliaInstance;
 import fr.liglab.adele.cilia.runtime.CiliaInstanceWrapper;
-import fr.liglab.adele.cilia.runtime.ISchedulerHandler;
 
 /**
  *
@@ -36,19 +38,20 @@ public abstract class ConstituentInstanceManager extends CiliaInstanceManagerSet
 
 	Component constituantInfo;
 
-	protected volatile int elementCount = 0;
+	private boolean validConstituant = true;
 
-	protected volatile int elementValids = 0;
+	private boolean validElements = true;
 
-	protected volatile boolean validConstituant = true;
-	
+	protected MediatorComponentManager mediatorInstance;
 
 
 	BundleContext bcontext;
 
-	public ConstituentInstanceManager(BundleContext context, Component schedulerInfo) {
+	public ConstituentInstanceManager(BundleContext context, Component schedulerInfo, MediatorComponentManager mmanager) {
 		bcontext = context;
 		constituantInfo = schedulerInfo;
+		mediatorInstance = mmanager;
+
 	}
 
 	public void start (){
@@ -63,26 +66,25 @@ public abstract class ConstituentInstanceManager extends CiliaInstanceManagerSet
 	}
 
 	protected abstract String createFilter() ;
-	
+
 	protected abstract String createConstituantFilter(Component component) ;
-	
+
 	protected abstract void organizeReferences(CiliaInstanceWrapper instance);
 
-	
+
 	public CiliaInstanceWrapper addComponent(String port, Component component) {
 		return addComponent(port, component, true);
 	}
-	
+
 	public CiliaInstanceWrapper addComponent(String port, Component component, boolean start) {
-		CiliaInstanceWrapper collectorInstance = new CiliaInstanceWrapper(bcontext, component.getId(), createConstituantFilter(component), component.getProperties(), this);
-		if (start) {
-			collectorInstance.start();
-		}
+		CiliaInstanceWrapper elementInstance = new CiliaInstanceWrapper(bcontext, component.getId(), createConstituantFilter(component), component.getProperties(), this);
 		synchronized (lockObject) {
-			elementCount++;
-			super.addInstance(port, collectorInstance);
+			super.addInstance(port, elementInstance);
+			if (start) {
+				elementInstance.start();
+			}
 		}
-		return collectorInstance;
+		return elementInstance;
 	}
 
 	public boolean removeComponent(String port, Component component){
@@ -91,36 +93,50 @@ public abstract class ConstituentInstanceManager extends CiliaInstanceManagerSet
 		}
 	}
 
-	public void update(Observable o, Object arg) {
+	public synchronized void update(Observable o, Object arg) {
 		CiliaInstanceWrapper instance = (CiliaInstanceWrapper)o;
 		Integer state = (Integer)arg;
+		int addition = 0;
 		synchronized (lockObject) {
 			if (instance.equals(constituant)) { // Its the scheduler
-				if (state.equals(CiliaInstance.VALID)) {
+				if (state == CiliaInstance.VALID) {
 					validConstituant = true;
 				} else {
 					validConstituant = false;
 				}
-			} else { // It is some of the collectors
-				if (state == CiliaInstance.VALID){
-					elementValids ++;
-				} else {
-					elementValids --;
-				}
+			} else {
+				validElements = this.checkAvailability();
 			}
 		}
 		organizeReferences(instance);
 	}
 	public int getState(){
 		synchronized (lockObject) {
-			if((elementCount == elementValids) && validConstituant) {
+			if(validElements && validConstituant) {
 				return MediatorComponent.VALID;
-			} else if (validConstituant && elementCount == elementValids) {
+			} else if (validConstituant && !validElements) {
 				return MediatorComponent.SEMIVALID;
 			} else if (!validConstituant) {
 				return MediatorComponent.INVALID;
 			}
 			return MediatorComponent.STOPPED;
+		}
+	}
+
+	private void printConstituants(){
+		System.out.println("Printing constituants");
+		synchronized (lockObject) {
+			Iterator it = getKeys().iterator();
+			while (it.hasNext()) {
+				List instanceList = (List) getPojo((String)it.next());
+				Iterator componentsInstances = instanceList.iterator();
+				while(componentsInstances.hasNext()) {
+					CiliaInstanceWrapper component = (CiliaInstanceWrapper) componentsInstances.next();
+					System.out.println("Constituent:" + component.getName());
+					System.out.println("Type:" + component.getStateAsString());
+					System.out.println("State:" + component.getState());
+				}
+			}
 		}
 	}
 }

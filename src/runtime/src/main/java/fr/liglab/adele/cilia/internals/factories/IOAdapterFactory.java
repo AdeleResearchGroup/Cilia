@@ -156,10 +156,7 @@ public class IOAdapterFactory extends MediatorComponentFactory {
 	public ComponentInstance createInstance(Dictionary config,
 			IPojoContext context, HandlerManager[] handlers)
 					throws org.apache.felix.ipojo.ConfigurationException {
-//		config.put("cilia.scheduler.name", "immediate-scheduler");
-//		config.put("cilia.scheduler.namespace", DEFAULT_NAMESPACE);
-//		config.put("cilia.dispatcher.name", "multicast-dispatcher");
-//		config.put("cilia.dispatcher.namespace", DEFAULT_NAMESPACE);
+
 		AdapterManager im = (AdapterManager) createAdapterInstance(config,
 				context, handlers);
 

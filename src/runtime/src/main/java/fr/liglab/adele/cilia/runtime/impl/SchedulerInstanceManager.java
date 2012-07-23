@@ -23,6 +23,7 @@ import org.osgi.framework.BundleContext;
 import fr.liglab.adele.cilia.framework.AbstractScheduler;
 import fr.liglab.adele.cilia.framework.ICollector;
 import fr.liglab.adele.cilia.framework.IScheduler;
+import fr.liglab.adele.cilia.internals.factories.MediatorComponentManager;
 import fr.liglab.adele.cilia.model.Component;
 import fr.liglab.adele.cilia.runtime.CiliaInstance;
 import fr.liglab.adele.cilia.runtime.CiliaInstanceWrapper;
@@ -39,9 +40,10 @@ public class SchedulerInstanceManager extends ConstituentInstanceManager {
 	
 	/**
 	 * @param context
+	 * @param mediatorComponentManager 
 	 */
-	public SchedulerInstanceManager(BundleContext context, ISchedulerHandler sched, Component schedulerInfo) {
-		super(context, schedulerInfo);
+	public SchedulerInstanceManager(BundleContext context, ISchedulerHandler sched, Component schedulerInfo, MediatorComponentManager mediatorComponentManager) {
+		super(context, schedulerInfo, mediatorComponentManager);
 		setSchedulerHandler(sched);
 	}
 	

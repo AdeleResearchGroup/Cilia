@@ -177,7 +177,6 @@ public class AdapterFactory extends MediatorFactory {
 				logger.debug("scheduler handler is null");
 			}
 			mi.addCollector("std", new CollectorImpl(constituent.getAttribute("type"), constituent.getAttribute("type"), null, config));
-			//scheduler.addCollector(constituent.getAttribute("type"),constituent.getAttribute("type"), config);
 			
 		}
 		if (adapterType.equals(PatternType.OUT_ONLY)) {
@@ -188,7 +187,6 @@ public class AdapterFactory extends MediatorFactory {
 				logger.debug("dispatcher handler is null");
 			}
 			mi.addSender("std", new SenderImpl(constituent.getAttribute("type"), constituent.getAttribute("type"), null, config));
-			//dispatcher.addSender(constituent.getAttribute("type"),constituent.getAttribute("type"), config);
 		}
 		return mi;
 	}

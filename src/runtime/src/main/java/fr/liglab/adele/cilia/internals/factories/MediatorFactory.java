@@ -17,15 +17,8 @@ import org.apache.felix.ipojo.util.TrackerCustomizer;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import fr.liglab.adele.cilia.model.Component;
-import fr.liglab.adele.cilia.model.Port;
-import fr.liglab.adele.cilia.model.impl.ComponentImpl;
-import fr.liglab.adele.cilia.model.impl.PortImpl;
-import fr.liglab.adele.cilia.model.impl.PortType;
-import fr.liglab.adele.cilia.runtime.impl.SchedulerInstanceManager;
 
 public class MediatorFactory extends MediatorComponentFactory implements
 		TrackerCustomizer {
