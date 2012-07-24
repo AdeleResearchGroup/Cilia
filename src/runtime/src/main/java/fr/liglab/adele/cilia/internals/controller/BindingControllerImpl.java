@@ -329,7 +329,9 @@ public class BindingControllerImpl implements TrackerCustomizer {
 			log.error("Mediator port {} in {} does not have a well defined data type",entryPort.getName(), entryPort.getMediator().getId() );
 			valid = false;
 		}
-		if (valid && componentEntryPort.getDataType().compareToIgnoreCase(componentExitPort.getDataType()) !=0 ) {
+		if (valid && ((componentEntryPort.getDataType().compareToIgnoreCase(componentExitPort.getDataType()) !=0)
+				&& (componentEntryPort.getDataType().compareTo("*") !=0 && (componentExitPort.getDataType().compareTo("*")!=0))
+				)) {
 			log.error("Trying to bind incompatible ports: ExitPort[" + componentExitPort.getName() + " = "+componentExitPort.getDataType()+"] & EntryPort[" + componentEntryPort.getName() + " = "+componentEntryPort.getDataType()+"]");
 			valid = false;
 		}
