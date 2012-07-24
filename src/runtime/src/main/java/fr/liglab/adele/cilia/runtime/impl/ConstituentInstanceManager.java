@@ -18,6 +18,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Observable;
 
+import org.apache.felix.ipojo.ComponentInstance;
 import org.osgi.framework.BundleContext;
 
 import fr.liglab.adele.cilia.internals.factories.MediatorComponentManager;
@@ -51,7 +52,6 @@ public abstract class ConstituentInstanceManager extends CiliaInstanceManagerSet
 		bcontext = context;
 		constituantInfo = schedulerInfo;
 		mediatorInstance = mmanager;
-
 	}
 
 	public void start (){
@@ -96,12 +96,17 @@ public abstract class ConstituentInstanceManager extends CiliaInstanceManagerSet
 	public synchronized void update(Observable o, Object arg) {
 		CiliaInstanceWrapper instance = (CiliaInstanceWrapper)o;
 		Integer state = (Integer)arg;
+		//Some component instance state has change scheduler/dispatcher or collector/sender
+		//fire an event.
 		int addition = 0;
 		synchronized (lockObject) {
-			if (instance.equals(constituant)) { // Its the scheduler
+			if (instance.equals(constituant)) { // Its the constituant
 				if (state == CiliaInstance.VALID) {
 					validConstituant = true;
+					mediatorInstance.stateChanged(null, ComponentInstance.VALID);// try to make it valid
+					
 				} else {
+					mediatorInstance.stateChanged(null, ComponentInstance.INVALID);// try to make it invalid
 					validConstituant = false;
 				}
 			} else {
@@ -110,18 +115,18 @@ public abstract class ConstituentInstanceManager extends CiliaInstanceManagerSet
 		}
 		organizeReferences(instance);
 	}
-	public int getState(){
-		synchronized (lockObject) {
-			if(validElements && validConstituant) {
-				return MediatorComponent.VALID;
-			} else if (validConstituant && !validElements) {
-				return MediatorComponent.SEMIVALID;
-			} else if (!validConstituant) {
-				return MediatorComponent.INVALID;
-			}
-			return MediatorComponent.STOPPED;
-		}
-	}
+//	public int getState(){
+//		synchronized (lockObject) {
+//			if(validElements && validConstituant) {
+//				return MediatorComponent.VALID;
+//			} else if (validConstituant && !validElements) {
+//				return MediatorComponent.SEMIVALID;
+//			} else if (!validConstituant) {
+//				return MediatorComponent.INVALID;
+//			}
+//			return MediatorComponent.STOPPED;
+//		}
+//	}
 
 	private void printConstituants(){
 		System.out.println("Printing constituants");

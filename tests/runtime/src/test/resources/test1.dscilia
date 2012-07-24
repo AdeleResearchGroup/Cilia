@@ -1,8 +1,11 @@
 <cilia>
 	<chain id="toto">
 		<mediators>
-			<mediator-instance id="toto" type="inexistant-mediator" />
+			<mediator-instance id="toto" type="toto" />
 			<mediator-instance id="validToto" type="Mock" />
 		</mediators>
+		<bindings>
+			<binding from="validToto:unique" to="toto:unique"/>
+		</bindings>
 	</chain>
 </cilia>

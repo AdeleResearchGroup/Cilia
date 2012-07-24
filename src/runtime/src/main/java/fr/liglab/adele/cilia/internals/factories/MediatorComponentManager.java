@@ -14,7 +14,9 @@
  */
 package fr.liglab.adele.cilia.internals.factories;
 
+import java.util.ArrayList;
 import java.util.Dictionary;
+import java.util.List;
 import java.util.Properties;
 
 import org.apache.felix.ipojo.ComponentInstance;
@@ -44,8 +46,7 @@ import fr.liglab.adele.cilia.runtime.impl.SchedulerInstanceManager;
  *         Team</a>
  * 
  */
-public abstract class MediatorComponentManager extends InstanceManager
-		implements ComponentInstance, InstanceStateListener {
+public abstract class MediatorComponentManager extends InstanceManager {
 
 	protected final MediatorComponentFactory mfactory;
 
@@ -56,6 +57,8 @@ public abstract class MediatorComponentManager extends InstanceManager
 	private static Logger logger = LoggerFactory.getLogger(Const.LOGGER_CORE);
 
 	private MonitorHandler monitor;
+
+	protected volatile int ciliaState = MediatorComponent.INVALID;
 
 	Dictionary configuration;
 
@@ -218,26 +221,4 @@ public abstract class MediatorComponentManager extends InstanceManager
 		return im;
 	}
 
-	public int getCiliaState(){
-		int medState = super.getState();
-		int schedulerState = schedulerManager.getState();
-		int dispatcherState = dispatcherManager.getState();
-		if (schedulerState == MediatorComponent.VALID
-				&& dispatcherState == MediatorComponent.VALID
-				&& medState == MediatorComponent.VALID) {
-			
-			return MediatorComponent.VALID;
-		} else if (medState == MediatorComponent.VALID
-				&& (schedulerState == MediatorComponent.SEMIVALID || dispatcherState == MediatorComponent.SEMIVALID)) {
-			System.out.println("Component: " + getInstanceName());
-			System.out.println("medState" + medState);
-			System.out.println("schedulerState" + schedulerState);
-			System.out.println("dispatcherState" + dispatcherState);
-			return MediatorComponent.SEMIVALID;
-		} else if (schedulerState == MediatorComponent.INVALID
-				|| dispatcherState == MediatorComponent.INVALID) {
-			return MediatorComponent.INVALID;
-		}
-		return MediatorComponent.STOPPED;
-	}
 }

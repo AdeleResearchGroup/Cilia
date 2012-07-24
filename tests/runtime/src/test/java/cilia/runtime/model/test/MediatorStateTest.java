@@ -43,6 +43,7 @@ import fr.liglab.adele.cilia.exceptions.CiliaIllegalParameterException;
 import fr.liglab.adele.cilia.exceptions.CiliaIllegalStateException;
 import fr.liglab.adele.cilia.helper.CiliaHelper;
 import fr.liglab.adele.cilia.model.MediatorComponent;
+import fr.liglab.adele.cilia.runtime.MediatorRuntimeSpecification;
 
 /**
  * 
@@ -171,8 +172,8 @@ public class MediatorStateTest {
 		Assert.assertEquals(true,toto.isRunning());
 		Assert.assertEquals(MediatorComponent.VALID, toto.getState());
 	}
-	//@Test
-	public void mediatorInvalidStateSomeConstituantIsNotValid() {
+	@Test
+	public void mediatorInvalidSAfterCreateSpecification() {
 		CiliaHelper.waitSomeTime(2000);
 		URL url = context.getBundle().getResource("test1.dscilia");
 		cilia.load(url);
@@ -180,7 +181,23 @@ public class MediatorStateTest {
 		boolean found = cilia.waitToChain("toto",3000);
 		System.out.println("found chain "+ found);
 		MediatorComponent toto = cilia.getMediatorModel("toto", "toto");
+		System.out.println("Toto is running");
 		Assert.assertEquals(false,toto.isRunning());
-		Assert.assertEquals(MediatorComponent.SEMIVALID, toto.getState());
+		Assert.assertEquals(MediatorComponent.INVALID, toto.getState());
+		//Now we create the toto mediator.
+		createTotoMediator();
+		CiliaHelper.waitSomeTime(3000);
+		Assert.assertEquals(true,toto.isRunning());
+		Assert.assertEquals(MediatorComponent.VALID, toto.getState());
+	}
+	
+	private void createTotoMediator(){
+		MediatorRuntimeSpecification mrs = new MediatorRuntimeSpecification("toto", null, null, context);
+		mrs.setDispatcher("multicast-dispatcher", "fr.liglab.adele.cilia");
+		mrs.setScheduler("immediate-scheduler", "fr.liglab.adele.cilia");
+		mrs.setProcessor("simple-processor", "fr.liglab.adele.cilia");
+		mrs.setInPort("unique", "*");
+		mrs.setOutPort("unique", "*");
+		mrs.initializeSpecification();
 	}
 }

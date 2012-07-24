@@ -43,11 +43,6 @@ public interface MediatorComponent extends Node,Component {
      * running and all its attached handlers are valid.
      */
     final static int VALID = 2;
-    /**
-     * Component instance state: SEMIVALID. the component instance is resolved and is running but
-     * there are at least one binding that is not working.
-     */
-    final static int SEMIVALID = 3;
 	/**
 	 * 
 	 * @return

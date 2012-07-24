@@ -64,7 +64,6 @@ public class MediatorControllerImpl implements Observer {
 	 */
 	protected CiliaInstanceWrapper mediatorInstance;
 
-
 	protected Hashtable addedCollectors = new Hashtable();
 
 	protected Hashtable addedSenders = new Hashtable();
@@ -333,7 +332,9 @@ public class MediatorControllerImpl implements Observer {
 	public int getState() {
 		if (mediatorInstance != null) {
 			MediatorComponentManager mm = (MediatorComponentManager)mediatorInstance.getInstanceManager();
-			return mm.getCiliaState();
+			if (mm!= null){
+				return mm.getState();
+			}
 		}
 		return CiliaInstance.INVALID;
 	}

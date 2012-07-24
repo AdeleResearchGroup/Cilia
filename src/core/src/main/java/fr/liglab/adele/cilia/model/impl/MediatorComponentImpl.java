@@ -490,7 +490,7 @@ public abstract class MediatorComponentImpl extends ComponentImpl implements
 	}
 
 	public boolean isRunning(){
-		if (getState() == MediatorComponent.VALID) {
+		if (getState() >= MediatorComponent.VALID) {
 			return true;
 		}
 		return false;
