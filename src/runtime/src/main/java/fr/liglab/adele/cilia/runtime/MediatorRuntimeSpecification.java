@@ -12,7 +12,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package fr.liglab.adele.cilia.runtime.impl;
+package fr.liglab.adele.cilia.runtime;
+
+import java.util.Iterator;
 
 import org.apache.felix.ipojo.ConfigurationException;
 import org.apache.felix.ipojo.metadata.Attribute;
@@ -20,6 +22,7 @@ import org.apache.felix.ipojo.metadata.Element;
 import org.osgi.framework.BundleContext;
 
 import fr.liglab.adele.cilia.internals.factories.MediatorFactory;
+import fr.liglab.adele.cilia.model.Port;
 import fr.liglab.adele.cilia.specification.AbstractMediatorSpecification;
 import fr.liglab.adele.cilia.specification.MediatorSpecification;
 /**
@@ -56,6 +59,7 @@ public class MediatorRuntimeSpecification extends AbstractMediatorSpecification 
 		} catch (ConfigurationException e) {
 			e.printStackTrace();
 		}
+		System.out.println("Creating factory with: " + meta );
 		factory.start();
 		return this;
 	}
@@ -83,9 +87,29 @@ public class MediatorRuntimeSpecification extends AbstractMediatorSpecification 
 		dispatcher.addAttribute(new Attribute("name", getDispatcherName()));
 		dispatcher.addAttribute(new Attribute("namespace", getDispatcherNamespace()));
 		
+		Element ports = new Element("ports", "");
+		Iterator it = inports.keySet().iterator();
+		while(it.hasNext()){
+			Port inport = (Port)inports.get((String)it.next());
+			Element nport = new Element("in-port", "");
+			nport.addAttribute(new Attribute("name", inport.getName()));
+			nport.addAttribute(new Attribute("type", inport.getDataType()));
+			ports.addElement(nport);
+		}
+		Iterator it3 = outports.keySet().iterator();
+		while(it3.hasNext()){
+			Port outport = (Port)outports.get((String)it3.next());
+			Element nport = new Element("out-port", "");
+			nport.addAttribute(new Attribute("name", outport.getName()));
+			nport.addAttribute(new Attribute("type", outport.getDataType()));
+			ports.addElement(nport);
+		}
+		
+		
 		mediatorMetadata.addElement(scheduler);
 		mediatorMetadata.addElement(processor);
 		mediatorMetadata.addElement(dispatcher);
+		mediatorMetadata.addElement(ports);
 		return mediatorMetadata;
 	}
 
