@@ -93,7 +93,6 @@ public class IOAdapterFactory extends MediatorComponentFactory {
 	public void check(Element element) throws ConfigurationException {
 		super.check(element);
 		updateMetadata();
-		System.out.println("Computing IO ports in IOAdapterFactory");
 		computeConstituantsDescriptions();
 		computePorts();
 	}
