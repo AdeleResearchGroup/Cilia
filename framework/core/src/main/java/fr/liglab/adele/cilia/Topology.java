@@ -37,7 +37,7 @@ public interface Topology {
 	 *            , keywords = chain, node, uuid
 	 * 
 	 * @return array of node matching the filter, array size 0 if no node
-	 *         matching the filterá
+	 *         matching the filter
 	 * @throws CiliaInvalidSyntaxException
 	 *             , ldap syntax error
 	 */
@@ -51,7 +51,7 @@ public interface Topology {
 	 *            , keywords = chain, node, uuid
 	 * 
 	 * @return array of node matching the filter, array size 0 if no node
-	 *         matching the filterá
+	 *         matching the filter
 	 * @throws CiliaInvalidSyntaxException
 	 *             , ldap syntax error
 	 */
