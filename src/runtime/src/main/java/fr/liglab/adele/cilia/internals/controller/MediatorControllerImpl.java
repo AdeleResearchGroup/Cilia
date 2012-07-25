@@ -21,33 +21,24 @@ import java.util.Observable;
 import java.util.Observer;
 
 import org.apache.felix.ipojo.ComponentInstance;
-import org.apache.felix.ipojo.Handler;
-import org.apache.felix.ipojo.InstanceManager;
 import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import fr.liglab.adele.cilia.framework.IDispatcher;
-import fr.liglab.adele.cilia.framework.IScheduler;
 import fr.liglab.adele.cilia.internals.factories.MediatorComponentManager;
-import fr.liglab.adele.cilia.internals.factories.MediatorManager;
 import fr.liglab.adele.cilia.knowledge.MediatorMonitoring;
 import fr.liglab.adele.cilia.model.Component;
-import fr.liglab.adele.cilia.model.Mediator;
 import fr.liglab.adele.cilia.model.MediatorComponent;
 import fr.liglab.adele.cilia.model.Port;
 import fr.liglab.adele.cilia.model.impl.BindingImpl;
 import fr.liglab.adele.cilia.model.impl.ConstModel;
-import fr.liglab.adele.cilia.model.impl.Dispatcher;
 import fr.liglab.adele.cilia.model.impl.MediatorComponentImpl;
-import fr.liglab.adele.cilia.model.impl.Scheduler;
 import fr.liglab.adele.cilia.model.impl.UpdateActions;
 import fr.liglab.adele.cilia.model.impl.UpdateEvent;
+import fr.liglab.adele.cilia.runtime.CiliaInstance;
 import fr.liglab.adele.cilia.runtime.CiliaInstanceWrapper;
 import fr.liglab.adele.cilia.runtime.Const;
 import fr.liglab.adele.cilia.runtime.FirerEvents;
-import fr.liglab.adele.cilia.runtime.impl.DispatcherHandler;
-import fr.liglab.adele.cilia.runtime.impl.SchedulerHandler;
 import fr.liglab.adele.cilia.util.FrameworkUtils;
 
 /**
@@ -76,8 +67,6 @@ public class MediatorControllerImpl implements Observer {
 	protected Hashtable addedCollectors = new Hashtable();
 
 	protected Hashtable addedSenders = new Hashtable();
-
-	protected static Logger log = LoggerFactory.getLogger("cilia.ipojo.runtime");
 
 	private static Logger logger = LoggerFactory.getLogger(Const.LOGGER_CORE);
 
@@ -123,6 +112,9 @@ public class MediatorControllerImpl implements Observer {
 		mediatorModel.setProperty(ConstModel.PROPERTY_UUID, mediatorModel.uuid());
 	}
 
+	/**
+	 * Create the mediator instance when the mediator Controller is started.
+	 */
 	private void createMediatorInstance() {
 		// if there is an instance defined, destroy it and create a new one with
 		// the given model.
@@ -135,9 +127,12 @@ public class MediatorControllerImpl implements Observer {
 					filter, mediatorModel.getProperties(), this);
 		}
 		mediatorInstance.start();
-
 	}
-
+	/**
+	 * Create the filter to locate the mediator factory.
+	 * @param mediator
+	 * @return
+	 */
 	protected String createComponentFilter(MediatorComponent mediator) {
 		StringBuffer filter = new StringBuffer();
 		filter.append("(&");
@@ -163,56 +158,6 @@ public class MediatorControllerImpl implements Observer {
 	}
 
 	/**
-	 * Update mediator model from instance.
-	 */
-	private void updateMediatorModel() {
-		Handler[] handlers = null;
-		ComponentInstance componentInstance = mediatorInstance.getInstanceManager();
-		InstanceManager im = null;
-
-		if ((null != mediatorModel.getDispatcher())
-				&& (null != mediatorModel.getScheduler())) {
-			return;
-		}
-		if (componentInstance == null) {
-			return;
-		}
-		if (componentInstance instanceof InstanceManager) {
-			im = (InstanceManager) componentInstance;
-			handlers = im.getRegistredHandlers();
-		}
-		if (componentInstance instanceof MediatorManager) {
-			MediatorManager mm = (MediatorManager) componentInstance;
-			if (mm != null) {
-				im = (InstanceManager) mm.getProcessorInstance();
-				handlers = im.getRegistredHandlers();
-			}
-		}
-
-		// remove observer.
-		mediatorModel.deleteObserver(this);
-		if (im != null) {
-			int totalHandlers = handlers.length;
-			for (int i = 0; i < totalHandlers; i++) {
-				// System.out.println("[INFO]handlers : " + mediatorModel +" " +
-				// handlers[i].getDescription().getHandlerName());
-				if (handlers[i] instanceof IScheduler) {
-					String name = handlers[i].getDescription().getHandlerName();
-					Scheduler sched = new Scheduler(name, name, null, null);
-					mediatorModel.setScheduler(sched);
-				}
-				if (handlers[i] instanceof IDispatcher) {
-					String name = handlers[i].getDescription().getHandlerName();
-					Dispatcher disp = new Dispatcher(name, name, null, null);
-					mediatorModel.setDispatcher(disp);
-				}
-			}
-
-		}
-		mediatorModel.addObserver(this);
-	}
-
-	/**
 	 * Update the mediator instance using model information.
 	 */
 	private void updateMediatorInstance() {
@@ -233,7 +178,6 @@ public class MediatorControllerImpl implements Observer {
 				createCollector(collector);
 			}
 		}
-
 	}
 
 	/**
@@ -277,6 +221,7 @@ public class MediatorControllerImpl implements Observer {
 				mediatorInstance.stop();
 				logger.info("Component [{}] stopped",
 						FrameworkUtils.makeQualifiedId(mediatorModel));
+				mediatorModel.dispose();
 			}
 		}
 	}
@@ -285,12 +230,13 @@ public class MediatorControllerImpl implements Observer {
 	 * Start the mediator instance.
 	 */
 	public void start() {
+		mediatorModel.setRunningState(MediatorComponent.INVALID);
 		createMediatorInstance();
-		updateMediatorModel();
-		updateMediatorInstance();
 		logger.info("Component [{}] started",
 				FrameworkUtils.makeQualifiedId(mediatorModel));
 	}
+
+
 
 	/**
 	 * Add collector instance to the mediator.
@@ -299,58 +245,20 @@ public class MediatorControllerImpl implements Observer {
 	 *            collector model to add to the mediator.
 	 */
 	public void createCollector(Component collector) {
-		updateMediatorModel();
-		SchedulerHandler scheduler = getScheduler();
 		boolean toAdd = true;
-		boolean readytoAdd = true;
-		if (readytoAdd && mediatorInstance == null) {
-			log.error("Adding collector to the model but mediator instance is null");
-			readytoAdd = false;
-			return;
-		}
-		if (readytoAdd && mediatorInstance.getState() != ComponentInstance.VALID) {
-			log.debug(" (addCollector) Object instance in " + mediatorModel
-					+ "is not valid instance");
-			readytoAdd = false;
-			return;
-		}
-		if (readytoAdd && mediatorModel == null) {
-			log.error("Mediator Model is null in addCollector");
-			readytoAdd = false;
-			return;
-		}
-		if (readytoAdd && mediatorModel.getScheduler() == null) {
-			log.warn(" (addCollector) Scheduler in " + mediatorModel + "doesnt exist");
-			readytoAdd = false;
-			return;
-		}
-		if (readytoAdd && scheduler == null) {
-			log.warn(" (addCollector) Scheduler doesnt exist");
-			readytoAdd = false;
-			return;
-		}
-		// get collector information.
-		if (readytoAdd) {
-			String collectorType = collector.getType();
-			String portName = collector.getId();
-			Dictionary properties = collector.getProperties();
-			// add collector to the mediator instance only if it exists.
-			// if (!scheduler.existsCollector(collectorId)) {
-			synchronized (lockObject) {
-				if (!addedCollectors.contains(collector.getId())) {
-					addedCollectors.put(collector.getId(), collector);
-					log.debug(" adding collector with " + properties);
-				} else {
-					toAdd = false;
-					log.warn(" (addCollector) Object instance in " + mediatorModel
-							+ "already exist" + portName);
-				}
-				if (toAdd) { // create
-					scheduler.addCollector(collectorType, portName, properties);
-				}
+		synchronized (lockObject) {
+			if (!addedCollectors.contains(collector)) {
+				addedCollectors.put(collector.getId(), collector);
+				toAdd = true;
+			} else {
+				//logger.warn(" (addCollector) Object instance in " + mediatorModel
+				//		+ " already exist " + collector.getId());
+				toAdd = false;
 			}
-		} else { // Add to thread to wait
-			// creator.addCollector(this, collector, true);
+			if (toAdd) { // create
+				getMediatorManager().addCollector(collector.getId(), collector);
+				//scheduler.addCollector(collectorType, portName, properties);
+			}
 		}
 	}
 
@@ -361,59 +269,20 @@ public class MediatorControllerImpl implements Observer {
 	 *            the sender model added to the mediator model.
 	 */
 	public void createSender(Component senderm) {
-		updateMediatorModel();
-		DispatcherHandler dispatcher = getDispatcher();
-		boolean readytoAdd = true;
 		boolean toAdd = true;
-		if (readytoAdd && mediatorInstance == null) {
-			log.debug("Adding Sender to the model but mediator instance is null");
-			readytoAdd = false;
-			return;
-		}
-		if (readytoAdd && mediatorInstance.getState() != ComponentInstance.VALID) {
-			log.debug(" (addSender) Object instance in " + mediatorModel
-					+ " is not valid instance");
-			readytoAdd = false;
-			return;
-		}
-		if (readytoAdd && mediatorModel == null) {
-			log.debug("Mediator Model is null in addSender");
-			readytoAdd = false;
-			return;
-		}
-		if (readytoAdd && mediatorModel.getDispatcher() == null) {
-			log.debug(" (addSender) Dispatcher in " + mediatorModel + "doesnt exist");
-			readytoAdd = false;
-			return;
-		}
+		synchronized (lockObject) {
 
-		if (readytoAdd && dispatcher == null) {
-			log.debug(" (addSender) dispatcher is not present");
-			readytoAdd = false;
-			return;
-		}
-
-		// get sender information.
-		if (readytoAdd) {
-			String senderType = senderm.getType();
-			String senderId = senderm.getId();
-			Dictionary properties = senderm.getProperties();
-			// add sender to the mediator instance.
-			synchronized (lockObject) {
-				if (!addedSenders.contains(senderm.getId())) {
-					log.debug(" adding sender with " + properties);
-					addedSenders.put(senderm.getId(), senderm);
-				} else {
-					toAdd = false;
-					log.warn(" (addSender) Object instance in " + mediatorModel
-							+ "already exist" + senderId);
-				}
-				if (toAdd) {
-					dispatcher.addSender(senderType, senderId, properties);
-				}
+			if (!addedSenders.contains(senderm)) {
+				addedSenders.put(senderm.getId(), senderm);
+				toAdd = true;
+			} else {
+				//logger.warn(" (addSender) Object instance in " + mediatorModel
+				//		+ "already exist" + senderm.getId());
+				toAdd = false;
 			}
-		} else {
-			// creator.addSender(this, sender, true);
+			if (toAdd) { // create
+				getMediatorManager().addSender(senderm.getId(), senderm);
+			}
 		}
 	}
 
@@ -429,9 +298,9 @@ public class MediatorControllerImpl implements Observer {
 				String id = (String) collector.getProperty("cilia.collector.identifier");
 				String port = (String) collector.getProperty("cilia.collector.port");
 				addedCollectors.remove(collector);
-				SchedulerHandler sc = getScheduler();
-				if (sc != null && collector != null) {
-					sc.removeCollector(port, id);
+				MediatorComponentManager mm = getMediatorManager();
+				if (mm != null){
+					mm.removeCollector(port, collector);
 				}
 			}
 		}
@@ -449,66 +318,12 @@ public class MediatorControllerImpl implements Observer {
 				String id = (String) sender.getProperty("cilia.sender.identifier");
 				String port = (String) sender.getProperty("cilia.sender.port");
 				addedSenders.remove(sender);
-				DispatcherHandler d = getDispatcher();
-				if (d != null && sender != null) {
-					try {
-						d.removeSender(port, id);
-					} finally {
-					}
+				MediatorComponentManager mm = getMediatorManager();
+				if (mm != null){
+					mm.removeSender(port, sender);
 				}
 			}
 		}
-	}
-
-	private SchedulerHandler getScheduler() {
-		SchedulerHandler r = null;
-		InstanceManager im = null;
-		ComponentInstance componentInstance = mediatorInstance.getInstanceManager();
-		if (componentInstance instanceof InstanceManager) {
-			im = (InstanceManager) componentInstance;
-		}
-		if (componentInstance instanceof MediatorManager) {
-			MediatorManager mm = (MediatorManager) componentInstance;
-			if (mm != null) {
-				im = (InstanceManager) mm.getProcessorInstance();
-			}
-		}
-		if (im != null)
-			r = (SchedulerHandler) im.getHandler(Const.ciliaQualifiedName("scheduler"));
-		return r;
-	}
-
-	private DispatcherHandler getDispatcher() {
-		DispatcherHandler r = null;
-		InstanceManager im = null;
-		ComponentInstance componentInstance = mediatorInstance.getInstanceManager();
-		if (componentInstance instanceof InstanceManager) {
-			im = (InstanceManager) componentInstance;
-		}
-		if (componentInstance instanceof MediatorManager) {
-			MediatorManager mm = (MediatorManager) componentInstance;
-			if (mm != null) {
-				im = (InstanceManager) mm.getProcessorInstance();
-			}
-		}
-		if (im != null)
-			r = (DispatcherHandler) im.getHandler(Const.ciliaQualifiedName("dispatcher"));
-		return r;
-	}
-
-	/**
-	 * Set the dispatcher to the mediator instance.
-	 */
-	public void setDispatcher(Dispatcher dispatcher) {
-		throw new RuntimeException("setDispatcher not implemented");
-	}
-
-	/**
-	 * Set the scheduler to the mediator instance
-	 */
-	public void setScheduler(Scheduler scheduler) {
-		throw new RuntimeException("setScheduler not implemented");
-
 	}
 
 	/**
@@ -516,9 +331,12 @@ public class MediatorControllerImpl implements Observer {
 	 */
 	public int getState() {
 		if (mediatorInstance != null) {
-			return mediatorInstance.getState();
+			MediatorComponentManager mm = (MediatorComponentManager)mediatorInstance.getInstanceManager();
+			if (mm!= null){
+				return mm.getState();
+			}
 		}
-		return ComponentInstance.INVALID;
+		return CiliaInstance.INVALID;
 	}
 
 	/**
@@ -530,74 +348,31 @@ public class MediatorControllerImpl implements Observer {
 	 *            Observer method parapeters.
 	 */
 	public void update(Observable mediator, Object arg) {
-		log.debug(" update");
-		if (mediator instanceof Mediator) {
-			log.debug(" update, OK");
-			Mediator md = ((Mediator) mediator);
+		logger.debug(" update");
+		if (mediator instanceof MediatorComponent) {
+			logger.debug(" update, OK");
+			MediatorComponent md = ((MediatorComponent) mediator);
 			UpdateEvent event = (UpdateEvent) arg;
 			if (event != null) {
 				int action = event.getUpdateAction();
 				switch (action) {
 				case UpdateActions.UPDATE_PROPERTIES: {
-					log.debug(" update instance property");
+					logger.debug(" update instance property");
 					updateInstanceProperties(md.getProperties());
 				}
-				// break;
-				// case UpdateActions.UPDATE_SCHEDULER: {
-				// log.debug(" update scheduler");
-				// Scheduler s = md.getScheduler();
-				// if (s == null) {
-				// setScheduler(null);
-				// } else {
-				// setScheduler(s);
-				// }
-				// }
-				// break;
-				// case UpdateActions.ADD_COLLECTOR: {
-				// Collector collector = (Collector) event.getSource();
-				// log.debug(" add collector");
-				// if (collector != null) {
-				// createCollector(collector);
-				// }
-				// }
-				// break;
-				// case UpdateActions.REMOVE_COLLECTOR: {
-				// Collector collector = (Collector) event.getSource();
-				// log.debug(" remove collector");
-				// if (collector != null) {
-				// removeCollector(collector);
-				// }
-				// }
-				// break;
-				// case UpdateActions.ADD_SENDER: {
-				// Sender sender = (Sender) event.getSource();
-				// log.debug(" add sender");
-				// if (sender != null) {
-				// createSender(sender);
-				// }
-				// }
-				// break;
-				// case UpdateActions.REMOVE_SENDER: {
-				// Sender sender = (Sender) event.getSource();
-				// log.debug(" remove sender");
-				// if (sender != null) {
-				// removeSender(sender);
-				// }
-				// }
-				// break;
 				}
 			}
 		} else if (mediator instanceof CiliaInstanceWrapper) {
 			int state = getState();
+			mediatorModel.setRunningState(state);
 			switch (state) {
-			case ComponentInstance.VALID: {
-				updateMediatorModel();
+			case CiliaInstance.VALID: {
 				updateMediatorInstance();
 			}
 			break;
-			case ComponentInstance.DISPOSED:
-			case ComponentInstance.STOPPED:
-			case ComponentInstance.INVALID: {
+			case CiliaInstance.DISPOSED:
+			case CiliaInstance.STOPPED:
+			case CiliaInstance.INVALID: {
 				cleanInstances();
 			}
 			break;
@@ -610,18 +385,17 @@ public class MediatorControllerImpl implements Observer {
 
 	private void cleanInstances() {
 		synchronized (lockObject) {
-			if (mediatorInstance != null) {
-				DispatcherHandler dh = getDispatcher();
-				if (dh != null)
-					dh.stop();
-				SchedulerHandler sh = getScheduler();
-				if (sh != null)
-					sh.stop();
-				// mediatorInstance.stop();
-				addedCollectors.clear();
-				addedSenders.clear();
-			}
+			addedCollectors.clear();
+			addedSenders.clear();
 		}
+	}
+
+	private MediatorComponentManager getMediatorManager(){
+		if(mediatorInstance.getInstanceManager() instanceof MediatorComponentManager) {
+			MediatorComponentManager mm = (MediatorComponentManager)mediatorInstance.getInstanceManager();
+			return mm;
+		}
+		return null;
 	}
 	/**
 	 * Get the In port description of the executing component.
@@ -651,5 +425,4 @@ public class MediatorControllerImpl implements Observer {
 		logger.error("Instance Manager {} ", mediatorInstance.getInstanceManager());
 		return null;
 	}
-
 }

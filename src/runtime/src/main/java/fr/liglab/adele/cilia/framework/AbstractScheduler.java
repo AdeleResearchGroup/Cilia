@@ -61,7 +61,7 @@ public abstract class AbstractScheduler implements IScheduler {
 	public List getSourcesIds() {
 		return scheduler.getSourcesIds();
 	}
-
+/*
 	public void addCollector(String collectorType, String collectorId,
 			Dictionary dictionary) {
 		if (logger.isDebugEnabled()) {
@@ -69,7 +69,7 @@ public abstract class AbstractScheduler implements IScheduler {
 		}
 		scheduler.addCollector(collectorType, collectorId, dictionary);
 	}
-
+*/
 	public void fireEvent(Map map) {
 		logger.info("fireEvent " + map);
 		if (scheduler != null)

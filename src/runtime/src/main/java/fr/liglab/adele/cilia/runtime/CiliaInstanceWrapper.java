@@ -151,12 +151,12 @@ public class CiliaInstanceWrapper extends Observable implements CiliaInstance,
 	public Object getObject() {
 		Object object = null;
 		synchronized (lockObject) {
-			if (getState() == ComponentInstance.VALID) {
+			if (getState() == CiliaInstance.VALID) {
 				object = ((InstanceManager) componentInstance).getPojoObject();
 			}
 		}
 		if (object == null) {
-			log.error("Component {} is not valid", getName());
+			log.error("Component {} is not valid {}", getName());
 		}
 		return object;
 	}
@@ -167,7 +167,8 @@ public class CiliaInstanceWrapper extends Observable implements CiliaInstance,
 	public int getState() {
 		synchronized (lockObject) {
 			if (componentInstance == null) {
-				return ComponentInstance.INVALID;
+				System.out.println("Component Instance is null");
+				return CiliaInstance.INVALID;
 			}
 			return componentInstance.getState();
 		}
@@ -182,11 +183,11 @@ public class CiliaInstanceWrapper extends Observable implements CiliaInstance,
 			state = getState();
 		}
 		switch (state) {
-		case ComponentInstance.INVALID:
+		case CiliaInstance.INVALID:
 			return "INVALID";
-		case ComponentInstance.STOPPED:
+		case CiliaInstance.STOPPED:
 			return "STOPPED";
-		case ComponentInstance.VALID:
+		case CiliaInstance.VALID:
 			return "VALID";
 		default:
 			return "INVALID";
@@ -199,13 +200,9 @@ public class CiliaInstanceWrapper extends Observable implements CiliaInstance,
 	 * instance is invalid.
 	 */
 	public void refresh() {
-		Boolean arg = null;
+		Integer arg = null;
 		synchronized (lockObject) {
-			if (getState() == ComponentInstance.VALID) {
-				arg = Boolean.TRUE;
-			} else {
-				arg = Boolean.FALSE;
-			}
+			arg = getState();
 		}
 		setChanged();
 		notifyObservers(arg);

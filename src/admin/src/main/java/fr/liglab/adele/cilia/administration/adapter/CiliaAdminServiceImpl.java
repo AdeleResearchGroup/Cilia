@@ -80,7 +80,7 @@ public class CiliaAdminServiceImpl extends AbstractCollector implements CiliaAdm
 		} catch (BuilderPerformerException e) {
 			e.printStackTrace();
 		}
-		
+
 	}
 
 	/* (non-Javadoc)
@@ -240,7 +240,7 @@ public class CiliaAdminServiceImpl extends AbstractCollector implements CiliaAdm
 		data.setProperty("by", mediatorDest);
 		super.notifyDataArrival(data);		
 	}
-	
+
 	public void replaceAdapter(String chainID, String adapterSource, String adapterDest) {
 		Data data = new Data("replace");
 		data.setProperty("element", "adapter");
@@ -249,7 +249,7 @@ public class CiliaAdminServiceImpl extends AbstractCollector implements CiliaAdm
 		data.setProperty("by",adapterDest);
 		super.notifyDataArrival(data);		
 	}
-	
+
 	public void copyMediator(String chainID, String mediatorSource, String mediatorDest) {
 		Data data = new Data("copy");
 		data.setProperty("element", "mediator");
@@ -258,7 +258,7 @@ public class CiliaAdminServiceImpl extends AbstractCollector implements CiliaAdm
 		data.setProperty("to", mediatorDest);
 		super.notifyDataArrival(data);		
 	}
-	
+
 	public void copyAdapter(String chainID, String adapterSource, String adapterDest) {
 		Data data = new Data("copy");
 		data.setProperty("element", "adapter");
@@ -266,6 +266,22 @@ public class CiliaAdminServiceImpl extends AbstractCollector implements CiliaAdm
 		data.setProperty("from", adapterSource);
 		data.setProperty("to",adapterDest);
 		super.notifyDataArrival(data);		
+	}
+
+	public void loadChain(String url){
+		Data data = new Data("load");
+		data.setProperty("element", "load");
+		data.setProperty("url", url);
+		super.notifyDataArrival(data);
+
+	}
+
+	public void unloadChain(String url){
+		Data data = new Data("load");
+		data.setProperty("element", "unload");
+		data.setProperty("url", url);
+		super.notifyDataArrival(data);
+
 	}
 
 	public void execute(String line){

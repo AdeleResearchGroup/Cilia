@@ -1,0 +1,27 @@
+
+<cilia xmlns:cilia="fr.liglab.adele.cilia" xmlns:jmx="org.apache.felix.ipojo.handlers.jmx"
+	xmlns:ipojo="org.apache.felix.ipojo">
+	<!-- Processors to add cilia elements -->
+	<io-adapter classname="fr.liglab.adele.cilia.helper.AdapterHelper"
+		namespace="fr.liglab.adele.cilia" name="cilia-adapter-helper" pattern="in-out">
+		<provides>
+			<property name="identifier" type="String" optional="false" />
+		</provides>
+		<properties propagation="true" />
+		<ports>
+			<in-port name="unique" type="*" />
+			<out-port name="unique" type="*" />
+		</ports>
+	</io-adapter>
+	
+	<mediator-component name="Mock"
+		namespace="fr.liglab.adele.cilia.test">
+		<ports>
+			<in-port name="unique" type="*" />
+			<out-port name="unique" type="*" />
+		</ports>
+		<scheduler name="immediate-scheduler" namespace="fr.liglab.adele.cilia" />
+		<processor name="simple-processor" namespace="fr.liglab.adele.cilia" />
+		<dispatcher name="multicast-dispatcher" namespace="fr.liglab.adele.cilia" />
+	</mediator-component>
+</cilia>

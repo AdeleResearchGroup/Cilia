@@ -1,19 +1,30 @@
 package fr.liglab.adele.cilia.specification;
 
 
+import java.util.HashMap;
+
 import fr.liglab.adele.cilia.model.Mediator;
+import fr.liglab.adele.cilia.model.Port;
 import fr.liglab.adele.cilia.model.impl.ComponentImpl;
 import fr.liglab.adele.cilia.model.impl.MediatorImpl;
+import fr.liglab.adele.cilia.model.impl.PortImpl;
+import fr.liglab.adele.cilia.model.impl.PortType;
 
-public abstract class AbstractMediatorSpecification implements MediatorSpecification{
+public abstract class AbstractMediatorSpecification implements MediatorSpecification {
 
 	private MediatorImpl mediatorSpec;
+	
+	protected HashMap inports = new HashMap();
+	
+	protected HashMap outports = new HashMap();
 	
 	private ComponentImpl dispatcherDef;
 	
 	private ComponentImpl processorDef;
 	
 	private ComponentImpl schedulerDef;
+	
+	
 	
 	private static final String DEFAULT_CAT = "generic";
 	
@@ -144,7 +155,7 @@ public abstract class AbstractMediatorSpecification implements MediatorSpecifica
 	 * @param dispatcherNamespace the chosen dispatcher namespace.
 	 */
 	public MediatorSpecification setDispatcher(String dispatcherName, String dispatcherNamespace){
-		dispatcherDef = new ComponentImpl(dispatcherName,dispatcherName, dispatcherName, null);
+		dispatcherDef = new ComponentImpl(dispatcherName,dispatcherName, dispatcherNamespace, null);
 		return this;	
 	}
 	/**
@@ -171,15 +182,15 @@ public abstract class AbstractMediatorSpecification implements MediatorSpecifica
 		return dispatcherDef.getNamespace();
 	}
 	
-	
-	/**
-	 * Get a mediator model from the mediator specification.
-	 * @return
-	 */
-	public Mediator getMediatorModel(String mediatorid){
-		Mediator med = new MediatorImpl(mediatorid, this.getName());
-		return med;
+
+	public void setInPort(String name, String type){
+		inports.put(name, new PortImpl(name, type, PortType.INPUT,  null));
 	}
+	
+	public void setOutPort(String name, String type){
+		inports.put(name, new PortImpl(name, type, PortType.OUTPUT,  null));
+	}
+	
 	/**
 	 *Initialize the mediator specification type. 
 	 */

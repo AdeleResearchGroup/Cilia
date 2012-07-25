@@ -73,11 +73,6 @@ public interface MediatorSpecification {
 	 */
 	String getDispatcherNamespace();
 	/**
-	 * Get a mediator model from the mediator specification.
-	 * @return
-	 */
-	Mediator getMediatorModel(String mediatorid);
-	/**
 	 *Initialize the mediator specification type. 
 	 */
 	MediatorSpecification initializeSpecification();

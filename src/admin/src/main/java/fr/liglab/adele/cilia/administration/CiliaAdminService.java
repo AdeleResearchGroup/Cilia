@@ -47,6 +47,10 @@ public interface CiliaAdminService {
 	// Stop
 
 	public void stopChain(String id);
+	
+	public void loadChain(String url);
+	
+	public void unloadChain(String url);
 
 	// Modify
 	// chain id=chainid property=propertyName value=propertyvalue

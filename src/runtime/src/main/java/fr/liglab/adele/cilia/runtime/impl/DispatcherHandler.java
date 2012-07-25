@@ -21,8 +21,6 @@ import java.util.Dictionary;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Observable;
-import java.util.Observer;
 import java.util.Properties;
 import java.util.Set;
 
@@ -30,25 +28,19 @@ import org.apache.felix.ipojo.ComponentInstance;
 import org.apache.felix.ipojo.ConfigurationException;
 import org.apache.felix.ipojo.Handler;
 import org.apache.felix.ipojo.InstanceManager;
-import org.apache.felix.ipojo.InstanceStateListener;
 import org.apache.felix.ipojo.PrimitiveHandler;
 import org.apache.felix.ipojo.architecture.ComponentTypeDescription;
 import org.apache.felix.ipojo.metadata.Element;
 import org.apache.felix.ipojo.parser.MethodMetadata;
 import org.apache.felix.ipojo.parser.PojoMetadata;
-import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import fr.liglab.adele.cilia.Data;
 import fr.liglab.adele.cilia.exceptions.CiliaException;
-import fr.liglab.adele.cilia.framework.AbstractDispatcher;
 import fr.liglab.adele.cilia.framework.IDispatcher;
 import fr.liglab.adele.cilia.framework.ISender;
-import fr.liglab.adele.cilia.model.Component;
-import fr.liglab.adele.cilia.model.impl.Dispatcher;
 import fr.liglab.adele.cilia.runtime.CiliaInstance;
-import fr.liglab.adele.cilia.runtime.CiliaInstanceManager;
 import fr.liglab.adele.cilia.runtime.CiliaInstanceWrapper;
 import fr.liglab.adele.cilia.runtime.Const;
 import fr.liglab.adele.cilia.runtime.IDispatcherHandler;
@@ -64,22 +56,14 @@ import fr.liglab.adele.cilia.util.concurrent.WriterPreferenceReadWriteLock;
  *
  */
 @SuppressWarnings({"unchecked","rawtypes"})
-public class DispatcherHandler extends PrimitiveHandler implements InstanceStateListener,
-Observer, IDispatcherHandler {
-	/**
-	 * Reference to the dispatcher logic component.
-	 */
-	CiliaInstance dispatcherComponent;
-	/**
-	 * Meta information of the dispatcher.
-	 */
-	Component dispatcherDescription;
+public class DispatcherHandler extends PrimitiveHandler implements IDispatcherHandler {
+
 
 	private ThreadLocal thLProcessor = new ThreadLocal();
 	/**
 	 * Sender Manager reference.
 	 */
-	private CiliaInstanceManager senderManager = new CiliaInstanceManagerSet();
+	private DispatcherInstanceManager dispatcherManager;
 	/**
 	 * Method process Meta-data. To intercept.
 	 */
@@ -108,20 +92,6 @@ Observer, IDispatcherHandler {
 	 */
 	ExtendedProperties extendedProperties;
 
-	private void configureHandlerMonitoring(InstanceManager im, String handlerName) {
-		Handler handler = (Handler) (im).getHandler(Const.ciliaQualifiedName(handlerName));
-		if (handler != null) {
-			Properties props = new Properties();
-			props.put("cilia.monitor.handler", getMonitor());
-			handler.reconfigure(props);
-		}
-	}
-	
-	private void configureHandlersMonitoring(CiliaInstance instance) {
-		ComponentInstance im =((CiliaInstanceWrapper)instance).getInstanceManager();
-		configureHandlerMonitoring((InstanceManager)im,"dependency") ;
-		configureHandlerMonitoring((InstanceManager)im,"audit") ;
-	}
 
 	/**
 	 * Check if the handler is well configured.
@@ -185,9 +155,7 @@ Observer, IDispatcherHandler {
 
 		extentedConfiguration();
 		initiainitializeProperties(properties);
-		// it will obtain dispatcher description from dictionary.
 
-		((Observable) senderManager).addObserver(this);
 
 		Element handlerMetadata = metadata.getElements(CILIA_DISPATCHER_HANDLERNAME,
 				Const.CILIA_NAMESPACE)[0];
@@ -203,43 +171,13 @@ Observer, IDispatcherHandler {
 		ProcessorMetadata dm = new ProcessorMetadata(procesorMetadata);
 
 		subscribeProcesor(dm);
-		getInstanceManager().addInstanceStateListener(this);
-		createDispatcherDescription(properties);
-		createDispatcherInstance(properties);
+
 	}
 
-	/**
-	 * Add Sender Instance.
-	 * 
-	 * @param dictionary
-	 *            Dictionary where sender is defined.
-	 */
-	public void addSender(String senderType, String portname, Dictionary dictionary) {
-		CiliaInstanceWrapper ciliaSender = null;
-		String identifier = null;
-		if (dictionary == null) {
-			dictionary = new Properties();
-		}
-		dictionary.remove("instance.name");
-		// get collector identifier
-		identifier = (String) dictionary.get("cilia.sender.identifier");
-		if (identifier == null) {
-			identifier = portname;
-		}
-		if (senderType != null) { // Sender Factory
-			if (portname == null) { // Sender Id, must be unique in mediator.
-				portname = senderType;
-			}
-
-			String filter = createSenderFilter(senderType);
-			ciliaSender = new CiliaInstanceWrapper(getInstanceManager().getContext(),
-					identifier, filter, dictionary, senderManager);
-			ciliaSender.start();
-			// TODO FIXE ME :
-			configureHandlersMonitoring(ciliaSender) ;
-			senderManager.addInstance(portname, ciliaSender);
-		}
+	public void setDispatcherManager(DispatcherInstanceManager disp){
+		this.dispatcherManager = disp;
 	}
+
 
 	private String createSenderFilter(String type) {
 		StringBuffer filter = new StringBuffer();
@@ -251,27 +189,6 @@ Observer, IDispatcherHandler {
 		filter.append("(factory.state=1)");
 		filter.append(")");
 		return filter.toString();
-	}
-
-	/**
-	 * Remove a given sender.
-	 * 
-	 * @param senderName
-	 *            sender to remove.
-	 */
-	public void removeSender(String portname, String senderName) {
-		try {
-			synchronized (senderManager) {
-				try {
-					m_lock.writeLock().acquire();
-					senderManager.removeInstance(portname, senderName);
-				} finally {
-					m_lock.writeLock().release();
-				}
-
-			}
-		} catch (Exception ex) {
-		}
 	}
 
 	private void subscribeProcesor(ProcessorMetadata dm) {
@@ -347,31 +264,6 @@ Observer, IDispatcherHandler {
 		}
 	}
 
-	public void stateChanged(ComponentInstance instance, int newState) {
-		logger.debug("State Instance Manager has changed" + newState);
-		switch (newState) {
-		case ComponentInstance.VALID:
-			Set keys = senderManager.getKeys();
-			Iterator it = keys.iterator();
-			while (it.hasNext()) {
-				Object obj = it.next();
-
-				List senderList = (List) senderManager.getPojo((String) obj);
-				Iterator itSenders = senderList.iterator();
-				while (itSenders.hasNext()) {
-					CiliaInstance cisender = (CiliaInstance) itSenders.next();
-					ISender sender = (ISender) cisender.getObject();
-					if (sender == null) {
-						// If there is some sender invalid and or null, set
-						// handler manager invalid.
-						getHandlerManager().setState(ComponentInstance.INVALID);
-						logger.warn("Some Sender is null or invalid when some sender state has changed");
-					}
-				}
-
-			}
-		}
-	}
 
 	/**
 	 * Send the specified data to the sender specified by their name.
@@ -383,9 +275,10 @@ Observer, IDispatcherHandler {
 	 */
 	public void send(final String senderName, final Data data) throws CiliaException {
 		lastSenderName = senderName;
+		data.setLastDeliveryPort(senderName);
 		lastDataSended = data;
 		boolean synchronous = extendedProperties.isModeSynchronous;
-		List pojoList = (List) senderManager.getPojo(senderName);
+		List pojoList = (List) dispatcherManager.getPojo(senderName);
 		if (pojoList == null) {
 			logger.error("There is any sender present in port : "
 					+ String.valueOf(senderName));
@@ -397,9 +290,9 @@ Observer, IDispatcherHandler {
 			while (it.hasNext()) {
 				CiliaInstance ci = (CiliaInstance) it.next();
 				ISender msender = (ISender) ci.getObject();
+				
 				if (msender != null) {
-					if (logger.isDebugEnabled())
-						logger.debug("[" + (iteration++) + "]Sending using:"
+					logger.debug("[" + (iteration++) + "]Sending using:"
 								+ ci.getName());
 					if (synchronous == true) {
 						msender.send(data);
@@ -407,8 +300,8 @@ Observer, IDispatcherHandler {
 						m_applicationQueue.execute(new AsynchronousSend(msender, data));
 					}
 				} else {
-					logger.error("Sending throw port:" + senderName + " " + ci.getName()
-							+ " is not valid");
+					logger.error( iteration + " Sending throw port:" + senderName + " " + ci.getName()
+							+ " is not valid: " + ci.getStateAsString());
 				}
 			}
 		}
@@ -426,8 +319,8 @@ Observer, IDispatcherHandler {
 	 */
 	public void send(final String senderName, final Properties properties, final Data data)
 			throws CiliaException {
-		synchronized (senderManager) {
-			senderManager.reconfigurePOJOS(properties);
+		synchronized (dispatcherManager) {
+			dispatcherManager.reconfigurePOJOS(properties);
 			send(senderName, data);
 		}
 	}
@@ -444,7 +337,7 @@ Observer, IDispatcherHandler {
 	 * @return List of senders ids
 	 */
 	public List getSendersIds() {
-		Set keys = senderManager.getKeys();
+		Set keys = dispatcherManager.getKeys();
 		List ports = new ArrayList();
 		Iterator it = keys.iterator();
 		while(it.hasNext()) {
@@ -523,32 +416,11 @@ Observer, IDispatcherHandler {
 		}
 	}
 
-	private void createDispatcherDescription(Dictionary dictionary)
-			throws ConfigurationException {
-		String dispatcher = (String) dictionary.get("cilia.dispatcher.name");
-		String dispatcherNS = (String) dictionary.get("cilia.dispatcher.namespace");
-		if (dispatcher == null) {
-			throw new ConfigurationException("Cilia Dispatcher must have at least a name");
-		}
-		dispatcherDescription = new Dispatcher("dispatcher", dispatcher, dispatcherNS,
-				null);
-	}
 
 	public void reconfigure(Dictionary props) {
 		logger.debug("reconfiguration");
 		extendedReconfiguration(props);
-		dispatcherComponent.updateInstanceProperties(getDispatcherProperties(props));
-		senderManager.reconfigurePOJOS(props);
 		initiainitializeProperties(props);
-	}
-
-	private void createDispatcherInstance(Dictionary dictionary) {
-		BundleContext context = getInstanceManager().getContext();
-		String dispatcherName = "dispatcher";
-		String dispatcherFilter = createFilter();
-		Dictionary dispProperties = getDispatcherProperties(dictionary);
-		dispatcherComponent = new CiliaInstanceWrapper(context, dispatcherName,
-				dispatcherFilter, dispProperties, this);
 	}
 
 	private Dictionary getDispatcherProperties(Dictionary dictionary) {
@@ -563,56 +435,18 @@ Observer, IDispatcherHandler {
 		return dispatcherProperties;
 	}
 
-	private String createFilter() {
-		StringBuffer filter = new StringBuffer("(&(factory.state=1)");
-		filter.append("(dispatcher.name=" + dispatcherDescription.getType() + ")");
-		if (dispatcherDescription.getNamespace() != null) {
-			filter.append("(dispatcher.namespace=" + dispatcherDescription.getNamespace()
-					+ ")");
-		}
 
-		filter.append(")");
-		return filter.toString();
-	}
-
-	public void update(Observable o, Object arg) {
-		Boolean state = (Boolean) arg;
-		if (state.booleanValue()) {
-			getHandlerManager().setState(ComponentInstance.VALID);
-			/* il faut tester ici ..l'etat du dispatcher */
-			updateDispatcherReference();
-		} else {
-			// getHandlerManager().setState(ComponentInstance.INVALID);
-		}
-	}
-
-	private void updateDispatcherReference() {
-		if (dispatcherComponent == null) {
-			logger.debug("Dispatcher is not valid, waiting to be valid");
-			return;
-		}
-		IDispatcher ref = (IDispatcher) dispatcherComponent.getObject();
-		if (ref == null) {
-			logger.debug("Dispatcher is not valid, waiting to be valid");
-			return;
-		}
-		logger.debug("Dispatcher is now valid, updating reference");
-		AbstractDispatcher im = (AbstractDispatcher) ref; // all dispatchers must be
-		// extend AbstractDispatcher
-		im.setDispatcher(this);
-	}
-
-	public void dispatch(Data dataset) throws CiliaException {
-		IDispatcher dispatcher = (IDispatcher) dispatcherComponent.getObject();
+	public void dispatch(Data data) throws CiliaException {
+		IDispatcher dispatcher =  dispatcherManager.getDispatcher();
 		if (dispatcher == null) {
 			logger.warn("Dispatcher is not valid when dispatching, waiting to be valid");
 			return;
 		}
-		dispatcher.dispatch(dataset);
+		dispatcher.dispatch(data);
 	}
 
 	private void dispatch(List dataset) throws CiliaException {
-		IDispatcher dispatcher = (IDispatcher) dispatcherComponent.getObject();
+		IDispatcher dispatcher = dispatcherManager.getDispatcher();
 		if (dispatcher == null) {
 			logger.warn("Dispatcher is not valid when dispatching, waiting to be valid");
 			return;
@@ -631,24 +465,10 @@ Observer, IDispatcherHandler {
 
 	public void unvalidate() {
 		logger.debug("stop dispatcher");
-		senderManager.removeAllInstances();
-		if (dispatcherComponent != null) {
-			synchronized (dispatcherComponent) {
-				dispatcherComponent.stop();
-			}
-			// dispatcherComponent = null;
-		}
 	}
 
 	public void validate() {
 		logger.debug("start dispatcher");
-		if (dispatcherComponent != null) {
-			synchronized (dispatcherComponent) {
-				dispatcherComponent.start();
-				updateDispatcherReference();
-				configureHandlersMonitoring(dispatcherComponent);
-			}
-		}
 	}
 
 	/* Initialization by default */

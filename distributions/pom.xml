@@ -25,6 +25,7 @@
 
 	<modules>
 		<module>cilia-distribution</module>
+		<module>cilia-joram-distribution</module>
 	</modules>
 
 </project>

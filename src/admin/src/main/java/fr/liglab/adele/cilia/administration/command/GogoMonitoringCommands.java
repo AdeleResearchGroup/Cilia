@@ -59,9 +59,9 @@ public class GogoMonitoringCommands {
 
 	public void start() {
 		runtime = ciliaContext.getApplicationRuntime();
-		app_callback_chain("(!chain=admin-chain)");
-		app_callback_node("(&(!chain=admin-chain)(node=*))");
-		app_callback_variable("(&(!chain=admin-chain)(node=*))");
+		app_callback_chain("(!(chain=admin-chain))");
+		app_callback_node("(&(!(chain=admin-chain))(node=*))");
+		app_callback_variable("(&(!(chain=admin-chain))(node=*))");
 	}
 
 	public void stop() {

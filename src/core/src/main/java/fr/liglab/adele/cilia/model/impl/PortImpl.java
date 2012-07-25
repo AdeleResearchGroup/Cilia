@@ -34,7 +34,7 @@ public class PortImpl implements Port{
      */
     private final String dataType;
     
-    private final static String ANY_DATA_TYPE = "any";
+    private final static String ANY_DATA_TYPE = "*";
     /**
      * PortImpl Type, ex INPUT/OUTPUT
      */

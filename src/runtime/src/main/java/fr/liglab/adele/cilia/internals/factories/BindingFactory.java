@@ -296,7 +296,7 @@ public class BindingFactory extends CiliaComponentFactory implements FactoryStat
             //Add getProperties method.
             Element methodGetProperties = new Element("method", null);
             methodGetProperties.addAttribute(new Attribute("name", "getProperties"));
-            methodGetProperties.addAttribute(new Attribute("arguments", "java.util.Dictionary,java.util.Dictionary,fr.liglab.adele.cilia.Binding"));
+            methodGetProperties.addAttribute(new Attribute("arguments", "java.util.Dictionary,java.util.Dictionary,fr.liglab.adele.cilia.model.Binding"));
             methodGetProperties.addAttribute(new Attribute("return", "java.util.Dictionary"));
             manip.addElement(methodGetProperties);
             //Add interface info.

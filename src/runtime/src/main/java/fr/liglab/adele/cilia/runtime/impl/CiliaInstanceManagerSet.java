@@ -24,14 +24,15 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Observable;
+import java.util.Observer;
 import java.util.Set;
 
 import org.apache.felix.ipojo.ComponentInstance;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-
-import fr.liglab.adele.cilia.runtime.CiliaInstanceWrapper;
 import fr.liglab.adele.cilia.runtime.CiliaInstance;
-import fr.liglab.adele.cilia.runtime.CiliaInstanceManager;
+import fr.liglab.adele.cilia.runtime.CiliaInstanceWrapper;
 
 
 /**
@@ -41,20 +42,22 @@ import fr.liglab.adele.cilia.runtime.CiliaInstanceManager;
  *
  */
 @SuppressWarnings({"rawtypes", "unchecked"})
-public class CiliaInstanceManagerSet extends Observable implements CiliaInstanceManager{
+public abstract class CiliaInstanceManagerSet implements Observer{
 
 
 	private Map /*<String,List<CiliaInstance>>*/instances ;
 
 	private Boolean generalState = null;
 
-	private final Object lockObject = new Object();
+	protected final Object lockObject = new Object();
+	
+	protected Logger logger = LoggerFactory.getLogger("cilia.ipojo.runtime"); 
 
 	public CiliaInstanceManagerSet(){
 		instances = Collections.synchronizedMap(new HashMap()) ;
 	}
 
-	public void addInstance(String key, Object _obj) {
+	protected void addInstance(String key, Object _obj) {
 		List instancesList = null;
 		synchronized (lockObject) {
 			if(instances.containsKey(key)) {
@@ -72,6 +75,7 @@ public class CiliaInstanceManagerSet extends Observable implements CiliaInstance
 
 	public boolean checkAvailability() {
 		boolean valid = true;
+		Integer state ;
 		CiliaInstance component = null;
 		synchronized (lockObject) {
 			Iterator it = instances.keySet().iterator();
@@ -86,9 +90,13 @@ public class CiliaInstanceManagerSet extends Observable implements CiliaInstance
 				}
 			}
 		}
+		if(valid){
+			state = ComponentInstance.VALID;
+		} else {
+			state = ComponentInstance.INVALID;
+		}
 		generalState =  Boolean.valueOf(valid);
-		setChanged();
-		notifyObservers(generalState);
+
 
 		return valid;
 	}
@@ -141,8 +149,9 @@ public class CiliaInstanceManagerSet extends Observable implements CiliaInstance
 		}
 	}
 
-	public void removeInstance(String portname, String instanceName) {
+	public boolean removeInstance(String portname, String instanceName) {
 		List instanceList = null ;
+		boolean removed = false;
 		synchronized (lockObject) {
 			if (portname != null) {
 				instanceList = (List) instances.get(portname);
@@ -155,10 +164,11 @@ public class CiliaInstanceManagerSet extends Observable implements CiliaInstance
 				if (component.getName().compareTo(instanceName) == 0) {
 					component.stop();
 					componentsInstances.remove();
+					removed = true;
 				}
 			}
 		}
-		//instanceList.clear();
+		return removed;
 	}
 
 

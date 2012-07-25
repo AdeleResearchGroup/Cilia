@@ -17,30 +17,18 @@ import org.apache.felix.ipojo.util.TrackerCustomizer;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import fr.liglab.adele.cilia.model.Component;
-import fr.liglab.adele.cilia.model.Port;
-import fr.liglab.adele.cilia.model.impl.ComponentImpl;
-import fr.liglab.adele.cilia.model.impl.PortImpl;
-import fr.liglab.adele.cilia.model.impl.PortType;
 
 public class MediatorFactory extends MediatorComponentFactory implements
 		TrackerCustomizer {
 
-	private static final Logger logger = LoggerFactory
-			.getLogger("cilia.ipojo.runtime");
 
 	private Factory processorFactory;
 
 	private Tracker constituantTracker = null;
 
-	Component processorDescription;
 
-	Component schedulerDescription;
-
-	Component dispatcherDescription;
 	
 	protected Hashtable inPorts;
 	
@@ -301,53 +289,7 @@ public class MediatorFactory extends MediatorComponentFactory implements
 		}
 	}
 
-	protected void computeConstituantsDescriptions()
-			throws ConfigurationException {
-		processorDescription = computeDescription("processor");
-		schedulerDescription = computeDescription("scheduler");
-		dispatcherDescription = computeDescription("dispatcher");
-	}
-
-	protected Component computeDescription(String constituantType)
-			throws ConfigurationException {
-		String msg;
-		String name = null;
-		String namespace = null;
-		Element elem[] = m_componentMetadata.getElements(constituantType,
-				DEFAULT_NAMESPACE); // cilia namespace
-		if (elem == null) {
-			elem = m_componentMetadata.getElements(constituantType, null); // ipojo
-			// namespace
-		}
-		if (elem == null) {
-			msg = "a mediator must have one " + constituantType + " : "
-					+ m_componentMetadata;
-			logger.error(msg);
-			throw new ConfigurationException(msg);
-		}
-		if (elem.length != 1) {
-			msg = "a mediator must have only one " + constituantType + " : "
-					+ m_componentMetadata;
-			logger.error(msg);
-			throw new ConfigurationException(msg);
-		}
-		Element procElement = elem[0];
-		// obtain processor name. (not optional)
-		if (procElement.containsAttribute("name")) {
-			name = procElement.getAttribute("name");
-		} else {
-			msg = "a " + constituantType + " in mediator must have a name : "
-					+ m_componentMetadata;
-			logger.error(msg);
-			throw new ConfigurationException(msg);
-		}
-
-		// obtain processor namespace. optional
-		if (procElement.containsAttribute("namespace")) {
-			namespace = procElement.getAttribute("namespace");
-		}
-		return new ComponentImpl(name, constituantType, namespace, null);
-	}
+	
 
 	protected String createConstituantFilter(Component constituant) {
 

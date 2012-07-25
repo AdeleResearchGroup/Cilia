@@ -34,9 +34,9 @@ public interface IDispatcher {
 	
 	void dispatch(Data dataSet) throws CiliaException;
 	//ISender getSender(String name);
-	void addSender(String senderName, String senderId, Dictionary props);
+	//void addSender(String senderName, String senderId, Dictionary props);
 	List getSendersIds();
-	void removeSender(String portname, String senderName);
+	//void removeSender(String portname, String senderName);
 	void send(String senderName, Data data ) throws CiliaException;
 	void send(String senderName, Properties properties,  Data data ) throws CiliaException;
 	public void fireEvent(Map map);

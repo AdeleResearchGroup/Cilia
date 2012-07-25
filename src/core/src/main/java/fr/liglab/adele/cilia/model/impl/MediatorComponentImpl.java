@@ -20,19 +20,18 @@ import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Hashtable;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Observer;
 import java.util.Set;
-import fr.liglab.adele.cilia.util.FrameworkUtils;
-import fr.liglab.adele.cilia.util.Watch;
+
 import fr.liglab.adele.cilia.model.Binding;
 import fr.liglab.adele.cilia.model.Chain;
 import fr.liglab.adele.cilia.model.MediatorComponent;
 import fr.liglab.adele.cilia.model.ModelExtension;
 import fr.liglab.adele.cilia.model.Port;
+import fr.liglab.adele.cilia.util.FrameworkUtils;
 import fr.liglab.adele.cilia.util.Uuid;
+import fr.liglab.adele.cilia.util.Watch;
 
 /**
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project
@@ -82,6 +81,8 @@ public abstract class MediatorComponentImpl extends ComponentImpl implements
 	private final static long creationTimeStamp = System.currentTimeMillis();
 	
 	private Map additionnalModel = new HashMap(1);
+	
+	private volatile int runningState = MediatorComponent.STOPPED;
 
 	/**
 	 * 
@@ -396,21 +397,22 @@ public abstract class MediatorComponentImpl extends ComponentImpl implements
 	}
 
 	public void dispose() {
-		super.dispose();
-		this.category = null;
-		this.chain = null;
-		this.dispatcher = null;
-		this.scheduler = null;
+		synchronized (lockObject) {
+			runningState = MediatorComponent.DISPOSED;
+			super.dispose();
+			this.category = null;
+			this.dispatcher = null;
+			this.scheduler = null;
 
-		this.entryBindings.clear();
-		this.entryBindings = null;
+			this.entryBindings.clear();
+			this.entryBindings = null;
 
-		this.exitBindings.clear();
-		this.exitBindings = null;
+			this.exitBindings.clear();
+			this.exitBindings = null;
 
-		this.inPorts.clear();
-		this.outPorts.clear();
-
+			this.inPorts.clear();
+			this.outPorts.clear();
+		}
 	}
 
 	/**
@@ -480,5 +482,24 @@ public abstract class MediatorComponentImpl extends ComponentImpl implements
 			additionnalModel.remove(modelName) ;
 	}
 	
+
+	public int getState(){
+		synchronized (lockObject) {
+			return runningState;
+		}
+	}
+
+	public boolean isRunning(){
+		if (getState() >= MediatorComponent.VALID) {
+			return true;
+		}
+		return false;
+	}
+	
+	public void setRunningState(int state){
+		synchronized (lockObject) {
+			runningState = state;
+		}
+	}
 	
 }

@@ -33,7 +33,7 @@ public interface IScheduler {
 	
 	public List getSourcesIds();
 	
-	public void addCollector(String collectorType, String collectorId, Dictionary dictionary);
+	//
 
 	public void fireEvent(Map map);
 	

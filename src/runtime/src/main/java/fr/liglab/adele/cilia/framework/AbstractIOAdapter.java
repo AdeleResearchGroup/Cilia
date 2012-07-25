@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import fr.liglab.adele.cilia.Data;
+import fr.liglab.adele.cilia.util.TimeoutException;
 
 public abstract class AbstractIOAdapter {
 	/**
@@ -16,7 +17,7 @@ public abstract class AbstractIOAdapter {
 	 */
 	BundleContext bcontext;
 
-	Map locks = Collections.synchronizedMap(new HashMap());;
+	Map locks = Collections.synchronizedMap(new HashMap());
 
 	Map waitingData = Collections.synchronizedMap(new HashMap());
 
@@ -40,7 +41,7 @@ public abstract class AbstractIOAdapter {
 	 *            Data to be passed to the chain.
 	 * @return the processed data by the chain.
 	 */
-	public Data invokeChain(Data data) {
+	public Data invokeChain(Data data) throws TimeoutException{
 		return callAndWait(data);
 	}
 
@@ -49,7 +50,7 @@ public abstract class AbstractIOAdapter {
 	 * @param content
 	 * @return
 	 */
-	public Object invokeChain(Object content) {
+	public Object invokeChain(Object content) throws TimeoutException{
 		Data ndata = new Data(content);
 		Data rs = callAndWait(ndata);
 		if (rs != null) {
@@ -65,7 +66,7 @@ public abstract class AbstractIOAdapter {
 	 *            Data to send to the first mediator.
 	 * @return the processed data.
 	 */
-	protected Data callAndWait(Data data) {
+	protected Data callAndWait(Data data) throws TimeoutException{
 		String key = generateKey(data);
 		data.setProperty(CILIA_KEY, key);
 		Object lock = new Object();
@@ -88,7 +89,7 @@ public abstract class AbstractIOAdapter {
 				}
 			}
 		} catch (InterruptedException e) {
-			e.printStackTrace();
+			throw new TimeoutException(timeout);
 		}
 		Data returnedData = (Data) waitingData.remove(key);
 		if (logger.isDebugEnabled()) {

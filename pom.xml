@@ -26,6 +26,7 @@
 		<module>src</module>
 		<module>distributions</module>
 		<module>examples</module>
+		<module>components</module>
 		<module>tests</module>
 
 	</modules>

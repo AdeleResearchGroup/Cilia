@@ -145,6 +145,7 @@ public abstract class CiliaComponentFactory extends ComponentFactory {
 
         public Dictionary getPropertiesToPublish() {
             Dictionary dict = super.getPropertiesToPublish();
+            
             if (getClassName() != null) {
                 dict.put("component.class", getClassName());
             }

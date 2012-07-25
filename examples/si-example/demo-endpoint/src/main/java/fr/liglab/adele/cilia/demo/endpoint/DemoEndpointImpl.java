@@ -4,6 +4,7 @@ import org.osgi.framework.BundleContext;
 
 import fr.liglab.adele.cilia.Data;
 import fr.liglab.adele.cilia.framework.AbstractIOAdapter;
+import fr.liglab.adele.cilia.util.TimeoutException;
 
 
 public class DemoEndpointImpl extends AbstractIOAdapter implements DemoEndpointI {
@@ -16,7 +17,12 @@ public class DemoEndpointImpl extends AbstractIOAdapter implements DemoEndpointI
 	
     public String getPrice(String data) {
         System.out.println("toto has been called " + data);
-        String result = String.valueOf(invokeChain(data));
+        String result = null;
+		try {
+			result = String.valueOf(invokeChain(data));
+		} catch (TimeoutException e) {
+			e.printStackTrace();
+		}
         System.out.println("Resultado: " + result);
         return result;
     }
