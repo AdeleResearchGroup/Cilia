@@ -38,7 +38,7 @@ import fr.liglab.adele.cilia.model.impl.PatternType;
  */
 public class BuilderPerformer {
 
-	private CiliaContainer ccontext;
+	private CiliaContainer container;
 	private ArchitectureImpl architecture;
 	private ChainImpl chain;
 
@@ -46,7 +46,7 @@ public class BuilderPerformer {
 	 * @param architectureImpl
 	 */
 	protected BuilderPerformer(ArchitectureImpl arch, CiliaContainer context) {
-		ccontext = context;
+		container = context;
 		architecture = arch;
 	}
 
@@ -57,7 +57,7 @@ public class BuilderPerformer {
 	public void perform() throws BuilderPerformerException {
 		chain = getChain();
 		if (architecture.toRemove()) {
-			ccontext.removeChain(chain.getId());
+			container.removeChain(chain.getId());
 		}
 		verifyOperations();
 		doCreate();
@@ -66,25 +66,25 @@ public class BuilderPerformer {
 		doBind();
 		doUnbind();
 		if (architecture.toCreate()) {
-			ccontext.addChain(chain);
+			container.addChain(chain);
 		}
 	}
 
 	private ChainImpl getChain() throws BuilderPerformerException {
 		ChainImpl chain = null;
 		if (architecture.toCreate()) {
-			if (ccontext.getChain(architecture.getChainId()) != null) {
+			if (container.getChain(architecture.getChainId()) != null) {
 				throw new BuilderPerformerException(
 						"Chain with the same ID already exist: "
 								+ architecture.getChainId());
 			}
 			chain = new ChainImpl(architecture.getChainId(), null, null, null);
 		} else {
-			if (ccontext.getChain(architecture.getChainId()) == null) {
+			if (container.getChain(architecture.getChainId()) == null) {
 				throw new BuilderPerformerException("Chain does not exist: "
 						+ architecture.getChainId());
 			}
-			chain = (ChainImpl)ccontext.getChain(architecture.getChainId());
+			chain = (ChainImpl)container.getChain(architecture.getChainId());
 		}
 		return chain;
 	}
