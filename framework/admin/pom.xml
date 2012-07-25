@@ -13,14 +13,13 @@
 		<groupId>fr.liglab.adele.cilia</groupId>
 		<artifactId>cilia-project</artifactId>
 		<version>1.2.2-SNAPSHOT</version>
+		<relativePath>../../parent/pom.xml</relativePath>
 	</parent>
 
 	<groupId>fr.liglab.adele.cilia</groupId>
 	<artifactId>cilia-admin</artifactId>
 	<packaging>bundle</packaging>
 	<name>Cilia Administration Tools</name>
-	<version>1.2.2-SNAPSHOT</version>
-
 
 	<dependencies>
 		<dependency>
@@ -36,17 +35,14 @@
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
-			<version>1.6.1</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.felix</groupId>
 			<artifactId>org.apache.felix.gogo.runtime</artifactId>
-			<version>0.6.1</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.felix</groupId>
 			<artifactId>org.apache.felix.fileinstall</artifactId>
-			<version>3.2.0</version>
 		</dependency>
  
 	</dependencies>

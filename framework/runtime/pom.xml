@@ -14,19 +14,24 @@
 		<groupId>fr.liglab.adele.cilia</groupId>
 		<artifactId>cilia-project</artifactId>
 		<version>1.2.2-SNAPSHOT</version>
+		<relativePath>../../parent/pom.xml</relativePath>
 	</parent>
 
 	<groupId>fr.liglab.adele.cilia</groupId>
 	<artifactId>cilia-runtime</artifactId>
 	<packaging>bundle</packaging>
 	<name>Cilia Runtime</name>
-	<version>1.2.2-SNAPSHOT</version>
 
 	<dependencies>
 		<dependency>
+			<groupId>fr.liglab.adele.cilia</groupId>
+			<artifactId>cilia-core</artifactId>
+			<version>1.2.2-SNAPSHOT</version>
+		</dependency>
+
+		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
-			<version>1.6.1</version>
 		</dependency>
 
 		<dependency>
@@ -38,17 +43,11 @@
 		<dependency>
 			<groupId>org.osgi</groupId>
 			<artifactId>org.osgi.compendium</artifactId>
-			<version>4.2.0</version>
 		</dependency>
-		<dependency>
-			<groupId>fr.liglab.adele.cilia</groupId>
-			<artifactId>cilia-core</artifactId>
-			<version>1.2.2-SNAPSHOT</version>
-		</dependency>
+
 		<dependency>
 			<groupId>org.apache.felix</groupId>
 			<artifactId>org.apache.felix.ipojo</artifactId>
-			<version>1.8.0</version>
 		</dependency>
 	</dependencies>
 

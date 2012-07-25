@@ -14,7 +14,7 @@
 		<groupId>fr.liglab.adele.cilia</groupId>
 		<artifactId>cilia-project</artifactId>
 		<version>1.2.2-SNAPSHOT</version>
-		<relativePath></relativePath>
+		<relativePath>../../parent/pom.xml</relativePath>
 	</parent>
 
 	<modelVersion>4.0.0</modelVersion>
@@ -22,13 +22,11 @@
 	<artifactId>cilia-core</artifactId>
 	<packaging>bundle</packaging>
 	<name>Cilia Core</name>
-	<version>1.2.2-SNAPSHOT</version>
 
 	<dependencies>
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
-			<version>1.6.1</version>
 		</dependency>
 	</dependencies>
 
