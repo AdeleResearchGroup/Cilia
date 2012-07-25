@@ -59,7 +59,6 @@ public class MediatorRuntimeSpecification extends AbstractMediatorSpecification 
 		} catch (ConfigurationException e) {
 			e.printStackTrace();
 		}
-		System.out.println("Creating factory with: " + meta );
 		factory.start();
 		return this;
 	}
