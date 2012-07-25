@@ -23,7 +23,7 @@
 
 	<modules>
 		<module>parent</module>
-		<module>src</module>
+		<module>framework</module>
 		<module>distributions</module>
 		<module>examples</module>
 		<module>components</module>
