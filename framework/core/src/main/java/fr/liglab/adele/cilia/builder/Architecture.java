@@ -36,11 +36,15 @@ public interface Architecture {
 	
 	final static int REMOVE = 2;
 	
+	final static int REPLACE = 3;
+	
 	Binder bind ()throws BuilderException;
 	
 	Binder unbind ()throws BuilderException;
 	
 	Creator create ()throws BuilderException;
+	
+	Replacer replace ()throws BuilderException;
 	
 	Remover remove ()throws BuilderException;
 	

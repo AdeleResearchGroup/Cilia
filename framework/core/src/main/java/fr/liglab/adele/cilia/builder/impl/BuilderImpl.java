@@ -27,14 +27,15 @@ import fr.liglab.adele.cilia.model.CiliaContainer;
  */
 public class BuilderImpl implements Builder {
 
-	CiliaContainer ccontext;
-	
+	CiliaContainer container;
+
 	ArchitectureImpl architecture = null;
-	
-	public BuilderImpl(CiliaContainer context) {
-		this.ccontext = context;
+
+	public BuilderImpl(CiliaContainer container) {
+		this.container = container;
 	}
-	
+
+
 	/* (non-Javadoc)
 	 * @see fr.liglab.adele.cilia.builder.Builder#create(java.lang.String)
 	 */
@@ -42,13 +43,13 @@ public class BuilderImpl implements Builder {
 		if (null == chainId) {
 			throw new BuilderException("Unable to create chain with ID=null");
 		}
-		if (ccontext.getChain(chainId) != null) {
+		if (container.getChain(chainId) != null) {
 			throw new BuilderException("Unable to create new chain with an existing ID:" + chainId);
 		}
 		if (architecture != null) {
 			throw new BuilderException("Builder with existing configuration");
 		} else {
-			architecture = new ArchitectureImpl(ccontext, this, chainId, Architecture.CREATE);
+			architecture = new ArchitectureImpl(container, this, chainId, Architecture.CREATE);
 		}
 		return architecture;
 	}
@@ -60,24 +61,33 @@ public class BuilderImpl implements Builder {
 		if (null == chainId) {
 			throw new BuilderException("Unable to retrieve null chain");
 		}
-		if (ccontext.getChain(chainId) == null && architecture == null) {
+		if (container.getChain(chainId) == null && architecture == null) {
 			throw new BuilderException("There is any Chain with id :" + chainId);
 		}
 		if (architecture != null && !((ArchitectureImpl)architecture).getChainId().equalsIgnoreCase(chainId) ) {
 			throw new BuilderException("There is a Builder Configuration for a Chain with id :" + ((ArchitectureImpl)architecture).getChainId());
 		}
 		if (architecture == null) {
-			architecture =  new ArchitectureImpl(ccontext, this, chainId, Architecture.MODIFY);
+			architecture =  new ArchitectureImpl(container, this, chainId, Architecture.MODIFY);
 		}
 		return architecture;
 	}
-	
+
 	public Builder done() throws BuilderException, BuilderPerformerException {
-		if (architecture == null) {
-			throw new BuilderException("Unable to build an invalid architecture chain: Architecture is null");
+		try {
+			container.getMutex().writeLock().acquire();
+		} catch (InterruptedException e) {
 		}
-		((ArchitectureImpl)architecture).done();
-		return this;
+		try {
+
+			if (architecture == null) {
+				throw new BuilderException("Unable to build an invalid architecture chain: Architecture is null");
+			}
+			((ArchitectureImpl)architecture).done();
+			return this;
+		}finally{
+			container.getMutex().writeLock().release();
+		}
 	}
 
 	/* (non-Javadoc)
@@ -102,14 +112,14 @@ public class BuilderImpl implements Builder {
 		if (null == chainId) {
 			throw new BuilderException("Unable to retrieve null chain");
 		}
-		if (ccontext.getChain(chainId) == null && architecture == null) {
+		if (container.getChain(chainId) == null && architecture == null) {
 			throw new BuilderException("There is any Chain with id :" + chainId);
 		}
 		if (architecture != null && !((ArchitectureImpl)architecture).getChainId().equalsIgnoreCase(chainId) ) {
 			throw new BuilderException("There is a Builder Configuration for a Chain with id :" + ((ArchitectureImpl)architecture).getChainId());
 		}
 		if (architecture == null) {
-			architecture =  new ArchitectureImpl(ccontext, this, chainId, Architecture.REMOVE);
+			architecture =  new ArchitectureImpl(container, this, chainId, Architecture.REMOVE);
 		}
 		return this;
 	}

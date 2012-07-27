@@ -18,8 +18,8 @@ import java.util.Date;
 
 import org.osgi.framework.BundleContext;
 
-import fr.liglab.adele.cilia.CiliaContext;
 import fr.liglab.adele.cilia.ApplicationRuntime;
+import fr.liglab.adele.cilia.CiliaContext;
 import fr.liglab.adele.cilia.builder.Builder;
 import fr.liglab.adele.cilia.builder.impl.BuilderImpl;
 import fr.liglab.adele.cilia.knowledge.EventsManagerImpl;
@@ -86,6 +86,7 @@ public class CiliaContextImpl implements CiliaContext {
 	public Builder getBuilder() {
 		return new BuilderImpl(container);
 	}
+
 
 	/**
 	 * Retrieve the ApplicationRuntime instance which allows to inspect the

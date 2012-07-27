@@ -17,7 +17,6 @@ package fr.liglab.adele.cilia;
 import java.util.Date;
 
 import fr.liglab.adele.cilia.builder.Builder;
-import fr.liglab.adele.cilia.model.impl.ChainRuntime;
 
 /**
  * Main Cilia Service. It contains methods to retrieve information of mediation
@@ -50,6 +49,7 @@ public interface CiliaContext {
 	 * @return the new Builder object.
 	 */
 	Builder getBuilder();
+	
 		
 	/**
 	 * Retrieve the ApplicationRuntime instance which allows to inspect the runtime information

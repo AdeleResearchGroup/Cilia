@@ -36,12 +36,12 @@ import org.osgi.framework.ServiceReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import fr.liglab.adele.cilia.AdminData;
 import fr.liglab.adele.cilia.Data;
 import fr.liglab.adele.cilia.framework.IScheduler;
 import fr.liglab.adele.cilia.model.Component;
 import fr.liglab.adele.cilia.model.MediatorComponent;
 import fr.liglab.adele.cilia.model.impl.ConstModel;
-import fr.liglab.adele.cilia.runtime.AdminData;
 import fr.liglab.adele.cilia.runtime.Const;
 import fr.liglab.adele.cilia.runtime.ISchedulerHandler;
 import fr.liglab.adele.cilia.runtime.ProcessorMetadata;

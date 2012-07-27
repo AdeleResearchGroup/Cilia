@@ -16,6 +16,7 @@
 package fr.liglab.adele.cilia;
 
 import java.util.Date;
+import java.util.Map;
 
 import fr.liglab.adele.cilia.exceptions.CiliaIllegalParameterException;
 import fr.liglab.adele.cilia.exceptions.CiliaIllegalStateException;
@@ -159,5 +160,21 @@ public interface ApplicationRuntime extends Topology, EventsConfiguration, Model
 	 */
 	Thresholds nodeMonitoring(Node node) throws CiliaIllegalParameterException,
 			CiliaIllegalStateException;
+	/**
+	 * Get a copy of the map buffered for the fiven mediator
+	 * @param node the node to retrieve the data
+	 * @return the copy of the stocked data
+	 * @throws CiliaIllegalParameterException
+	 */
+	Map getBufferedData(Node node) throws CiliaIllegalParameterException;
+	
+
+	/**
+	 * copy messages ( regular and stored)
+	 * @param from The node from the buffered data will be copied.
+	 * @param to The node to the buffered data will be copied.
+	 * @return true if succeed, false if not. 
+	 */
+	public boolean copyData(Node from, Node to) throws CiliaIllegalParameterException;
 
 }

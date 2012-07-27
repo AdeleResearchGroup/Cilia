@@ -17,13 +17,18 @@ package fr.liglab.adele.cilia.knowledge;
 
 import java.util.Date;
 import java.util.Dictionary;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.InvalidSyntaxException;
+import org.osgi.framework.ServiceReference;
 
-import fr.liglab.adele.cilia.ChainCallback;
+import fr.liglab.adele.cilia.AdminData;
 import fr.liglab.adele.cilia.ApplicationRuntime;
+import fr.liglab.adele.cilia.ChainCallback;
 import fr.liglab.adele.cilia.EventsConfiguration;
 import fr.liglab.adele.cilia.Node;
 import fr.liglab.adele.cilia.NodeCallback;
@@ -56,9 +61,11 @@ public class KEngineImpl extends TopologyImpl implements ApplicationRuntime {
 	private EventsConfiguration eventsConfig;
 	private ListNodes registry;
 	private BaseLevelListener baseLevelListener;
+	private BundleContext bcontext;
 
 	public KEngineImpl(BundleContext bc, CiliaContainer cc, EventsConfiguration evtManager) {
 		super(cc);
+		bcontext = bc;
 		eventsConfig = evtManager;
 		registry = new ListNodes(this);
 		baseLevelListener = new BaseLevelListener(bc, registry);
@@ -81,13 +88,13 @@ public class KEngineImpl extends TopologyImpl implements ApplicationRuntime {
 	 * (fr.liglab.adele.cilia.knowledge.core.Node)
 	 */
 	public Dictionary getProperties(Node node) throws CiliaIllegalStateException,
-			CiliaIllegalParameterException {
+	CiliaIllegalParameterException {
 		MediatorComponent mc = getModel(node);
 		return new UnModifiableDictionary(mc.getProperties());
 	}
 
 	public Object getProperty(Node node, String key) throws CiliaIllegalStateException,
-			CiliaIllegalParameterException {
+	CiliaIllegalParameterException {
 		if ((key == null) || (key.length() == 0))
 			throw new CiliaIllegalParameterException("key parameter is null");
 		MediatorComponent mc = getModel(node);
@@ -136,7 +143,7 @@ public class KEngineImpl extends TopologyImpl implements ApplicationRuntime {
 	}
 
 	public void startChain(String chainId) throws CiliaIllegalParameterException,
-			CiliaIllegalStateException {
+	CiliaIllegalStateException {
 		if (chainId == null) {
 			throw new CiliaIllegalParameterException("Chain Id is null");
 		}
@@ -147,7 +154,7 @@ public class KEngineImpl extends TopologyImpl implements ApplicationRuntime {
 	}
 
 	public void stopChain(String chainId) throws CiliaIllegalParameterException,
-			CiliaIllegalStateException {
+	CiliaIllegalStateException {
 		if (chainId == null) {
 			throw new CiliaIllegalParameterException("Chain Id is null");
 		}
@@ -158,13 +165,13 @@ public class KEngineImpl extends TopologyImpl implements ApplicationRuntime {
 	}
 
 	public SetUp nodeSetup(Node node) throws CiliaIllegalParameterException,
-			CiliaIllegalStateException {
+	CiliaIllegalStateException {
 		return new SetUpImpl(registry, node);
 	}
 
 	/* -- */
 	public int getChainState(String chainId) throws CiliaIllegalParameterException,
-			CiliaIllegalStateException {
+	CiliaIllegalStateException {
 		if (chainId == null)
 			throw new CiliaIllegalParameterException("chain id is null");
 		ChainRuntime chain = ciliaContext.getChainRuntime(chainId);
@@ -174,7 +181,7 @@ public class KEngineImpl extends TopologyImpl implements ApplicationRuntime {
 	}
 
 	public Date lastCommand(String chainId) throws CiliaIllegalParameterException,
-			CiliaIllegalStateException {
+	CiliaIllegalStateException {
 		if (chainId == null)
 			throw new CiliaIllegalParameterException("chain id is null");
 		ChainRuntime chain = ciliaContext.getChainRuntime(chainId);
@@ -184,7 +191,7 @@ public class KEngineImpl extends TopologyImpl implements ApplicationRuntime {
 	}
 
 	public SetUp[] nodeSetup(String ldapFilter) throws CiliaIllegalParameterException,
-			CiliaInvalidSyntaxException {
+	CiliaInvalidSyntaxException {
 		Node[] nodes = findNodeByFilter(ldapFilter, false);
 		Set set = new HashSet();
 		for (int i = 0; i < nodes.length; i++) {
@@ -198,7 +205,7 @@ public class KEngineImpl extends TopologyImpl implements ApplicationRuntime {
 
 
 	public RawData[] nodeRawData(String ldapFilter) throws CiliaInvalidSyntaxException,
-			CiliaIllegalParameterException {
+	CiliaIllegalParameterException {
 		Node[] nodes = findNodeByFilter(ldapFilter, false);
 		Set set = new HashSet();
 		for (int i = 0; i < nodes.length; i++) {
@@ -211,7 +218,7 @@ public class KEngineImpl extends TopologyImpl implements ApplicationRuntime {
 	}
 
 	public RawData nodeRawData(Node node) throws CiliaIllegalParameterException,
-			CiliaIllegalStateException {
+	CiliaIllegalStateException {
 		return new RawDataImpl(registry, new NodeImpl(node));
 	}
 
@@ -229,8 +236,56 @@ public class KEngineImpl extends TopologyImpl implements ApplicationRuntime {
 	}
 
 	public Thresholds nodeMonitoring(Node node) throws CiliaIllegalParameterException,
-			CiliaIllegalStateException {
-			return new SetUpImpl(registry, new NodeImpl(node));
+	CiliaIllegalStateException {
+		return new SetUpImpl(registry, new NodeImpl(node));
 	}
+
+	public Map getBufferedData(Node node) throws CiliaIllegalParameterException {
+		ServiceReference refData = getAdminDataReference(node);
+		Map returnedMap = null;
+		if (refData == null) {
+			return null;
+		}
+		AdminData admin = (AdminData)bcontext.getService(refData);
+		returnedMap = new HashMap(admin.getData(node.nodeId(),true));
+		bcontext.ungetService(refData);
+		return returnedMap;
+	}
+
+	public boolean copyData(Node from, Node to) throws CiliaIllegalParameterException {
+		if (from.chainId().compareTo(to.chainId()) != 0){
+			throw new CiliaIllegalParameterException("both nodes must be on the same chain");
+		}
+		ServiceReference refData = getAdminDataReference(from);
+		if (refData == null) {
+			return false;
+		}
+		AdminData admin = (AdminData)bcontext.getService(refData);
+		admin.copyData(from.nodeId(), to.nodeId());
+		return true;
+	}
+
+	private ServiceReference getAdminDataReference(Node node) throws CiliaIllegalParameterException{
+		ServiceReference[] refs = null;
+		ServiceReference refData = null;
+		Map returnedMap = null;
+		if (node == null){
+			throw new CiliaIllegalParameterException("Node is empty");
+		}
+		try {
+			refs = bcontext.getServiceReferences(AdminData.class.getName(), "(chain.name="
+					+ node.chainId() + ")");
+		} catch (InvalidSyntaxException e) {
+			throw new RuntimeException("Admin data service lookup unrecoverable error");
+		}
+		if (refs != null)
+			refData = refs[0];
+		else {
+			return null;
+		}
+		return refData;
+	}
+
+
 
 }

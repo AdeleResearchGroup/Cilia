@@ -18,7 +18,7 @@ package fr.liglab.adele.cilia.runtime.impl;
 import java.util.HashMap;
 import java.util.Map;
 
-import fr.liglab.adele.cilia.runtime.AdminData;
+import fr.liglab.adele.cilia.AdminData;
 import fr.liglab.adele.cilia.util.concurrent.ReadWriteLock;
 import fr.liglab.adele.cilia.util.concurrent.WriterPreferenceReadWriteLock;
 

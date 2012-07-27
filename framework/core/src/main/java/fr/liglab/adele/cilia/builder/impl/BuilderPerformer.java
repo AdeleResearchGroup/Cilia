@@ -17,9 +17,11 @@ package fr.liglab.adele.cilia.builder.impl;
 import java.util.Iterator;
 import java.util.List;
 
+import fr.liglab.adele.cilia.CiliaContext;
 import fr.liglab.adele.cilia.builder.Architecture;
 import fr.liglab.adele.cilia.exceptions.BuilderException;
 import fr.liglab.adele.cilia.exceptions.BuilderPerformerException;
+import fr.liglab.adele.cilia.exceptions.CiliaIllegalParameterException;
 import fr.liglab.adele.cilia.model.Binding;
 import fr.liglab.adele.cilia.model.CiliaContainer;
 import fr.liglab.adele.cilia.model.MediatorComponent;
@@ -65,6 +67,7 @@ public class BuilderPerformer {
 		doModify();
 		doBind();
 		doUnbind();
+		doReplace();
 		if (architecture.toCreate()) {
 			container.addChain(chain);
 		}
@@ -89,7 +92,7 @@ public class BuilderPerformer {
 		return chain;
 	}
 
-	
+
 
 	private void doCreate() throws BuilderPerformerException {
 		List created = architecture.getCreated();
@@ -186,6 +189,66 @@ public class BuilderPerformer {
 		}
 	}
 
+	private void doReplace() throws BuilderPerformerException {
+		Iterator it = architecture.getReplaced().iterator();
+		while (it.hasNext()){
+			ReplacerImpl rep = (ReplacerImpl)it.next();
+			replaceMediator(rep);
+		}
+	}
+
+	private void replaceMediator(ReplacerImpl rep) throws BuilderPerformerException{
+		MediatorComponent from = getMediatorComponent(rep.id);
+		MediatorComponent to = getMediatorComponent(rep.to);
+		//we lock mediator execution.
+		((MediatorComponentImpl)from).lockRuntime();
+		((MediatorComponentImpl)to).lockRuntime();
+		//replace out bindings.
+		Binding outbindings[] = from.getOutBindings();
+		for (int i = 0; outbindings != null &&  i < outbindings.length ; i ++) {
+			replaceOutBinding(to, rep, outbindings[i]);
+		}
+		//replace in bindings.
+		Binding inbindings[] = from.getInBindings();
+		for (int i = 0; inbindings != null &&  i < inbindings.length ; i ++) {
+			replaceInBinding(to, rep, inbindings[i]);
+		}
+		/* Now data is injected */
+		try {
+			architecture.ccontext.getApplicationRuntime().copyData(from, to);
+		} catch (CiliaIllegalParameterException e) {
+			throw new BuilderPerformerException(e.getMessage());
+		}
+		//we unlock mediation execution
+		((MediatorComponentImpl)from).unLockRuntime();
+		((MediatorComponentImpl)to).unLockRuntime();
+	}
+
+	private void replaceOutBinding(MediatorComponent mediator, ReplacerImpl rep, Binding binding) throws BuilderPerformerException {
+		String portname = null;
+		String oldPortname = binding.getSourcePort().getName();
+		if (rep.outports.containsKey(oldPortname)){ // If new mediator has another portname we switch.
+			portname = (String)rep.outports.get(oldPortname);
+		} else { //if not, we use the same port name as the previous mediator.
+			portname = oldPortname;
+		}
+		chain.bind(mediator.getOutPort(portname), binding.getTargetMediator().getInPort(binding.getTargetPort().getName()));
+		chain.unbind(binding);
+	}
+
+	private void replaceInBinding(MediatorComponent mediator, ReplacerImpl rep, Binding binding) throws BuilderPerformerException {
+		String portname = null;
+		String oldPortname = binding.getTargetPort().getName();
+		if (rep.inports.containsKey(oldPortname)){ // If new mediator has another portname we switch.
+			portname = (String)rep.inports.get(oldPortname);
+		} else { //if not, we use the same port name as the previous mediator.
+			portname = oldPortname;
+		}
+		chain.bind(binding.getSourceMediator().getOutPort(binding.getSourcePort().getName()), mediator.getInPort(portname)); 
+		chain.unbind(binding);
+	}
+
+
 	private MediatorComponent getMediatorComponent(String id)
 			throws BuilderPerformerException {
 		MediatorComponent medComponent = chain.getMediator(id);
@@ -205,9 +268,10 @@ public class BuilderPerformer {
 		verifyConfiguration();
 		verifyBindings();
 		verifyUnbindings();
+		verifyReplaced();
 	}
 
-	
+
 	private void verifyNewInstances() throws BuilderPerformerException {
 		List created = architecture.getCreated();
 		Iterator it = created.iterator();
@@ -248,13 +312,13 @@ public class BuilderPerformer {
 				case Architecture.ADAPTER:
 					throw new BuilderPerformerException(
 							"Impossible to remove an adapter with ID " + id
-									+ "; Unexistant adapterin chain "
-									+ chain.getId());
+							+ "; Unexistant adapterin chain "
+							+ chain.getId());
 				case Architecture.MEDIATOR:
 					throw new BuilderPerformerException(
 							"Impossible to remove a mediator with ID " + id
-									+ "; Unexistant mediator in chain "
-									+ chain.getId());
+							+ "; Unexistant mediator in chain "
+							+ chain.getId());
 				}
 			}
 		}
@@ -270,13 +334,13 @@ public class BuilderPerformer {
 				case Architecture.ADAPTER:
 					throw new BuilderPerformerException(
 							"Impossible to modify an adapter with ID" + id
-									+ "; Unexistant adapterin chain "
-									+ chain.getId());
+							+ "; Unexistant adapterin chain "
+							+ chain.getId());
 				case Architecture.MEDIATOR:
 					throw new BuilderPerformerException(
 							"Impossible to modify a mediator with ID" + id
-									+ "; Unexistant mediator in chain "
-									+ chain.getId());
+							+ "; Unexistant mediator in chain "
+							+ chain.getId());
 				}
 			}
 		}
@@ -312,6 +376,23 @@ public class BuilderPerformer {
 			if (!isRealComponent(id)) {
 				throw new BuilderPerformerException(
 						"Unable to bind to an inexistant component:" + id);
+			}
+		}
+	}
+
+	private void verifyReplaced() throws BuilderPerformerException {
+		Iterator it = architecture.getReplaced().iterator();
+		while (it.hasNext()) {
+			ReplacerImpl rep = (ReplacerImpl) it.next();
+			String id = rep.getFromMediator();
+			if (!isRealComponent(id)) {
+				throw new BuilderPerformerException(
+						"Unable to replace an inexistent component:" + id);
+			}
+			id = rep.getToMediator();
+			if (!isRealComponent(id)) {
+				throw new BuilderPerformerException(
+						"Unable to replace to an inexistant component:" + id);
 			}
 		}
 	}

@@ -17,13 +17,14 @@ package fr.liglab.adele.cilia.builder.impl;
 import java.util.ArrayList;
 import java.util.List;
 
+import fr.liglab.adele.cilia.CiliaContext;
 import fr.liglab.adele.cilia.builder.Architecture;
 import fr.liglab.adele.cilia.builder.Binder;
 import fr.liglab.adele.cilia.builder.Builder;
 import fr.liglab.adele.cilia.builder.Creator;
 import fr.liglab.adele.cilia.builder.Modifier;
 import fr.liglab.adele.cilia.builder.Remover;
-import fr.liglab.adele.cilia.exceptions.BuilderConfigurationException;
+import fr.liglab.adele.cilia.builder.Replacer;
 import fr.liglab.adele.cilia.exceptions.BuilderException;
 import fr.liglab.adele.cilia.exceptions.BuilderPerformerException;
 import fr.liglab.adele.cilia.model.CiliaContainer;
@@ -36,7 +37,9 @@ import fr.liglab.adele.cilia.model.CiliaContainer;
  */
 public class ArchitectureImpl implements Architecture {
 
-	private CiliaContainer ccontext;
+	private CiliaContainer container;
+	
+	protected CiliaContext ccontext;
 
 	private int action = Architecture.CREATE;
 	private String chainId = null;
@@ -48,6 +51,7 @@ public class ArchitectureImpl implements Architecture {
 	private List created = new ArrayList();
 	private List removed = new ArrayList();
 	private List modified = new ArrayList();
+	private List replaced = new ArrayList();
 
 	// Creator temporal;
 
@@ -57,7 +61,7 @@ public class ArchitectureImpl implements Architecture {
 	 */
 	protected ArchitectureImpl(CiliaContainer cc, Builder builder, String chainid,
 			int creating) {
-		ccontext = cc;
+		container = cc;
 		setChainId(chainid);
 		action = creating;
 		isValid = true;
@@ -121,6 +125,14 @@ public class ArchitectureImpl implements Architecture {
 		modified.add(modifier);
 		return modifier;
 	}
+	
+	public Replacer replace() throws BuilderException {
+		checkValidation();
+		Replacer replacer = new ReplacerImpl(this);
+		replaced.add(replacer);
+		return replacer;
+	}
+	
 
 	/*
 	 * (non-Javadoc)
@@ -130,7 +142,7 @@ public class ArchitectureImpl implements Architecture {
 	protected Builder done() throws BuilderPerformerException, BuilderException {
 		checkValidation();
 		isValid = false;
-		BuilderPerformer perf = new BuilderPerformer(this, ccontext);
+		BuilderPerformer perf = new BuilderPerformer(this, container);
 		perf.perform();
 		return builder;
 	}
@@ -197,6 +209,13 @@ public class ArchitectureImpl implements Architecture {
 		return modified;
 	}
 
+	/**
+	 * @return the modified
+	 */
+	protected List getReplaced() {
+		return replaced;
+	}
+	
 	protected boolean toRemove() {
 		if (action == Architecture.REMOVE)
 			return true;
@@ -211,5 +230,7 @@ public class ArchitectureImpl implements Architecture {
 			return true;
 		return false;
 	}
+
+
 
 }
