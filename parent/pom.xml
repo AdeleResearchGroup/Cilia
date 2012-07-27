@@ -1,18 +1,12 @@
-<!--
- Copyright Adele Team LIG
- Licensed under the Apache License, Version 2.0 (the "License");
- you may not use this file except in compliance with the License.
- You may obtain a copy of the License at
-
-   http://www.apache.org/licenses/LICENSE-2.0
-
- Unless required by applicable law or agreed to in writing, software
- distributed under the License is distributed on an "AS IS" BASIS,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- See the License for the specific language governing permissions and
- limitations under the License.
--->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<!-- Copyright Adele Team LIG Licensed under the Apache License, Version 
+	2.0 (the "License"); you may not use this file except in compliance with 
+	the License. You may obtain a copy of the License at    http://www.apache.org/licenses/LICENSE-2.0 
+	Unless required by applicable law or agreed to in writing, software distributed 
+	under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES 
+	OR CONDITIONS OF ANY KIND, either express or implied. See the License for 
+	the specific language governing permissions and limitations under the License. -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>fr.liglab.adele.cilia</groupId>
@@ -23,10 +17,10 @@
 	<url>http://cilia.ligforge.imag.fr</url>
 	<properties>
 		<skipTests>false</skipTests>
-	    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
-        <scm>
-    		<connection>scm:svn:svn+ssh://cilia@svn.ligforge.imag.fr/svnroot/cilia/trunk</connection>
+	<scm>
+		<connection>scm:svn:svn+ssh://cilia@svn.ligforge.imag.fr/svnroot/cilia/trunk</connection>
 		<developerConnection>scm:svn:svn+ssh://cilia@svn.ligforge.imag.fr/svnroot/cilia/trunk</developerConnection>
 		<url>https://svn.ligforge.imag.fr/svnroot/cilia/</url>
 	</scm>
@@ -34,21 +28,59 @@
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
-			        <artifactId>maven-release-plugin</artifactId>
-		        	<configuration>
-			          <!--tagBase>https://svn.ligforge.imag.fr/svnroot/cilia/tags/releases</tagBase-->
-				  <allowTimestampedSnapshots>true</allowTimestampedSnapshots> 
-			        </configuration>
+				<artifactId>maven-release-plugin</artifactId>
+				<configuration>
+					<!--tagBase>https://svn.ligforge.imag.fr/svnroot/cilia/tags/releases</tagBase -->
+					<allowTimestampedSnapshots>true</allowTimestampedSnapshots>
+				</configuration>
 			</plugin>
 			<plugin>
-			        <groupId>org.apache.maven.plugins</groupId>
-			        <artifactId>maven-surefire-plugin</artifactId>
-			        <version>2.12</version>
-			        <configuration>
-			          <skipTests>${skipTests}</skipTests>
-			        </configuration>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>2.12</version>
+				<configuration>
+					<skipTests>${skipTests}</skipTests>
+				</configuration>
 			</plugin>
-		    </plugins>
+		</plugins>
+		<pluginManagement>
+			<plugins>
+				<!--This plugin's configuration is used to store Eclipse m2e settings 
+					only. It has no influence on the Maven build itself. -->
+				<plugin>
+					<groupId>org.eclipse.m2e</groupId>
+					<artifactId>lifecycle-mapping</artifactId>
+					<version>1.0.0</version>
+					<configuration>
+						<lifecycleMappingMetadata>
+							<pluginExecutions>
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>
+											org.apache.servicemix.tooling
+										</groupId>
+										<artifactId>
+											depends-maven-plugin
+										</artifactId>
+										<versionRange>
+											[1.2,)
+										</versionRange>
+										<goals>
+											<goal>
+												generate-depends-file
+											</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<execute />
+									</action>
+								</pluginExecution>
+							</pluginExecutions>
+						</lifecycleMappingMetadata>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
 	</build>
 
 	<licenses>
@@ -128,24 +160,24 @@
 	</issueManagement>
 
 	<developers>
-		<developer>			
-			<name>Philippe Lalanda</name>	 	 
+		<developer>
+			<name>Philippe Lalanda</name>
 			<email> philippe.lalanda @nospam@ imag.fr	</email>
-			<roles>		
-					<role>Project Manager</role>
+			<roles>
+				<role>Project Manager</role>
 			</roles>
 			<organization>Adele | LIG</organization>
 			<organizationUrl>http://adele.imag.fr</organizationUrl>
-		</developer>		
-		<developer>			
-			<name>Catherine Hamon</name>	 	 
+		</developer>
+		<developer>
+			<name>Catherine Hamon</name>
 			<email> Catherine.Hamon @nospam@ orange-ftgroup.com	</email>
-			<roles>		
-					<role>Project Manager</role>
+			<roles>
+				<role>Project Manager</role>
 			</roles>
 			<organization>Orange Labs</organization>
-			<organizationUrl>http://orange-ftgroup.com</organizationUrl>				
-		</developer>		
+			<organizationUrl>http://orange-ftgroup.com</organizationUrl>
+		</developer>
 
 		<developer>
 			<name>Bassem Debbabi</name>
@@ -181,22 +213,22 @@
 		</developer>
 
 
-		<developer>		
-			<name>Clement Escoffier</name>	 	 
+		<developer>
+			<name>Clement Escoffier</name>
 			<email> clement.escoffier @nospam@ gmail.com	</email>
-			<roles>			
+			<roles>
 			</roles>
 			<organization>akquinet</organization>
 			<organizationUrl>http://www.akquinet.com</organizationUrl>
 		</developer>
-		<developer>			
-			<name>Ada Diaconescu</name>	 	 
+		<developer>
+			<name>Ada Diaconescu</name>
 			<email> ada.diaconescu @nospam@ gmail.com	</email>
-			<roles>			
+			<roles>
 			</roles>
 			<organization>Telecom Paris-Tech</organization>
 			<organizationUrl>http://www.telecom-paristech.fr/</organizationUrl>
-		</developer>	
+		</developer>
 	</developers>
 
 	<contributors>
@@ -204,46 +236,46 @@
 			<name>Elias Ricken de Medeiros</name>
 			<email>eliasrdm @nospam@ gmail.com</email>
 			<organization>Orange Labs</organization>
-			<organizationUrl>http://orange-ftgroup.com</organizationUrl>				
+			<organizationUrl>http://orange-ftgroup.com</organizationUrl>
 			<roles>
 				<role>Developer</role>
 			</roles>
 		</contributor>
 		<contributor>
 			<name>Elmehdi Damou</name>
-			<email>elmehdi.damou @nospam@ imag.fr</email>	
+			<email>elmehdi.damou @nospam@ imag.fr</email>
 			<organization>Adele | LIG</organization>
-			<organizationUrl>http://adele.imag.fr</organizationUrl>			
+			<organizationUrl>http://adele.imag.fr</organizationUrl>
 			<roles>
 				<role>Developer</role>
 			</roles>
 		</contributor>
 		<contributor>
 			<name>Pierre Bourret</name>
-			<email> 	 bourretp @nospam@ gmail.com</email>	
+			<email> 	 bourretp @nospam@ gmail.com</email>
 			<organization>Adele | LIG</organization>
-			<organizationUrl>http://adele.imag.fr</organizationUrl>			
+			<organizationUrl>http://adele.imag.fr</organizationUrl>
 			<roles>
 				<role>Developer</role>
 			</roles>
 		</contributor>
 		<contributor>
 			<name>Anthony Bozon</name>
-			<email> 	 Antony.bozon @nospam@ orange-ftgroup.com</email>		
+			<email> 	 Antony.bozon @nospam@ orange-ftgroup.com</email>
 			<organization>Orange Labs</organization>
-			<organizationUrl>http://orange-ftgroup.com</organizationUrl>					
+			<organizationUrl>http://orange-ftgroup.com</organizationUrl>
 			<roles>
 				<role>Developer</role>
-			</roles>		
+			</roles>
 		</contributor>
 		<contributor>
 			<name>Jerome Bodineau</name>
-			<email> 	 bodineauj @nospam@ gmail.com</email>		
+			<email> 	 bodineauj @nospam@ gmail.com</email>
 			<organization>Orange Labs</organization>
-			<organizationUrl>http://orange-ftgroup.com</organizationUrl>				
+			<organizationUrl>http://orange-ftgroup.com</organizationUrl>
 			<roles>
 				<role>Developer</role>
-			</roles>		
+			</roles>
 		</contributor>
 
 
@@ -251,12 +283,8 @@
 
 
 	<distributionManagement>
-		<!--
-		<site>
-			<id>LIGForge</id>
-			<url>scp://cilia.ligforge.imag.fr/var/lib/gforge/chroot/home/groups/cilia/htdocs</url>
-		</site>
-		-->
+		<!-- <site> <id>LIGForge</id> <url>scp://cilia.ligforge.imag.fr/var/lib/gforge/chroot/home/groups/cilia/htdocs</url> 
+			</site> -->
 		<repository>
 			<id>LIGForge</id>
 			<name>LIGForge Repository</name>
@@ -271,47 +299,47 @@
 
 	<dependencyManagement>
 		<dependencies>
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-api</artifactId>
-			<version>1.6.1</version>
-		</dependency>
+			<dependency>
+				<groupId>org.slf4j</groupId>
+				<artifactId>slf4j-api</artifactId>
+				<version>1.6.1</version>
+			</dependency>
 
-		<dependency>
-			<groupId>org.osgi</groupId>
-			<artifactId>org.osgi.core</artifactId>
-			<version>4.2.0</version>
-		</dependency>
+			<dependency>
+				<groupId>org.osgi</groupId>
+				<artifactId>org.osgi.core</artifactId>
+				<version>4.2.0</version>
+			</dependency>
 
-		<dependency>
-			<groupId>org.osgi</groupId>
-			<artifactId>org.osgi.compendium</artifactId>
-			<version>4.2.0</version>
-		</dependency>
+			<dependency>
+				<groupId>org.osgi</groupId>
+				<artifactId>org.osgi.compendium</artifactId>
+				<version>4.2.0</version>
+			</dependency>
 
-		<dependency>
-			<groupId>org.apache.felix</groupId>
-			<artifactId>org.apache.felix.ipojo</artifactId>
-			<version>1.8.0</version>
-		</dependency>
+			<dependency>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>org.apache.felix.ipojo</artifactId>
+				<version>1.8.0</version>
+			</dependency>
 
-		<dependency>
-			<groupId>org.apache.felix</groupId>
-			<artifactId>org.apache.felix.gogo.runtime</artifactId>
-			<version>0.6.1</version>
-		</dependency>
+			<dependency>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>org.apache.felix.gogo.runtime</artifactId>
+				<version>0.6.1</version>
+			</dependency>
 
-		<dependency>
-			<groupId>org.apache.felix</groupId>
-			<artifactId>org.apache.felix.fileinstall</artifactId>
-			<version>3.2.0</version>
-		</dependency>
+			<dependency>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>org.apache.felix.fileinstall</artifactId>
+				<version>3.2.0</version>
+			</dependency>
 
-		<dependency>
-			<groupId>org.osgi</groupId>
-			<artifactId>org.osgi.core</artifactId>
-			<version>4.2.0</version>
-		</dependency>
+			<dependency>
+				<groupId>org.osgi</groupId>
+				<artifactId>org.osgi.core</artifactId>
+				<version>4.2.0</version>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 
