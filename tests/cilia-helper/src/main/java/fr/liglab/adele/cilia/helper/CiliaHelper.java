@@ -218,6 +218,10 @@ public class CiliaHelper {
 		System.out.println("chain loaded");
 	}
 
+	public Builder getBuilder(){
+		return getCiliaContext().getBuilder();
+	}
+	
 	public void unload(String url){
 
 	}
