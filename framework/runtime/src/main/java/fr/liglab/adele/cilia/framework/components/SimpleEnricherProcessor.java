@@ -23,16 +23,15 @@ import fr.liglab.adele.cilia.Data;
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project Team</a>
  *
  */
+@SuppressWarnings("rawtypes")
 public class SimpleEnricherProcessor {
 
-	@SuppressWarnings("rawtypes")
 	private Hashtable content;
 
 	public Data process(final Data data){
 		if (content == null){
 			return data;
 		}
-		@SuppressWarnings("rawtypes")
 		Enumeration e = content.keys();
 		while(e.hasMoreElements()){
 			String key = String.valueOf(e.nextElement());
