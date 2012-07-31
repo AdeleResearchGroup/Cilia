@@ -20,7 +20,7 @@ import org.ops4j.pax.exam.junit.JUnitOptions;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 
-import fr.liglab.adele.cilia.core.tests.tools.CiliaTools;
+import fr.liglab.adele.cilia.helper.CiliaHelper;
 import fr.liglab.adele.cilia.util.CiliaFileManager;
 
 @RunWith(JUnit4TestRunner.class)
@@ -54,6 +54,7 @@ public class CiliaFileManagerTester {
 						mavenBundle().groupId("org.slf4j").artifactId("slf4j-api").versionAsInProject(),
 						mavenBundle().groupId("org.slf4j").artifactId("slf4j-simple").version("1.6.1"),
 						mavenBundle().groupId("fr.liglab.adele.cilia").artifactId("cilia-core").versionAsInProject(),
+						mavenBundle().groupId("fr.liglab.adele.cilia").artifactId("cilia-helper").versionAsInProject(),
 						mavenBundle().groupId("fr.liglab.adele.cilia").artifactId("cilia-runtime").versionAsInProject()
 				)); // The target
 		Option[] r = OptionUtils.combine(platform, bundles);
@@ -70,7 +71,7 @@ public class CiliaFileManagerTester {
 	
 	@Test
 	public void validateService() {
-		CiliaTools.waitToInitialize();
+		CiliaHelper.waitSomeTime(2000);
 		ServiceReference sr[] = null;
 		sr = osgi.getServiceReferences (CiliaFileManager.class.getName(), null);
 		assertNotNull(sr[0]);

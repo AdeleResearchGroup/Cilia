@@ -48,13 +48,13 @@ import fr.liglab.adele.cilia.Node;
 import fr.liglab.adele.cilia.NodeCallback;
 import fr.liglab.adele.cilia.builder.Architecture;
 import fr.liglab.adele.cilia.builder.Builder;
-import fr.liglab.adele.cilia.core.tests.tools.CiliaTools;
 import fr.liglab.adele.cilia.exceptions.BuilderConfigurationException;
 import fr.liglab.adele.cilia.exceptions.BuilderException;
 import fr.liglab.adele.cilia.exceptions.BuilderPerformerException;
 import fr.liglab.adele.cilia.exceptions.CiliaIllegalParameterException;
 import fr.liglab.adele.cilia.exceptions.CiliaIllegalStateException;
 import fr.liglab.adele.cilia.exceptions.CiliaInvalidSyntaxException;
+import fr.liglab.adele.cilia.helper.CiliaHelper;
 import fr.liglab.adele.cilia.model.MediatorComponent;
 import fr.liglab.adele.cilia.util.FrameworkUtils;
 
@@ -82,16 +82,21 @@ public class CiliaDynamicTest {
 
 		Option[] bundles = options(provision(
 				mavenBundle().groupId("org.apache.felix")
-						.artifactId("org.apache.felix.ipojo").versionAsInProject(),
+						.artifactId("org.apache.felix.ipojo")
+						.versionAsInProject(),
 				mavenBundle().groupId("org.apache.felix")
 						.artifactId("org.apache.felix.ipojo.test.helpers")
-						.versionAsInProject(), mavenBundle().groupId("org.osgi")
+						.versionAsInProject(),
+				mavenBundle().groupId("org.osgi")
 						.artifactId("org.osgi.compendium").versionAsInProject(),
 				mavenBundle().groupId("org.slf4j").artifactId("slf4j-api")
-						.versionAsInProject(), mavenBundle().groupId("org.slf4j")
-						.artifactId("slf4j-simple").version("1.6.1"), mavenBundle()
-						.groupId("fr.liglab.adele.cilia").artifactId("cilia-core")
 						.versionAsInProject(),
+				mavenBundle().groupId("org.slf4j").artifactId("slf4j-simple")
+						.version("1.6.1"),
+				mavenBundle().groupId("fr.liglab.adele.cilia")
+						.artifactId("cilia-core").versionAsInProject(),
+				mavenBundle().groupId("fr.liglab.adele.cilia")
+						.artifactId("cilia-helper").versionAsInProject(),
 				mavenBundle().groupId("fr.liglab.adele.cilia")
 						.artifactId("cilia-runtime").versionAsInProject()));
 		Option[] r = OptionUtils.combine(platform, bundles);
@@ -111,7 +116,7 @@ public class CiliaDynamicTest {
 	// Verify the service is present
 	@Test
 	public void validateService() {
-		CiliaTools.waitToInitialize();
+		CiliaHelper.waitSomeTime(2000);
 		ServiceReference sr[] = null;
 		sr = osgi.getServiceReferences(CiliaContext.class.getName(), null);
 		assertNotNull(sr[0]);
@@ -130,7 +135,8 @@ public class CiliaDynamicTest {
 
 	private void checkNode(Node[] nodes, int length, String prefix) {
 		if (nodes.length != length) {
-			Assert.fail("Expected length = " + length + " , current=" + nodes.length);
+			Assert.fail("Expected length = " + length + " , current="
+					+ nodes.length);
 		}
 		for (int i = 0; i < nodes.length; i++) {
 			if (!(nodes[i] instanceof MediatorComponent)) {
@@ -152,8 +158,10 @@ public class CiliaDynamicTest {
 			Architecture chain = builder.create("Chain1");
 			chain.create().adapter().type("gui-adapter").id("adapter_in");
 			chain.create().adapter().type("console-adapter").id("adapter_out");
-			chain.create().mediator().type("immediate-mediator").id("mediator_1");
-			chain.create().mediator().type("immediate-mediator").id("mediator_2");
+			chain.create().mediator().type("immediate-mediator")
+					.id("mediator_1");
+			chain.create().mediator().type("immediate-mediator")
+					.id("mediator_2");
 			chain.bind().from("adapter_in:out").to("mediator_1:in");
 			chain.bind().from("mediator_1:out").to("mediator_2:in");
 			chain.bind().from("mediator_2:out").to("adapter_out:in");
@@ -171,7 +179,8 @@ public class CiliaDynamicTest {
 
 		/* Invalid Syntax Exception */
 		try {
-			Node[] nodes = runtime.findNodeByFilter("&(chain=Chain1)(node=mediator_3))");
+			Node[] nodes = runtime
+					.findNodeByFilter("&(chain=Chain1)(node=mediator_3))");
 			Assert.fail("No Exception thrown : ldap syntax error");
 		} catch (CiliaIllegalParameterException e) {
 			Assert.fail("Invalid exception thrown " + e.getMessage());
@@ -209,7 +218,8 @@ public class CiliaDynamicTest {
 
 		/* Return 0 value , no exception */
 		try {
-			Node[] nodes = runtime.findNodeByFilter("(&(chain=Chain1)(node=mediator_3))");
+			Node[] nodes = runtime
+					.findNodeByFilter("(&(chain=Chain1)(node=mediator_3))");
 			Assert.assertNotNull(nodes);
 			Assert.assertArrayEquals(new Node[0], nodes);
 		} catch (Exception e) {
@@ -217,7 +227,8 @@ public class CiliaDynamicTest {
 		}
 		/* Return 1 value , no exception */
 		try {
-			Node[] nodes = runtime.findNodeByFilter("(&(chain=Chain1)(node=mediator_1))");
+			Node[] nodes = runtime
+					.findNodeByFilter("(&(chain=Chain1)(node=mediator_1))");
 			Assert.assertNotNull(nodes);
 			checkNode(nodes, 1, "Chain1/mediator_");
 		} catch (Exception e) {
@@ -225,7 +236,8 @@ public class CiliaDynamicTest {
 		}
 		/* Return 2 values , no Exception */
 		try {
-			Node[] nodes = runtime.findNodeByFilter("(&(chain=Chain1)(node=mediator_*))");
+			Node[] nodes = runtime
+					.findNodeByFilter("(&(chain=Chain1)(node=mediator_*))");
 			Assert.assertNotNull(nodes);
 			checkNode(nodes, 2, "Chain1/mediator_");
 		} catch (Exception e) {
@@ -443,7 +455,8 @@ public class CiliaDynamicTest {
 		}
 
 		try {
-			Node[] nodes = application.connectedTo("(&(chain=Chain1)(node=adapter_in))");
+			Node[] nodes = application
+					.connectedTo("(&(chain=Chain1)(node=adapter_in))");
 			Assert.assertNotNull(nodes);
 			if (nodes.length != 1) {
 				Assert.fail("Length expected =1, recevied = " + nodes.length);
@@ -459,7 +472,8 @@ public class CiliaDynamicTest {
 		}
 
 		try {
-			Node[] nodes = application.connectedTo("(&(chain=Chain1)(node=mediator_1))");
+			Node[] nodes = application
+					.connectedTo("(&(chain=Chain1)(node=mediator_1))");
 			Assert.assertNotNull(nodes);
 			if (nodes.length != 1) {
 				Assert.fail("Length expected =1, recevied = " + nodes.length);
@@ -475,7 +489,8 @@ public class CiliaDynamicTest {
 		}
 
 		try {
-			Node[] nodes = application.connectedTo("(&(chain=Chain1)(node=mediator_2))");
+			Node[] nodes = application
+					.connectedTo("(&(chain=Chain1)(node=mediator_2))");
 			Assert.assertNotNull(nodes);
 			if (nodes.length != 1) {
 				Assert.fail("Length expected =1, recevied = " + nodes.length);
@@ -491,7 +506,8 @@ public class CiliaDynamicTest {
 		}
 
 		try {
-			Node[] nodes = application.connectedTo("(&(chain=Chain1)(node=adapter_out))");
+			Node[] nodes = application
+					.connectedTo("(&(chain=Chain1)(node=adapter_out))");
 			Assert.assertNotNull(nodes);
 			if (nodes.length != 0) {
 				Assert.fail("Length expected =0, retreived = " + nodes.length);
@@ -575,7 +591,8 @@ public class CiliaDynamicTest {
 		/* Check callback */
 		try {
 			callback.result = false;
-			application.addListener("(&(chain=*)(node=*))", (NodeCallback) callback);
+			application.addListener("(&(chain=*)(node=*))",
+					(NodeCallback) callback);
 
 			Builder builder = getCiliaContextService().getBuilder();
 			builder.create("Chain2");
@@ -596,7 +613,8 @@ public class CiliaDynamicTest {
 	private void illegalStateException(ApplicationRuntime application) {
 		Node[] nodes = null;
 		try {
-			nodes = application.findNodeByFilter("(&(chain=Chain1)(node=adapter_in))");
+			nodes = application
+					.findNodeByFilter("(&(chain=Chain1)(node=adapter_in))");
 			Assert.assertNotNull(nodes);
 			Builder builder = getCiliaContextService().getBuilder();
 			Architecture chain = builder.get("Chain1");
@@ -685,7 +703,7 @@ public class CiliaDynamicTest {
 
 	@Test
 	public void testGetBuildChain() {
-		CiliaTools.waitToInitialize();
+		CiliaHelper.waitSomeTime(2000);
 		CiliaContext ciliaContext = getCiliaContextService();
 		ApplicationRuntime application = ciliaContext.getApplicationRuntime();
 		assertNotNull(application);
@@ -696,7 +714,7 @@ public class CiliaDynamicTest {
 
 	@Test
 	public void testGetChainId() {
-		CiliaTools.waitToInitialize();
+		CiliaHelper.waitSomeTime(2000);
 		CiliaContext ciliaContext = getCiliaContextService();
 		ApplicationRuntime application = ciliaContext.getApplicationRuntime();
 		assertNotNull(application);
@@ -708,7 +726,7 @@ public class CiliaDynamicTest {
 
 	@Test
 	public void testfindNodeByFilter() {
-		CiliaTools.waitToInitialize();
+		CiliaHelper.waitSomeTime(2000);
 		CiliaContext ciliaContext = getCiliaContextService();
 		ApplicationRuntime application = ciliaContext.getApplicationRuntime();
 		assertNotNull(application);
@@ -719,7 +737,7 @@ public class CiliaDynamicTest {
 	}
 
 	public void testGetChainState() {
-		CiliaTools.waitToInitialize();
+		CiliaHelper.waitSomeTime(2000);
 		CiliaContext ciliaContext = getCiliaContextService();
 		ApplicationRuntime application = ciliaContext.getApplicationRuntime();
 		assertNotNull(application);
@@ -736,7 +754,7 @@ public class CiliaDynamicTest {
 	}
 
 	public void testEndpointsIn() {
-		CiliaTools.waitToInitialize();
+		CiliaHelper.waitSomeTime(2000);
 		CiliaContext ciliaContext = getCiliaContextService();
 		ApplicationRuntime application = ciliaContext.getApplicationRuntime();
 		assertNotNull(application);
@@ -752,7 +770,7 @@ public class CiliaDynamicTest {
 	}
 
 	public void testEndpointsOut() {
-		CiliaTools.waitToInitialize();
+		CiliaHelper.waitSomeTime(2000);
 		CiliaContext ciliaContext = getCiliaContextService();
 		ApplicationRuntime application = ciliaContext.getApplicationRuntime();
 		assertNotNull(application);

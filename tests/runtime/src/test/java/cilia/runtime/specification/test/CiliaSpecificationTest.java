@@ -38,7 +38,6 @@ import org.ops4j.pax.exam.OptionUtils;
 import org.ops4j.pax.exam.junit.Configuration;
 import org.ops4j.pax.exam.junit.JUnit4TestRunner;
 import org.ops4j.pax.exam.junit.JUnitOptions;
-import org.ops4j.pax.exam.options.FrameworkStartLevelOption;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 
@@ -49,13 +48,13 @@ import fr.liglab.adele.cilia.Node;
 import fr.liglab.adele.cilia.NodeCallback;
 import fr.liglab.adele.cilia.builder.Architecture;
 import fr.liglab.adele.cilia.builder.Builder;
-import fr.liglab.adele.cilia.core.tests.tools.CiliaTools;
 import fr.liglab.adele.cilia.exceptions.BuilderConfigurationException;
 import fr.liglab.adele.cilia.exceptions.BuilderException;
 import fr.liglab.adele.cilia.exceptions.BuilderPerformerException;
 import fr.liglab.adele.cilia.exceptions.CiliaIllegalParameterException;
 import fr.liglab.adele.cilia.exceptions.CiliaIllegalStateException;
 import fr.liglab.adele.cilia.exceptions.CiliaInvalidSyntaxException;
+import fr.liglab.adele.cilia.helper.CiliaHelper;
 import fr.liglab.adele.cilia.model.Chain;
 import fr.liglab.adele.cilia.model.MediatorComponent;
 import fr.liglab.adele.cilia.util.FrameworkUtils;
@@ -95,6 +94,7 @@ public class CiliaSpecificationTest {
 						.artifactId("slf4j-simple").version("1.6.1"), mavenBundle()
 						.groupId("fr.liglab.adele.cilia").artifactId("cilia-core")
 						.versionAsInProject(),
+						mavenBundle().groupId("fr.liglab.adele.cilia").artifactId("cilia-helper").versionAsInProject(),
 				mavenBundle().groupId("fr.liglab.adele.cilia")
 						.artifactId("cilia-runtime").versionAsInProject()));
 		Option[] r = OptionUtils.combine(platform, bundles);
@@ -114,7 +114,7 @@ public class CiliaSpecificationTest {
 	// Verify the service is present
 	@Test
 	public void validateService() {
-		CiliaTools.waitToInitialize();
+		CiliaHelper.waitSomeTime(2000);
 		ServiceReference sr[] = null;
 		sr = osgi.getServiceReferences(CiliaContext.class.getName(), null);
 		assertNotNull(sr[0]);
@@ -769,7 +769,7 @@ public class CiliaSpecificationTest {
 
 	@Test
 	public void testBuildChain() {
-		CiliaTools.waitToInitialize();
+		CiliaHelper.waitSomeTime(2000);		
 		CiliaContext ciliaContext = getCiliaContextService();
 		ApplicationRuntime application = ciliaContext.getApplicationRuntime();
 		assertNotNull(application);
@@ -777,7 +777,7 @@ public class CiliaSpecificationTest {
 	}
 	@Test
 	public void testGetChainId() {
-		CiliaTools.waitToInitialize();
+		CiliaHelper.waitSomeTime(2000);		
 		CiliaContext ciliaContext = getCiliaContextService();
 		ApplicationRuntime application = ciliaContext.getApplicationRuntime();
 		assertNotNull(application);
@@ -788,7 +788,7 @@ public class CiliaSpecificationTest {
 	
 	@Test
 	public void testFindNodeByFilter() {
-		CiliaTools.waitToInitialize();
+		CiliaHelper.waitSomeTime(2000);
 		CiliaContext ciliaContext = getCiliaContextService();
 		ApplicationRuntime application = ciliaContext.getApplicationRuntime();
 		assertNotNull(application);
@@ -798,7 +798,7 @@ public class CiliaSpecificationTest {
 	
 	@Test
 	public void testGetChain() {
-		CiliaTools.waitToInitialize();
+		CiliaHelper.waitSomeTime(2000);
 		CiliaContext ciliaContext = getCiliaContextService();
 		ApplicationRuntime application = ciliaContext.getApplicationRuntime();
 		assertNotNull(application);
@@ -808,7 +808,7 @@ public class CiliaSpecificationTest {
 	
 	@Test
 	public void testGetModel() {
-		CiliaTools.waitToInitialize();
+		CiliaHelper.waitSomeTime(2000);
 		CiliaContext ciliaContext = getCiliaContextService();
 		ApplicationRuntime application = ciliaContext.getApplicationRuntime();
 		assertNotNull(application);
@@ -818,7 +818,7 @@ public class CiliaSpecificationTest {
 	
 	@Test
 	public void testGetPropertie() {
-		CiliaTools.waitToInitialize();
+		CiliaHelper.waitSomeTime(2000);
 		CiliaContext ciliaContext = getCiliaContextService();
 		ApplicationRuntime application = ciliaContext.getApplicationRuntime();
 		assertNotNull(application);
@@ -828,7 +828,7 @@ public class CiliaSpecificationTest {
 	
 	@Test
 	public void testEndpointsIn() {
-		CiliaTools.waitToInitialize();
+		CiliaHelper.waitSomeTime(2000);
 		CiliaContext ciliaContext = getCiliaContextService();
 		ApplicationRuntime application = ciliaContext.getApplicationRuntime();
 		assertNotNull(application);
@@ -838,7 +838,7 @@ public class CiliaSpecificationTest {
 	
 	@Test
 	public void testEndpointsOut() {
-		CiliaTools.waitToInitialize();
+		CiliaHelper.waitSomeTime(2000);
 		CiliaContext ciliaContext = getCiliaContextService();
 		ApplicationRuntime application = ciliaContext.getApplicationRuntime();
 		assertNotNull(application);
@@ -848,7 +848,7 @@ public class CiliaSpecificationTest {
 	
 	@Test
 	public void testConnectedTo() {
-		CiliaTools.waitToInitialize();
+		CiliaHelper.waitSomeTime(2000);
 		CiliaContext ciliaContext = getCiliaContextService();
 		ApplicationRuntime application = ciliaContext.getApplicationRuntime();
 		assertNotNull(application);
@@ -859,7 +859,7 @@ public class CiliaSpecificationTest {
 	
 	@Test
 	public void testIllegalStateException() {
-		CiliaTools.waitToInitialize();
+		CiliaHelper.waitSomeTime(2000);
 		CiliaContext ciliaContext = getCiliaContextService();
 		ApplicationRuntime application = ciliaContext.getApplicationRuntime();
 		assertNotNull(application);
@@ -869,7 +869,7 @@ public class CiliaSpecificationTest {
 	
 	//@Test
 	public void testRegisterListener() {
-		CiliaTools.waitToInitialize();
+		CiliaHelper.waitSomeTime(2000);
 		CiliaContext ciliaContext = getCiliaContextService();
 		ApplicationRuntime application = ciliaContext.getApplicationRuntime();
 		assertNotNull(application);
@@ -879,7 +879,7 @@ public class CiliaSpecificationTest {
 	
 	
 	public void api_all() {
-		CiliaTools.waitToInitialize();
+		CiliaHelper.waitSomeTime(2000);
 		CiliaContext ciliaContext = getCiliaContextService();
 		ApplicationRuntime application = ciliaContext.getApplicationRuntime();
 		assertNotNull(application);
