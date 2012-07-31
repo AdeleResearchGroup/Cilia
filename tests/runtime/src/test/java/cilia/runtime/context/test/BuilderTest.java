@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package fr.liglab.adele.cilia.core.tests;
+package cilia.runtime.context.test;
 
 import static org.ops4j.pax.exam.CoreOptions.felix;
 import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
@@ -80,6 +80,7 @@ public class BuilderTest {
 						mavenBundle().groupId("org.slf4j").artifactId("slf4j-api").versionAsInProject(),
 						mavenBundle().groupId("org.slf4j").artifactId("slf4j-simple").version("1.6.1"),
 						mavenBundle().groupId("fr.liglab.adele.cilia").artifactId("cilia-runtime").versionAsInProject(),
+						mavenBundle().groupId("fr.liglab.adele.cilia").artifactId("cilia-helper").versionAsInProject(),
 						mavenBundle().groupId("fr.liglab.adele.cilia").artifactId("cilia-core").versionAsInProject()
 						)); // The target
 		Option[] r = OptionUtils.combine(platform, bundles);
@@ -293,7 +294,20 @@ public class BuilderTest {
 			Assert.fail("Must throw BuilderPerformerException");
 		}catch (CiliaException ex) {}
 	}
-
+	@Test
+	public void replaceMediator(){
+		waitToInitialize();
+		Builder builder = getBuilder();
+		try{
+			Architecture arch = builder.create("chain-1");
+			arch.create().mediator().type("Mock").id("id1");
+			arch.create().mediator().type("Mock").id("id2");
+			arch.create().mediator().type("Mock").id("id2");
+			arch.bind().from("id1:unique").to("id2:unique");
+			builder.done();
+			
+		}catch (CiliaException ex) {}
+	}
 
 	public void createNewChain(String id) throws BuilderException, BuilderPerformerException  {
 		Builder builder = getBuilder();
@@ -306,7 +320,6 @@ public class BuilderTest {
 		Builder builder = getBuilder();
 		try {
 			Architecture arch = builder.create("MyChain");
-			Architecture arch2 = builder.get("cjainds");
 
 			arch.create().adapter().type("fd").id("").configure().key("toto").value("tata");
 
