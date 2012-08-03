@@ -91,6 +91,6 @@ public class ReplacerImpl implements Replacer, ReplacerConfigurator, PortReplace
 	}
 
 	protected String getToMediator() {
-		return id;
+		return to;
 	}
 }

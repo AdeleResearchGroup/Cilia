@@ -60,6 +60,7 @@ public class ArchitectureImpl implements Architecture {
 	private List created = new ArrayList();
 	private List removed = new ArrayList();
 	private List modified = new ArrayList();
+	private List copied = new ArrayList();
 	private List replaced = new ArrayList();
 
 	// Creator temporal;
@@ -126,6 +127,8 @@ public class ArchitectureImpl implements Architecture {
 		return remover;
 	}
 
+	
+	
 	public Modifier configure() throws BuilderException {
 		checkValidation();
 		InstanceModifierImpl modifier = new InstanceModifierImpl();
@@ -140,6 +143,12 @@ public class ArchitectureImpl implements Architecture {
 		return replacer;
 	}
 	
+	public Replacer copy() throws BuilderException {
+		checkValidation();
+		Replacer copy = new ReplacerImpl(this);
+		copied.add(copy);
+		return copy;
+	}
 
 
 
@@ -210,6 +219,10 @@ public class ArchitectureImpl implements Architecture {
 	 */
 	protected List getReplaced() {
 		return replaced;
+	}
+	
+	protected List getCopied(){
+		return copied;
 	}
 	
 	protected boolean toRemove() {

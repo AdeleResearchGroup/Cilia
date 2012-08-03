@@ -100,5 +100,7 @@ public interface MediatorComponent extends Node,Component {
 	
 	int getState();
 	
+	String getVersion();
+	
 	boolean isRunning();
 }

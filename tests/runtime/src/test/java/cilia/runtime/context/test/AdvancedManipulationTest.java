@@ -40,6 +40,7 @@ import org.ops4j.pax.exam.junit.JUnitOptions;
 import org.osgi.framework.BundleContext;
 
 import fr.liglab.adele.cilia.Data;
+import fr.liglab.adele.cilia.builder.Architecture;
 import fr.liglab.adele.cilia.builder.Builder;
 import fr.liglab.adele.cilia.exceptions.CiliaException;
 import fr.liglab.adele.cilia.helper.CiliaHelper;
@@ -105,7 +106,7 @@ public class AdvancedManipulationTest {
 	@Test
 	public void replaceTest(){
 		CiliaHelper.waitSomeTime(2000);
-		createEnricherMediatorToTestReplacer();
+		createEnricherMediator();
 		CiliaHelper.waitSomeTime(1000);
 		URL url = context.getBundle().getResource("ReplacerTest.dscilia");
 		cilia.load(url);
@@ -150,7 +151,58 @@ public class AdvancedManipulationTest {
 		
 	}
 	
-	private void createEnricherMediatorToTestReplacer(){
+	@Test
+	public void copyMediatorTest(){
+		CiliaHelper.waitSomeTime(2000);
+		createEnricherMediator();
+		CiliaHelper.waitSomeTime(1000);
+		URL url = context.getBundle().getResource("CopyTest.dscilia");
+		cilia.load(url);
+		System.out.println("will wait");
+		Assert.assertTrue(cilia.waitToChain("copyExample",3000));
+
+		//get the helper to inject and retrieve result.
+		MediatorTestHelper tester = cilia.instrumentChain("copyExample","firstMediator:unique", "lastMediator:unique");
+		Assert.assertNotNull(tester);
+		Assert.assertEquals(true, tester.injectData(new Data("data content", "data name")));
+		//get the resulting data.
+		Data[] data = tester.getReceivedData();
+		Assert.assertEquals(0, data.length);
+
+		Assert.assertEquals(0,tester.amountReceivedData());
+		//Now do the copy from enricher1 to enricher2, the enricher2 does not exist.
+		System.out.println("To start copy");
+		CiliaHelper.waitSomeTime(3000);
+		Builder b = cilia.getBuilder();
+		try {
+			Architecture arch = b.get("copyExample");
+			arch.copy().id("enricher1").to("enricher2");
+			//the copy will create a new mediator with id=enricher2
+			//we make a binding.
+			arch.bind().from("firstMediator:unique").to("enricher2:unique"); // bind to the copied mediator.
+			arch.bind().from("enricher2:unique").to("lastMediator:unique"); // bind to the copied mediator.
+			b.done();
+		} catch (CiliaException e) {
+			Assert.fail("Exception when copying " + e.getMessage());
+		}
+		System.out.println("Finish to copy");
+		//We inject a new Data.
+		CiliaHelper.waitSomeTime(5000);
+		System.out.println("Inject second data");
+		Assert.assertEquals(true, tester.injectData(new Data("data content", "data name")));
+		System.out.println("Verify second data");
+		Assert.assertEquals(1, tester.amountReceivedData());
+		Data data2 = tester.getReceivedData()[0];
+		Assert.assertNotNull(data2);
+		String enricherValue2 = (String)data2.getProperty("enricher");
+		//test the value based on the replacerTest.dscilia file
+		/*<item key="enricher" value="enricher1"/>*/
+		Assert.assertEquals("enricher1", enricherValue2);
+		
+	}
+	
+	
+	private void createEnricherMediator(){
 		MediatorRuntimeSpecification mrs = new MediatorRuntimeSpecification("EnricherTest", null, null, context);
 		mrs.setDispatcher("multicast-dispatcher", "fr.liglab.adele.cilia");
 		mrs.setScheduler("immediate-scheduler", "fr.liglab.adele.cilia");

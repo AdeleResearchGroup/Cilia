@@ -1,0 +1,15 @@
+<cilia>
+	<chain id="copyExample">
+		<mediators>
+			<mediator-instance id="enricher1" type="EnricherTest" >
+				<property name="enricher.content">
+					<item key="enricher" value="enricher1"/>
+				</property>
+			</mediator-instance>
+			<!-- firstMediator and lastMediator used to connect to helper --> 
+			<mediator-instance id="firstMediator" type="Mock" />
+			<mediator-instance id="lastMediator" type="Mock" />
+		</mediators>
+		<!-- Bindings will be created by code in tests -->
+	</chain>
+</cilia>

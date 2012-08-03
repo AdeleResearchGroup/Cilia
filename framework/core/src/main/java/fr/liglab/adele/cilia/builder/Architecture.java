@@ -45,6 +45,8 @@ public interface Architecture {
 	Creator create ()throws BuilderException;
 	
 	Replacer replace ()throws BuilderException;
+
+	Replacer copy() throws BuilderException;
 	
 	Remover remove ()throws BuilderException;
 	

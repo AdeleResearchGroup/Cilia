@@ -23,14 +23,16 @@ import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import fr.liglab.adele.cilia.CiliaContext;
 import fr.liglab.adele.cilia.Data;
+import fr.liglab.adele.cilia.builder.Architecture;
+import fr.liglab.adele.cilia.builder.Builder;
+import fr.liglab.adele.cilia.exceptions.CiliaException;
 import fr.liglab.adele.cilia.model.Adapter;
 import fr.liglab.adele.cilia.model.Chain;
-import fr.liglab.adele.cilia.model.CiliaContainer;
 import fr.liglab.adele.cilia.model.Mediator;
 import fr.liglab.adele.cilia.model.impl.AdapterImpl;
 import fr.liglab.adele.cilia.model.impl.ConstModel;
-import fr.liglab.adele.cilia.model.impl.MediatorImpl;
 import fr.liglab.adele.cilia.runtime.Const;
 import fr.liglab.adele.cilia.util.FrameworkUtils;
 
@@ -40,7 +42,7 @@ public class CiliaCopierProcessor {
 	/**
 	 * The Cilia context.
 	 */
-	CiliaContainer ccontext;
+	CiliaContext ccontext;
 
 	BundleContext m_bundleContext;
 
@@ -57,117 +59,32 @@ public class CiliaCopierProcessor {
 	 * @return the same unchanged data.
 	 */
 	protected Data copy(Data data) {
-		try {
-			ccontext.getMutex().writeLock().acquire();
-		} catch (InterruptedException e) {
-		}
-		try {
-			if ("mediator".compareToIgnoreCase(String.valueOf(data
-					.getProperty("element"))) == 0) {
-				copyMediator(data);
 
-			} else if ("adapter".compareToIgnoreCase(String.valueOf(data
-					.getProperty("element"))) == 0) {
-				copyAdapter(data);
-			}
-		} finally {
-			ccontext.getMutex().writeLock().release();
-		}
+			copyMediator(data);
+
 		return data;
 	}
 
 	private void copyMediator(Data data) {
-		Chain chain = null;
-		Mediator mediatorSource, mediatorDest;
+		Architecture chain = null;
 		String chainId = String.valueOf(data.getProperty("chain"));
 		String mediatorIdSource = String.valueOf(data.getProperty("from"));
 		String mediatorIdDest = String.valueOf(data.getProperty("to"));
-		chain = ccontext.getChain(chainId);
 
-		chain = ccontext.getChain(chainId);
-		if (chain == null) {
-			logger.error("ChainImpl [{}] not found" + chainId);
-			return;
-		}
-		mediatorSource = ccontext.getChain(chainId).getMediator(
-				mediatorIdSource);
-		if (mediatorSource == null) {
-			logger.error("ComponentImpl [{}] not found in chain [{}]",
-					mediatorSource, chainId);
-			return;
-		}
-		mediatorDest = ccontext.getChain(chainId).getMediator(mediatorIdDest);
+		Builder builder = ccontext.getBuilder();
 
-		if (mediatorDest != null) {
-			logger.error("ComponentImpl [{}] in chain [{}]is already existing",
-					mediatorSource, chainId);
-			return;
+		try {
+			chain = builder.get(chainId);
+
+			chain.copy().id(mediatorIdSource).to(mediatorIdDest);
+
+			builder.done();
+
+		} catch (CiliaException e) {
+			e.printStackTrace();
 		}
 
-		Dictionary properties = mediatorSource.getProperties();
-		if (properties != null) {
-			properties.remove(ConstModel.PROPERTY_COMPONENT_ID);
-			properties.remove(ConstModel.PROPERTY_CHAIN_ID);
-			properties.remove(ConstModel.PROPERTY_LOCK_UNLOCK);
-		}
-		mediatorDest = new MediatorImpl(mediatorIdDest,
-				mediatorSource.getType(), mediatorSource.getNamespace(), null,null,
-				properties, chain);
-
-		logger.info("Command 'copy mediator' [{}] to [{}] ",
-				FrameworkUtils.makeQualifiedId(mediatorSource),
-				FrameworkUtils.makeQualifiedId(mediatorDest));
 	}
 
-	private void copyAdapter(Data data) {
-		Chain chain = null;
-		Adapter adapterSource, adapterDest;
-		String chainId = String.valueOf(data.getProperty("chain"));
-		String adapterIdSource = String.valueOf(data.getProperty("from"));
-		String adapterIdDest = String.valueOf(data.getProperty("to"));
-		chain = ccontext.getChain(chainId);
-
-		chain = ccontext.getChain(chainId);
-		if (chain == null) {
-			logger.error("ChainImpl [{}] not found" + chainId);
-			return;
-		}
-		adapterSource = ccontext.getChain(chainId).getAdapter(adapterIdSource);
-		if (adapterSource == null) {
-			logger.error("ComponentImpl [{}] not found in chain [{}]",
-					adapterIdSource, chainId);
-			return;
-		}
-		adapterDest = ccontext.getChain(chainId).getAdapter(adapterIdDest);
-
-		if (adapterDest != null) {
-			logger.error("ComponentImpl [{}] in chain [{}]is already existing",
-					adapterDest, chainId);
-			return;
-		}
-
-		/* Convertion Dictionary to Properties */
-		Dictionary dico = adapterSource.getProperties();
-		Properties properties = new Properties();
-
-		if (dico != null) {
-			dico.remove(ConstModel.PROPERTY_COMPONENT_ID);
-			dico.remove(ConstModel.PROPERTY_CHAIN_ID);
-			dico.remove(ConstModel.PROPERTY_LOCK_UNLOCK);
-			Enumeration e = dico.keys();
-			while (e.hasMoreElements()) {
-				Object key = (String) e.nextElement();
-				Object value = dico.get(key);
-				properties.put(key, value);
-			}
-		}
-		adapterDest = new AdapterImpl(adapterIdDest, adapterSource.getType(),
-				adapterSource.getNamespace(), null, properties, chain,
-				adapterSource.getPattern());
-
-		logger.info("Command 'copy adapter' [{}] to [{}] ",
-				FrameworkUtils.makeQualifiedId(adapterSource),
-				FrameworkUtils.makeQualifiedId(adapterDest));
-
-	}
+	
 }
