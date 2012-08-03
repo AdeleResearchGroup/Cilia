@@ -20,7 +20,7 @@ import java.util.Dictionary;
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project Team</a>
  *
  */
-public class CollectorImpl extends InternalComponent {
+public class CollectorImpl extends ConnectingComponent {
 
 	/**
 	 * @param id
@@ -28,9 +28,9 @@ public class CollectorImpl extends InternalComponent {
 	 * @param nspace
 	 * @param properties
 	 */
-	public CollectorImpl(String id, String type, String nspace,
+	public CollectorImpl(String id, String type, String nspace,String portname,
 			Dictionary properties) {
-		super(id, type, nspace, properties);
+		super(id, type, nspace, portname, properties);
 		// TODO Auto-generated constructor stub
 	}
 

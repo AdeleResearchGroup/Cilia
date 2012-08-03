@@ -188,7 +188,7 @@ public abstract class AbstractMediatorSpecification implements MediatorSpecifica
 	}
 	
 	public void setOutPort(String name, String type){
-		inports.put(name, new PortImpl(name, type, PortType.OUTPUT,  null));
+		outports.put(name, new PortImpl(name, type, PortType.OUTPUT,  null));
 	}
 	
 	/**

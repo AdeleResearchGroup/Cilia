@@ -41,9 +41,9 @@ public class BindingImpl extends ComponentImpl implements Binding{
 
     private volatile static long bindingIds = 0;
     
-    private volatile Component sender;
+    private volatile SenderImpl sender;
     
-    private volatile Component collector;
+    private volatile CollectorImpl collector;
     
     private final Object lockObject = new Object();
     /**
@@ -148,7 +148,7 @@ public class BindingImpl extends ComponentImpl implements Binding{
 	 * @param sender Sender representation model to add to the current mediator.
 	 * @return true if was successfully added, false if not.
 	 */
-	public boolean addSender(Component sender) {
+	public boolean addSender(SenderImpl sender) {
 		boolean result = false;
 		try {
 			synchronized (lockObject) {
@@ -166,7 +166,7 @@ public class BindingImpl extends ComponentImpl implements Binding{
 	 * @param senderId sender identificator.
 	 * @return the sender which contains the identificator, null if there is any sender with the given identificator.
 	 */
-	public Component getSender() {
+	public SenderImpl getSender() {
 		synchronized (lockObject) {
 			return  sender;
 		}
@@ -179,7 +179,7 @@ public class BindingImpl extends ComponentImpl implements Binding{
 	 * @param collector Collector model to add.
 	 * @return true if collector was successfully added, false if not.
 	 */
-	public boolean addCollector(Component collector) {
+	public boolean addCollector(CollectorImpl collector) {
 		boolean result = false;
 		try {
 			synchronized (lockObject) {
@@ -198,7 +198,7 @@ public class BindingImpl extends ComponentImpl implements Binding{
 	 * @param collectorId collector identificator.
 	 * @return the reference collector, null if any collector correspond to that identificator.
 	 */
-	public Component getCollector() {
+	public CollectorImpl getCollector() {
 		synchronized (lockObject) {
 			return collector;
 		}

@@ -49,6 +49,8 @@ public class CiliaHelper {
 
 
 	private OSGiHelper ohelper;
+	
+	private volatile static int initial = 0;
 
 	public CiliaHelper(BundleContext bc) {
 		ohelper = new OSGiHelper(bc);
@@ -144,15 +146,15 @@ public class CiliaHelper {
 			String firstMediatorWithPort, String lastMediatorWithPort) {
 		CiliaContext ccontext = (CiliaContext) ohelper.getServiceObject(
 				CiliaContext.class.getName(), null);
-		String id = chainId;
+		String id = chainId + "-" + "helper-" + initial++;
 		Builder builder = ccontext.getBuilder();
 		Architecture arch = null;
 		try {
 			arch = builder.get(chainId);
 			arch.create().adapter().type("cilia-adapter-helper")
-			.namespace(Const.CILIA_NAMESPACE).id("helper").configure().key("identifier").value(id);
-			arch.bind().from("helper:unique").to(firstMediatorWithPort);
-			arch.bind().from(lastMediatorWithPort).to("helper:unique");
+			.namespace(Const.CILIA_NAMESPACE).id(id).configure().key("identifier").value(id);
+			arch.bind().from(id+":unique").to(firstMediatorWithPort);
+			arch.bind().from(lastMediatorWithPort).to(id+":unique");
 			builder.done();
 		} catch (CiliaException e) {
 			e.printStackTrace();

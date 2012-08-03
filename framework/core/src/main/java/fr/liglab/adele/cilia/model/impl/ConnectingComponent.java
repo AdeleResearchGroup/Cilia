@@ -12,25 +12,37 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+/**
+ * 
+ */
 package fr.liglab.adele.cilia.model.impl;
 
 import java.util.Dictionary;
 
 /**
- * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project Team</a>
+ * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project
+ *         Team</a>
  *
  */
-public class SenderImpl extends ConnectingComponent {
+public class ConnectingComponent extends InternalComponent {
 
+	private final String portname;
+	/**
+	 * @return the portname
+	 */
+	public String getPortname() {
+		return portname;
+	}
 	/**
 	 * @param id
 	 * @param type
 	 * @param nspace
 	 * @param properties
 	 */
-	public SenderImpl(String id, String type, String nspace,
-			String portname, Dictionary properties) {
-		super(id, type, nspace, portname , properties);
+	public ConnectingComponent(String id, String type, String nspace, String portname,
+			Dictionary properties) {
+		super(id, type, nspace, properties);
+		this.portname = portname; 
 	}
 
 }

@@ -1,5 +1,5 @@
 <cilia>
-	<chain id="toto">
+	<chain id="replacerExample">
 		<mediators>
 			<mediator-instance id="enricher1" type="EnricherTest" >
 				<property name="enricher.content">
@@ -11,6 +11,12 @@
 					<item key="enricher" value="enricher2"/>
 				</property>
 			</mediator-instance>
+			<mediator-instance id="firstMediator" type="Mock" />
+			<mediator-instance id="lastMediator" type="Mock" />
 		</mediators>
+		<bindings>
+			<binding from="firstMediator:unique" to="enricher1:unique"/>
+			<binding from="enricher1:unique" to="lastMediator:unique"/>
+		</bindings>
 	</chain>
 </cilia>

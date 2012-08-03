@@ -97,8 +97,8 @@ public class BindingControllerImpl implements TrackerCustomizer {
 	private void createModels(ServiceReference ref) throws CiliaException {
 
 		CiliaBindingService cbs = null;
-		Component collector = null;
-		Component sender = null;
+		CollectorImpl collector = null;
+		SenderImpl sender = null;
 		String bindingId = null;
 		cbs = (CiliaBindingService) bcontext.getService(ref);
 
@@ -146,14 +146,14 @@ public class BindingControllerImpl implements TrackerCustomizer {
 		if (collectorModel != null) {
 			colProps.put("cilia.collector.identifier", bindingId);
 			colProps.put("cilia.collector.port", modelBinding.getTargetPort().getName());
-			collector = new CollectorImpl(modelBinding.getTargetPort().getName(),
-					collectorModel.getType(),null,  colProps);
+			collector = new CollectorImpl(bindingId,
+					collectorModel.getType(),null,modelBinding.getTargetPort().getName(),   colProps);
 		}
 		if (senderModel != null) {
 			senProps.put("cilia.sender.identifier", bindingId);
 			senProps.put("cilia.sender.port", modelBinding.getSourcePort().getName());
-			sender = new SenderImpl(modelBinding.getSourcePort().getName(),
-					senderModel.getType(),null, senProps);
+			sender = new SenderImpl(bindingId, 
+					senderModel.getType(),null,modelBinding.getSourcePort().getName(), senProps);
 		}
 		addModels(sender, collector);
 	}
@@ -166,7 +166,7 @@ public class BindingControllerImpl implements TrackerCustomizer {
 	 * @param collectorm
 	 *            the collector model.
 	 */
-	private void addModels(Component senderm, Component collectorm) {
+	private void addModels(SenderImpl senderm, CollectorImpl collectorm) {
 		MediatorComponent sm = modelBinding.getSourceMediator();
 		MediatorComponent tm = modelBinding.getTargetMediator();
 
@@ -205,12 +205,12 @@ public class BindingControllerImpl implements TrackerCustomizer {
 	public void stop() {
 		unregisterTracker();
 		if (sourceController != null) {
-			Component s = modelBinding.getSender(); 
+			SenderImpl s = modelBinding.getSender(); 
 			modelBinding.addSender(null);
 			sourceController.removeSender(s);
 		}
 		if (targetController != null) {
-			Component c = modelBinding.getCollector();
+			CollectorImpl c = modelBinding.getCollector();
 			modelBinding.addCollector(null);
 			targetController.removeCollector(c);
 		}

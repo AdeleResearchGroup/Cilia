@@ -35,14 +35,15 @@ import org.ops4j.pax.exam.junit.JUnit4TestRunner;
 import org.ops4j.pax.exam.junit.JUnitOptions;
 import org.osgi.framework.BundleContext;
 
+import fr.liglab.adele.cilia.CiliaContext;
 import fr.liglab.adele.cilia.builder.Architecture;
 import fr.liglab.adele.cilia.builder.Builder;
 import fr.liglab.adele.cilia.exceptions.BuilderConfigurationException;
 import fr.liglab.adele.cilia.exceptions.BuilderException;
 import fr.liglab.adele.cilia.exceptions.BuilderPerformerException;
 import fr.liglab.adele.cilia.exceptions.CiliaException;
+import fr.liglab.adele.cilia.helper.CiliaHelper;
 import fr.liglab.adele.cilia.model.CiliaContainer;
-import fr.liglab.adele.cilia.CiliaContext;
 
 /**
  * 
@@ -57,10 +58,13 @@ public class BuilderTest {
 	private BundleContext context;
 
 	private OSGiHelper osgi;
+	
+	private CiliaHelper cilia;
 
 	@Before
 	public void setUp() {
 		osgi = new OSGiHelper(context);
+		cilia = new CiliaHelper(context);
 	}
 
 	@After
@@ -101,7 +105,7 @@ public class BuilderTest {
 	 */
 	@Test
 	public void testBuilder() {
-		waitToInitialize();
+		CiliaHelper.waitSomeTime(2000);
 		Builder builder = getBuilder();
 		//Builder builder = null;
 		Assert.assertNotNull(builder);
@@ -112,7 +116,7 @@ public class BuilderTest {
 	 */
 	@Test
 	public void createChain(){
-		waitToInitialize();
+		CiliaHelper.waitSomeTime(2000);
 		try {
 			createNewChain("chain-id");
 		} catch (CiliaException e) {
@@ -124,7 +128,7 @@ public class BuilderTest {
 	 */
 	@Test
 	public void createTwoChains(){
-		waitToInitialize();
+		CiliaHelper.waitSomeTime(2000);
 		try {
 			createNewChain("chain-id");
 			createNewChain("chain-id2");
@@ -139,7 +143,7 @@ public class BuilderTest {
 	 */
 	@Test
 	public void createExistantChain(){
-		waitToInitialize();
+		CiliaHelper.waitSomeTime(2000);
 		try {
 			String id = "myId";
 			createNewChain(id);
@@ -156,7 +160,7 @@ public class BuilderTest {
 	 */
 	public @Test
 	void createInvalidChain() {
-		waitToInitialize();
+		CiliaHelper.waitSomeTime(2000);
 		Builder builder = getBuilder();
 		try {
 			Architecture arch = builder.get("toto");
@@ -170,7 +174,7 @@ public class BuilderTest {
 	 */
 	@Test 
 	public void getAnInExistanBuilderChain(){
-		waitToInitialize();
+		CiliaHelper.waitSomeTime(2000);
 		try {
 			Builder builder = getBuilder();
 			Architecture arch = builder.create("firstChain");
@@ -185,7 +189,7 @@ public class BuilderTest {
 	 */
 	@Test
 	public void testBuilderInvalidity() {
-		waitToInitialize();
+		CiliaHelper.waitSomeTime(2000);
 		Builder builder = getBuilder();
 		Architecture arch = null;
 		try {
@@ -220,7 +224,7 @@ public class BuilderTest {
 
 	@Test
 	public void cannotCreateMediatorWithoutId() {
-		waitToInitialize();
+		CiliaHelper.waitSomeTime(2000);
 		Builder builder = getBuilder();
 
 		Architecture arch;
@@ -235,7 +239,7 @@ public class BuilderTest {
 
 	@Test
 	public void cannotCreateComponentWithExistantId() {
-		waitToInitialize();
+		CiliaHelper.waitSomeTime(2000);
 		Builder builder = getBuilder();
 		try{
 			Architecture arch = builder.create("chain-1");
@@ -247,7 +251,7 @@ public class BuilderTest {
 	}
 	@Test
 	public void cannotCreateComponentWithExistantId2() {
-		waitToInitialize();
+		CiliaHelper.waitSomeTime(2000);
 		Builder builder = getBuilder();
 		try{
 			Architecture arch = builder.create("chain-1");
@@ -259,7 +263,7 @@ public class BuilderTest {
 	}
 	@Test
 	public void cannotCreateComponentWithExistantId3() {
-		waitToInitialize();
+		CiliaHelper.waitSomeTime(2000);
 		Builder builder = getBuilder();
 		try{
 			Architecture arch = builder.create("chain-1");
@@ -271,7 +275,7 @@ public class BuilderTest {
 	}
 	@Test
 	public void cannotCreateComponentWithExistantId4() {
-		waitToInitialize();
+		CiliaHelper.waitSomeTime(2000);
 		Builder builder = getBuilder();
 		try  {
 			Architecture arch = builder.create("chain-1");
@@ -283,7 +287,7 @@ public class BuilderTest {
 
 	@Test
 	public void cannotBindInexistantComponents() {
-		waitToInitialize();
+		CiliaHelper.waitSomeTime(2000);
 		Builder builder = getBuilder();
 		try{
 			Architecture arch = builder.create("chain-1");
@@ -294,20 +298,7 @@ public class BuilderTest {
 			Assert.fail("Must throw BuilderPerformerException");
 		}catch (CiliaException ex) {}
 	}
-	@Test
-	public void replaceMediator(){
-		waitToInitialize();
-		Builder builder = getBuilder();
-		try{
-			Architecture arch = builder.create("chain-1");
-			arch.create().mediator().type("Mock").id("id1");
-			arch.create().mediator().type("Mock").id("id2");
-			arch.create().mediator().type("Mock").id("id2");
-			arch.bind().from("id1:unique").to("id2:unique");
-			builder.done();
-			
-		}catch (CiliaException ex) {}
-	}
+
 
 	public void createNewChain(String id) throws BuilderException, BuilderPerformerException  {
 		Builder builder = getBuilder();
@@ -361,13 +352,5 @@ public class BuilderTest {
 		osgi.getServiceObject(CiliaContainer.class.getName(), null);
 		CiliaContext ccontext = (CiliaContext)osgi.getServiceObject(CiliaContext.class.getName(), null);
 		return ccontext.getBuilder();
-	}
-
-	public void waitToInitialize() {
-		try {
-			Thread.sleep(2500);// wait to be registered
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
 	}
 }

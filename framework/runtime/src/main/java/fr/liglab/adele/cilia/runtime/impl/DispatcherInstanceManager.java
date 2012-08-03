@@ -89,4 +89,8 @@ public class DispatcherInstanceManager extends ConstituentInstanceManager {
 		return (IDispatcher)this.constituant.getObject();
 	}
 	
+	public CiliaInstanceWrapper addComponent(String port, Component component, boolean start) {
+		return super.addComponent(port, component, start);
+	}
+	
 }

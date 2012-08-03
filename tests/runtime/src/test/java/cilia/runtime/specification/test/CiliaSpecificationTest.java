@@ -111,16 +111,6 @@ public class CiliaSpecificationTest {
 		return options(JUnitOptions.mockitoBundles());
 	}
 
-	// Verify the service is present
-	@Test
-	public void validateService() {
-		CiliaHelper.waitSomeTime(2000);
-		ServiceReference sr[] = null;
-		sr = osgi.getServiceReferences(CiliaContext.class.getName(), null);
-		assertNotNull(sr[0]);
-		CiliaContext ccontext = (CiliaContext) context.getService(sr[0]);
-		assertNotNull(ccontext);
-	}
 
 	public CiliaContext getCiliaContextService() {
 		ServiceReference sr[] = null;

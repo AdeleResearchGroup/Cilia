@@ -37,14 +37,23 @@ import fr.liglab.adele.cilia.model.CiliaContainer;
  */
 public class ArchitectureImpl implements Architecture {
 
-	private CiliaContainer container;
-	
-	protected CiliaContext ccontext;
-
 	private int action = Architecture.CREATE;
 	private String chainId = null;
 	private volatile boolean isValid = false;
-	private Builder builder = null;
+	/**
+	 * @return the isValid
+	 */
+	public boolean isValid() {
+		return isValid;
+	}
+
+	/**
+	 * @param isValid the isValid to set
+	 */
+	public void setValid(boolean isValid) {
+		this.isValid = isValid;
+	}
+
 
 	private List bindings = new ArrayList();
 	private List unbindings = new ArrayList();
@@ -59,13 +68,11 @@ public class ArchitectureImpl implements Architecture {
 	 * @param chainid
 	 * @param creating
 	 */
-	protected ArchitectureImpl(CiliaContainer cc, Builder builder, String chainid,
+	protected ArchitectureImpl(String chainid,
 			int creating) {
-		container = cc;
 		setChainId(chainid);
 		action = creating;
 		isValid = true;
-		this.builder = builder;
 	}
 
 	/*
@@ -134,20 +141,9 @@ public class ArchitectureImpl implements Architecture {
 	}
 	
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see fr.liglab.adele.cilia.builder.Architecture#done()
-	 */
-	protected Builder done() throws BuilderPerformerException, BuilderException {
-		checkValidation();
-		isValid = false;
-		BuilderPerformer perf = new BuilderPerformer(this, container);
-		perf.perform();
-		return builder;
-	}
 
-	private void checkValidation() throws BuilderException {
+
+	protected void checkValidation() throws BuilderException {
 		if (!isValid) {
 			throw new BuilderException(
 					"Unable to build in an invalid builder configuration in " + getChainId());

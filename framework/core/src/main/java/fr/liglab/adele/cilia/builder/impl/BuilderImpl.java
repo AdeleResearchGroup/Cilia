@@ -14,6 +14,7 @@
  */
 package fr.liglab.adele.cilia.builder.impl;
 
+import fr.liglab.adele.cilia.CiliaContext;
 import fr.liglab.adele.cilia.builder.Architecture;
 import fr.liglab.adele.cilia.builder.Builder;
 import fr.liglab.adele.cilia.exceptions.BuilderException;
@@ -29,10 +30,13 @@ public class BuilderImpl implements Builder {
 
 	CiliaContainer container;
 
+	CiliaContext context;
+
 	ArchitectureImpl architecture = null;
 
-	public BuilderImpl(CiliaContainer container) {
+	public BuilderImpl(CiliaContext context, CiliaContainer container) {
 		this.container = container;
+		this.context = context;
 	}
 
 
@@ -49,7 +53,7 @@ public class BuilderImpl implements Builder {
 		if (architecture != null) {
 			throw new BuilderException("Builder with existing configuration");
 		} else {
-			architecture = new ArchitectureImpl(container, this, chainId, Architecture.CREATE);
+			architecture = new ArchitectureImpl(chainId, Architecture.CREATE);
 		}
 		return architecture;
 	}
@@ -68,7 +72,7 @@ public class BuilderImpl implements Builder {
 			throw new BuilderException("There is a Builder Configuration for a Chain with id :" + ((ArchitectureImpl)architecture).getChainId());
 		}
 		if (architecture == null) {
-			architecture =  new ArchitectureImpl(container, this, chainId, Architecture.MODIFY);
+			architecture =  new ArchitectureImpl(chainId, Architecture.MODIFY);
 		}
 		return architecture;
 	}
@@ -83,7 +87,11 @@ public class BuilderImpl implements Builder {
 			if (architecture == null) {
 				throw new BuilderException("Unable to build an invalid architecture chain: Architecture is null");
 			}
-			((ArchitectureImpl)architecture).done();
+			((ArchitectureImpl)architecture).checkValidation();
+			//Change validation, it cant' be modified.
+			((ArchitectureImpl)architecture).setValid(false);
+			BuilderPerformer perf = new BuilderPerformer(architecture, container, context);
+			perf.perform();
 			return this;
 		}finally{
 			container.getMutex().writeLock().release();
@@ -119,7 +127,7 @@ public class BuilderImpl implements Builder {
 			throw new BuilderException("There is a Builder Configuration for a Chain with id :" + ((ArchitectureImpl)architecture).getChainId());
 		}
 		if (architecture == null) {
-			architecture =  new ArchitectureImpl(container, this, chainId, Architecture.REMOVE);
+			architecture =  new ArchitectureImpl(chainId, Architecture.REMOVE);
 		}
 		return this;
 	}

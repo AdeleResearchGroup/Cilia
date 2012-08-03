@@ -41,14 +41,16 @@ import fr.liglab.adele.cilia.model.impl.PatternType;
 public class BuilderPerformer {
 
 	private CiliaContainer container;
+	private CiliaContext ccontext;
 	private ArchitectureImpl architecture;
 	private ChainImpl chain;
 
 	/**
 	 * @param architectureImpl
 	 */
-	protected BuilderPerformer(ArchitectureImpl arch, CiliaContainer context) {
-		container = context;
+	protected BuilderPerformer(ArchitectureImpl arch, CiliaContainer cont, CiliaContext context) {
+		container = cont;
+		this.ccontext= context; 
 		architecture = arch;
 	}
 
@@ -215,13 +217,15 @@ public class BuilderPerformer {
 		}
 		/* Now data is injected */
 		try {
-			architecture.ccontext.getApplicationRuntime().copyData(from, to);
+			ccontext.getApplicationRuntime().copyData(from, to);
 		} catch (CiliaIllegalParameterException e) {
 			throw new BuilderPerformerException(e.getMessage());
 		}
 		//we unlock mediation execution
-		((MediatorComponentImpl)from).unLockRuntime();
-		((MediatorComponentImpl)to).unLockRuntime();
+		finally {
+			((MediatorComponentImpl)from).unLockRuntime();
+			((MediatorComponentImpl)to).unLockRuntime();
+		}
 	}
 
 	private void replaceOutBinding(MediatorComponent mediator, ReplacerImpl rep, Binding binding) throws BuilderPerformerException {
@@ -232,7 +236,9 @@ public class BuilderPerformer {
 		} else { //if not, we use the same port name as the previous mediator.
 			portname = oldPortname;
 		}
+		System.out.println("Replacing Out Binding");
 		chain.bind(mediator.getOutPort(portname), binding.getTargetMediator().getInPort(binding.getTargetPort().getName()));
+		System.out.println("Binding from: " + mediator.getId()+":"+portname + " To: " + binding.getTargetMediator().getId()+":"+binding.getTargetPort().getName() );
 		chain.unbind(binding);
 	}
 
@@ -244,20 +250,26 @@ public class BuilderPerformer {
 		} else { //if not, we use the same port name as the previous mediator.
 			portname = oldPortname;
 		}
-		chain.bind(binding.getSourceMediator().getOutPort(binding.getSourcePort().getName()), mediator.getInPort(portname)); 
+		System.out.println("Replacing IN Binding");
+		chain.bind(binding.getSourceMediator().getOutPort(binding.getSourcePort().getName()), mediator.getInPort(portname));
+		System.out.println("Binding from: " + binding.getSourceMediator().getId()+":" + binding.getSourcePort().getName() + " To: " + mediator.getId()+":"+portname );
 		chain.unbind(binding);
 	}
 
 
 	private MediatorComponent getMediatorComponent(String id)
 			throws BuilderPerformerException {
+		if (id == null){
+			throw new BuilderPerformerException(
+					"Unable to retrieve ID: " + id);
+		}
 		MediatorComponent medComponent = chain.getMediator(id);
 		if (medComponent == null) {
 			medComponent = chain.getAdapter(id);
 		}
 		if (medComponent == null) {
 			throw new BuilderPerformerException(
-					"Unable to retrieve to perform bin; ID: " + id);
+					"Unable to retrieve ID: " + id);
 		}
 		return medComponent;
 	}

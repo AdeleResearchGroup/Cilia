@@ -179,18 +179,6 @@ public class DispatcherHandler extends PrimitiveHandler implements IDispatcherHa
 	}
 
 
-	private String createSenderFilter(String type) {
-		StringBuffer filter = new StringBuffer();
-		filter.append("(&");
-		filter.append("(");
-		filter.append("sender.name=");
-		filter.append(type);
-		filter.append(")");
-		filter.append("(factory.state=1)");
-		filter.append(")");
-		return filter.toString();
-	}
-
 	private void subscribeProcesor(ProcessorMetadata dm) {
 		m_methodProcessMetadata = getPojoMetadata().getMethod(dm.getMethod(),
 				dm.getParameterDataType());
@@ -287,12 +275,12 @@ public class DispatcherHandler extends PrimitiveHandler implements IDispatcherHa
 			List senders = new ArrayList(pojoList);
 			Iterator it = senders.iterator();
 			int iteration = 0;
+			//System.out.println("DispatcherHandler: Sending : " + senderName +" -->"+ it.hasNext());
 			while (it.hasNext()) {
 				CiliaInstance ci = (CiliaInstance) it.next();
 				ISender msender = (ISender) ci.getObject();
-				
 				if (msender != null) {
-					logger.debug("[" + (iteration++) + "]Sending using:"
+					logger.warn("[" + (iteration++) + "]Sending using:"
 								+ ci.getName());
 					if (synchronous == true) {
 						msender.send(data);

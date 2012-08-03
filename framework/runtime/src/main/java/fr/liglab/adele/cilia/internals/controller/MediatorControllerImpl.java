@@ -31,8 +31,10 @@ import fr.liglab.adele.cilia.model.Component;
 import fr.liglab.adele.cilia.model.MediatorComponent;
 import fr.liglab.adele.cilia.model.Port;
 import fr.liglab.adele.cilia.model.impl.BindingImpl;
+import fr.liglab.adele.cilia.model.impl.CollectorImpl;
 import fr.liglab.adele.cilia.model.impl.ConstModel;
 import fr.liglab.adele.cilia.model.impl.MediatorComponentImpl;
+import fr.liglab.adele.cilia.model.impl.SenderImpl;
 import fr.liglab.adele.cilia.model.impl.UpdateActions;
 import fr.liglab.adele.cilia.model.impl.UpdateEvent;
 import fr.liglab.adele.cilia.runtime.CiliaInstance;
@@ -173,7 +175,7 @@ public class MediatorControllerImpl implements Observer {
 	private void createCollectorInstances() {
 		BindingImpl[] bs = (BindingImpl[]) mediatorModel.getInBindings();
 		for (int i = 0; i < bs.length; i++) {
-			Component collector = bs[i].getCollector();
+			CollectorImpl collector = bs[i].getCollector();
 			if (collector != null) {
 				createCollector(collector);
 			}
@@ -186,7 +188,7 @@ public class MediatorControllerImpl implements Observer {
 	private void createSenderInstances() {
 		BindingImpl[] bs = (BindingImpl[]) mediatorModel.getOutBindings();
 		for (int i = 0; i < bs.length; i++) {
-			Component sender = bs[i].getSender();
+			SenderImpl sender = bs[i].getSender();
 			if (sender != null) {
 				createSender(sender);
 			}
@@ -244,7 +246,7 @@ public class MediatorControllerImpl implements Observer {
 	 * @param collector
 	 *            collector model to add to the mediator.
 	 */
-	public void createCollector(Component collector) {
+	public void createCollector(CollectorImpl collector) {
 		boolean toAdd = true;
 		synchronized (lockObject) {
 			if (!addedCollectors.contains(collector)) {
@@ -256,7 +258,7 @@ public class MediatorControllerImpl implements Observer {
 				toAdd = false;
 			}
 			if (toAdd) { // create
-				getMediatorManager().addCollector(collector.getId(), collector);
+				getMediatorManager().addCollector(collector.getPortname(), collector);
 				//scheduler.addCollector(collectorType, portName, properties);
 			}
 		}
@@ -268,7 +270,7 @@ public class MediatorControllerImpl implements Observer {
 	 * @param senderm
 	 *            the sender model added to the mediator model.
 	 */
-	public void createSender(Component senderm) {
+	public void createSender(SenderImpl senderm) {
 		boolean toAdd = true;
 		synchronized (lockObject) {
 
@@ -281,7 +283,7 @@ public class MediatorControllerImpl implements Observer {
 				toAdd = false;
 			}
 			if (toAdd) { // create
-				getMediatorManager().addSender(senderm.getId(), senderm);
+				getMediatorManager().addSender(senderm.getPortname(), senderm);
 			}
 		}
 	}
@@ -292,15 +294,14 @@ public class MediatorControllerImpl implements Observer {
 	 * @param collector
 	 *            Collector to remove.
 	 */
-	public void removeCollector(Component collector) {
+	public void removeCollector(CollectorImpl collector) {
 		synchronized (lockObject) {
 			if (collector != null) {
-				String id = (String) collector.getProperty("cilia.collector.identifier");
-				String port = (String) collector.getProperty("cilia.collector.port");
+				
 				addedCollectors.remove(collector);
 				MediatorComponentManager mm = getMediatorManager();
 				if (mm != null){
-					mm.removeCollector(port, collector);
+					mm.removeCollector(collector.getPortname(), collector);
 				}
 			}
 		}
@@ -312,15 +313,14 @@ public class MediatorControllerImpl implements Observer {
 	 * @param sender
 	 *            Sender to remove.
 	 */
-	public void removeSender(Component sender) {
+	public void removeSender(SenderImpl sender) {
 		synchronized (lockObject) {
 			if (sender != null) {
-				String id = (String) sender.getProperty("cilia.sender.identifier");
-				String port = (String) sender.getProperty("cilia.sender.port");
+				
 				addedSenders.remove(sender);
 				MediatorComponentManager mm = getMediatorManager();
 				if (mm != null){
-					mm.removeSender(port, sender);
+					mm.removeSender(sender.getPortname(), sender);
 				}
 			}
 		}

@@ -167,7 +167,7 @@ public class CiliaInstanceWrapper extends Observable implements CiliaInstance,
 	public int getState() {
 		synchronized (lockObject) {
 			if (componentInstance == null) {
-				System.out.println("Component Instance is null");
+				log.debug("Component Instance is null: " + getName());
 				return CiliaInstance.INVALID;
 			}
 			return componentInstance.getState();
@@ -245,8 +245,8 @@ public class CiliaInstanceWrapper extends Observable implements CiliaInstance,
 				componentInstance.removeInstanceStateListener(this);
 				componentInstance.stop();
 				componentInstance.dispose();
+				componentInstance = null;
 			}
-			componentInstance = null;
 		}
 	}
 
@@ -261,7 +261,7 @@ public class CiliaInstanceWrapper extends Observable implements CiliaInstance,
 
 	public void stateChanged(ComponentInstance instance, int newState) {
 		refresh();
-		log.debug("state changed " + m_instanceName);
+		log.debug("state changed " + getName());
 	}
 
 	public ComponentInstance getInstanceManager() {

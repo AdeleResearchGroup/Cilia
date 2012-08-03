@@ -84,7 +84,7 @@ public class CiliaContextImpl implements CiliaContext {
 	}
 
 	public Builder getBuilder() {
-		return new BuilderImpl(container);
+		return new BuilderImpl(this, container);
 	}
 
 

@@ -77,9 +77,9 @@ public class CreatorThread implements Runnable {
 		MediatorControllerImpl controller = pair.getController();
 		Component comp = pair.getModel();
 		if (comp instanceof SenderImpl) {
-			controller.createSender(comp);
+			controller.createSender((SenderImpl)comp);
 		} else if (comp instanceof CollectorImpl) {
-			controller.createCollector(comp);
+			controller.createCollector((CollectorImpl)comp);
 		}
 	}
 

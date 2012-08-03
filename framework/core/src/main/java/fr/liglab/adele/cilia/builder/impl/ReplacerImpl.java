@@ -44,7 +44,7 @@ public class ReplacerImpl implements Replacer, ReplacerConfigurator, PortReplace
 	}
 
 	public ReplacerConfigurator to(String id) {
-		this.to = to;  
+		this.to = id;  
 		return this;
 	}
 

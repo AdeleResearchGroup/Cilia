@@ -91,7 +91,7 @@ public class AdapterHelper extends AbstractAsyncIOAdapter implements MediatorTes
 	 */
 	public Data[] getReceivedData() {
 		List<Data> data = super.getData();
-		return (Data[]) data.toArray();
+		return (Data[]) data.toArray(new Data[0]);
 	}
 	
 	

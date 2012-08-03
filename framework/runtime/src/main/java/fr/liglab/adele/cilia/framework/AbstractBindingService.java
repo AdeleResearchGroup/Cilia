@@ -65,7 +65,7 @@ public abstract class AbstractBindingService implements CiliaBindingService {
         if (props == null) {
             props = new Properties();
         }
-        Component collector = new CollectorImpl(collectorType+identificator++, collectorType,collectorNS, props);
+        Component collector = new CollectorImpl(collectorType+identificator++, collectorType,collectorNS,null, props);
         return collector;
     }
 
@@ -79,7 +79,7 @@ public abstract class AbstractBindingService implements CiliaBindingService {
         if (props == null) {
             props = new Properties();
         }
-        Component sender = new SenderImpl(senderType+identificator++, senderType, senderNS, props);
+        Component sender = new SenderImpl(senderType+identificator++, senderType, senderNS,null,  props);
         return sender;
     }
     

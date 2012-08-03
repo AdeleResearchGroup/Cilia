@@ -1,18 +1,4 @@
-/*
- * Copyright Adele Team LIG
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-package cilia.runtime.parser.test;
+package cilia.runtime.services.test;
 
 import static org.junit.Assert.assertNotNull;
 import static org.ops4j.pax.exam.CoreOptions.felix;
@@ -34,16 +20,13 @@ import org.ops4j.pax.exam.junit.JUnitOptions;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 
+import fr.liglab.adele.cilia.CiliaContext;
 import fr.liglab.adele.cilia.helper.CiliaHelper;
 import fr.liglab.adele.cilia.util.ChainParser;
+import fr.liglab.adele.cilia.util.CiliaFileManager;
 
-
-/**
- * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project Team</a>
- *
- */
 @RunWith(JUnit4TestRunner.class)
-public class ChainParserTest {
+public class ServiceValidationTest {
 
 	@Inject
 	private BundleContext context;
@@ -89,7 +72,27 @@ public class ChainParserTest {
 	}
 	
 	@Test
-	public void validateService() {
+	public void CiliaContextvalidation() {
+		CiliaHelper.waitSomeTime(2000);
+		ServiceReference sr[] = null;
+		sr = osgi.getServiceReferences(CiliaContext.class.getName(), null);
+		assertNotNull(sr[0]);
+		CiliaContext ccontext = (CiliaContext) context.getService(sr[0]);
+		assertNotNull(ccontext);
+	}
+	
+	@Test
+	public void CiliaFileManagervalidation() {
+		CiliaHelper.waitSomeTime(2000);
+		ServiceReference sr[] = null;
+		sr = osgi.getServiceReferences (CiliaFileManager.class.getName(), null);
+		assertNotNull(sr[0]);
+		CiliaFileManager parser = (CiliaFileManager) context.getService(sr[0]);
+		assertNotNull(parser);
+	}
+	
+	@Test
+	public void ChainParservalidation() {
 		CiliaHelper.waitSomeTime(2000);
 		ServiceReference sr[] = null;
 		sr = osgi.getServiceReferences (ChainParser.class.getName(), null);
