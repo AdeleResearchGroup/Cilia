@@ -18,7 +18,7 @@ public class AggregatorProcessor extends AbstractAggregator {
 
 	public List aggregate(List dataSet){
 		List nDataSet=new ArrayList();
-		Data data = new Data(dataSet,"aggregate-data");
+		Data data = new Data(dataSet,"aggregated-data");
 		nDataSet.add(data);
 		return nDataSet;
 	}
