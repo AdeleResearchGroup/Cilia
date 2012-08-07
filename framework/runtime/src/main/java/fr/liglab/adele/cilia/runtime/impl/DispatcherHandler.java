@@ -280,7 +280,7 @@ public class DispatcherHandler extends PrimitiveHandler implements IDispatcherHa
 				CiliaInstance ci = (CiliaInstance) it.next();
 				ISender msender = (ISender) ci.getObject();
 				if (msender != null) {
-					logger.warn("[" + (iteration++) + "]Sending using:"
+					logger.debug("[" + (iteration++) + "]Sending using:"
 								+ ci.getName());
 					if (synchronous == true) {
 						msender.send(data);
