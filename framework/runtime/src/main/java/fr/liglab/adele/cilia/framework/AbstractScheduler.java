@@ -43,12 +43,7 @@ public abstract class AbstractScheduler implements IScheduler {
 		
 	}
 
-	public void notifyData(Data data) {
-		if (logger.isTraceEnabled()) {
-			logger.trace("notify data " + data);
-		}
-		process(Collections.singletonList(data));
-	}
+	public abstract void notifyData(Data data) ;
 
 	public void process(List dataSet) {
 		if (scheduler == null) {
