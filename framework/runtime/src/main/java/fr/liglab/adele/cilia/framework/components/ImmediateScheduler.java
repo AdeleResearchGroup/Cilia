@@ -65,15 +65,7 @@ public class ImmediateScheduler extends AbstractScheduler {
 	public List getSourcesIds() {
 		return scheduler.getSourcesIds();
 	}
-/*
-	public void addCollector(String collectorType, String collectorId,
-			Dictionary dictionary) {
-		if (logger.isDebugEnabled()) {
-			logger.debug("Add collector '" + collectorType + "'");
-		}
-		scheduler.addCollector(collectorType, collectorId, dictionary);
-	}
-*/
+
 	public void fireEvent(Map map) {
 		logger.info("fireEvent " + map);
 		if (scheduler != null)
