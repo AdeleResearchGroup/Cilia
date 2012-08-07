@@ -22,21 +22,25 @@ import java.io.OutputStream;
 import java.net.URL;
 import java.util.Dictionary;
 
+import junit.framework.Assert;
+
 import org.apache.felix.ipojo.test.helpers.OSGiHelper;
 import org.osgi.framework.BundleContext;
 
+import fr.liglab.adele.cilia.ApplicationRuntime;
 import fr.liglab.adele.cilia.CiliaContext;
 import fr.liglab.adele.cilia.builder.Architecture;
 import fr.liglab.adele.cilia.builder.Builder;
 import fr.liglab.adele.cilia.exceptions.CiliaException;
 import fr.liglab.adele.cilia.exceptions.CiliaIllegalParameterException;
+import fr.liglab.adele.cilia.exceptions.CiliaIllegalStateException;
 import fr.liglab.adele.cilia.framework.ICollector;
+import fr.liglab.adele.cilia.helper.impl.ProcessorHelperImpl;
 import fr.liglab.adele.cilia.model.Adapter;
 import fr.liglab.adele.cilia.model.Chain;
 import fr.liglab.adele.cilia.model.Mediator;
 import fr.liglab.adele.cilia.runtime.CiliaInstance;
 import fr.liglab.adele.cilia.runtime.CiliaInstanceWrapper;
-import fr.liglab.adele.cilia.runtime.Const;
 import fr.liglab.adele.cilia.util.CiliaFileManager;
 
 /**
@@ -48,7 +52,9 @@ import fr.liglab.adele.cilia.util.CiliaFileManager;
 public class CiliaHelper {
 
 
-	private OSGiHelper ohelper;
+	protected OSGiHelper ohelper;
+	
+	private static final String NAMESPACE = "fr.liglab.adele.cilia.test";
 	
 	private volatile static int initial = 0;
 
@@ -115,7 +121,7 @@ public class CiliaHelper {
 		try {
 			arch = builder.get(chainId);
 			arch.create().adapter().type("cilia-adapter-helper")
-			.namespace(Const.CILIA_NAMESPACE).id(id).configure().key("identifier").value(id);
+			.namespace(NAMESPACE).id(id).configure().key("identifier").value(id);
 			for (int i = 0; i < inputports.length; i++) {
 				arch.bind().from("helper:unique")
 				.to(mediator + ":" + inputports[i]);
@@ -152,7 +158,7 @@ public class CiliaHelper {
 		try {
 			arch = builder.get(chainId);
 			arch.create().adapter().type("cilia-adapter-helper")
-			.namespace(Const.CILIA_NAMESPACE).id(id).configure().key("identifier").value(id);
+			.namespace(NAMESPACE).id(id).configure().key("identifier").value(id);
 			arch.bind().from(id+":unique").to(firstMediatorWithPort);
 			arch.bind().from(lastMediatorWithPort).to(id+":unique");
 			builder.done();
@@ -189,7 +195,18 @@ public class CiliaHelper {
 		return new CollectorHelper(ic);
 	}
 
-	public void load(URL url){
+	public ProcessorHelper getProcessorHelper(String processorname, String processornamespace){
+		ProcessorHelperImpl proc = new ProcessorHelperImpl(this, processorname, processornamespace);
+		try {
+			proc.start();
+		} catch (CiliaException e) {
+			e.printStackTrace();
+			return null;
+		}
+		return proc;
+	}
+	
+	public void load(URL url) {
 		InputStream fis = null;
 		try {
 			fis = url.openStream();
@@ -220,8 +237,28 @@ public class CiliaHelper {
 		System.out.println("chain loaded");
 	}
 
+	public BundleContext getBundleContext(){
+		return ohelper.getContext();
+	}
+	
 	public Builder getBuilder(){
 		return getCiliaContext().getBuilder();
+	}
+	
+	public ApplicationRuntime getApplicationRuntime() {
+		return getCiliaContext().getApplicationRuntime();
+	}
+	
+	public void startChain(String id){
+		try {
+			getCiliaContext().getApplicationRuntime().startChain(id);
+		} catch (CiliaIllegalParameterException e) {
+			e.printStackTrace();
+			Assert.fail("Unable to start Chain: " +  id);
+		} catch (CiliaIllegalStateException e) {
+			e.printStackTrace();
+			Assert.fail("Unable to start Chain: " +  id);
+		}
 	}
 	
 	public void unload(String url){
@@ -254,6 +291,10 @@ public class CiliaHelper {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	public OSGiHelper getOSGIHelper() {
+		return ohelper;
 	}
 	
 }
