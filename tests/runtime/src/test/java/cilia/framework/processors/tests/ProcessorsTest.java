@@ -23,6 +23,7 @@ import static org.ops4j.pax.exam.CoreOptions.options;
 import static org.ops4j.pax.exam.CoreOptions.provision;
 
 import java.net.URL;
+import java.util.List;
 
 import junit.framework.Assert;
 
@@ -42,6 +43,7 @@ import org.osgi.framework.BundleContext;
 import fr.liglab.adele.cilia.Data;
 import fr.liglab.adele.cilia.helper.CiliaHelper;
 import fr.liglab.adele.cilia.helper.MediatorTestHelper;
+import fr.liglab.adele.cilia.helper.ProcessorHelper;
 import fr.liglab.adele.cilia.model.MediatorComponent;
 import fr.liglab.adele.cilia.runtime.MediatorRuntimeSpecification;
 
@@ -103,7 +105,7 @@ public class ProcessorsTest {
 	}
 	
 	/**
-	 * Test that we can reach the builder and is not null. 
+	 * Test the SimpleEnricherProcessor
 	 */
 	@Test
 	public void enricherTest() {
@@ -147,4 +149,27 @@ public class ProcessorsTest {
 		mrs.setOutPort("unique", "*");
 		mrs.initializeSpecification();
 	}
+	/**
+	 * Test the aggregator processor
+	 */
+	@Test
+	public void testAggregatorProcessor(){
+		CiliaHelper.waitSomeTime(2000);
+		ProcessorHelper helper = cilia.getProcessorHelper("AggregatorProcessor", "fr.liglab.adele.cilia");
+		helper.notifyData(new Data("Data One",""));
+		helper.notifyData(new Data("Data Two",""));
+		helper.notifyData(new Data("Data three",""));
+		helper.trigger();
+		Assert.assertEquals(1, helper.getAmountData());
+		//It must retrieve the List of data
+		Data data = helper.getLastData();
+		Assert.assertNotNull(data);
+		List<Data> list = (List<Data>)data.getContent();
+		//There must be three messages
+		Assert.assertEquals(3, list.size());
+		Data thirdData = list.get(list.size()-1);
+		Assert.assertEquals("Data three", thirdData.getContent());
+	}
+	
+
 }

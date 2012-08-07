@@ -1,0 +1,13 @@
+<cilia>
+	<chain id="AggregatorTest">
+		<mediators>
+			<mediator-instance id="aggregator" type="AggregatorTest" />
+			<mediator-instance id="firstMediator" type="Mock" />
+			<mediator-instance id="lastMediator" type="Mock" />
+		</mediators>
+		<bindings>
+			<binding from="firstMediator:unique" to="aggregator:unique"/>
+			<binding from="aggregator:unique" to="lastMediator:unique"/>
+		</bindings>
+	</chain>
+</cilia>
