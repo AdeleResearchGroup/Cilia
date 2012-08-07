@@ -40,19 +40,16 @@
 		<dependency>
 			<groupId>org.osgi</groupId>
 			<artifactId>org.osgi.core</artifactId>
-			<version>4.2.0</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.osgi</groupId>
 			<artifactId>org.osgi.compendium</artifactId>
-			<version>4.2.0</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.apache.felix</groupId>
 			<artifactId>org.apache.felix.ipojo</artifactId>
-			<version>1.8.0</version>
 		</dependency>
 
 		<dependency>
@@ -68,7 +65,6 @@
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
-			<version>1.6.1</version>
 		</dependency>
 		<!-- Project Test dependencies -->
 		<dependency>
@@ -118,7 +114,7 @@
 			<artifactId>junit</artifactId>
 			<version>4.5</version>
 			<type>jar</type>
-			<scope>test</scope>
+<!-- 			<scope>test</scope> -->
 		</dependency>
 
 		<!-- TinyBundle -->
@@ -157,6 +153,7 @@
 							fr.liglab.adele.cilia.helper
 						</Export-Package>
 						<Private-Package>
+							fr.liglab.adele.cilia.helper.impl
 						</Private-Package>
 					</instructions>
 				</configuration>

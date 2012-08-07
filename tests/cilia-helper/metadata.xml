@@ -3,7 +3,8 @@
 	xmlns:ipojo="org.apache.felix.ipojo">
 	<!-- Processors to add cilia elements -->
 	<io-adapter classname="fr.liglab.adele.cilia.helper.AdapterHelper"
-		namespace="fr.liglab.adele.cilia" name="cilia-adapter-helper" pattern="in-out">
+		namespace="fr.liglab.adele.cilia.test" name="cilia-adapter-helper"
+		pattern="in-out">
 		<provides>
 			<property name="identifier" type="String" optional="false" />
 		</provides>
@@ -13,7 +14,7 @@
 			<out-port name="unique" type="*" />
 		</ports>
 	</io-adapter>
-	
+
 	<mediator-component name="Mock"
 		namespace="fr.liglab.adele.cilia.test">
 		<ports>
@@ -24,4 +25,20 @@
 		<processor name="simple-processor" namespace="fr.liglab.adele.cilia" />
 		<dispatcher name="multicast-dispatcher" namespace="fr.liglab.adele.cilia" />
 	</mediator-component>
+
+	<scheduler name="scheduler-helper" namespace="fr.liglab.adele.cilia.test"
+		classname="fr.liglab.adele.cilia.helper.impl.SchedulerHelperImpl">
+		<provides specifications="fr.liglab.adele.cilia.helper.SchedulerHelper">
+			<property name="identifier" type="String" optional="false" />
+		</provides>
+	</scheduler>
+
+	<dispatcher name="dispatcher-helper" namespace="fr.liglab.adele.cilia.test"
+		classname="fr.liglab.adele.cilia.helper.impl.DispatcherHelperImpl">
+		<provides specifications="fr.liglab.adele.cilia.helper.DispatcherHelper">
+			<property name="identifier" type="String" optional="false" />
+		</provides>
+	</dispatcher>
+
+
 </cilia>
