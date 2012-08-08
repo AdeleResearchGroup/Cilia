@@ -60,7 +60,7 @@ public abstract class MediatorComponentManager extends InstanceManager {
 
 	protected volatile int ciliaState = MediatorComponent.INVALID;
 
-	Dictionary configuration;
+	protected Dictionary configuration;
 
 	/**
 	 * @param factory
