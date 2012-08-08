@@ -23,6 +23,7 @@ import static org.ops4j.pax.exam.CoreOptions.options;
 import static org.ops4j.pax.exam.CoreOptions.provision;
 
 import java.net.URL;
+import java.util.Hashtable;
 import java.util.List;
 
 import junit.framework.Assert;
@@ -108,49 +109,30 @@ public class ProcessorsTest {
 	 * Test the SimpleEnricherProcessor
 	 */
 	@Test
-	public void enricherTest() {
+	public void enricherProcessorTest() {
 		CiliaHelper.waitSomeTime(2000);
-		createEnricherMediator();
-		CiliaHelper.waitSomeTime(1000);
-		URL url = context.getBundle().getResource("EnricherTest.dscilia");
-		cilia.load(url);
-		System.out.println("will wait");
-		boolean found = cilia.waitToChain("toto",3000);
-		//first enricher value
-		MediatorComponent enricher1 = cilia.getMediatorModel("toto", "enricher1");
-		Assert.assertEquals(true, enricher1.isRunning());
-		Assert.assertEquals(MediatorComponent.VALID, enricher1.getState());
-		MediatorTestHelper tester = cilia.instrumentChain("toto","enricher1:unique", "enricher1:unique");
 		
-		Assert.assertNotNull(tester);
-		Assert.assertEquals(true, tester.injectData(new Data("data content", "data name")));
+		Hashtable enricher = new Hashtable();
+		enricher.put("enricher", "enricher1");
+		Hashtable properties = new Hashtable();
+		properties.put("enricher.content", enricher);
 		
-		Data data = tester.getLastData();
+		ProcessorHelper helper = cilia.getProcessorHelper("SimpleEnricherProcessor", "fr.liglab.adele.cilia", properties);
+		
+		Assert.assertNotNull(helper);
+		
+		helper.notifyData(new Data("data content", "data name"));
+		helper.trigger();
+		
+		Data data = helper.getLastData();
 		Assert.assertNotNull(data);
 		String enricherValue = (String)data.getProperty("enricher");
 		Assert.assertEquals("enricher1", enricherValue);
 		
-		MediatorTestHelper tester2 = cilia.instrumentChain("toto","enricher2:unique", "enricher2:unique");
-		Assert.assertNotNull(tester2);
-		Assert.assertEquals(true, tester2.injectData(new Data("data content", "data name")));
-		Data data2 = tester2.getLastData();
-		Assert.assertNotNull(data2);
-		String enricherValue2 = (String)data2.getProperty("enricher");
-		Assert.assertEquals("enricher2", enricherValue2);
-
 	}
 	
-	private void createEnricherMediator(){
-		MediatorRuntimeSpecification mrs = new MediatorRuntimeSpecification("EnricherTest", null, null, context);
-		mrs.setDispatcher("multicast-dispatcher", "fr.liglab.adele.cilia");
-		mrs.setScheduler("immediate-scheduler", "fr.liglab.adele.cilia");
-		mrs.setProcessor("SimpleEnricherProcessor", "fr.liglab.adele.cilia");
-		mrs.setInPort("unique", "*");
-		mrs.setOutPort("unique", "*");
-		mrs.initializeSpecification();
-	}
 	/**
-	 * Test the aggregator processor
+	 * Test the AggregatorProcessor
 	 */
 	@Test
 	public void testAggregatorProcessor(){
@@ -171,5 +153,105 @@ public class ProcessorsTest {
 		Assert.assertEquals("Data three", thirdData.getContent());
 	}
 	
+	/**
+	 * Test the behavior of SemanticTranslatorProcessor
+	 */
+	@Test
+	public void testLocalSemanticProcessor () {
+		
+		Hashtable<String, String> dictionary = new Hashtable<String, String>();
+		dictionary.put("casa", "house");
+		dictionary.put("gato", "cat");
+		dictionary.put("perro", "dog");
+		dictionary.put("verde", "green");
+		Hashtable<String, Hashtable<String, String>> properties = new Hashtable<String, Hashtable<String, String>>();
+		properties.put("dictionary", dictionary);
+		
+		CiliaHelper.waitSomeTime(2000);
+		ProcessorHelper helper = cilia.getProcessorHelper("SemanticTranslatorProcessor", "fr.liglab.adele.cilia", properties);
+		helper.notifyData(new Data("La casa es verde","contenido"));
+		helper.trigger();
+		Assert.assertEquals(1, helper.getAmountData());
+		//It must retrieve the List of data
+		Data data = helper.getLastData();
+		Assert.assertEquals("La house es green", data.getContent());
+	}
+	
+	/**
+	 * Test the behavior of SemanticTranslatorProcessor
+	 */
+	@Test
+	public void testPrefixEnricher () {
+		Hashtable<String, String> properties = new Hashtable<String,String>();
+		properties.put("enricher.prefix", "This is before");
+		CiliaHelper.waitSomeTime(2000);
+		ProcessorHelper helper = cilia.getProcessorHelper("PrefixEnricherProcessor", "fr.liglab.adele.cilia", properties);
+		helper.notifyData(new Data(" the following message","contenido"));
+		helper.trigger();
+		Assert.assertEquals(1, helper.getAmountData());
+		Data data = helper.getLastData();
+		Assert.assertEquals("This is before the following message", data.getContent());
+		System.out.println(data.getContent());
+	}
+	
+	/**
+	 * Test the behavior of SufixEnricher
+	 */
+	@Test
+	public void testSufixEnricher () {
+		Hashtable<String, String> properties = new Hashtable<String,String>();
+		properties.put("enricher.sufix", " is after");
+		CiliaHelper.waitSomeTime(2000);
+		ProcessorHelper helper = cilia.getProcessorHelper("SufixEnricherProcessor", "fr.liglab.adele.cilia", properties);
+		helper.notifyData(new Data("The following message","contenido"));
+		helper.trigger();
+		Assert.assertEquals(1, helper.getAmountData());
+		Data data = helper.getLastData();
+		Assert.assertEquals("The following message is after", data.getContent());
+		System.out.println(data.getContent());
+	}
 
+	/**
+	 * Test the behavior of SufixEnricher
+	 */
+	@Test
+	public void testSufixEnricher2 () {
+		Hashtable<String, String> properties = new Hashtable<String,String>();
+		properties.put("sufix", " is after");
+		CiliaHelper.waitSomeTime(2000);
+		ProcessorHelper helper = cilia.getProcessorHelper("SufixEnricherProcessor", "fr.liglab.adele.cilia", properties);
+		helper.notifyData(new Data("The following message","contenido"));
+		helper.trigger();
+		Assert.assertEquals(1, helper.getAmountData());
+		Data data = helper.getLastData();
+		Assert.assertEquals("The following message is after", data.getContent());
+		System.out.println(data.getContent());
+	}
+	
+	/**
+	 * Test the behavior of StringSplitterProcessor
+	 */
+	@Test
+	public void testSplitterProcessor() {
+		Hashtable<String, String> properties = new Hashtable<String,String>();
+		properties.put("separator", "/");
+		CiliaHelper.waitSomeTime(2000);
+		ProcessorHelper helper = cilia.getProcessorHelper("StringSplitterProcessor", "fr.liglab.adele.cilia", properties);
+		helper.notifyData(new Data("The/following/message/will/be/splitted","contenido"));
+		helper.trigger();
+		//It process one message and returns 6
+		Assert.assertEquals(6, helper.getAmountData());
+		Data data = helper.getLastData();
+		Assert.assertEquals("splitted", data.getContent());
+		List<Data> alldata = helper.getData();
+		//check the order.
+		Assert.assertEquals("The",alldata.get(0).getContent());
+		Assert.assertEquals("following",alldata.get(1).getContent());
+		Assert.assertEquals("message",alldata.get(2).getContent());
+		Assert.assertEquals("will",alldata.get(3).getContent());
+		Assert.assertEquals("be",alldata.get(4).getContent());
+		Assert.assertEquals("splitted",alldata.get(5).getContent());
+		System.out.println(data.getContent());
+	}
+	
 }
