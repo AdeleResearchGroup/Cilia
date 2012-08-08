@@ -135,6 +135,8 @@
 		<properties>
 			<property name="dictionary" field="dictionary" />
 		</properties>
+		<cilia:method data.type="fr.liglab.adele.cilia.Data" />
+		
 	</processor>
 
 	<processor name="SimpleEnricherProcessor" namespace="fr.liglab.adele.cilia"
