@@ -335,13 +335,13 @@ public class BuilderPerformer {
 				case Architecture.ADAPTER:
 					throw new BuilderPerformerException(
 							"Impossible to create an adapter with ID "
-									+ id
+									+ creat.getType() + ":" + id
 									+ "; Another instance with the same ID exists in chain "
 									+ chain.getId());
 				case Architecture.MEDIATOR:
 					throw new BuilderPerformerException(
 							"Impossible to create a mediator with ID "
-									+ id
+									+ creat.getType() + ":" +id
 									+ "; Another instance with the same ID exists in chain "
 									+ chain.getId());
 				}
