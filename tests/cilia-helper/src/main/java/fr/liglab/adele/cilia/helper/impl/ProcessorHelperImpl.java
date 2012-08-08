@@ -17,6 +17,7 @@
  */
 package fr.liglab.adele.cilia.helper.impl;
 
+import java.util.Hashtable;
 import java.util.List;
 
 import org.apache.felix.ipojo.Factory;
@@ -50,6 +51,10 @@ public class ProcessorHelperImpl implements ProcessorHelper {
 	
 	String processorNamespace;
 	
+	Hashtable properties;
+	
+	private volatile static int id = 0;
+	
 	private final static String SCHEDULERNAME="scheduler-helper";
 	private final static String DISPATCHERNAME="dispatcher-helper";
 	private final static String TESTNAMESPACE="fr.liglab.adele.cilia.test";
@@ -58,12 +63,14 @@ public class ProcessorHelperImpl implements ProcessorHelper {
 	
 	DispatcherHelper dispatcher;
 	
-	public ProcessorHelperImpl(CiliaHelper helper, String processorname, String processornamespace){
+	public ProcessorHelperImpl(CiliaHelper helper, String processorname, String processornamespace, Hashtable properties){
 		this.processorName= processorname;
 		this.processorNamespace = processornamespace;
-		mediatorType=processorname+"_"+processornamespace;
+		this.properties = properties;
+		mediatorType=processorname+"_"+processornamespace+":"+id;
+		id ++;
 		cilia = helper;
-		createHelperMediator(processorname, processornamespace);
+		createHelperMediator();
 	}
 	
 	public void start() throws CiliaException{
@@ -71,11 +78,11 @@ public class ProcessorHelperImpl implements ProcessorHelper {
 		locateServices();
 	}
 	
-	private void createHelperMediator(String processor, String namespace){
+	private void createHelperMediator(){
 		MediatorRuntimeSpecification mrs = new MediatorRuntimeSpecification(mediatorType, TESTNAMESPACE, null, cilia.getBundleContext());
 		mrs.setDispatcher(DISPATCHERNAME, TESTNAMESPACE);
 		mrs.setScheduler(SCHEDULERNAME, TESTNAMESPACE);
-		mrs.setProcessor(processor, namespace);
+		mrs.setProcessor(processorName, processorNamespace);
 		mrs.setInPort("unique", "*");
 		mrs.setOutPort("unique", "*");
 		mrs.initializeSpecification();
@@ -104,6 +111,9 @@ public class ProcessorHelperImpl implements ProcessorHelper {
 		Builder b = cilia.getBuilder();
 		Architecture chain = b.create(id);
 		chain.create().mediator().type(mediatorType).id(mediatorType).configure().key("identifier").value(mediatorType);
+		if (properties != null) {
+			chain.configure().mediator().id(mediatorType).set(new Hashtable(properties));
+		}
 		b.done();
 		cilia.startChain(id);
 	}

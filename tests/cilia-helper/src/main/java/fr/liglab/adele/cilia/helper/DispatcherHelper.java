@@ -30,7 +30,7 @@ public interface DispatcherHelper {
 
 	void clear();
 	
-	List getData();
+	 List<Data> getData();
 	
 	int getAmountData();
 	

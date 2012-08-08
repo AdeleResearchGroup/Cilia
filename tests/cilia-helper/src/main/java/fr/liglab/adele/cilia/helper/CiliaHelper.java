@@ -21,6 +21,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
 import java.util.Dictionary;
+import java.util.Hashtable;
 
 import junit.framework.Assert;
 
@@ -196,7 +197,11 @@ public class CiliaHelper {
 	}
 
 	public ProcessorHelper getProcessorHelper(String processorname, String processornamespace){
-		ProcessorHelperImpl proc = new ProcessorHelperImpl(this, processorname, processornamespace);
+		return getProcessorHelper(processorname, processornamespace,null);
+	}
+	
+	public ProcessorHelper getProcessorHelper(String processorname, String processornamespace, Hashtable properties){
+		ProcessorHelperImpl proc = new ProcessorHelperImpl(this, processorname, processornamespace, properties);
 		try {
 			proc.start();
 		} catch (CiliaException e) {
