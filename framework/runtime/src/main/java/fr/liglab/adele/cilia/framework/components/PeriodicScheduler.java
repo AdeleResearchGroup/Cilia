@@ -2,6 +2,8 @@ package fr.liglab.adele.cilia.framework.components;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
@@ -11,13 +13,15 @@ import org.slf4j.LoggerFactory;
 import fr.liglab.adele.cilia.Data;
 import fr.liglab.adele.cilia.framework.AbstractScheduler;
 
-public class PeriodicScheduler extends AbstractScheduler implements Runnable {
+public class PeriodicScheduler extends AbstractScheduler  implements Runnable {
 
 	/**
 	 * delay time to start processing.
 	 */
 	private long delay;
-
+	
+	private volatile boolean firstTime = true;
+	
 	/**
 	 * Periodic time to launch processing.
 	 */
@@ -26,28 +30,29 @@ public class PeriodicScheduler extends AbstractScheduler implements Runnable {
 	/**
 	 * The POOL_SIZE, this scheduler will handle only one thread.
 	 */
-	private static final int POOL_SIZE = 1;
+	private static final int POOL_SIZE = 5;
 
 	protected static Logger logger = LoggerFactory.getLogger("cilia.ipojo.compendium");
 
 	/**
 	 * Pool of scheduler threads.
 	 */
-	private ScheduledThreadPoolExecutor schedulerPoolExecutor = new ScheduledThreadPoolExecutor(
-			POOL_SIZE);
+	private ScheduledThreadPoolExecutor schedulerPoolExecutor = new ScheduledThreadPoolExecutor(POOL_SIZE);
 
 	/**
 	 * Flag used to trigger processing only when pojo is started.
 	 */
 	private volatile boolean isStarted = false;
 
-	public void run() {
+	public void run () {
+		logger.debug("periodic-scheduler will trigger processing");
 		if (isStarted) {
-			logger.debug("periodic-scheduler will trigger processing");
 			synchronized (_lock) {
 				List dataList = (List)getData().get("data.periodic.scheduler") ;
-				process(new ArrayList(dataList));
-				dataList.clear();
+				if (dataList != null && dataList.size() > 0) {
+					process(new ArrayList(dataList));
+					dataList.clear();
+				}
 			}
 		}
 	}
@@ -66,8 +71,8 @@ public class PeriodicScheduler extends AbstractScheduler implements Runnable {
 	 * period rate.
 	 */
 	private void startTimer() {
-		schedulerPoolExecutor.scheduleAtFixedRate(this, delay, period,
-				TimeUnit.MILLISECONDS);
+		schedulerPoolExecutor.scheduleAtFixedRate(this, 0, period,
+							TimeUnit.MILLISECONDS);
 	}
 
 	/**
@@ -75,8 +80,7 @@ public class PeriodicScheduler extends AbstractScheduler implements Runnable {
 	 */
 	public void start() {
 		isStarted = true;
-		getData().put("data.periodic.scheduler",new ArrayList());
-		logger.debug("Starting periodic scheduler at " + period + " with a delay of " + delay);
+		logger.info("Starting periodic scheduler at " + period + " with a delay of " + delay);
 		startTimer();
 	}
 
@@ -84,12 +88,20 @@ public class PeriodicScheduler extends AbstractScheduler implements Runnable {
 	 * Method called by collectors when they collect new Data.
 	 */
 	public void notifyData(Data data) {
+		logger.info("Receive Data");
 		synchronized (_lock) {
+			if (firstTime){
+				getData().put("data.periodic.scheduler",new ArrayList());
+				firstTime = false;
+				logger.info("First Time");
+			}
 			if (data != null) {
 			    List dataList=(List)getData().get("data.periodic.scheduler");
 				dataList.add(data);
+				logger.info("Another Data");
 			}
 		}
 	}
+
 	
 }
