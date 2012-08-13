@@ -60,7 +60,7 @@ public class AdapterHelper extends AbstractAsyncIOAdapter implements MediatorTes
 	 * @param data, the array of data to inject.
 	 * @return true if the array is injected, false if some data is not well injected.
 	 */
-	public boolean injectData(Data[] data) {
+	public boolean notifyData(Data[] data) {
 		boolean injected = false;
 		for (int i = 0; i < data.length; i ++){
 			injected = injectData(data[i]);
@@ -81,19 +81,10 @@ public class AdapterHelper extends AbstractAsyncIOAdapter implements MediatorTes
 	/**
 	 * Get the amount of data treated and delivered by the mediator.
 	 */
-	public synchronized int amountReceivedData() {
+	public synchronized int getAmountData() {
 		return super.currentData.size();
 		
 	}
-
-	/**
-	 * Get and cleat the received data.
-	 */
-	public Data[] getReceivedData() {
-		List<Data> data = super.getData();
-		return (Data[]) data.toArray(new Data[0]);
-	}
-	
 	
 	public void receiveData(Data data) {
 		super.receiveData(data);

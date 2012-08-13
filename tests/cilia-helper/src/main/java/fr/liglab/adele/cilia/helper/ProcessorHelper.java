@@ -24,7 +24,7 @@ import fr.liglab.adele.cilia.Data;
  *         Team</a>
  *
  */
-public interface ProcessorHelper extends DispatcherHelper, SchedulerHelper {
+public interface ProcessorHelper extends DispatcherProcessorHelper, SchedulerProcessorHelper {
 	 void notifyData(Data [] data);
 
 }

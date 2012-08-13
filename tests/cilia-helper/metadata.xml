@@ -27,15 +27,15 @@
 	</mediator-component>
 
 	<scheduler name="scheduler-helper" namespace="fr.liglab.adele.cilia.test"
-		classname="fr.liglab.adele.cilia.helper.impl.SchedulerHelperImpl">
-		<provides specifications="fr.liglab.adele.cilia.helper.SchedulerHelper">
+		classname="fr.liglab.adele.cilia.helper.impl.SchedulerProcessorHelperImpl">
+		<provides specifications="fr.liglab.adele.cilia.helper.SchedulerProcessorHelper">
 			<property name="identifier" type="String" optional="false" />
 		</provides>
 	</scheduler>
 
 	<dispatcher name="dispatcher-helper" namespace="fr.liglab.adele.cilia.test"
-		classname="fr.liglab.adele.cilia.helper.impl.DispatcherHelperImpl">
-		<provides specifications="fr.liglab.adele.cilia.helper.DispatcherHelper">
+		classname="fr.liglab.adele.cilia.helper.impl.DispatcherProcessorHelperImpl">
+		<provides specifications="fr.liglab.adele.cilia.helper.DispatcherProcessorHelper">
 			<property name="identifier" type="String" optional="false" />
 		</provides>
 	</dispatcher>

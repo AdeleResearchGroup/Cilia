@@ -14,6 +14,8 @@
  */
 package fr.liglab.adele.cilia.helper;
 
+import java.util.List;
+
 import fr.liglab.adele.cilia.Data;
 
 /**
@@ -41,7 +43,7 @@ public interface MediatorTestHelper {
 	 * @param data, the array of data to inject.
 	 * @return true if the array is injected, false if some data is not well injected.
 	 */
-	boolean injectData (Data [] data);
+	boolean notifyData (Data [] data);
 	/**
 	 * Get the last received Data.
 	 */
@@ -49,8 +51,8 @@ public interface MediatorTestHelper {
 	/**
 	 * Get the amount of data treated and delivered by the mediator.
 	 */
-	int amountReceivedData();
+	int getAmountData();
 	
-	Data[] getReceivedData();
+	List<Data> getData();
 	
 }

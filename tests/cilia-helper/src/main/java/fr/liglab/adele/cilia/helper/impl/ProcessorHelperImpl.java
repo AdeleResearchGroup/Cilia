@@ -20,6 +20,8 @@ package fr.liglab.adele.cilia.helper.impl;
 import java.util.Hashtable;
 import java.util.List;
 
+import junit.framework.Assert;
+
 import org.apache.felix.ipojo.Factory;
 import org.apache.felix.ipojo.test.helpers.OSGiHelper;
 
@@ -31,9 +33,9 @@ import fr.liglab.adele.cilia.exceptions.BuilderException;
 import fr.liglab.adele.cilia.exceptions.BuilderPerformerException;
 import fr.liglab.adele.cilia.exceptions.CiliaException;
 import fr.liglab.adele.cilia.helper.CiliaHelper;
-import fr.liglab.adele.cilia.helper.DispatcherHelper;
+import fr.liglab.adele.cilia.helper.DispatcherProcessorHelper;
 import fr.liglab.adele.cilia.helper.ProcessorHelper;
-import fr.liglab.adele.cilia.helper.SchedulerHelper;
+import fr.liglab.adele.cilia.helper.SchedulerProcessorHelper;
 import fr.liglab.adele.cilia.runtime.MediatorRuntimeSpecification;
 
 /**
@@ -59,9 +61,9 @@ public class ProcessorHelperImpl implements ProcessorHelper {
 	private final static String DISPATCHERNAME="dispatcher-helper";
 	private final static String TESTNAMESPACE="fr.liglab.adele.cilia.test";
 	
-	SchedulerHelper scheduler;
+	SchedulerProcessorHelper scheduler;
 	
-	DispatcherHelper dispatcher;
+	DispatcherProcessorHelper dispatcher;
 	
 	public ProcessorHelperImpl(CiliaHelper helper, String processorname, String processornamespace, Hashtable properties){
 		this.processorName= processorname;
@@ -73,8 +75,13 @@ public class ProcessorHelperImpl implements ProcessorHelper {
 		createHelperMediator();
 	}
 	
-	public void start() throws CiliaException{
-		startChain();
+	public void start() {
+		try {
+			startChain();
+		} catch (CiliaException e) {
+			e.printStackTrace();
+			Assert.fail("Unable to create processor helper" + e.getMessage());
+		}
 		locateServices();
 	}
 	
@@ -120,10 +127,10 @@ public class ProcessorHelperImpl implements ProcessorHelper {
 	
 	private void locateServices(){
 		OSGiHelper osgi = cilia.getOSGIHelper();
-		osgi.waitForService(DispatcherHelper.class.getName(), "(identifier="+mediatorType+")",4000);
-		dispatcher = (DispatcherHelper) osgi.getServiceObject(DispatcherHelper.class.getName(), "(identifier="+mediatorType+")");
-		osgi.waitForService(SchedulerHelper.class.getName(), "(identifier="+mediatorType+")",4000);
-		scheduler = (SchedulerHelper) osgi.getServiceObject(SchedulerHelper.class.getName(), "(identifier="+mediatorType+")");
+		osgi.waitForService(DispatcherProcessorHelper.class.getName(), "(identifier="+mediatorType+")",4000);
+		dispatcher = (DispatcherProcessorHelper) osgi.getServiceObject(DispatcherProcessorHelper.class.getName(), "(identifier="+mediatorType+")");
+		osgi.waitForService(SchedulerProcessorHelper.class.getName(), "(identifier="+mediatorType+")",4000);
+		scheduler = (SchedulerProcessorHelper) osgi.getServiceObject(SchedulerProcessorHelper.class.getName(), "(identifier="+mediatorType+")");
 	}
 
 	/* (non-Javadoc)

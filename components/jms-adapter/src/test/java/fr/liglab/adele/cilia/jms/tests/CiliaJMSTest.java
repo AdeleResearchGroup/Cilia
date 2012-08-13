@@ -243,7 +243,7 @@ public class CiliaJMSTest {
 		qd.injectData(new Data ("data", "dda"));
 		//wait some time to arrive message.
 		waitSomeTime(1000);
-		Assert.assertEquals(1, qd.amountReceivedData());
+		Assert.assertEquals(1, qd.getAmountData());
 		Data lastData = qd.getLastData();
 		Assert.assertEquals("data", lastData.getContent());
 		Assert.assertEquals("dda", lastData.getName());

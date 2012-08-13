@@ -23,6 +23,7 @@ import static org.ops4j.pax.exam.CoreOptions.options;
 import static org.ops4j.pax.exam.CoreOptions.provision;
 
 import java.net.URL;
+import java.util.List;
 
 import junit.framework.Assert;
 
@@ -118,13 +119,13 @@ public class AdvancedManipulationTest {
 		Assert.assertNotNull(tester);
 		Assert.assertEquals(true, tester.injectData(new Data("data content", "data name")));
 		//get the resulting data.
-		Data data = tester.getReceivedData()[0];
+		Data data = tester.getData().get(0);
 		Assert.assertNotNull(data);
 		String enricherValue = (String)data.getProperty("enricher");
 		//test the value based on the replacerTest.dscilia file
 		/*<item key="enricher" value="enricher1"/>*/
 		Assert.assertEquals("enricher1", enricherValue);
-		tester.amountReceivedData();
+		tester.getAmountData();
 		//Now do the replace of enricher1 to enricher2, the enricher2 is already instantiated.
 		System.out.println("To start replacment");
 		CiliaHelper.waitSomeTime(3000);
@@ -141,8 +142,8 @@ public class AdvancedManipulationTest {
 		System.out.println("Inject second data");
 		Assert.assertEquals(true, tester.injectData(new Data("data content", "data name")));
 		System.out.println("Verify second data");
-		Assert.assertEquals(1, tester.amountReceivedData());
-		Data data2 = tester.getReceivedData()[0];
+		Assert.assertEquals(1, tester.getAmountData());
+		Data data2 = tester.getData().get(0);
 		Assert.assertNotNull(data2);
 		String enricherValue2 = (String)data2.getProperty("enricher");
 		//test the value based on the replacerTest.dscilia file
@@ -166,10 +167,10 @@ public class AdvancedManipulationTest {
 		Assert.assertNotNull(tester);
 		Assert.assertEquals(true, tester.injectData(new Data("data content", "data name")));
 		//get the resulting data.
-		Data[] data = tester.getReceivedData();
-		Assert.assertEquals(0, data.length);
+		List<Data> data = tester.getData();
+		Assert.assertEquals(0, data.size());
 
-		Assert.assertEquals(0,tester.amountReceivedData());
+		Assert.assertEquals(0,tester.getAmountData());
 		//Now do the copy from enricher1 to enricher2, the enricher2 does not exist.
 		System.out.println("To start copy");
 		CiliaHelper.waitSomeTime(3000);
@@ -191,8 +192,8 @@ public class AdvancedManipulationTest {
 		System.out.println("Inject second data");
 		Assert.assertEquals(true, tester.injectData(new Data("data content", "data name")));
 		System.out.println("Verify second data");
-		Assert.assertEquals(1, tester.amountReceivedData());
-		Data data2 = tester.getReceivedData()[0];
+		Assert.assertEquals(1, tester.getAmountData());
+		Data data2 = tester.getData().get(0);
 		Assert.assertNotNull(data2);
 		String enricherValue2 = (String)data2.getProperty("enricher");
 		//test the value based on the replacerTest.dscilia file

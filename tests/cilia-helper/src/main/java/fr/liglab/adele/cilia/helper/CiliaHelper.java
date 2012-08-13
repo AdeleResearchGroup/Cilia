@@ -37,6 +37,7 @@ import fr.liglab.adele.cilia.exceptions.CiliaIllegalParameterException;
 import fr.liglab.adele.cilia.exceptions.CiliaIllegalStateException;
 import fr.liglab.adele.cilia.framework.ICollector;
 import fr.liglab.adele.cilia.helper.impl.ProcessorHelperImpl;
+import fr.liglab.adele.cilia.helper.impl.SchedulerHelperCreator;
 import fr.liglab.adele.cilia.model.Adapter;
 import fr.liglab.adele.cilia.model.Chain;
 import fr.liglab.adele.cilia.model.Mediator;
@@ -202,14 +203,19 @@ public class CiliaHelper {
 	
 	public ProcessorHelper getProcessorHelper(String processorname, String processornamespace, Hashtable properties){
 		ProcessorHelperImpl proc = new ProcessorHelperImpl(this, processorname, processornamespace, properties);
-		try {
-			proc.start();
-		} catch (CiliaException e) {
-			e.printStackTrace();
-			return null;
-		}
+		proc.start();
 		return proc;
 	}
+	
+	public MediatorTestHelper getSchedulerHelper(String schedulername, String schedulernamespace, Hashtable properties){
+		SchedulerHelperCreator proc = new SchedulerHelperCreator(this, schedulername, schedulernamespace, properties);
+		proc.start();
+		System.out.println("Waiting for helper:" + proc.getId());
+		//ohelper.waitForService(MediatorTestHelper.class.getName(), "(identifier="+proc.getId()+")", 4000);
+		MediatorTestHelper helper = (MediatorTestHelper)ohelper.getServiceObject(MediatorTestHelper.class.getName(), "(identifier="+proc.getId()+")");
+		return helper;
+	}
+	
 	
 	public void load(URL url) {
 		InputStream fis = null;
