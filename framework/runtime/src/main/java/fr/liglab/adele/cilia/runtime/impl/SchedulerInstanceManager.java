@@ -96,7 +96,7 @@ public class SchedulerInstanceManager extends ConstituentInstanceManager {
 			return;
 		}
 		logger.debug("Scheduler is now valid, updating references");
-		AbstractScheduler im = (AbstractScheduler) ref; // all scheduleres must extends AbstractScheduler
+		AbstractScheduler im = (AbstractScheduler) ref; // all schedulers must extends AbstractScheduler
 		im.setConnectedScheduler(handler);
 	}
 
