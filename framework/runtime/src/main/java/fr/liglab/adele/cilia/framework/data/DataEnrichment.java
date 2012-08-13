@@ -32,12 +32,12 @@ public class DataEnrichment {
      * @param id id of the data splited.
      * @return Data with the split info 
      */
-    public static Data addSplitInfo(final Data data, final int size,
-            final int number, final long id) {
-        data.setProperty("SPLITED", "true");
-        data.setProperty("SPLIT.TOTAL", new Integer(size));
-        data.setProperty("SPLIT.NUMBER", new Integer(number));
-        data.setProperty("SPLIT.ID", new Long(id));
+    public static Data addCorrelationInfo(final Data data, final int size,
+            final int number, String id) {
+        data.setProperty("CORRELATED", "true");
+        data.setProperty("CORRELATION.TOTAL", new Integer(size));
+        data.setProperty("CORRELATION.NUMBER", new Integer(number));
+        data.setProperty("CORRELATION.ID", id);
         return data;
     }
     /**
@@ -46,9 +46,9 @@ public class DataEnrichment {
      * @param data Splitted Data.
      * @return the amount of all splitted Data.
      */
-    public static int getSplitTotal(final Data data) {
+    public static int getCorrelatedTotal(final Data data) {
         int total = 0;
-        Integer num = (Integer) data.getProperty("SPLIT.TOTAL");
+        Integer num = (Integer) data.getProperty("CORRELATION.TOTAL");
         if (num != null) {
             total = num.intValue();
         }

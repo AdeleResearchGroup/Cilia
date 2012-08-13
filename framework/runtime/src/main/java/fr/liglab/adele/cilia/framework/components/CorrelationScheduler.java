@@ -24,7 +24,7 @@ public class CorrelationScheduler extends AbstractCorrelationScheduler {
 		count = dataset.size();
 
 		if (count > 0) {
-			splitTotal = DataEnrichment.getSplitTotal((Data) dataset.get(0));
+			splitTotal = DataEnrichment.getCorrelatedTotal((Data) dataset.get(0));
 		}
 		if (splitTotal == count) {
 			completness = true;

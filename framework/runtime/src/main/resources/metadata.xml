@@ -265,7 +265,7 @@
 		namespace="fr.liglab.adele.cilia">
 		<properties>
 			<property name="correlation" method="setCorrelation" type="String"
-				value="($SPLIT.ID)" />
+				value="($CORRELATION.ID)" />
 		</properties>
 	</scheduler>
 

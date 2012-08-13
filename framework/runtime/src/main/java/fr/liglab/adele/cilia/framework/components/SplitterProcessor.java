@@ -31,7 +31,7 @@ public class SplitterProcessor extends AbstractSplitter {
         for (int i = 0; contents != null && i < contents.length ; i++) {
             Data ndata = (Data)dataToSplit.clone();
             ndata.setContent(contents[i]);
-            ndata = DataEnrichment.addSplitInfo(ndata, contents.length, i, dataToSplit.hashCode());
+            ndata = DataEnrichment.addCorrelationInfo(ndata, contents.length, i, String.valueOf(dataToSplit.hashCode()));
             dataList.add(ndata);
         }
         return dataList;

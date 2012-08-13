@@ -58,7 +58,7 @@ public class XmlSplitter {
 			Data ndata = (Data)data.clone();
 			String dataString = XmlTools.nodeToString((Node)listOfNodes.get(i)) ;
 			ndata.setContent(dataString);
-			ndata = DataEnrichment.addSplitInfo(ndata, listOfNodes.size(), i, data.hashCode());
+			ndata = DataEnrichment.addCorrelationInfo(ndata, listOfNodes.size(), i, String.valueOf(data.hashCode()));
 			returnedDataSet.add(ndata);
 		}
 		return returnedDataSet;
