@@ -41,6 +41,7 @@ import org.ops4j.pax.exam.junit.JUnitOptions;
 import org.osgi.framework.BundleContext;
 
 import fr.liglab.adele.cilia.Data;
+import fr.liglab.adele.cilia.framework.data.DataEnrichment;
 import fr.liglab.adele.cilia.helper.CiliaHelper;
 import fr.liglab.adele.cilia.helper.MediatorTestHelper;
 
@@ -125,5 +126,62 @@ public class SchedulerTest {
 		CiliaHelper.waitSomeTime(3000);//We wait some time
 		//We must now have the three messages
 		Assert.assertEquals(3, helper.getAmountData());
+	}
+	/**
+	 * Test the correlation-scheduler behavior
+	 */
+	@Test
+	public void testCorrelationScheduler(){
+		CiliaHelper.waitSomeTime(2000);
+		Hashtable<String, String> properties = new Hashtable<String,String>();
+		MediatorTestHelper helper = cilia.getSchedulerHelper("correlation-scheduler", "fr.liglab.adele.cilia", properties);
+		
+		helper.injectData(createCorrelatedData("Animal", 0, 3, "This contain a Dog"));
+		helper.injectData(createCorrelatedData("Animal", 1, 3, "This contain a Cat"));
+		helper.injectData(createCorrelatedData("Transport", 0, 2, "This contain a Boat"));
+		//Not ready
+		Assert.assertEquals(0, helper.getAmountData());
+		//Inject the last waited animal
+		helper.injectData(createCorrelatedData("Animal", 2, 3, "This contain a Rat"));
+		Assert.assertEquals(3, helper.getAmountData()); //We collect the waited correlated
+		helper.getData();//To erase.
+		//We inject the missing data
+		helper.injectData(createCorrelatedData("Transport", 1, 2, "This contain a Train"));
+		Assert.assertEquals(2, helper.getAmountData()); //We collect the waited correlated
+	}
+	/**
+	 * Test counter-scheduler
+	 */
+	@Test
+	public void testCounterSchedulerWithoutCorrelation(){
+		CiliaHelper.waitSomeTime(2000);
+		Hashtable<String, Object> properties = new Hashtable<String,Object>();
+		Hashtable<String, String> count = new Hashtable<String,String>();
+		count.put("A", "(Test.Category=Animal)");
+		count.put("B", "(Test.Category=Transport)");
+		
+		//A is Animal, B is transport
+		properties.put("condition", "(&(A=3)(B=2))");
+		properties.put("count", count);
+		MediatorTestHelper helper = cilia.getSchedulerHelper("counter-scheduler", "fr.liglab.adele.cilia", properties);
+		
+		helper.injectData(createCorrelatedData("Animal", 0, 3, "This contain a Dog"));
+		Assert.assertEquals(0, helper.getAmountData());
+		helper.injectData(createCorrelatedData("Animal", 1, 3, "This contain a Cat"));
+		Assert.assertEquals(0, helper.getAmountData());
+		helper.injectData(createCorrelatedData("Transport", 0, 2, "This contain a Boat"));
+		Assert.assertEquals(0, helper.getAmountData());
+		helper.injectData(createCorrelatedData("Animal", 2, 3, "This contain a Rat"));
+		Assert.assertEquals(0, helper.getAmountData()); //We collect the waited correlated
+		//We inject the missing data
+		helper.injectData(createCorrelatedData("Transport", 1, 2, "This contain a Train"));
+		Assert.assertEquals(5, helper.getAmountData()); //We collect the waited correlated
+		
+	}
+	private Data createCorrelatedData(String id, int number, int size, String content) {
+		Data data = new Data(content, "data");
+		data.setProperty("Test.Category",id);
+		data = DataEnrichment.addCorrelationInfo(data, size, number, id);
+		return data;
 	}
 }
