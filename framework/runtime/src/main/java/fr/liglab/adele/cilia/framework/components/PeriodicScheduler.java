@@ -88,17 +88,14 @@ public class PeriodicScheduler extends AbstractScheduler  implements Runnable {
 	 * Method called by collectors when they collect new Data.
 	 */
 	public void notifyData(Data data) {
-		logger.info("Receive Data");
 		synchronized (_lock) {
 			if (firstTime){
 				getData().put("data.periodic.scheduler",new ArrayList());
 				firstTime = false;
-				logger.info("First Time");
 			}
 			if (data != null) {
 			    List dataList=(List)getData().get("data.periodic.scheduler");
 				dataList.add(data);
-				logger.info("Another Data");
 			}
 		}
 	}
