@@ -26,9 +26,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
-import org.apache.felix.ipojo.ComponentInstance;
 import org.apache.felix.ipojo.ConfigurationException;
-import org.apache.felix.ipojo.InstanceStateListener;
 import org.apache.felix.ipojo.metadata.Element;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.InvalidSyntaxException;
@@ -48,8 +46,7 @@ import fr.liglab.adele.cilia.util.Watch;
 import fr.liglab.adele.cilia.util.concurrent.ConcurrentReaderHashMap;
 
 @SuppressWarnings({ "rawtypes", "unchecked" })
-public class MonitorHandlerStateVar extends AbstractMonitor implements
-		InstanceStateListener {
+public class MonitorHandlerStateVar extends AbstractMonitor  {
 
 	private static Logger logger = LoggerFactory.getLogger(ConstRuntime.LOGGER_KNOWLEDGE);
 
@@ -565,16 +562,6 @@ public class MonitorHandlerStateVar extends AbstractMonitor implements
 		return isMediatorValid;
 	}
 
-	/* Publish the new state */
-	public void stateChanged(ComponentInstance instance, int newState) {
-		Boolean valid;
-		if (newState == ComponentInstance.VALID)
-			valid = new Boolean(true);
-		else
-			valid = new Boolean(false);
-		isMediatorValid = valid.booleanValue();
-		m_systemQueue.execute(new AsynchronousExec("mediator.state", valid));
-	}
 
 	/* Reconfigure */
 	public void reconfigure(Dictionary configuration) {
@@ -592,5 +579,4 @@ public class MonitorHandlerStateVar extends AbstractMonitor implements
 			condition = null;
 		}
 	}
-
 }

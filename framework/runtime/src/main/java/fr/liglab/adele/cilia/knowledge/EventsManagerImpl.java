@@ -228,9 +228,14 @@ public class EventsManagerImpl implements TrackerCustomizer, EventsConfiguration
 				case EVT_BIND:
 					callback.onBind(node, dest);
 					break;
-
 				case EVT_UNBIND:
 					callback.onUnBind(node, dest);
+					break;				
+				case EVT_VALID :
+					callback.onStateChange(node, true);
+					break ;
+				case EVT_INVALID :
+					callback.onStateChange(node, false);	
 					break;
 				}
 			}

@@ -78,7 +78,6 @@ public class MediatorControllerImpl implements Observer {
 
 	protected final String filter;
 
-	// protected CiliaFrameworkEventPublisher eventNotifier;
 	private FirerEvents eventFirer;
 
 	/**
@@ -104,7 +103,6 @@ public class MediatorControllerImpl implements Observer {
 			monitoring.setModel(mediatorModel);
 		}
 		monitoring.setFirerEvent(notifier);
-
 		eventFirer = notifier;
 	}
 
@@ -377,10 +375,13 @@ public class MediatorControllerImpl implements Observer {
 			}
 			break;
 			}
+			if (mediatorModel.isRunning()) eventFirer.fireEventNode(FirerEvents.EVT_VALID, mediatorModel);
+			else eventFirer.fireEventNode(FirerEvents.EVT_INVALID, mediatorModel);
 		}
 		synchronized (creator) {
 			creator.notifyAll();
 		}
+
 	}
 
 	private void cleanInstances() {

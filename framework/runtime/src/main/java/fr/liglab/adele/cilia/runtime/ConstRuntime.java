@@ -59,7 +59,6 @@ public class ConstRuntime extends Const {
 
 	public static final String EVENT_TYPE ="type" ;
 	public static final int TYPE_DATA = 0 ;
-	public static final int TYPE_STATUS_NODE = 1 ;
 	public static final int TYPE_STATUS_VARIABLE = 2 ;
 
 	

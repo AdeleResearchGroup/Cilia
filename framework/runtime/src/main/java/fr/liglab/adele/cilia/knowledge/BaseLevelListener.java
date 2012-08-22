@@ -130,9 +130,6 @@ public class BaseLevelListener implements EventHandler {
 			case ConstRuntime.TYPE_DATA:
 				eventData(dico);
 				break;
-			case ConstRuntime.TYPE_STATUS_NODE:
-				eventStatusNode(dico);
-				break;
 			case ConstRuntime.TYPE_STATUS_VARIABLE:
 				eventStatusVariable(dico);
 				break;
@@ -161,27 +158,6 @@ public class BaseLevelListener implements EventHandler {
 					MeasureImpl m = new MeasureImpl(value, ticksCount);
 					item.addMeasure(stateVariable, m);
 
-				}
-			} catch (CiliaIllegalStateException e) {
-				logger.error(e.getMessage());
-			}
-		}
-
-		private void eventStatusNode(Dictionary dico) {
-			String uuid;
-			Object value;
-			/* uuid : mediator / adapter source */
-			uuid = (String) dico.get(ConstRuntime.UUID);
-			/* value published */
-			value = dico.get(ConstRuntime.VALUE);
-
-			/* Retrieve the node and insert a new measure */
-			MediatorMonitoring item;
-			try {
-				item = registry.getAndStore(uuid);
-				if (item != null) {
-					/* store the new state */
-					item.setMediatorStatus(((Boolean) value).booleanValue());
 				}
 			} catch (CiliaIllegalStateException e) {
 				logger.error(e.getMessage());

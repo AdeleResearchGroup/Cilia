@@ -74,20 +74,11 @@ public class MediatorMonitoring implements ModelExtension {
 
 	/* Return the mediator State */
 	public boolean getState() {
-		return isValid;
+		return getModel().isRunning() ;
 	}
 
 	public void setFirerEvent(FirerEvents firer) {
 		firerEvents = firer;
-	}
-
-	/* store the mediatorState */
-	public void setMediatorStatus(boolean valid) {
-		isValid = valid;
-		if (valid)
-			firerEvents.fireEventNode(EventsManagerImpl.EVT_VALID, model);
-		else
-			firerEvents.fireEventNode(EventsManagerImpl.EVT_INVALID, model);
 	}
 
 	public void setVariableStatus(String variableId, boolean enable) {
