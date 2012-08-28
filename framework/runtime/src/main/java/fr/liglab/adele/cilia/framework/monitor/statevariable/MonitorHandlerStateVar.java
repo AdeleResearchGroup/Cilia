@@ -46,7 +46,7 @@ import fr.liglab.adele.cilia.util.Watch;
 import fr.liglab.adele.cilia.util.concurrent.ConcurrentReaderHashMap;
 
 @SuppressWarnings({ "rawtypes", "unchecked" })
-public class MonitorHandlerStateVar extends AbstractMonitor  {
+public class MonitorHandlerStateVar extends AbstractMonitor {
 
 	private static Logger logger = LoggerFactory.getLogger(ConstRuntime.LOGGER_KNOWLEDGE);
 
@@ -66,7 +66,6 @@ public class MonitorHandlerStateVar extends AbstractMonitor  {
 	private LinkedList m_historyList = new LinkedList();
 	private Object _lock = new Object();
 	private Watch processTime;
-	private boolean isMediatorValid = false;
 	private String chainId, componentId, uuid;
 	private Map m_statevar = new ConcurrentReaderHashMap();
 	private Set listStateVarEnabled = new HashSet();
@@ -125,7 +124,7 @@ public class MonitorHandlerStateVar extends AbstractMonitor  {
 
 	public void start() {
 		m_bundleContext = getFactory().getBundleContext();
-		//getInstanceManager().addInstanceStateListener(this);
+		// getInstanceManager().addInstanceStateListener(this);
 	}
 
 	public void stop() {
@@ -556,12 +555,6 @@ public class MonitorHandlerStateVar extends AbstractMonitor  {
 			publish(stateVar, data, tickCount);
 		}
 	}
-
-	/* Return the mediator/adapteur instance validity */
-	public boolean isComponentValid() {
-		return isMediatorValid;
-	}
-
 
 	/* Reconfigure */
 	public void reconfigure(Dictionary configuration) {
