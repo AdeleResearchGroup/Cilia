@@ -14,16 +14,13 @@
  */
 package fr.liglab.adele.cilia.internals.factories;
 
-import java.util.ArrayList;
 import java.util.Dictionary;
-import java.util.List;
 import java.util.Properties;
 
 import org.apache.felix.ipojo.ComponentInstance;
 import org.apache.felix.ipojo.Handler;
 import org.apache.felix.ipojo.HandlerManager;
 import org.apache.felix.ipojo.InstanceManager;
-import org.apache.felix.ipojo.InstanceStateListener;
 import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -220,5 +217,11 @@ public abstract class MediatorComponentManager extends InstanceManager {
 		}
 		return im;
 	}
+	
+	 public void reconfigure(Dictionary configuration) {
+		 super.reconfigure(configuration);
+		 schedulerManager.reconfigureConstituant(configuration);
+		 dispatcherManager.reconfigureConstituant(configuration);
+	 }
 
 }
