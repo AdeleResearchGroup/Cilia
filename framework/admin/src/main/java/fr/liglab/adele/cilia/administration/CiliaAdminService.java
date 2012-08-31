@@ -14,78 +14,26 @@
  */
 package fr.liglab.adele.cilia.administration;
 
-import fr.liglab.adele.cilia.model.Adapter;
-import fr.liglab.adele.cilia.model.Chain;
-import fr.liglab.adele.cilia.model.Mediator;
+import fr.liglab.adele.cilia.exceptions.CiliaIllegalParameterException;
+
 
 /**
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project
  *         Team</a>
  * 
  */
-public interface CiliaAdminService {
+public interface CiliaAdminService extends AdminChain, AdminComponent, AdminBinding{
 
-	// Show
-	public Chain getChain(String chainid);
-
-	public Mediator getMediator(String chainId, String mediatorId);
-
-	public Adapter getAdapter(String chainId, String adapterId);
-
-	// Create
-	public void createEmptyChain(String chainId);
-
-	public void createMediator(String chainId, String mediatorType, String mediatorId);
-
-	public void createAdapter(String chainId, String adapterType, String adapterId);
-
-	public void createBinding(String chainId, String from, String to);
-
-	// Start
-	public void startChain(String id);
-
-	// Stop
-
-	public void stopChain(String id);
+	/**
+	 * Initialize a mediation chain.
+	 * @param chainId
+	 */
+	void startChain(String chainId) throws CiliaIllegalParameterException;
 	
-	public void loadChain(String url);
+	/**
+	 * Stop a mediation chain
+	 * @param chainId
+	 */
+	void stopChain(String chainId) throws CiliaIllegalParameterException;
 	
-	public void unloadChain(String url);
-
-	// Modify
-	// chain id=chainid property=propertyName value=propertyvalue
-	// type=[primitive|Array|Map]
-	public void chainProperty(String chainId, String propname, String value, String type);
-
-	public void mediatorProperty(String chainId, String mediatorId, String propname,
-			String value, String type);
-
-	public void adapterProperty(String chainId, String adapterId, String propname,
-			String value, String type);
-
-	public void bindingProperty(String chainId, String from, String to, String propname,
-			String value, String type);
-
-	// Remove
-	public void removeChain(String chainId);
-
-	public void removeMediator(String chainId, String mediatorId);
-
-	public void removeAdapter(String chainId, String adapterId);
-
-	public void removeBinding(String chainID, String from, String to);
-
-	// Replace
-	public void replaceMediator(String chainId, String mediatorSource, String mediatorDest);
-
-	public void replaceAdapter(String chainId, String adapterSource, String adapterDest);
-	
-	// Copy 
-	public void copyMediator(String chainId, String mediatorSource, String mediatorDest);
-
-	public void copyAdapter(String chainId, String adapterSource, String adapterDest);
-	
-	//generic command
-	public void execute(String line);
-
 }

@@ -10,234 +10,26 @@
 
 <cilia xmlns:cilia="fr.liglab.adele.cilia" xmlns:jmx="org.apache.felix.ipojo.handlers.jmx"
 	xmlns:ipojo="org.apache.felix.ipojo">
-	<!-- Processors to add cilia elements -->
-	<processor name="ciliaCreatorProcessor"
-		classname="fr.liglab.adele.cilia.administration.processors.CiliaCreatorProcessor"
-		namespace="fr.liglab.adele.cilia.admin">
-		<method name="create" data.type="fr.liglab.adele.cilia.Data" />
+
+	<ipojo:component
+		classname="fr.liglab.adele.cilia.administration.impl.CiliaAdminServiceImpl"
+		name="Cilia-Admin-Service" immediate="true" architecture="true">
+		<ipojo:provides/>
 		<ipojo:requires field="ccontext" />
-	</processor>
+		<ipojo:requires field="parser" />
+	</ipojo:component>
 
-
-	<!-- Processors to remove cilia elements -->
-	<processor name="ciliaRemoverProcessor"
-		classname="fr.liglab.adele.cilia.administration.processors.CiliaRemoverProcessor"
-		namespace="fr.liglab.adele.cilia.admin">
-		<method name="remove" data.type="fr.liglab.adele.cilia.Data" />
-		<ipojo:requires field="ccontext" />
-	</processor>
-
-
-	<processor name="ciliaStarterProcessor"
-		classname="fr.liglab.adele.cilia.administration.processors.CiliaStarterProcessor"
-		namespace="fr.liglab.adele.cilia.admin">
-		<method name="start" data.type="fr.liglab.adele.cilia.Data" />
-		<ipojo:requires field="ccontext" />
-	</processor>
-
-	<processor name="ciliaStopProcessor"
-		classname="fr.liglab.adele.cilia.administration.processors.CiliaStopProcessor"
-		namespace="fr.liglab.adele.cilia.admin">
-		<method name="stop" data.type="fr.liglab.adele.cilia.Data" />
-		<ipojo:requires field="ccontext" />
-	</processor>
-
-	<processor name="ciliaModifierProcessor"
-		classname="fr.liglab.adele.cilia.administration.processors.CiliaModifierProcessor"
-		namespace="fr.liglab.adele.cilia.admin">
-		<method name="modify" data.type="fr.liglab.adele.cilia.Data" />
-		<ipojo:requires field="ccontext" />
-	</processor>
-
-	<processor name="ciliaShowProcessor"
-		classname="fr.liglab.adele.cilia.administration.processors.CiliaShowProcessor"
-		namespace="fr.liglab.adele.cilia.admin">
-		<method name="show" data.type="fr.liglab.adele.cilia.Data" />
-		<ipojo:requires field="ccontext" />
-	</processor>
-
-	<processor name="ciliaLoaderProcessor"
-		classname="fr.liglab.adele.cilia.administration.processors.CiliaLoadChainProcessor"
-		namespace="fr.liglab.adele.cilia.admin">
-		<method name="load" data.type="fr.liglab.adele.cilia.Data" />
-		<ipojo:requires field="manager" />
-	</processor>
-
-	<processor name="ciliaReplacerProcessor"
-		classname="fr.liglab.adele.cilia.administration.processors.CiliaReplacerProcessor"
-		namespace="fr.liglab.adele.cilia.admin">
-		<method name="replace" data.type="fr.liglab.adele.cilia.Data" />
-		<ipojo:requires field="ccontext" />
-	</processor>
-
-	<processor name="ciliaCopierProcessor"
-		classname="fr.liglab.adele.cilia.administration.processors.CiliaCopierProcessor"
-		namespace="fr.liglab.adele.cilia.admin">
-		<method name="copy" data.type="fr.liglab.adele.cilia.Data" />
-		<ipojo:requires field="ccontext" />
-	</processor>
-
-	<mediator-component name="CiliaAdminCBMediator"
-		namespace="fr.liglab.adele.cilia.admin" architecture="true">
-		<ports>
-			<in-port name="unique" type="cilia-command" />
-			<out-port name="create" type="cilia-command" />
-			<out-port name="remove" type="cilia-command" />
-			<out-port name="start" type="cilia-command" />
-			<out-port name="stop" type="cilia-command" />
-			<out-port name="show" type="cilia-command" />
-			<out-port name="modify" type="cilia-command" />
-			<out-port name="load" type="cilia-command" />
-			<out-port name="unload" type="cilia-command" />
-			<out-port name="replace" type="cilia-command" />
-			<out-port name="copy" type="cilia-command" />
-		</ports>
-		<scheduler name="immediate-scheduler" namespace="fr.liglab.adele.cilia" />
-		<processor name="simple-processor" namespace="fr.liglab.adele.cilia" />
-		<dispatcher name="content-based-dispatcher" namespace="fr.liglab.adele.cilia" />
-	</mediator-component>
-
-	<mediator-component name="CiliaAdminCreator"
-		namespace="fr.liglab.adele.cilia.admin">
-		<ports>
-			<in-port name="creatorIn" type="cilia-command" />
-		</ports>
-		<scheduler name="immediate-scheduler" namespace="fr.liglab.adele.cilia" />
-		<processor name="ciliaCreatorProcessor" namespace="fr.liglab.adele.cilia.admin" />
-		<dispatcher name="multicast-dispatcher" namespace="fr.liglab.adele.cilia" />
-	</mediator-component>
-
-	<mediator-component name="CiliaAdminRemover"
-		namespace="fr.liglab.adele.cilia.admin">
-		<ports>
-			<in-port name="removerIn" type="cilia-command" />
-		</ports>
-		<scheduler name="immediate-scheduler" namespace="fr.liglab.adele.cilia" />
-		<processor name="ciliaRemoverProcessor" namespace="fr.liglab.adele.cilia.admin" />
-		<dispatcher name="multicast-dispatcher" namespace="fr.liglab.adele.cilia" />
-	</mediator-component>
-
-	<mediator-component name="CiliaAdminStarter"
-		namespace="fr.liglab.adele.cilia.admin">
-		<ports>
-			<in-port name="starterIn" type="cilia-command" />
-		</ports>
-		<scheduler name="immediate-scheduler" namespace="fr.liglab.adele.cilia" />
-		<processor name="ciliaStarterProcessor" namespace="fr.liglab.adele.cilia.admin" />
-		<dispatcher name="multicast-dispatcher" namespace="fr.liglab.adele.cilia" />
-	</mediator-component>
-
-	<mediator-component name="CiliaAdminStop"
-		namespace="fr.liglab.adele.cilia.admin">
-		<ports>
-			<in-port name="stopIn" type="cilia-command" />
-		</ports>
-		<scheduler name="immediate-scheduler" namespace="fr.liglab.adele.cilia" />
-		<processor name="ciliaStopProcessor" namespace="fr.liglab.adele.cilia.admin" />
-		<dispatcher name="multicast-dispatcher" namespace="fr.liglab.adele.cilia" />
-	</mediator-component>
-
-	<mediator-component name="CiliaAdminShow"
-		namespace="fr.liglab.adele.cilia.admin">
-		<ports>
-			<in-port name="showIn" type="cilia-command" />
-		</ports>
-		<scheduler name="immediate-scheduler" namespace="fr.liglab.adele.cilia" />
-		<processor name="ciliaShowProcessor" namespace="fr.liglab.adele.cilia.admin" />
-		<dispatcher name="multicast-dispatcher" namespace="fr.liglab.adele.cilia" />
-	</mediator-component>
-
-	<mediator-component name="CiliaAdminModifier"
-		namespace="fr.liglab.adele.cilia.admin">
-		<ports>
-			<in-port name="modifyIn" type="cilia-command" />
-		</ports>
-		<scheduler name="immediate-scheduler" namespace="fr.liglab.adele.cilia" />
-		<processor name="ciliaModifierProcessor" namespace="fr.liglab.adele.cilia.admin" />
-		<dispatcher name="multicast-dispatcher" namespace="fr.liglab.adele.cilia" />
-	</mediator-component>
-
-	<mediator-component name="CiliaAdminLoader"
-		namespace="fr.liglab.adele.cilia.admin">
-		<ports>
-			<in-port name="loaderIn" type="cilia-command" />
-			<in-port name="unloaderIn" type="cilia-command" />
-		</ports>
-		<scheduler name="immediate-scheduler" namespace="fr.liglab.adele.cilia" />
-		<processor name="ciliaLoaderProcessor" namespace="fr.liglab.adele.cilia.admin" />
-		<dispatcher name="multicast-dispatcher" namespace="fr.liglab.adele.cilia" />
-	</mediator-component>
-
-	<mediator-component name="CiliaAdminReplacer"
-		namespace="fr.liglab.adele.cilia.admin">
-		<ports>
-			<in-port name="replacerIn" type="cilia-command" />
-		</ports>
-		<scheduler name="immediate-scheduler" namespace="fr.liglab.adele.cilia" />
-		<processor name="ciliaReplacerProcessor" namespace="fr.liglab.adele.cilia.admin" />
-		<dispatcher name="multicast-dispatcher" namespace="fr.liglab.adele.cilia" />
-	</mediator-component>
-
-	<mediator-component name="CiliaAdminCopier"
-		namespace="fr.liglab.adele.cilia.admin">
-		<ports>
-			<in-port name="copierIn" type="cilia-command" />
-		</ports>
-		<scheduler name="immediate-scheduler" namespace="fr.liglab.adele.cilia" />
-		<processor name="ciliaCopierProcessor" namespace="fr.liglab.adele.cilia.admin" />
-		<dispatcher name="multicast-dispatcher" namespace="fr.liglab.adele.cilia" />
-	</mediator-component>
-
-	<collector
-		classname="fr.liglab.adele.cilia.administration.adapter.CiliaAdminServiceImpl"
-		namespace="fr.liglab.adele.cilia" name="cilia-admin-service"
-		immediate="true" architecture="true">
-		<ipojo:provides />
-		<ipojo:requires field="ccontext" />
-	</collector>
-
-	<adapter name="cilia-admin-service-adapter" namespace="fr.liglab.adele.cilia.admin"
-		pattern="in-only">
-		<collector type="cilia-admin-service" />
-		<ports>
-			<out-port name="unique" type="cilia-command" />
-		</ports>
-	</adapter>
-
-
-	<collector
-		classname="fr.liglab.adele.cilia.administration.command.CiliaAdminGogoCommandAdapter"
-		namespace="fr.liglab.adele.cilia" name="felix-admin-gogo-shell-collector"
-		immediate="true" architecture="true">
-		<ipojo:provides
-			specifications="{fr.liglab.adele.cilia.administration.command.CiliaAdminGogoCommandAdapter}">
+	<ipojo:component
+		classname="fr.liglab.adele.cilia.administration.command.CiliaAdminServiceGogo"
+		name="Cilia-Admin-Gogo" immediate="true" architecture="true">
+		<ipojo:provides>
 			<ipojo:property name="osgi.command.scope" type="String"
 				value="cilia" />
 			<ipojo:property name="osgi.command.function" type="String[]"
-				value="{create,modify,remove,start,stop,show,load,help}" />
+				value="{startChain,stopChain,copyComponent,createChain,emptyChain,deleteChain,chain,chains,loadChain,replaceComponent,updateChain,createAdapter,createMediator,deleteAdapter,deleteMediator,adapter,mediator,updateAdapter,updateMediator,createBinding,deleteBinding}" />
 		</ipojo:provides>
-	</collector>
-
-	<adapter name="felix-admin-gogo-shell" namespace="fr.liglab.adele.cilia.admin"
-		pattern="in-only">
-		<collector type="felix-admin-gogo-shell-collector" />
-		<ports>
-			<out-port name="unique" type="cilia-command" />
-		</ports>
-	</adapter>
-
-
-
-
-	<ipojo:component name="ChainActivator"
-
-		classname="fr.liglab.adele.cilia.administration.activator.AdminChainActivator"
-		architecture="true">
-		<ipojo:requires field="ccontext">
-			<ipojo:callback type="unbind" method="unbindContext" />
-		</ipojo:requires>
-		<ipojo:callback transition="validate" method="start" />
-		<ipojo:callback transition="invalidate" method="stop" />
+		<ipojo:requires field="ccontext" />
+		<ipojo:requires field="admin" />
 	</ipojo:component>
 
 	<ipojo:component
@@ -273,104 +65,16 @@
 		<!-- <requires field="adminService" optional="true" /> -->
 	</ipojo:component>
 
-	<!-- JMX interface : ApplicatioRuntime -->
-	<ipojo:component classname="fr.liglab.adele.cilia.administration.jmx.ApplRuntime"
-		name="ApplicationRuntime.jmx">
-		<ipojo:provides specifications="fr.liglab.adele.cilia.dynamic.MeasureCallback" />
-		<ipojo:provides specifications="fr.liglab.adele.cilia.dynamic.ThresholdsCallback" />
-		<ipojo:provides specifications="fr.liglab.adele.cilia.NodeCallback" />
-		<ipojo:provides>
-			<ipojo:property name="cilia.runtime.node.data" type="java.lang.String"
-				value="(node=*)" />
-			<ipojo:property name="cilia.runtime.node.threshold"
-				type="java.lang.String" value="(node=*)" />
-			<ipojo:property name="cilia.runtime.node" type="java.lang.String"
-				value="(node=*)" />
-		</ipojo:provides>
-		<ipojo:requires field="ciliaContext" />
-		<jmx:config domain="cilia.application" name="runtime">
-			<jmx:method name="getChainIDs" description="Get chains ID" />
-			<jmx:method name="getEndpointsIn"
-				description="Get all endpoints matching the ldap filter" />
-			<jmx:method name="getEndpointsOut"
-				description="Get all endpoints out matching the ldap filter" />
-			<jmx:method name="getConnectedTo"
-				description="Get all nodes connected to the matching the ldap filter" />
-			<jmx:method name="getNodeByFilter"
-				description="Get all nodes the matching the ldap filter" />
-			<jmx:method name="nodeSetUp" description="Configure the monitoring level node" />
-			<jmx:method name="nodeRawData" description="Get Data received by the node" />
-			<jmx:method name="getQueueSize" description="Get queue size (#data stored)" />
-			<jmx:method name="getFlowControl" description="Get the ldap data flow control" />
-
-			<jmx:property field="nodes_arrival" name="Node arrival"
-				notification="true" rights="r" />
-			<jmx:property field="nodes_departure" name="Node departure"
-				notification="true" rights="r" />
-			<jmx:property field="nodes_modified" name="Node modified"
-				notification="true" rights="r" />
-			<jmx:property field="variable_updated" name="Variable"
-				notification="true" rights="r" />
-			<jmx:property field="variable_outOfBounds" name="Variable out of viability area"
-				notification="true" rights="r" />
-		</jmx:config>
-	</ipojo:component>
-	<ipojo:instance component="Runtime.listeners" name="Runtime.listeners" />
-
-	<!-- JMX interface : ApplicatioSpecification -->
-	<ipojo:component
-		classname="fr.liglab.adele.cilia.administration.jmx.ApplSpecification"
-		name="ApplicationSpecification.jmx">
-		<ipojo:provides specifications="fr.liglab.adele.cilia.NodeCallback" />
-		<ipojo:provides specifications="fr.liglab.adele.cilia.ChainCallback" />
-		<ipojo:provides>
-			<ipojo:property name="cilia.application.node" type="java.lang.String"
-				value="(node=*)" />
-			<ipojo:property name="cilia.application.chain" type="java.lang.String"
-				value="(chain=*)" />
-		</ipojo:provides>
-		<ipojo:requires field="ciliaContext" />
-
-		<jmx:config domain="cilia.application" name="specification">
-			<jmx:method name="getChainIDs" description="Get chains ID" />
-			<jmx:method name="getEndpointsIn"
-				description="Get all endpoints matching the ldap filter" />
-			<jmx:method name="getEndpointsOut"
-				description="Get all endpoints out matching the ldap filter" />
-			<jmx:method name="getConnectedTo"
-				description="Get all nodes connected to the matching the ldap filter" />
-			<jmx:method name="getNodeByFilter"
-				description="Get all nodes the matching the ldap filter" />
-
-			<jmx:property field="nodes_arrival" name="Node arrival"
-				notification="true" rights="r" />
-			<jmx:property field="nodes_departure" name="Node departure"
-				notification="true" rights="r" />
-			<jmx:property field="nodes_modified" name="Node modified"
-				notification="true" rights="r" />
-			<jmx:property field="chain_arrival" name="Chain arrival"
-				notification="true" rights="r" />
-			<jmx:property field="chain_departure" name="Chain departure"
-				notification="true" rights="r" />
-			<jmx:property field="chain_started" name="Chain Started"
-				notification="true" rights="r" />
-			<jmx:property field="chain_stopped" name="Chain Stopped"
-				notification="true" rights="r" />
-		</jmx:config>
-	</ipojo:component>
-
-
 
 	<!-- INSTANCES -->
 
-	<ipojo:instance component="ChainActivator" name="chain-activator" />
+	<ipojo:instance component="Cilia-Admin-Service" name="Cilia-Admin-Service" />
+
+	<ipojo:instance component="Cilia-Admin-Gogo" name="Cilia-Admin-Gogo" />
+
 	<ipojo:instance component="Cilia-Deployer" name="Cilia-Deployer" />
 
 	<ipojo:instance component="Monitoring_Commands.gogo"
 		name="Monitoring_Commands.gogo" />
-	<!-- <ipojo:instance component="ApplicationSpecification.jmx" name="ApplicationSpecification.jmx" 
-		/> <ipojo:instance component="ApplicationRuntime.jmx" name="ApplicationRuntime.jmx" 
-		/> -->
-
 
 </cilia>

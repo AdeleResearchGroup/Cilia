@@ -62,10 +62,9 @@
 						</Export-Package>
 						<Private-Package>
 							fr.liglab.adele.cilia.administration.command,
-							fr.liglab.adele.cilia.administration.activator,
-							fr.liglab.adele.cilia.administration.processors,
 							fr.liglab.adele.cilia.administration.fileinstall, 
 							fr.liglab.adele.cilia.administration.adapter,
+							fr.liglab.adele.cilia.administration.impl,
 							fr.liglab.adele.cilia.administration.jmx													
 						</Private-Package>
 						<Include-Resource>
