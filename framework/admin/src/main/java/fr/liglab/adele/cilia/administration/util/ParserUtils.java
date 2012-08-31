@@ -1,14 +1,12 @@
 package fr.liglab.adele.cilia.administration.util;
 
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Dictionary;
-import java.util.HashMap;
+import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Stack;
 import java.util.StringTokenizer;
-
-import fr.liglab.adele.cilia.exceptions.CiliaException;
 
 
 
@@ -25,7 +23,7 @@ public class ParserUtils {
 		// Get the type of the structure to create
 		if (type != null) {
 			if (type.equalsIgnoreCase("map")) {
-				Map res = parseMap(value);
+				Hashtable res = parseTable(value);
 				if (res == null) {
 					System.out.println("Unable to parse map");
 					return null;		
@@ -61,13 +59,13 @@ public class ParserUtils {
 	 * Parses the string form of a Map as {key1[value1], key2[value2], [key3]:[value3]} as a list.
 	 * @param str the string form
 	 */
-	private static Map parseMap(String prop) {
-		List listOfEntrys = parseArraysAsList(prop);
-		Map properties = new HashMap();
+	private static Hashtable<String, Object> parseTable(String prop) {
+		List<String> listOfEntrys = parseArraysAsList(prop);
+		Hashtable<String, Object> properties = new Hashtable<String, Object>();
 		for(int i = 0; i < listOfEntrys.size() ; i++) {
-			String undecodedEntry = (String)listOfEntrys.get(i);
+			String undecodedEntry = listOfEntrys.get(i);
 			String key = null;
-			String value = null;
+			Object value = null;
 			int firstIdx = -1;
 			int lastIdx = -1;
 
@@ -75,7 +73,7 @@ public class ParserUtils {
 			if (firstIdx == -1){
 				return null;
 			}
-			lastIdx = findClossingBracketPosition(firstIdx, undecodedEntry);
+			lastIdx = findClossingBracketPosition(firstIdx, undecodedEntry, '[',']');
 			if (lastIdx ==- 1) {
 				return null;
 			}
@@ -85,7 +83,7 @@ public class ParserUtils {
 			if (firstIdx == -1){
 				return null;
 			}
-			lastIdx = findClossingBracketPosition(firstIdx, restValue);
+			lastIdx = findClossingBracketPosition(firstIdx, restValue,'[',']');
 			if (lastIdx ==- 1) {
 				return null;
 			}
@@ -97,12 +95,12 @@ public class ParserUtils {
 
 
 
-	public static int findClossingBracketPosition(int openBracket, String line) {
-		Stack st = new Stack();
+	public static int findClossingBracketPosition(int openBracket, String line, char init, char end) {
+		Stack<Integer> st = new Stack<Integer>();
 		for (int i = openBracket; i >= 0 && i < line.length(); i ++ ) {
-			if (line.charAt(i) == '[') {
+			if (line.charAt(i) == init ) { //'['
 				st.push(new Integer(i));
-			} if (line.charAt(i) == ']') {
+			} else if (line.charAt(i) == end ) { //']'
 				if (!st.empty()) st.pop();
 				if (st.empty()){
 					return i;
@@ -136,7 +134,7 @@ public class ParserUtils {
 	 * @param str the string form
 	 * @return the resulting list
 	 */
-	public static List parseArraysAsList(String str) {
+	public static List<String> parseArraysAsList(String str) {
 		return Arrays.asList(parseArrays(str));
 	}
 
@@ -151,7 +149,7 @@ public class ParserUtils {
 			return new String[0];
 		}
 
-		// Remove { and } or [ and ]
+		// Remove { and }
 		if ((str.charAt(0) == '{' && str.charAt(str.length() - 1) == '}') ) {
 			String internal = (str.substring(1, str.length() - 1)).trim();
 			// Check empty array
@@ -190,5 +188,77 @@ public class ParserUtils {
 		}
 		return String.valueOf(result);
 	}
+
+	public static Hashtable<String,Object> getProperties(final String properties) {
+		//		String [] props = parseArrays(properties);
+		//		String name = null;
+		//		String value = null;
+		//		Hashtable<String, Object> ht = new Hashtable<String, Object>();
+		//		for(String prop: props){
+		//			int index = prop.indexOf('=');
+		//			name = prop.substring(0, index);
+		//			value = prop.substring(index + 1);
+		//			ht.put(name, getValue(value));
+		//		}
+		//		return ht;
+		return JSONStringToHashtable(properties);
+	}
+
+	public static Hashtable<String,Object> JSONStringToHashtable(final String string) {
+		System.out.println("IT is " + string);
+		JSONObject jo = null;
+		Hashtable properties = null;
+		try {
+			jo = new JSONObject(string);
+			properties = JSONtoHashtable(jo);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+		System.out.println("And is " + string);
+		return properties;
+
+	}
+
+	private static Hashtable <String,Object> JSONtoHashtable(final JSONObject jobject) throws JSONException{
+		Hashtable properties = new Hashtable();
+		Iterator<String> it = jobject.keys();
+		while (it.hasNext()){
+			Object value = null;
+			String key = it.next();
+			Object job = jobject.get(key);
+			if (job instanceof JSONObject) {
+				value = JSONtoHashtable((JSONObject)job);
+			} else if (job instanceof JSONArray){
+				JSONArray ja = (JSONArray)job;
+				value = JSONtoArray(ja);
+			} else {
+				value = job;
+			}
+			properties.put(key, value);
+		}
+		return properties;
+	}
+
+	private static List JSONtoArray(JSONArray jarray) throws JSONException {
+		List list = new ArrayList();
+		for (int i = 0 ; i < jarray.length(); i++) {
+			list.add(jarray.get(i));
+		}
+		return list;
+	}
+	//	private static Object getValue(String value){
+	//		Object ovalue = null;
+	//		value = value.trim();
+	//		if (value.startsWith("{") && value.endsWith("}")) { //It is a Hashtable
+	//			ovalue = getProperties(value);
+	//		} else if (value.startsWith("[") && value.endsWith("]")) { // It is a List
+	//			ovalue = parseArrays(value);
+	//		} else {
+	//			ovalue = value;
+	//		}
+	//		return ovalue;
+	//	}
+
 
 }
