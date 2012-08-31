@@ -75,11 +75,11 @@ public abstract class ConstituentInstanceManager extends CiliaInstanceManagerSet
 		constituant.updateInstanceProperties(dico);
 	}
 	
-	public CiliaInstanceWrapper addComponent(String port, Component component) {
+	protected CiliaInstanceWrapper addComponent(String port, Component component) {
 		return addComponent(port, component, true);
 	}
 
-	public CiliaInstanceWrapper addComponent(String port, Component component, boolean start) {
+	protected CiliaInstanceWrapper addComponent(String port, Component component, boolean start) {
 		CiliaInstanceWrapper elementInstance = new CiliaInstanceWrapper(bcontext, component.getId(), createConstituantFilter(component), component.getProperties(), this);
 		synchronized (lockObject) {
 			super.addInstance(port, elementInstance);
@@ -90,7 +90,7 @@ public abstract class ConstituentInstanceManager extends CiliaInstanceManagerSet
 		return elementInstance;
 	}
 
-	public boolean removeComponent(String port, Component component){
+	protected boolean removeComponent(String port, Component component){
 		synchronized (lockObject) {
 			return super.removeInstance(port, component.getId());
 		}
@@ -135,5 +135,9 @@ public abstract class ConstituentInstanceManager extends CiliaInstanceManagerSet
 				}
 			}
 		}
+	}
+	
+	protected MediatorComponentManager getMediatorComponentManager(){
+		return mediatorInstance;
 	}
 }

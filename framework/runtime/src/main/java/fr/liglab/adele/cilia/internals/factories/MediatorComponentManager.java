@@ -25,6 +25,7 @@ import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import fr.liglab.adele.cilia.exceptions.CiliaRuntimeException;
 import fr.liglab.adele.cilia.model.Component;
 import fr.liglab.adele.cilia.model.MediatorComponent;
 import fr.liglab.adele.cilia.model.Port;
@@ -58,6 +59,10 @@ public abstract class MediatorComponentManager extends InstanceManager {
 	protected volatile int ciliaState = MediatorComponent.INVALID;
 
 	protected Dictionary configuration;
+	
+	protected volatile int processing = 0;
+	
+	private volatile Object lock = new Object();
 
 	/**
 	 * @param factory
@@ -165,12 +170,12 @@ public abstract class MediatorComponentManager extends InstanceManager {
 					collector.getId());
 			return;
 		}
-		schedulerManager.removeComponent(port, collector);
+		schedulerManager.removeCollector(port, collector);
 	}
 
 	public synchronized void addCollector(String port, Component collector) {
 		updateSchedulerManager();
-		schedulerManager.addComponent(port, collector);
+		schedulerManager.addCollector(port, collector,true);
 	}
 
 	public synchronized void removeSender(String port, Component sender) {
@@ -179,12 +184,12 @@ public abstract class MediatorComponentManager extends InstanceManager {
 					sender.getId());
 			return;
 		}
-		dispatcherManager.removeComponent(port, sender);
+		dispatcherManager.removeSender(port, sender);
 	}
 
 	public synchronized void addSender(String port, Component sender) {
 		updateDispatcherManager();
-		dispatcherManager.addComponent(port, sender);
+		dispatcherManager.addSender(port, sender, true);
 	}
 
 	private SchedulerHandler getScheduler() {
@@ -223,5 +228,40 @@ public abstract class MediatorComponentManager extends InstanceManager {
 		 schedulerManager.reconfigureConstituant(configuration);
 		 dispatcherManager.reconfigureConstituant(configuration);
 	 }
+	 
+	 public void startProcessing(){
+		 synchronized (lock) {
+			 processing++;
+		}
+	 }
+	 
+	 public void stopProcessing(){
+		 synchronized (lock) {
+			 processing--;
+			 if (processing<0){
+				 processing = 0;
+			 }
+		}
+	 }
+
+	 public synchronized void waitToProcessing(long maxtime) throws CiliaRuntimeException {
+		 long currentTime = System.currentTimeMillis();
+		 long finalTime = currentTime + maxtime;
+		 while(isProcessing() != 0 || currentTime > finalTime ){
+			 try {
+				wait(100);
+			} catch (InterruptedException e) {
+				throw new CiliaRuntimeException(e.getMessage());
+			}
+		 }
+	 }
+	 
+	private int isProcessing(){
+		int returningValue = 1;
+		synchronized (lock) {
+			returningValue = processing;
+		}
+		return returningValue;
+	}
 
 }

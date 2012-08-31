@@ -25,6 +25,7 @@ import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import fr.liglab.adele.cilia.exceptions.CiliaRuntimeException;
 import fr.liglab.adele.cilia.internals.factories.MediatorComponentManager;
 import fr.liglab.adele.cilia.knowledge.MediatorMonitoring;
 import fr.liglab.adele.cilia.model.Component;
@@ -220,6 +221,13 @@ public class MediatorControllerImpl implements Observer {
 			mediatorModel.deleteObserver(this);
 			if (mediatorInstance != null) {
 				mediatorInstance.deleteObserver(this);
+				MediatorComponentManager mcm =  (MediatorComponentManager)(mediatorInstance.getInstanceManager());
+				try {
+					mcm.waitToProcessing(5000);
+				} catch (CiliaRuntimeException e) {
+					e.printStackTrace();
+				}
+				//We stop the mediator even if 
 				mediatorInstance.stop();
 				logger.info("Component [{}] stopped",
 						FrameworkUtils.makeQualifiedId(mediatorModel));
@@ -319,6 +327,7 @@ public class MediatorControllerImpl implements Observer {
 				
 				addedSenders.remove(sender);
 				MediatorComponentManager mm = getMediatorManager();
+				
 				if (mm != null){
 					mm.removeSender(sender.getPortname(), sender);
 				}

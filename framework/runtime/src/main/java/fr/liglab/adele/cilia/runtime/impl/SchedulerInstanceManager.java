@@ -100,28 +100,6 @@ public class SchedulerInstanceManager extends ConstituentInstanceManager {
 		im.setConnectedScheduler(handler);
 	}
 
-	private void addSchedulerToCollectors() {
-		synchronized (lockObject) { // Lock all the iteration. :S unable to add
-			// a collector when performing this
-			// opperation.
-			Set keys = getKeys();
-			Iterator it = keys.iterator();
-			while (it.hasNext()) {
-				Object obj = it.next();
-				List collectorList = (List) getPojo((String) obj);
-				Iterator itCollectors = collectorList.iterator();
-				while (itCollectors.hasNext()) {
-					CiliaInstance cicol = (CiliaInstance) itCollectors.next();
-					ICollector collector = (ICollector) cicol.getObject();
-					if (collector == null) {
-						logger.warn("Some Sender is null or invalid when some sender state has changed");
-					} else {
-						collector.setScheduler(handler);
-					}
-				}
-			}
-		}
-	}
 	
 	protected void organizeReferences(CiliaInstanceWrapper instance){
 		updateSchedulerReference();
@@ -134,6 +112,14 @@ public class SchedulerInstanceManager extends ConstituentInstanceManager {
 				}
 			}
 		}
+	}
+
+	public void removeCollector(String port, Component component){
+		removeComponent(port, component);
+	}
+	
+	public CiliaInstanceWrapper addCollector(String port, Component component, boolean start) {
+		return super.addComponent(port, component, start);
 	}
 
 }

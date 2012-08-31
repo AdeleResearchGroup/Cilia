@@ -16,6 +16,7 @@ package fr.liglab.adele.cilia.runtime.impl;
 
 import org.osgi.framework.BundleContext;
 
+import fr.liglab.adele.cilia.exceptions.CiliaRuntimeException;
 import fr.liglab.adele.cilia.framework.AbstractDispatcher;
 import fr.liglab.adele.cilia.framework.IDispatcher;
 import fr.liglab.adele.cilia.internals.factories.MediatorComponentManager;
@@ -89,8 +90,20 @@ public class DispatcherInstanceManager extends ConstituentInstanceManager {
 		return (IDispatcher)this.constituant.getObject();
 	}
 	
-	public CiliaInstanceWrapper addComponent(String port, Component component, boolean start) {
+	public CiliaInstanceWrapper addSender(String port, Component component, boolean start) {
 		return super.addComponent(port, component, start);
+	}
+	
+	public void removeSender(String port, Component component){
+		try {
+			mediatorInstance.waitToProcessing(5000);
+		} catch (CiliaRuntimeException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		removeComponent(port, component);//we can only remove a component where there is any processing.
+		//Also, the mediator MUST be blocked when removing, so it must be impossible to trigger a processing while removing a sender.
 	}
 	
 }

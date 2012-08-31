@@ -250,6 +250,8 @@ public class DispatcherHandler extends PrimitiveHandler implements IDispatcherHa
 			}
 			notifyOnDispatch(rList);
 		}
+		//We notify that it stop processing and sending.
+		dispatcherManager.getMediatorComponentManager().stopProcessing();
 	}
 
 
