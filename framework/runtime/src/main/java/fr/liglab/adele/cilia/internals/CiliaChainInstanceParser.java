@@ -87,7 +87,6 @@ public class CiliaChainInstanceParser implements ChainParser {
 	 * @return
 	 */
 	public Builder[] obtainChains(URL xmlFile) throws CiliaException, BuilderException, BuilderPerformerException, FileNotFoundException {
-		List listChains = new ArrayList();
 		InputStream fis;
 		try {
 			fis = xmlFile.openStream();
@@ -98,9 +97,15 @@ public class CiliaChainInstanceParser implements ChainParser {
 		}
 		// First child is the root node.
 		Node node = XmlTools.streamToNode(fis).getFirstChild();
+		return parseChains(node);
+	}
+
+	public Builder[] parseChains(Object nodeobject) throws CiliaException{
+		List listChains = new ArrayList();
+		Node node = (Node)nodeobject;
 		String rootName = node.getNodeName();
 		if (rootName.compareTo(ROOT_FILE) != 0) {
-			throw new CiliaException(xmlFile.getPath() + " Root element must be <"
+			throw new CiliaException(" Root element must be <"
 					+ ROOT_FILE + "> and is <" + rootName + ">");
 		}
 		log.debug("Found cilia tag");
@@ -116,7 +121,7 @@ public class CiliaChainInstanceParser implements ChainParser {
 					listChains.add(newChain);
 				}
 			}
-
+			
 			possibleChain = possibleChain.getNextSibling();
 		}
 		if (listChains.isEmpty()) {
@@ -127,11 +132,11 @@ public class CiliaChainInstanceParser implements ChainParser {
 			newArray[i] = (Builder) listChains.get(i);
 		return newArray;
 	}
-
+	
 	/**
 	 * It will convert a Chain in a Node to a chain model. TODO: Use JAXB.
 	 */
-	public Builder parseChain(Object objectchain) throws CiliaException, BuilderException, BuilderPerformerException {
+	private Builder parseChain(Object objectchain) throws CiliaException, BuilderException, BuilderPerformerException {
 		Node nchain = checkObject(objectchain);
 
 		if (nchain == null) {
@@ -139,9 +144,10 @@ public class CiliaChainInstanceParser implements ChainParser {
 					+ " is not instance of org.w3c.dom.Node");
 		}
 
-		if (nchain == null || nchain.getNodeName().compareTo(ROOT_CHAIN) != 0) {
+		
+		if (nchain.getNodeName().compareTo(ROOT_CHAIN) != 0) {
 			log.debug(nchain.getNodeName() + "Node is not a chain");
-			throw new CiliaException("Node is not a chain. It must start with <chain>");
+			throw new CiliaException("Node is not a chain. It must start with <chain>. It is: " + nchain.getNodeName());
 		}
 		// It must add mediators at first.
 		String id = getId(nchain);
