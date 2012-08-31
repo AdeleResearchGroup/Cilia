@@ -70,7 +70,9 @@ public class MediatorConfiguratorImpl implements MediatorConfigurator {
 	 * @see fr.liglab.adele.cilia.builder.Configurator#set(java.util.Dictionary)
 	 */
 	public MediatorConfigurator set(Hashtable props) {
-		configureSet(temporalSet, props);
+		if(props != null){
+			configureSet(temporalSet, props);
+		}
 		return this;
 	}
 
