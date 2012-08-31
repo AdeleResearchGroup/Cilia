@@ -450,9 +450,11 @@ public abstract class MediatorComponentImpl extends ComponentImpl implements
 
 
 	public String toString() {
-		StringBuffer sb = new StringBuffer(FrameworkUtils.makeQualifiedId(chainId(), nodeId(), uuid()));
-		sb.append("creation date :"+Watch.formatDateIso8601(creationTimeStamp));
-		sb.append(",properties:").append(super.getProperties());
+		StringBuffer sb = new StringBuffer(FrameworkUtils.makeQualifiedId(chainId(), nodeId(), uuid())).append('\n');
+		sb.append("Type : ").append(getType()).append('\n');
+		sb.append("ID : ").append(getId()).append('\n');
+		sb.append("Creation date :"+Watch.formatDateIso8601(creationTimeStamp)).append('\n');
+		sb.append("Properties:").append(super.getProperties());
 		return sb.toString();
 	}
 	
