@@ -84,7 +84,7 @@ public class XmlTools {
         node = streamToNode(is);
         is.close();
         } catch(Exception ex) {
-            throw new CiliaException("Unable to parse" + xml);
+            throw new CiliaException("Unable to parse: " + xml);
         }
         return node;
     }
