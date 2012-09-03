@@ -1,0 +1,19 @@
+<cilia>
+	<chain id="toto">
+		<mediators>
+			<mediator-instance type="Mock" id="m1"/>
+		</mediators>
+		<adapters>
+			<adapter-instance id="a1" type="event-admin-in-adapter" >
+				<property name="topic" value="in_adapter_topic"/>
+			</adapter-instance>
+			<adapter-instance id="a2" type="event-admin-out-adapter" >
+				<property name="topic" value="out_adapter_topic"/>
+			</adapter-instance>
+		</adapters>
+		<bindings>
+			<binding from="a1:unique" to="m1:unique"/>
+			<binding from="m1:unique" to="a2:unique"/>
+		</bindings>
+	</chain>
+</cilia>
