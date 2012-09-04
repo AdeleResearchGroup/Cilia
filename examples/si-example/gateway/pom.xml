@@ -66,11 +66,7 @@
 			<groupId>fr.liglab.adele.cilia</groupId>
 			<artifactId>cilia-runtime</artifactId>
 		</dependency>
-		<dependency>
-			<groupId>fr.liglab.adele.cilia</groupId>
-			<artifactId>cilia-admin</artifactId>
-		</dependency>
-		<!-- GOGO -->
+				<!-- GOGO -->
         <dependency>
             <groupId>org.apache.felix</groupId>
             <artifactId>org.apache.felix.gogo.runtime</artifactId>

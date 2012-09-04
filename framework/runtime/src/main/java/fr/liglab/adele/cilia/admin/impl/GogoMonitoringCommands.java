@@ -13,9 +13,8 @@
  * limitations under the License.
  */
 
-package fr.liglab.adele.cilia.administration.command;
+package fr.liglab.adele.cilia.admin.impl;
 
-import org.apache.felix.service.command.Descriptor;
 
 import fr.liglab.adele.cilia.ApplicationRuntime;
 import fr.liglab.adele.cilia.ChainCallback;
@@ -67,7 +66,7 @@ public class GogoMonitoringCommands {
 	public void stop() {
 	}
 
-	@Descriptor("Dump all successors to the node defined by ldapfiter")
+	//@Descriptor("Dump all successors to the node defined by ldapfiter")
 	public void runtime_connected_to(String ldap) {
 		try {
 			System.out.println(HEADER);
@@ -78,7 +77,7 @@ public class GogoMonitoringCommands {
 		}
 	}
 
-	@Descriptor("Dump all adapters in to the node defined by ldapfiter")
+	//@Descriptor("Dump all adapters in to the node defined by ldapfiter")
 	public void runtime_endpoints_in(String ldap) {
 		try {
 			System.out.println(HEADER);
@@ -89,7 +88,7 @@ public class GogoMonitoringCommands {
 		}
 	}
 
-	@Descriptor("Dump all adapters in to the node defined by ldapfiter")
+	//@Descriptor("Dump all adapters in to the node defined by ldapfiter")
 	public void runtime_endpoints_out(String ldap) {
 		try {
 			System.out.println(HEADER);
@@ -100,7 +99,7 @@ public class GogoMonitoringCommands {
 		}
 	}
 
-	@Descriptor("Dump all adapters in to the node defined by ldapfiter")
+	//@Descriptor("Dump all adapters in to the node defined by ldapfiter")
 	public void runtime_find_node(String ldapFilter) {
 		try {
 			Node[] nodes;
@@ -120,7 +119,7 @@ public class GogoMonitoringCommands {
 		}
 	}
 
-	@Descriptor("Configure the setup of the node")
+	//@Descriptor("Configure the setup of the node")
 	public void node_setup(String nodeLdap, String variable, int queueSize, String flow,
 			boolean enable) {
 		try {
@@ -141,7 +140,7 @@ public class GogoMonitoringCommands {
 		}
 	}
 
-	@Descriptor("Configure the setup of the node")
+	//@Descriptor("Configure the setup of the node")
 	public void node_rawdata(String nodeLdap, String variable) {
 		try {
 			RawData[] nodes = runtime.nodeRawData(nodeLdap);
@@ -168,7 +167,7 @@ public class GogoMonitoringCommands {
 		}
 	}
 
-	@Descriptor("Configure all Threshold for node matching the filter")
+	//@Descriptor("Configure all Threshold for node matching the filter")
 	public void node_monitoring(String nodeLdap, String variable) {
 		try {
 			System.out.println("Not yet implemented");
@@ -177,7 +176,7 @@ public class GogoMonitoringCommands {
 		}
 	}
 
-	@Descriptor("Dump all nodes matching the filter")
+	//@Descriptor("Dump all nodes matching the filter")
 	public void node_dump(String nodeLdap) {
 		try {
 			System.out.println("Not yet implemented");
@@ -186,7 +185,7 @@ public class GogoMonitoringCommands {
 		}
 	}
 
-	@Descriptor("Dump the state of the chain")
+	//@Descriptor("Dump the state of the chain")
 	public void app_chain_state(String chainId) {
 		try {
 			System.out.println(HEADER);
@@ -216,7 +215,7 @@ public class GogoMonitoringCommands {
 		}
 	}
 
-	@Descriptor("Dump all chainID at runtime")
+	//@Descriptor("Dump all chainID at runtime")
 	public void runtime_chains() {
 		String[] chains = runtime.getChainId();
 		System.out.println(HEADER);
@@ -285,7 +284,7 @@ public class GogoMonitoringCommands {
 		}
 	}
 
-	@Descriptor("Dump all chainId")
+	//@Descriptor("Dump all chainId")
 	public void app_chains() {
 		try {
 			String[] chains = runtime.getChainId();
@@ -299,17 +298,17 @@ public class GogoMonitoringCommands {
 		}
 	}
 
-	@Descriptor("List adapters In")
+	//@Descriptor("List adapters In")
 	public void app_endpoints_in(String ldapFilter) {
 		endpoints(runtime, ldapFilter, true);
 	}
 
-	@Descriptor("List adapters Out")
+	//@Descriptor("List adapters Out")
 	public void app_endpoints_out(String ldapFilter) {
 		endpoints(runtime, ldapFilter, false);
 	}
 
-	@Descriptor("Dump all successors to the adapter/mediator defined by ldapfiter")
+	//@Descriptor("Dump all successors to the adapter/mediator defined by ldapfiter")
 	public void app_connected_to(String ldap) {
 		try {
 			System.out.println(HEADER);
@@ -321,7 +320,7 @@ public class GogoMonitoringCommands {
 		}
 	}
 
-	@Descriptor("Dump all adapters in to the node defined by ldapfiter")
+	//@Descriptor("Dump all adapters in to the node defined by ldapfiter")
 	public void app_find_node(String ldapFilter) {
 		try {
 			Node[] nodes;
@@ -341,7 +340,7 @@ public class GogoMonitoringCommands {
 		}
 	}
 
-	@Descriptor("Regiter/Unregister chain callback")
+	//@Descriptor("Regiter/Unregister chain callback")
 	public void app_event_chain(String ldapFilter) {
 		try {
 			if ((ldapFilter != null) && (ldapFilter.length() > 0)) {
@@ -357,7 +356,7 @@ public class GogoMonitoringCommands {
 		}
 	}
 
-	@Descriptor("Regiter/Unregister chain callback")
+	//@Descriptor("Regiter/Unregister chain callback")
 	public void app_callback_chain(String ldapFilter) {
 		try {
 			if ((ldapFilter != null) && (ldapFilter.length() > 0)) {
@@ -372,7 +371,7 @@ public class GogoMonitoringCommands {
 		}
 	}
 
-	@Descriptor("Regiter/Unregister node callback")
+	//@Descriptor("Regiter/Unregister node callback")
 	public void app_callback_node(String ldapFilter) {
 		try {
 			if ((ldapFilter != null) && (ldapFilter.length() > 0)) {
@@ -387,7 +386,7 @@ public class GogoMonitoringCommands {
 		}
 	}
 
-	@Descriptor("Regiter/Unregister measure callback")
+	//@Descriptor("Regiter/Unregister measure callback")
 	public void app_callback_variable(String ldapFilter) {
 		try {
 			if ((ldapFilter != null) && (ldapFilter.length() > 0)) {
@@ -402,7 +401,7 @@ public class GogoMonitoringCommands {
 		}
 	}
 
-	@Descriptor("Entry for test")
+	//@Descriptor("Entry for test")
 	public void my_entry() {
 		try {
 

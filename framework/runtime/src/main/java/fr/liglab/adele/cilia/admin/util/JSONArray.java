@@ -1,4 +1,4 @@
-package fr.liglab.adele.cilia.administration.util;
+package fr.liglab.adele.cilia.admin.util;
 
 /*
 Copyright (c) 2002 JSON.org

@@ -15,7 +15,7 @@
 /**
  * 
  */
-package fr.liglab.adele.cilia.administration;
+package fr.liglab.adele.cilia.admin;
 
 import java.util.Hashtable;
 

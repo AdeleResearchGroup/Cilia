@@ -405,5 +405,73 @@
 		<provides />
 	</component>
 	
+	
+	<!-- A D M I N I S T R A T I O N -->
+		<component
+		classname="fr.liglab.adele.cilia.admin.impl.CiliaAdminServiceImpl"
+		name="Cilia-Admin-Service" immediate="true" architecture="true">
+		<provides/>
+		<requires field="ccontext" />
+		<requires field="parser" />
+	</component>
+
+	<component
+		classname="fr.liglab.adele.cilia.admin.impl.CiliaAdminServiceGogo"
+		name="Cilia-Admin-Gogo" immediate="true" architecture="true">
+		<provides>
+			<property name="osgi.command.scope" type="String"
+				value="cilia" />
+			<property name="osgi.command.function" type="String[]"
+				value="{startChain,stopChain,copyComponent,createChain,emptyChain,deleteChain,chain,chains,loadChain,replaceComponent,updateChain,createAdapter,createMediator,deleteAdapter,deleteMediator,adapter,mediator,updateAdapter,updateMediator,createBinding,deleteBinding}" />
+		</provides>
+		<requires field="ccontext" />
+		<requires field="admin" />
+	</component>
+
+	<component
+		classname="fr.liglab.adele.cilia.admin.impl.CiliaFileInstall"
+		name="Cilia-Deployer" architecture="true">
+		<provides />
+		<requires field="manager" />
+		<callback transition="validate" method="start" />
+		<callback transition="invalidate" method="stop" />
+	</component>
+
+	<!-- Gogo commands : monitoring specification and runtime -->
+	<component
+		classname="fr.liglab.adele.cilia.admin.impl.GogoMonitoringCommands"
+		name="Monitoring_Commands.gogo">
+		<provides
+			specifications="fr.liglab.adele.cilia.admin.impl.GogoMonitoringCommands">
+			<property name="osgi.command.scope" type="String"
+				value="cilia" />
+			<property name="osgi.command.function" type="String[]"
+				value="{
+				        node_setup,node_rawdata,node_monitoring,
+				        app_chains,app_chain_state,app_endpoints_in,app_endpoints_out,app_connected_to,
+				        app_find_node,
+				        app_callback_chain,app_callback_node,app_callback_measure,
+				        my_entry
+				        }" />
+
+		</provides>
+		<requires field="ciliaContext" />
+		<callback transition="validate" method="start" />
+		<callback transition="invalidate" method="stop" />
+		<!-- <requires field="adminService" optional="true" /> -->
+	</component>
+
+
+	<!-- INSTANCES -->
+
+	<instance component="Cilia-Admin-Service" name="Cilia-Admin-Service" />
+
+	<instance component="Cilia-Admin-Gogo" name="Cilia-Admin-Gogo" />
+
+	<instance component="Cilia-Deployer" name="Cilia-Deployer" />
+
+	<instance component="Monitoring_Commands.gogo"
+		name="Monitoring_Commands.gogo" />
+		
 
 </ipojo>

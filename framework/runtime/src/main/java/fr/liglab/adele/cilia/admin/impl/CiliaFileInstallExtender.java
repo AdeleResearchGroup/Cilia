@@ -12,8 +12,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-package fr.liglab.adele.cilia.administration.fileinstall;
+/**
+ * 
+ */
+package fr.liglab.adele.cilia.admin.impl;
 
 import java.io.File;
 import java.util.HashSet;
@@ -27,13 +29,11 @@ import org.slf4j.LoggerFactory;
 import fr.liglab.adele.cilia.util.CiliaFileManager;
 
 /**
- * This class will listen all deployed files using fileinstall,
- * and tt will create cialia mediation chain.
- * Some classes and code in this file are based in iPOJO/Apache Extender. 
- * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project Team</a>
+ * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project
+ *         Team</a>
  *
  */
-public class CiliaFileInstall implements ArtifactInstaller{
+public class CiliaFileInstallExtender implements ArtifactInstaller {
 
 	/**
 	 * OSGi Bundle Context.
@@ -46,10 +46,10 @@ public class CiliaFileInstall implements ArtifactInstaller{
 
 	private CiliaFileManager manager;
 
-	private Set handledFiles = new HashSet();
+	private Set<File> handledFiles = new HashSet<File>();
 
 
-	public CiliaFileInstall (BundleContext context) {
+	public CiliaFileInstallExtender (BundleContext context) {
 		bcontext = context;
 	}
 
@@ -57,9 +57,8 @@ public class CiliaFileInstall implements ArtifactInstaller{
 	}
 
 	public void stop() {
-		Set files = handledFiles;
+		Set<File> files = handledFiles;
 		File filesArray[];
-		Object [] objectArray = files.toArray();
 		filesArray = (File[])files.toArray(new File[files.size()]);
 		for (int i = 0; i < filesArray.length; i++) {
 			manager.unloadChain(filesArray[i]);
@@ -67,7 +66,7 @@ public class CiliaFileInstall implements ArtifactInstaller{
 	}
 
 	public boolean canHandle(File file) {
-		if (file.getName().endsWith(".dscilia") ){
+		if (file.getName().endsWith(".extcilia") ){
 			return true;
 		}
 		return false;

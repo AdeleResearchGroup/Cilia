@@ -12,7 +12,7 @@
 	xmlns:ipojo="org.apache.felix.ipojo">
 
 	<ipojo:component
-		classname="fr.liglab.adele.cilia.administration.impl.CiliaAdminServiceImpl"
+		classname="fr.liglab.adele.cilia.admin.impl.CiliaAdminServiceImpl"
 		name="Cilia-Admin-Service" immediate="true" architecture="true">
 		<ipojo:provides/>
 		<ipojo:requires field="ccontext" />
@@ -20,7 +20,7 @@
 	</ipojo:component>
 
 	<ipojo:component
-		classname="fr.liglab.adele.cilia.administration.command.CiliaAdminServiceGogo"
+		classname="fr.liglab.adele.cilia.admin.impl.CiliaAdminServiceGogo"
 		name="Cilia-Admin-Gogo" immediate="true" architecture="true">
 		<ipojo:provides>
 			<ipojo:property name="osgi.command.scope" type="String"
@@ -33,7 +33,7 @@
 	</ipojo:component>
 
 	<ipojo:component
-		classname="fr.liglab.adele.cilia.administration.fileinstall.CiliaFileInstall"
+		classname="fr.liglab.adele.cilia.admin.impl.CiliaFileInstall"
 		name="Cilia-Deployer" architecture="true">
 		<ipojo:provides />
 		<ipojo:requires field="manager" />
@@ -43,10 +43,10 @@
 
 	<!-- Gogo commands : monitoring specification and runtime -->
 	<ipojo:component
-		classname="fr.liglab.adele.cilia.administration.command.GogoMonitoringCommands"
+		classname="fr.liglab.adele.cilia.admin.impl.GogoMonitoringCommands"
 		name="Monitoring_Commands.gogo">
 		<ipojo:provides
-			specifications="fr.liglab.adele.cilia.administration.command.GogoMonitoringCommands">
+			specifications="fr.liglab.adele.cilia.admin.impl.GogoMonitoringCommands">
 			<ipojo:property name="osgi.command.scope" type="String"
 				value="cilia" />
 			<ipojo:property name="osgi.command.function" type="String[]"

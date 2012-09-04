@@ -89,6 +89,7 @@ public class CiliaSpecificationTest {
 						.artifactId("org.apache.felix.ipojo.test.helpers")
 						.versionAsInProject(), mavenBundle().groupId("org.osgi")
 						.artifactId("org.osgi.compendium").versionAsInProject(),
+						mavenBundle().groupId("org.apache.felix").artifactId("org.apache.felix.fileinstall").versionAsInProject(),
 				mavenBundle().groupId("org.slf4j").artifactId("slf4j-api")
 						.versionAsInProject(), mavenBundle().groupId("org.slf4j")
 						.artifactId("slf4j-simple").version("1.6.1"), mavenBundle()

@@ -15,7 +15,7 @@
 /**
  * 
  */
-package fr.liglab.adele.cilia.administration.util;
+package fr.liglab.adele.cilia.admin.util;
 
 /**
  * The JSONException is thrown by the JSON.org classes when things are amiss.

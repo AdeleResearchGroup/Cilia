@@ -36,10 +36,11 @@
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
 		</dependency>
-		<dependency>
+		<!-- <dependency>
 			<groupId>org.apache.felix</groupId>
 			<artifactId>org.apache.felix.gogo.runtime</artifactId>
 		</dependency>
+		-->
 		<dependency>
 			<groupId>org.apache.felix</groupId>
 			<artifactId>org.apache.felix.fileinstall</artifactId>
@@ -57,15 +58,11 @@
 					<instructions>
 						<Bundle-SymbolicName>${pom.artifactId}</Bundle-SymbolicName>
 						<Export-Package>
-							fr.liglab.adele.cilia.administration, 
-							fr.liglab.adele.cilia.administration.util
+							fr.liglab.adele.cilia.admin, 
+							fr.liglab.adele.cilia.admin.util
 						</Export-Package>
 						<Private-Package>
-							fr.liglab.adele.cilia.administration.command,
-							fr.liglab.adele.cilia.administration.fileinstall, 
-							fr.liglab.adele.cilia.administration.adapter,
-							fr.liglab.adele.cilia.administration.impl,
-							fr.liglab.adele.cilia.administration.jmx													
+							fr.liglab.adele.cilia.admin.impl												
 						</Private-Package>
 						<Include-Resource>
 							{maven-resources},
