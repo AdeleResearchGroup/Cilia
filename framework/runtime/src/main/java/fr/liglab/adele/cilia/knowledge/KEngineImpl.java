@@ -147,10 +147,10 @@ public class KEngineImpl extends TopologyImpl implements ApplicationRuntime {
 		if (chainId == null) {
 			throw new CiliaIllegalParameterException("Chain Id is null");
 		}
-		if (ciliaContext.getChain(chainId) == null) {
+		if (ciliaContainer.getChain(chainId) == null) {
 			throw new CiliaIllegalStateException("chain " + chainId + " not found");
 		}
-		ciliaContext.startChain(chainId);
+		ciliaContainer.startChain(chainId);
 	}
 
 	public void stopChain(String chainId) throws CiliaIllegalParameterException,
@@ -158,10 +158,10 @@ public class KEngineImpl extends TopologyImpl implements ApplicationRuntime {
 		if (chainId == null) {
 			throw new CiliaIllegalParameterException("Chain Id is null");
 		}
-		if (ciliaContext.getChain(chainId) == null) {
+		if (ciliaContainer.getChain(chainId) == null) {
 			throw new CiliaIllegalStateException("chain " + chainId + " not found");
 		}
-		ciliaContext.stopChain(chainId);
+		ciliaContainer.stopChain(chainId);
 	}
 
 	public SetUp nodeSetup(Node node) throws CiliaIllegalParameterException,
@@ -174,7 +174,7 @@ public class KEngineImpl extends TopologyImpl implements ApplicationRuntime {
 	CiliaIllegalStateException {
 		if (chainId == null)
 			throw new CiliaIllegalParameterException("chain id is null");
-		ChainRuntime chain = ciliaContext.getChainRuntime(chainId);
+		ChainRuntime chain = ciliaContainer.getChainRuntime(chainId);
 		if (chain == null)
 			throw new CiliaIllegalStateException("'" + chainId + "' not found");
 		return chain.getState();
@@ -184,7 +184,7 @@ public class KEngineImpl extends TopologyImpl implements ApplicationRuntime {
 	CiliaIllegalStateException {
 		if (chainId == null)
 			throw new CiliaIllegalParameterException("chain id is null");
-		ChainRuntime chain = ciliaContext.getChainRuntime(chainId);
+		ChainRuntime chain = ciliaContainer.getChainRuntime(chainId);
 		if (chain == null)
 			throw new CiliaIllegalStateException("'" + chainId + "' not found");
 		return chain.lastCommand();
