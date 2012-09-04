@@ -222,10 +222,12 @@ public class MediatorControllerImpl implements Observer {
 			if (mediatorInstance != null) {
 				mediatorInstance.deleteObserver(this);
 				MediatorComponentManager mcm =  (MediatorComponentManager)(mediatorInstance.getInstanceManager());
-				try {
-					mcm.waitToProcessing(5000);
-				} catch (CiliaRuntimeException e) {
-					e.printStackTrace();
+				if (mcm != null) {
+					try {
+						mcm.waitToProcessing(5000);
+					} catch (CiliaRuntimeException e) {
+						e.printStackTrace();
+					}
 				}
 				//We stop the mediator even if 
 				mediatorInstance.stop();
@@ -305,7 +307,7 @@ public class MediatorControllerImpl implements Observer {
 	public void removeCollector(CollectorImpl collector) {
 		synchronized (lockObject) {
 			if (collector != null) {
-				
+
 				addedCollectors.remove(collector);
 				MediatorComponentManager mm = getMediatorManager();
 				if (mm != null){
@@ -324,10 +326,10 @@ public class MediatorControllerImpl implements Observer {
 	public void removeSender(SenderImpl sender) {
 		synchronized (lockObject) {
 			if (sender != null) {
-				
+
 				addedSenders.remove(sender);
 				MediatorComponentManager mm = getMediatorManager();
-				
+
 				if (mm != null){
 					mm.removeSender(sender.getPortname(), sender);
 				}
