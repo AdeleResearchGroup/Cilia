@@ -10,7 +10,7 @@
 <ipojo xmlns:cilia="fr.liglab.adele.cilia">
 
 
-	<component classname="fr.liglab.adele.cilia.internals.CiliaContextImpl"
+	<component classname="fr.liglab.adele.cilia.admin.impl.CiliaContextImpl"
 		name="CiliaContext" architecture="false" immediate="true">
 		<provides>
 			<property name="cilia.context.type" type="string" value="ipojo" />
@@ -219,7 +219,7 @@
 
 
 	<!-- PARSERS -->
-	<component classname="fr.liglab.adele.cilia.internals.CiliaChainInstanceParser"
+	<component classname="fr.liglab.adele.cilia.admin.impl.CiliaChainInstanceParser"
 		name="Cilia-Chain-Parser" architecture="false">
 		<provides />
 		<requires field="ccontext"/>
@@ -229,7 +229,7 @@
 		</requires>
 	</component>
 
-	<component classname="fr.liglab.adele.cilia.internals.CiliaFileManagerImpl"
+	<component classname="fr.liglab.adele.cilia.admin.impl.CiliaFileManagerImpl"
 		name="Cilia-File-Manager" architecture="false">
 		<provides />
 		<requires field="parser" />

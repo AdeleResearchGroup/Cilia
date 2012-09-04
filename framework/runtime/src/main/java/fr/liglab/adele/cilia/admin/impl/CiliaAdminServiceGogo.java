@@ -20,8 +20,8 @@ package fr.liglab.adele.cilia.admin.impl;
 import java.util.Hashtable;
 //import org.apache.felix.service.command.Descriptor;
 
+import fr.liglab.adele.cilia.CiliaAdminService;
 import fr.liglab.adele.cilia.CiliaContext;
-import fr.liglab.adele.cilia.admin.CiliaAdminService;
 import fr.liglab.adele.cilia.admin.util.ParserUtils;
 import fr.liglab.adele.cilia.exceptions.CiliaException;
 import fr.liglab.adele.cilia.exceptions.CiliaIllegalParameterException;

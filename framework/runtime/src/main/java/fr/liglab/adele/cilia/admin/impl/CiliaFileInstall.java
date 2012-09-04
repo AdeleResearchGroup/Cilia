@@ -33,7 +33,7 @@ import fr.liglab.adele.cilia.util.CiliaFileManager;
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project Team</a>
  *
  */
-public class CiliaFileInstall implements ArtifactInstaller{
+public class CiliaFileInstall implements ArtifactInstaller {
 
 	/**
 	 * OSGi Bundle Context.

@@ -18,11 +18,11 @@ import java.util.Hashtable;
 
 import org.w3c.dom.Node;
 
+import fr.liglab.adele.cilia.AdminBinding;
+import fr.liglab.adele.cilia.AdminChain;
+import fr.liglab.adele.cilia.AdminComponent;
+import fr.liglab.adele.cilia.CiliaAdminService;
 import fr.liglab.adele.cilia.CiliaContext;
-import fr.liglab.adele.cilia.admin.AdminBinding;
-import fr.liglab.adele.cilia.admin.AdminChain;
-import fr.liglab.adele.cilia.admin.AdminComponent;
-import fr.liglab.adele.cilia.admin.CiliaAdminService;
 import fr.liglab.adele.cilia.builder.Architecture;
 import fr.liglab.adele.cilia.builder.Builder;
 import fr.liglab.adele.cilia.exceptions.BuilderException;

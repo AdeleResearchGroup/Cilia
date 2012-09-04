@@ -23,7 +23,6 @@
 
 	<modules>
 		<module>cilia-helper</module>
-		<module>core</module>
 		<module>runtime</module>
 		</modules>
 
