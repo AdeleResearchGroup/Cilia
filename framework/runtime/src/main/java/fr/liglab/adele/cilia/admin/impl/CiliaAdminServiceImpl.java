@@ -15,6 +15,7 @@
 package fr.liglab.adele.cilia.admin.impl;
 
 import java.util.Hashtable;
+import java.util.Map;
 
 import org.w3c.dom.Node;
 
@@ -207,7 +208,7 @@ public class CiliaAdminServiceImpl implements CiliaAdminService, AdminChain, Adm
 	 * @param properties The initial properties.
 	 * @throws CiliaException If the chain does not exist or if the adapter with the same ID already exist. 
 	 */
-	public void createMediator(String chainId, String componentType, String componentID, Hashtable<String, Object> properties) throws CiliaException {
+	public void createMediator(String chainId, String componentType, String componentID, Map<String, Object> properties) throws CiliaException {
 		Builder builder = ccontext.getBuilder();
 		Architecture  chain = null;
 		chain = builder.get(chainId);
@@ -234,7 +235,7 @@ public class CiliaAdminServiceImpl implements CiliaAdminService, AdminChain, Adm
 	 * @throws CiliaException If the chain does not exist or if the adapter with the same ID already exist.
 	 */
 
-	public void createAdapter(String chainId, String componentType, String componentID, Hashtable<String, Object> properties) throws CiliaException {
+	public void createAdapter(String chainId, String componentType, String componentID, Map<String, Object> properties) throws CiliaException {
 		Builder builder = ccontext.getBuilder();
 		Architecture  chain = null;
 		chain = builder.get(chainId);
@@ -259,7 +260,7 @@ public class CiliaAdminServiceImpl implements CiliaAdminService, AdminChain, Adm
 	 * @param properties The new properties
 	 * @throws CiliaException. If the chain or the component does not exist.
 	 */
-	public void updateMediator(String chainId, String componentId,Hashtable<String, Object> properties) throws CiliaException {
+	public void updateMediator(String chainId, String componentId,Map<String, Object> properties) throws CiliaException {
 		Builder builder = ccontext.getBuilder();
 		Architecture  chain = null;
 		chain = builder.get(chainId);
@@ -273,7 +274,7 @@ public class CiliaAdminServiceImpl implements CiliaAdminService, AdminChain, Adm
 	 * @param properties The new properties
 	 * @throws CiliaException. If the chain or the component does not exist.
 	 */
-	public void updateAdapter(String chainId, String componentId, Hashtable<String, Object> properties) throws CiliaException {
+	public void updateAdapter(String chainId, String componentId, Map<String, Object> properties) throws CiliaException {
 		Builder builder = ccontext.getBuilder();
 		Architecture  chain = null;
 		chain = builder.get(chainId);
@@ -338,8 +339,8 @@ public class CiliaAdminServiceImpl implements CiliaAdminService, AdminChain, Adm
 	 * @throws CiliaInvalidSyntaxException if from or to parameters are not well formed.
 	 * @throws CiliaIllegalParameterException If chain or any of the components does not exist.
 	 */
-	public void createBinding(String chainId, String from, String to,
-			Hashtable<String, Object> properties)
+	public void createBinding(String chainId, String from, String to, String linker,
+			Map<String, Object> properties)
 					throws CiliaIllegalParameterException, CiliaException {
 		Builder builder = ccontext.getBuilder();
 		Architecture  chain = null;
@@ -350,7 +351,7 @@ public class CiliaAdminServiceImpl implements CiliaAdminService, AdminChain, Adm
 			throw new CiliaIllegalParameterException("Unable to locate chain:" + chainId);
 		}
 		try {
-			chain.bind().from(from).to(to).configure(properties);
+			chain.bind().using(linker).from(from).to(to).configure(properties);
 		} catch (CiliaException e) {
 			throw new CiliaIllegalParameterException("Ilegal Parameters exception:" + e.getMessage());
 		}

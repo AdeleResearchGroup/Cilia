@@ -257,9 +257,9 @@ public class CiliaAdminServiceGogo {
 	 */
 	//@Descriptor("Create a new Binding between two components")
 	public void createBinding(/*@Descriptor("The chain ID")*/String chainId, /*@Descriptor("The source mediator and its port in the form <mediatorID>:<port>")*/String from, /*@Descriptor("The target mediator and its port in the form <mediatorID>:<port>")*/String to,
-			/*@Descriptor("The new properties")*/String properties)
+			/*@Descriptor("The new properties")*/String linker, String properties)
 					throws CiliaIllegalParameterException, CiliaException {
-		admin.createBinding(chainId, from, to, ParserUtils.getProperties(properties));
+		admin.createBinding(chainId, from, to, linker ,ParserUtils.getProperties(properties));
 
 	}
 
@@ -267,7 +267,7 @@ public class CiliaAdminServiceGogo {
 	//@Descriptor("Create a new Binding between two components")
 	public void createBinding(/*@Descriptor("The chain ID")*/String chainId, /*@Descriptor("The source mediator and its port in the form <mediatorID>:<port>")*/String from, /*@Descriptor("The target mediator and its port in the form <mediatorID>:<port>")*/String to)
 					throws CiliaIllegalParameterException, CiliaException {
-		admin.createBinding(chainId, from, to, null);
+		admin.createBinding(chainId, from, to, null,  null);
 
 	}
 

@@ -445,7 +445,7 @@ public class ChainImpl extends ComponentImpl implements Chain{
 				}
 			}
 			allBindings = (BindingImpl[])result.toArray(new BindingImpl[result.size()]);
-		//} else {
+			//} else {
 
 			//			if (sourceB !=null && targetB == null) {
 			//			allBindings = sourceB;
@@ -454,7 +454,7 @@ public class ChainImpl extends ComponentImpl implements Chain{
 		}
 		return allBindings;
 	}
-	
+
 	public void dispose(){
 		super.dispose();
 		this.adapters.clear();
@@ -466,43 +466,49 @@ public class ChainImpl extends ComponentImpl implements Chain{
 	}
 
 	public String toString(){
-		StringBuffer toShow = new StringBuffer("Chain: ");
-		
-		
-			toShow.append(getId());
-			toShow.append("\n");
-			Set mediators = getMediators();
-			Set adapters = getAdapters();
-			Set bindings = getBindings();
-			Iterator itm = mediators.iterator();
-			Iterator ita = adapters.iterator();
-			Iterator itb = bindings.iterator();
-			// Add the mediator id's to the StringBuffer.
-			if (itm.hasNext()) {
-				toShow.append("[Mediators]\n");
-			}
+		StringBuffer toShow = new StringBuffer("{ ").append("\n");
+		toShow.append("Chain : ").append(getId()).append(",").append("\n");
+		Set mediators = getMediators();
+		Set adapters = getAdapters();
+		Set bindings = getBindings();
+		Iterator itm = mediators.iterator();
+		Iterator ita = adapters.iterator();
+		Iterator itb = bindings.iterator();
+		// Add the mediator id's to the StringBuffer.
+		if (itm.hasNext()) {
+			toShow.append("Mediators : [\n");
 			while (itm.hasNext()) {
 				MediatorImpl mediator = (MediatorImpl) itm.next();
 				toShow.append(mediator.getId());
-				toShow.append("\n");
+				toShow.append(",\n");
 			}
-			// Add the AdapterImpl id's to the StringBuffer.
-			if (ita.hasNext()) {
-				toShow.append("[Adapters]\n");
-			}
+			toShow.delete(toShow.length()-2,toShow.length()-1);
+			toShow.append("],\n");
+		}
+		// Add the AdapterImpl id's to the StringBuffer.
+		if (ita.hasNext()) {
+			toShow.append("Adapters : [\n");
 			while (ita.hasNext()) {
 				AdapterImpl adapter = (AdapterImpl) ita.next();
 				toShow.append(adapter.getId());
-				toShow.append("\n");
+				toShow.append(",\n");
 			}
-			if (itb.hasNext()) {
-				toShow.append("[Bindings]\n");
-			}
+			toShow.delete(toShow.length()-2,toShow.length()-1);
+			toShow.append("],\n");
+		}
+		if (itb.hasNext()) {
+			toShow.append("Bindings : [\n");
 			while (itb.hasNext()) {
 				BindingImpl binding = (BindingImpl) itb.next();
 				toShow.append(binding);
+				toShow.append(",\n");
 			}
-			return toShow.toString();
+			toShow.delete(toShow.length()-2,toShow.length()-1);
+			toShow.append("],\n");
+		}
+		toShow.delete(toShow.length()-2,toShow.length()-1);
+		toShow.append("}");
+		return toShow.toString();
 	}
-	
+
 }

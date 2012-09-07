@@ -11,7 +11,7 @@
 
 
 	<component classname="fr.liglab.adele.cilia.admin.impl.CiliaContextImpl"
-		name="CiliaContext" architecture="false" immediate="true">
+		name="CiliaContext"  immediate="true">
 		<provides>
 			<property name="cilia.context.type" type="string" value="ipojo" />
 		</provides>
@@ -36,7 +36,7 @@
 	</handler>
 
 	<handler classname="fr.liglab.adele.cilia.runtime.impl.DispatcherHandler"
-		name="dispatcher" namespace="fr.liglab.adele.cilia" architecture="false">
+		name="dispatcher" namespace="fr.liglab.adele.cilia" >
 		<requires field="m_applicationQueue" specification="fr.liglab.adele.cilia.runtime.WorkQueue"
 			filter="(cilia.pool.scope=application)" />
 		<callback transition="validate" method="validate" />
@@ -45,18 +45,18 @@
 
 	<handler classname="fr.liglab.adele.cilia.runtime.impl.MonitorHandler"
 		name="monitor-handler" level="2" namespace="fr.liglab.adele.cilia"
-		architecture="false">
+		>
 	</handler>
 
 	<handler
 		classname="fr.liglab.adele.cilia.framework.monitor.AuditHandler"
-		name="audit" namespace="fr.liglab.adele.cilia" architecture="true">
+		name="audit" namespace="fr.liglab.adele.cilia" >
 	</handler>
 
 	<handler
 		classname="fr.liglab.adele.cilia.framework.monitor.statevariable.MonitorHandlerStateVar"
 		name="monitor-statevar-handler" namespace="fr.liglab.adele.cilia"
-		architecture="false">
+		>
 		<requires field="m_systemQueue" specification="fr.liglab.adele.cilia.runtime.WorkQueue"
 			filter="(cilia.pool.scope=system)" />	
 		<callback transition="validate" method="validate" />
@@ -77,7 +77,7 @@
 	<scheduler
 		classname="fr.liglab.adele.cilia.framework.components.ImmediateScheduler"
 		name="immediate-scheduler" namespace="fr.liglab.adele.cilia"
-		architecture="false">
+		>
 <!--  
 		<cilia:audit field="testAudit" namespace ="scheduler" access="rw" />
 		
@@ -90,14 +90,14 @@
 	<dispatcher
 		classname="fr.liglab.adele.cilia.framework.components.MulticastDispatcher"
 		name="multicast-dispatcher" namespace="fr.liglab.adele.cilia"
-		architecture="false">
+		>
 	</dispatcher>
 
 	<!-- Processors -->
 	<processor name="XsltTransformerProcessor" namespace="fr.liglab.adele.cilia"
 		category="Transformer"
 		classname="fr.liglab.adele.cilia.framework.components.XsltTransformerProcessor"
-		architecture="true">
+		>
 		<properties>
 			<property name="xslt-file" field="filepath" />
 		</properties>
@@ -107,7 +107,7 @@
 	<processor name="XmlSplitterProcessor" namespace="fr.liglab.adele.cilia"
 		category="Splitter"
 		classname="fr.liglab.adele.cilia.framework.components.XpathSplitter"
-		architecture="true">
+		>
 		<properties>
 			<property name="separator" field="expression" />
 		</properties>
@@ -116,7 +116,7 @@
 	<processor name="StringSplitterProcessor" namespace="fr.liglab.adele.cilia"
 		category="Splitter"
 		classname="fr.liglab.adele.cilia.framework.components.SplitterProcessor"
-		architecture="true">
+		>
 		<properties>
 			<property name="separator" field="expression" />
 		</properties>
@@ -125,13 +125,13 @@
 	<processor name="AggregatorProcessor" namespace="fr.liglab.adele.cilia"
 		category="Aggregator"
 		classname="fr.liglab.adele.cilia.framework.components.AggregatorProcessor"
-		architecture="true">
+		>
 	</processor>
 
 	<processor name="SemanticTranslatorProcessor" namespace="fr.liglab.adele.cilia"
 		category="Translator"
 		classname="fr.liglab.adele.cilia.framework.components.LocalSemanticTranslatorProcessor"
-		architecture="true">
+		>
 		<properties>
 			<property name="dictionary" field="dictionary" />
 		</properties>
@@ -142,7 +142,7 @@
 	<processor name="SimpleEnricherProcessor" namespace="fr.liglab.adele.cilia"
 		category="Enricher"
 		classname="fr.liglab.adele.cilia.framework.components.SimpleEnricherProcessor"
-		architecture="true">
+		>
 		<properties>
 			<property name="enricher.content" field="content" />
 		</properties>
@@ -152,7 +152,7 @@
 	<processor name="PrefixEnricherProcessor" namespace="fr.liglab.adele.cilia"
 		category="Enricher"
 		classname="fr.liglab.adele.cilia.framework.components.PrefixEnricherProcessor"
-		architecture="true">
+		>
 		<properties>
 			<property name="enricher.prefix" field="prefix" value="Hello world " />
 		</properties>
@@ -162,7 +162,7 @@
 	<processor name="SufixEnricherProcessor" namespace="fr.liglab.adele.cilia"
 		category="Enricher"
 		classname="fr.liglab.adele.cilia.framework.components.SufixEnricherProcessor"
-		architecture="true">
+		>
 		<properties>
 			<property name="enricher.sufix" field="sufix" value=" Hello world" />
 		</properties>
@@ -220,7 +220,7 @@
 
 	<!-- PARSERS -->
 	<component classname="fr.liglab.adele.cilia.admin.impl.CiliaChainInstanceParser"
-		name="Cilia-Chain-Parser" architecture="false">
+		name="Cilia-Chain-Parser" >
 		<provides />
 		<requires field="ccontext"/>
 		<requires aggregate="true" optional="true">
@@ -230,7 +230,7 @@
 	</component>
 
 	<component classname="fr.liglab.adele.cilia.admin.impl.CiliaFileManagerImpl"
-		name="Cilia-File-Manager" architecture="false">
+		name="Cilia-File-Manager" >
 		<provides />
 		<requires field="parser" />
 		<requires field="ccontext" />
@@ -245,7 +245,7 @@
 
 	<handler classname="fr.liglab.adele.cilia.dependency.DependencyHandler"
 		namespace="fr.liglab.adele.cilia" name="dependency" level="0"
-		architecture="false">
+		>
 	</handler>
 
 	<!-- SCHEDULERS DEFINITIONS WITH CILIA DEFINITION LANGUAGE -->
@@ -308,7 +308,7 @@
 	<!-- *********************************************************************************** -->
 	<collector classname="fr.liglab.adele.cilia.framework.components.DirectCollector"
 		name="direct-collector" namespace="fr.liglab.adele.cilia"
-		architecture="false" immediate="true">
+		 immediate="true">
 		<provides>
 			<property field="asociatedMediator" name="mediator.address"
 				type="String" />
@@ -319,7 +319,7 @@
 		</properties>
 	</collector>
 	<sender classname="fr.liglab.adele.cilia.framework.components.DirectSender"
-		name="direct-sender" namespace="fr.liglab.adele.cilia" architecture="false"
+		name="direct-sender" namespace="fr.liglab.adele.cilia" 
 		immediate="true">
 		<requires field="collector" id="mediator.address" filter="(mediator.address=...)" />
 	</sender>
@@ -331,7 +331,7 @@
 	</linker>
 	<!-- *********************************************************************************** -->
 	<sender classname="fr.liglab.adele.cilia.framework.components.ConsoleSender"
-		name="console-sender" architecture="false">
+		name="console-sender" >
 		<properties>
 			<property name="console.detail" field="detail" value="false" />
 			<property name="console.header" field="header" value="" />
@@ -346,7 +346,7 @@
 	<!-- *********************************************************************************** -->
 	<collector
 		classname="fr.liglab.adele.cilia.framework.components.RandomNumberCollector"
-		name="random-number-collector" architecture="false">
+		name="random-number-collector" >
 		<properties>
 			<property name="collector.sourceName" method="setSourceName"
 				type="String" />
@@ -409,7 +409,7 @@
 	<!-- A D M I N I S T R A T I O N -->
 		<component
 		classname="fr.liglab.adele.cilia.admin.impl.CiliaAdminServiceImpl"
-		name="Cilia-Admin-Service" immediate="true" architecture="true">
+		name="Cilia-Admin-Service" immediate="true" >
 		<provides/>
 		<requires field="ccontext" />
 		<requires field="parser" />
@@ -417,7 +417,7 @@
 
 	<component
 		classname="fr.liglab.adele.cilia.admin.impl.CiliaAdminServiceGogo"
-		name="Cilia-Admin-Gogo" immediate="true" architecture="true">
+		name="Cilia-Admin-Gogo" immediate="true" >
 		<provides>
 			<property name="osgi.command.scope" type="String"
 				value="cilia" />
@@ -430,7 +430,7 @@
 
 	<component
 		classname="fr.liglab.adele.cilia.admin.impl.CiliaFileInstall"
-		name="Cilia-Deployer" architecture="true">
+		name="Cilia-Deployer" >
 		<provides />
 		<requires field="manager" />
 		<callback transition="validate" method="start" />

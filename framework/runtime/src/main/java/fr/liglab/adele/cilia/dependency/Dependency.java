@@ -1348,4 +1348,28 @@ public class Dependency extends DependencyModel implements FieldInterceptor,
 		return monitor;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.apache.felix.ipojo.MethodInterceptor#onEntry(java.lang.Object, java.lang.reflect.Member, java.lang.Object[])
+	 */
+	public void onEntry(Object arg0, Member arg1, Object[] arg2) {
+		this.onEntry(arg0, (Method)arg1, arg2);
+		
+	}
+
+	/* (non-Javadoc)
+	 * @see org.apache.felix.ipojo.MethodInterceptor#onError(java.lang.Object, java.lang.reflect.Member, java.lang.Throwable)
+	 */
+	public void onError(Object arg0, Member arg1, Throwable arg2) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	/* (non-Javadoc)
+	 * @see org.apache.felix.ipojo.MethodInterceptor#onExit(java.lang.Object, java.lang.reflect.Member, java.lang.Object)
+	 */
+	public void onExit(Object arg0, Member arg1, Object arg2) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

@@ -24,7 +24,8 @@
 	<version>1.0.0</version>
 
 	<modules>
-		<module>cilia-distribution</module>
+		<module>cilia-distribution</module>		
+		<module>cilia-remote-distribution</module>
 		<module>cilia-joram-distribution</module>
 	</modules>
 

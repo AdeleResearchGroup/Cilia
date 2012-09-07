@@ -14,9 +14,7 @@
  */
 package fr.liglab.adele.cilia.builder;
 
-import java.util.Hashtable;
-
-import fr.liglab.adele.cilia.exceptions.BuilderException;
+import java.util.Map;
 
 /**
  * 
@@ -94,7 +92,7 @@ public interface MediatorConfigurator extends ConfiguratorValueSetter {
 	 *            The new properties to be added to the current set.
 	 * @return This object to continue configuring.
 	 */
-	MediatorConfigurator set(Hashtable props);
+	MediatorConfigurator set(Map props);
 
 	/**
 	 * Set scheduler properties located by the @link {@link CustomBuilderConfigurator}

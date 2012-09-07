@@ -23,11 +23,7 @@
 
 	<modules>
 		<module>jms-adapter</module>
-		<!--
-		<module>ea-adapter</module>
-		<module>email-adapter</module>
-		<module>gui-adapter</module>
-		-->
-	</modules>
+		<module>ea</module>
+		</modules>
 
 </project>

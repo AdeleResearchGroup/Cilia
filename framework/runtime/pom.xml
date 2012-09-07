@@ -63,7 +63,6 @@
 					<instructions>
 						<Bundle-SymbolicName>${pom.artifactId}</Bundle-SymbolicName>
 						<Export-Package>
-							fr.liglab.adele.cilia.admin,
 							fr.liglab.adele.cilia.admin.util,
 							fr.liglab.adele.cilia.framework,
 							fr.liglab.adele.cilia.framework.data,
@@ -114,15 +113,13 @@
 			<plugin>
 				<groupId>org.apache.felix</groupId>
 				<artifactId>maven-ipojo-plugin</artifactId>
+				<!-- <version>1.8.4</version>-->
 				<version>1.6.0</version>
 				<executions>
 					<execution>
 						<goals>
 							<goal>ipojo-bundle</goal>
 						</goals>
-						<configuration>
-							<metadata>metadata.xml</metadata>
-						</configuration>
 					</execution>
 				</executions>
 			</plugin>

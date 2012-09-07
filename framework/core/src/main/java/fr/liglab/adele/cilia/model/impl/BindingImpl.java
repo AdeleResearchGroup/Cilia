@@ -218,7 +218,6 @@ public class BindingImpl extends ComponentImpl implements Binding{
 			toShow.append(":");
 			toShow.append(getTargetPort().getName());
 		}
-		toShow.append("\n");
 		return toShow.toString();
 	}
     

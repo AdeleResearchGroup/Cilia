@@ -17,7 +17,7 @@
  */
 package fr.liglab.adele.cilia;
 
-import java.util.Hashtable;
+import java.util.Map;
 
 import fr.liglab.adele.cilia.exceptions.CiliaException;
 import fr.liglab.adele.cilia.exceptions.CiliaIllegalParameterException;
@@ -37,12 +37,13 @@ public interface AdminBinding {
 	 * 			<componentID>:<portName>
 	 * @param to The component which will obtain the data. Parameter format must be 
 	 * 			<componentID>:<portName>
+	 * @param linker To specifies the linker protocol to use to communicate two components.
 	 * @param properties The properties if needed to create the binding.
 	 * @throws CiliaInvalidSyntaxException if from or to parameters are not well formed.
 	 * @throws CiliaIllegalParameterException If chain or any of the components does not exist.
 	 */
 
-	void createBinding(String chainId, String from, String to, Hashtable<String, Object> properties) throws CiliaIllegalParameterException, CiliaException;
+	void createBinding(String chainId, String from, String to, String linker, Map<String, Object> properties) throws CiliaIllegalParameterException, CiliaException;
 	
 	/**
 	 * Delete a binding from two mediators.

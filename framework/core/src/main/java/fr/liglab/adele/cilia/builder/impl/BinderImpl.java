@@ -15,6 +15,7 @@
 package fr.liglab.adele.cilia.builder.impl;
 
 import java.util.Hashtable;
+import java.util.Map;
 import java.util.StringTokenizer;
 
 import fr.liglab.adele.cilia.builder.Architecture;
@@ -32,13 +33,10 @@ public class BinderImpl implements Binder {
 
 	private Architecture architecture;
 
-	private String to;
-	
 	private BindingInfo toInfo;
 	
 	private BindingInfo fromInfo;
 
-	private String from;
 
 	private String using;
 
@@ -56,7 +54,7 @@ public class BinderImpl implements Binder {
 		if (to == null) {
 			throw new BuilderConfigurationException ("to parameter must not be null");
 		}
-		this.to = to;
+		//this.to = to;
 		toInfo = new BindingInfo(to);
 		return this;
 	}
@@ -69,7 +67,6 @@ public class BinderImpl implements Binder {
 			throw new BuilderConfigurationException ("<from> parameter in bind must not be null");
 		}
 		fromInfo = new BindingInfo(from);
-		this.from = from;
 		return this;
 	}
 
@@ -126,7 +123,7 @@ public class BinderImpl implements Binder {
 	public String getUsing() {
 		return using;
 	}
-	public Architecture configure(Hashtable props) {
+	public Architecture configure(Map props) {
 		if (props != null) {
 			properties.putAll(props);
 		}

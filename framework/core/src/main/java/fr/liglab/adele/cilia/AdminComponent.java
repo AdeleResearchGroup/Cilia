@@ -18,6 +18,7 @@
 package fr.liglab.adele.cilia;
 
 import java.util.Hashtable;
+import java.util.Map;
 
 import fr.liglab.adele.cilia.exceptions.CiliaException;
 import fr.liglab.adele.cilia.exceptions.CiliaIllegalParameterException;
@@ -63,7 +64,7 @@ public interface AdminComponent {
 	 * @param properties The initial properties.
 	 * @throws CiliaIllegalParameterException If the chain does not exist or if the mediator with the same ID already exist.
 	 */
-	void createMediator(String chainId, String componentType, String componentID, Hashtable<String, Object> properties) throws CiliaException ;
+	void createMediator(String chainId, String componentType, String componentID, Map<String, Object> properties) throws CiliaException ;
 	
 	/**
 	 * Create a new adapter component
@@ -73,7 +74,7 @@ public interface AdminComponent {
 	 * @param properties The initial properties.
 	 * @throws CiliaIllegalParameterException If the chain does not exist or if the adapter with the same ID already exist.
 	 */
-	void createAdapter(String chainId, String componentType, String componentID, Hashtable<String, Object> properties) throws CiliaException ;
+	void createAdapter(String chainId, String componentType, String componentID, Map<String, Object> properties) throws CiliaException ;
 	
 	/**
 	 * Update a mediator component instance.
@@ -82,7 +83,7 @@ public interface AdminComponent {
 	 * @param properties The new properties
 	 * @throws CiliaException. If the chain or the component does not exist.
 	 */
-	void updateMediator(String chainId, String componentId, Hashtable<String, Object> properties) throws CiliaException;
+	void updateMediator(String chainId, String componentId, Map<String, Object> properties) throws CiliaException;
 	
 	/**
 	 * Update an adapter component instance.
@@ -91,7 +92,7 @@ public interface AdminComponent {
 	 * @param properties The new properties
 	 * @throws CiliaException. If the chain or the component does not exist.
 	 */
-	void updateAdapter(String chainId, String componentId, Hashtable<String, Object> properties) throws CiliaException;
+	void updateAdapter(String chainId, String componentId, Map<String, Object> properties) throws CiliaException;
 	/**
 	 *Delete a mediator component. 
 	 * @param chainId The chain where the component is.

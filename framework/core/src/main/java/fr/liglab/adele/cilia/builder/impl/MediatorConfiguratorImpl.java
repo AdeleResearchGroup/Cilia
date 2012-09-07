@@ -15,6 +15,7 @@
 package fr.liglab.adele.cilia.builder.impl;
 
 import java.util.Hashtable;
+import java.util.Map;
 
 import fr.liglab.adele.cilia.builder.ConfiguratorValueSetter;
 import fr.liglab.adele.cilia.builder.CustomBuilderConfigurator;
@@ -69,7 +70,7 @@ public class MediatorConfiguratorImpl implements MediatorConfigurator {
 	/* (non-Javadoc)
 	 * @see fr.liglab.adele.cilia.builder.Configurator#set(java.util.Dictionary)
 	 */
-	public MediatorConfigurator set(Hashtable props) {
+	public MediatorConfigurator set(Map props) {
 		if(props != null){
 			configureSet(temporalSet, props);
 		}
@@ -144,7 +145,7 @@ public class MediatorConfiguratorImpl implements MediatorConfigurator {
 		return this;
 	}
 
-	private void configureSet(int set, Hashtable props) {
+	private void configureSet(int set, Map props) {
 		switch (set) {
 		case SCHEDULER : 
 			schedulerprops.putAll(props);

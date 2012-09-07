@@ -23,6 +23,7 @@
 
 	<modules>
 		<module>core</module>
+		<module>remote</module>
 		<module>runtime</module>
 	</modules>
 </project>
