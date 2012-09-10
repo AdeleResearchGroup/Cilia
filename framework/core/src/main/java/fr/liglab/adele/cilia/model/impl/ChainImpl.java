@@ -74,7 +74,6 @@ public class ChainImpl extends ComponentImpl implements Chain{
 	public boolean add(Mediator mediator) {
 		boolean inserted = false;
 		String mediatorId = mediator.getId();
-		System.out.println("ChainImpl: Adding a mediator: " + mediator);
 		synchronized (lockObject) {
 			if (mediator != null && !mediators.containsKey(mediatorId) && (!adapters.containsKey(mediatorId))) {
 				mediators.put(mediatorId, mediator);
@@ -87,11 +86,9 @@ public class ChainImpl extends ComponentImpl implements Chain{
 			((MediatorComponentImpl)mediator).setChain(this);
 			synchronized (this) {
 				setChanged();
-				System.out.println("ChainImpl: Add a mediator (notify chaincontroller): " + mediator+ " Observers:"+this.countObservers());
 				notifyObservers(new UpdateEvent(UpdateActions.ADD_MEDIATOR, mediator));
 			}
 			
-			System.out.println("ChainImpl: Exit notify chaincontrollers: " );
 		}
 		return inserted;
 	}

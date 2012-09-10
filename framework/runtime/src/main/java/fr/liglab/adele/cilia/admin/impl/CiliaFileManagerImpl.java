@@ -29,11 +29,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import fr.liglab.adele.cilia.CiliaContext;
+import fr.liglab.adele.cilia.builder.Architecture;
 import fr.liglab.adele.cilia.builder.Builder;
 import fr.liglab.adele.cilia.exceptions.BuilderException;
-import fr.liglab.adele.cilia.exceptions.BuilderPerformerException;
 import fr.liglab.adele.cilia.exceptions.CiliaException;
-import fr.liglab.adele.cilia.model.Chain;
 import fr.liglab.adele.cilia.util.ChainParser;
 import fr.liglab.adele.cilia.util.CiliaFileManager;
 
@@ -59,8 +58,10 @@ public class CiliaFileManagerImpl implements CiliaFileManager {
 	/**
 	 * 
 	 */
-	private Map handledChains; 
+	private Map handledChains;
+
 	/**
+	 * 
 	 * Queue to handle bundle arrivals.
 	 */
 	private CreatorThread creatorThread;
@@ -129,11 +130,12 @@ public class CiliaFileManagerImpl implements CiliaFileManager {
 				if (builders[i] == null) {
 					logger.error("Chain in chain list is null in bundle: " + file.getName());
 				} else {
-					//ccontext.addChain(chains[i]);
-					//ccontext.startChain(chains[i]);
 					builders[i].done();
-					ccontext.getApplicationRuntime().startChain(builders[i].current());
-					chainsList.add(builders[i].current());
+					Architecture arch = builders[i].get(builders[i].current());
+					if(arch.toCreate()){
+						ccontext.getApplicationRuntime().startChain(builders[i].current());
+						chainsList.add(builders[i].current());
+					}
 					logger.debug("Handling Cilia Chain : " + builders[i].current());
 				}
 			}

@@ -66,7 +66,7 @@ public class CiliaFileInstall implements ArtifactInstaller {
 	}
 
 	public boolean canHandle(File file) {
-		if (file.getName().endsWith(".dscilia") ){
+		if (file.getName().endsWith(".dscilia") || file.getName().endsWith(".extcilia")){//For instance it use the same parser
 			return true;
 		}
 		return false;

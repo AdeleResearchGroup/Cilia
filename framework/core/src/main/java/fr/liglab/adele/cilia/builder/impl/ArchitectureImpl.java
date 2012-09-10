@@ -230,7 +230,7 @@ public class ArchitectureImpl implements Architecture {
 	/**
 	 * @return the creatingChain
 	 */
-	protected boolean toCreate() {
+	public boolean toCreate() {
 		if (action == Architecture.CREATE)
 			return true;
 		return false;

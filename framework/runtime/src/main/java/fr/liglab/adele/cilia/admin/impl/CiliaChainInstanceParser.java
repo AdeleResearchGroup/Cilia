@@ -49,7 +49,9 @@ public class CiliaChainInstanceParser implements ChainParser {
 	protected String CHAIN_ADAPTERS = "adapters";
 
 	protected String MEDIATOR = "mediator-instance";
+	protected String MODIFY_MEDIATOR = "mediator";
 	protected String ADAPTER = "adapter-instance";
+	protected String MODIFY_ADAPTER = "adapter";
 	protected String MEDIATOR_TYPE = "type";
 	protected String MEDIATOR_Id = "id";
 
@@ -138,7 +140,6 @@ public class CiliaChainInstanceParser implements ChainParser {
 	 */
 	private Builder parseChain(Object objectchain) throws CiliaException, BuilderException, BuilderPerformerException {
 		Node nchain = checkObject(objectchain);
-		boolean newChain;
 		Architecture chain = null;
 
 		if (nchain == null) {
@@ -158,9 +159,7 @@ public class CiliaChainInstanceParser implements ChainParser {
 		Builder builder = ccontext.getBuilder();
 		if (extentions != null && extentions.compareToIgnoreCase("true") == 0) {
 			chain = builder.get(id);
-			newChain = false;
 		} else {
-			newChain = true;
 			chain = builder.create(id);
 		}
 		Node node = nchain.getFirstChild();
@@ -307,6 +306,8 @@ public class CiliaChainInstanceParser implements ChainParser {
 		do {
 			if (mediatorNode.getNodeName().compareTo(MEDIATOR) == 0) {
 				getMediator(mediatorNode, chain);
+			} else if (mediatorNode.getNodeName().compareTo(MODIFY_MEDIATOR) == 0) {
+				modifyMediator(mediatorNode, chain);
 			}
 			mediatorNode = mediatorNode.getNextSibling();
 			iterator ++;
@@ -331,7 +332,8 @@ public class CiliaChainInstanceParser implements ChainParser {
 		do {
 			if (mediatorNode.getNodeName().compareTo(ADAPTER) == 0) {
 				getAdapter(mediatorNode, chain);
-
+			} else if (mediatorNode.getNodeName().compareTo(MODIFY_ADAPTER) == 0){
+				modifyAdapter(mediatorNode, chain);
 			}
 			mediatorNode = mediatorNode.getNextSibling();
 			iterator ++;
@@ -369,9 +371,32 @@ public class CiliaChainInstanceParser implements ChainParser {
 		mediator = new MediatorImpl(mediatorId, mediatorType, null,null,null, mediatorProperties, null);
 		mediator = (Mediator)extendersParsers(nmediator, mediator);
 		chain.configure().mediator().id(mediatorId).set(mediator.getProperties());
-
 	}
 
+	/**
+	 * Modify a mediator from a given Node.
+	 * 
+	 * @param nmediator
+	 *            Mediator node.
+	 * @return the new mediator.
+	 * @throws BuilderException 
+	 * @throws BuilderConfigurationException 
+	 */
+	protected void modifyMediator(Node nmediator, Architecture chain) throws BuilderConfigurationException, BuilderException {
+		mediatorNumbers++;
+		Mediator mediator = null;
+		String mediatorId = getId(nmediator);
+		Hashtable mediatorProperties = getMediatorProperties(nmediator);
+		if (mediatorId == null) {
+			log.error("ID not found in Mediator XML Node");
+			throw new BuilderConfigurationException("Mediator must have an ID");
+		}
+		/*TODO: This code is temporal, Extender parser must be change to use new Builder Pattern*/
+		mediator = new MediatorImpl(mediatorId, "tmp", null,null,null, mediatorProperties, null);
+		mediator = (Mediator)extendersParsers(nmediator, mediator);
+		chain.configure().mediator().id(mediatorId).set(mediator.getProperties()).set(mediatorProperties);
+	}
+	
 	/**
 	 * Create an adapter from a given Node.
 	 * 
@@ -405,6 +430,34 @@ public class CiliaChainInstanceParser implements ChainParser {
 
 	}
 
+	/**
+	 * Create an adapter from a given Node.
+	 * 
+	 * @param nadapter
+	 *            adapter node.
+	 * @return the new adapter.
+	 * @throws BuilderConfigurationException 
+	 * @throws BuilderException 
+	 */
+	protected void modifyAdapter(Node nadapter, Architecture chain) throws BuilderConfigurationException, BuilderException {
+		mediatorNumbers++;
+		Adapter adapter = null;
+		PatternType pt = getPattern(nadapter);
+		String adapterId = getId(nadapter);
+
+		Properties adapterProperties = getProperties(nadapter);
+
+		if (adapterId == null) {
+			log.error("ID not found in Adapter XML Node");
+			throw new BuilderConfigurationException("Adapter must have an ID");		
+		}
+		/*TODO: This code is temporal, Extender parser must be change to use new Builder Pattern*/
+		adapter = new AdapterImpl(adapterId, "tmp", null,null, adapterProperties, null, pt);
+		adapter = (Adapter)extendersParsers(nadapter, adapter);
+		chain.configure().adapter().id(adapterId).set(adapter.getProperties()).set(adapterProperties);
+
+	}
+	
 	private PatternType getPattern(Node nadapter) {
 		PatternType pt = PatternType.UNASSIGNED;
 		String pattern = getAttributeValue(nadapter, "pattern");

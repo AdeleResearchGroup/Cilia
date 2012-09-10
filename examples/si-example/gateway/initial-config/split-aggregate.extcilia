@@ -1,0 +1,69 @@
+	<cilia xmlns:cbd="fr.imag.adele.cilia.compendium">
+		<chain id="DemoSplitAggregate" extention="true">
+			<mediators>
+				<mediator id="xslt-transformer-1" >
+					<processor>
+						<property name="xslt-file" value="conf/trans.xslt" />
+					</processor>
+				</mediator>
+			
+				<mediator id="xml-splitter-1">
+					<processor>
+						<property name="separator" value="//suiviconso-requete" />
+					</processor>
+					<dispatcher>
+						<cbd:content-based language="xpath">
+							<cbd:when condition="//suiviconso-requete[@produit='fixe']" sendTo="fixe" />
+							<cbd:when condition="//suiviconso-requete[@produit='mobile']" sendTo="mobile" />
+							<cbd:when condition="//suiviconso-requete[@produit='internet']" sendTo="internet" />
+						</cbd:content-based>
+					</dispatcher>
+				</mediator>
+				<mediator id="translator-1" >
+					<processor>
+						<property name="dictionary">
+							<item key="CLIENT-ID" value="CLIENT-IDENT"/>
+							<item key="SuiviConso" value="SuiviConsoInternet"/>
+						</property>
+					</processor>
+				</mediator>
+				<mediator id="translator-2" >
+					<processor>
+						<property name="dictionary">
+							<item key="SuiviConso" value="SuiviConsoFixe"/>
+						</property>
+					</processor>
+				</mediator>
+
+				<mediator id="translator-3" >
+					<processor>
+						<property name="dictionary">
+							<item key="SuiviConso" value="SuiviConsoMobile"/>
+						</property>
+					</processor>
+				</mediator>
+				<mediator id="xslt-transformer-2" >
+					<processor>
+						<property name="xslt-file" value="conf/delproduitinternet.xslt" />
+					</processor>
+				</mediator>
+				<mediator id="xslt-transformer-3" >
+					<processor>
+						<property name="xslt-file" value="conf/delproduitfixe.xslt" />
+					</processor>
+				</mediator>
+				<mediator id="xslt-transformer-4" >
+					<processor>
+						<property name="xslt-file" value="conf/delproduitmobile.xslt" />
+					</processor>
+				</mediator>
+			</mediators>
+			<adapters>
+				<adapter id="getPriceAdapter">
+		          <property name="endpoint.id" type="String" value="toto"/>
+				</adapter>
+			</adapters>
+		</chain>
+	</cilia>
+
+
