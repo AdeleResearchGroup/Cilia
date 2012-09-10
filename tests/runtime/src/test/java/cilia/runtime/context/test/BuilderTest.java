@@ -44,6 +44,7 @@ import fr.liglab.adele.cilia.exceptions.BuilderPerformerException;
 import fr.liglab.adele.cilia.exceptions.CiliaException;
 import fr.liglab.adele.cilia.helper.CiliaHelper;
 import fr.liglab.adele.cilia.model.CiliaContainer;
+import fr.liglab.adele.cilia.model.MediatorComponent;
 
 /**
  * 
@@ -155,21 +156,69 @@ public class BuilderTest {
 	}
 
 	/**
-	 * Test That we can't retrieve a builder for an inexistent chain.
+	 * Test That we can modify an inexistent chain, and wait until it is ready.
 	 * @throws BuilderPerformerException 
 	 * @throws BuilderException 
 	 */
-	public @Test
-	void createInvalidChain() {
+	@Test
+	public void modifyInexistantChain() {
 		CiliaHelper.waitSomeTime(2000);
-		Builder builder = getBuilder();
 		try {
+			Builder builder = getBuilder();
 			Architecture arch = builder.get("toto");
-			Assert.fail("We can't retrieve an inexistant chain");
-		} catch (BuilderException e) {
+			arch.configure().mediator().id("modifiedMediator").key("modifiedValue").value("newValue");
+			builder.done();
+		} catch (CiliaException e) {
+			Assert.fail("Must pass OK when modifying inexistant chain, it must create a chain listener: " + e.getMessage());
 		}
+		//Now we create the chain and the mediator.
+		
+		try {
+			Builder nbuilder = getBuilder();
+			Architecture arch = nbuilder.create("toto");
+			arch.create().mediator().type("TOTO").id("modifiedMediator").configure().key("modifiedValue").value("oldValue");
+			nbuilder.done(); 
+		} catch (CiliaException e) {
+			Assert.fail("Must pass OK when creating a chain, it must trigger the chain listener");
+		}
+		CiliaHelper.waitSomeTime(500);//Wait until event has changed to modify mediator.
+		MediatorComponent mc = cilia.getMediatorModel("toto", "modifiedMediator");
+		Assert.assertNotNull(mc);
+		Assert.assertEquals("newValue", mc.getProperty("modifiedValue"));
 	}
 
+	/**
+	 * Test That we can modify an inexistent chain, and wait until it is ready.
+	 * @throws BuilderPerformerException 
+	 * @throws BuilderException 
+	 */
+	@Test
+	public void modifyInexistantComponent() {
+		CiliaHelper.waitSomeTime(2000);
+		try {
+			Builder builder = getBuilder();
+			Architecture arch = builder.create("toto");
+			arch.configure().mediator().id("modifiedMediator").key("modifiedValue").value("newValue");
+			builder.done();
+		} catch (CiliaException e) {
+			Assert.fail("Must pass OK when modifying inexistant chain, it must create a chain listener: " + e.getMessage());
+		}
+		//Now we create the chain and the mediator.
+		
+		try {
+			Builder nbuilder = getBuilder();
+			Architecture arch = nbuilder.get("toto");
+			arch.create().mediator().type("TOTO").id("modifiedMediator").configure().key("modifiedValue").value("oldValue");
+			nbuilder.done(); 
+		} catch (CiliaException e) {
+			Assert.fail("Must pass OK when creating a chain, it must trigger the chain listener");
+		}
+		CiliaHelper.waitSomeTime(10000);//Wait until event has changed to modify mediator.
+		MediatorComponent mc = cilia.getMediatorModel("toto", "modifiedMediator");
+		Assert.assertNotNull(mc);
+		Assert.assertEquals("newValue", mc.getProperty("modifiedValue"));
+	}
+	
 	/**
 	 * Test that we can't use a builder for two chains.
 	 */

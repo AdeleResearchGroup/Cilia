@@ -138,12 +138,13 @@ public class CiliaChainInstanceParser implements ChainParser {
 	 */
 	private Builder parseChain(Object objectchain) throws CiliaException, BuilderException, BuilderPerformerException {
 		Node nchain = checkObject(objectchain);
+		boolean newChain;
+		Architecture chain = null;
 
 		if (nchain == null) {
 			throw new CiliaException("Object:" + objectchain
 					+ " is not instance of org.w3c.dom.Node");
 		}
-
 		
 		if (nchain.getNodeName().compareTo(ROOT_CHAIN) != 0) {
 			log.debug(nchain.getNodeName() + "Node is not a chain");
@@ -152,9 +153,16 @@ public class CiliaChainInstanceParser implements ChainParser {
 		// It must add mediators at first.
 		String id = getId(nchain);
 		String type = getType(nchain);
+		String extentions = getAttributeValue(nchain, "extention");
 		Properties props = getProperties(nchain);
 		Builder builder = ccontext.getBuilder();
-		Architecture chain = builder.create(id);
+		if (extentions != null && extentions.compareToIgnoreCase("true") == 0) {
+			chain = builder.get(id);
+			newChain = false;
+		} else {
+			newChain = true;
+			chain = builder.create(id);
+		}
 		Node node = nchain.getFirstChild();
 		while (node != null) {
 			if (node.getNodeName().compareToIgnoreCase(CHAIN_MEDIATORS) == 0) {
@@ -262,56 +270,6 @@ public class CiliaChainInstanceParser implements ChainParser {
 			
 		}
 	}
-
-//	protected void computeHalfBinding(ChainImpl chain, Node bindingNode, Binding bindingModel) {
-//		String mediatorId = null;
-//		String mediatorPort = null;
-//		Port port = null;
-//		String colport = getAttributeValue(bindingNode, BINDING_to);
-//		String sendport = getAttributeValue(bindingNode, BINDING_from);
-//		Mediator mediator = null;
-//		// will add a bind.
-//		if (colport == null && sendport != null) {
-//			String[] ins = sendport.split(PORT_SEPARATOR);
-//			if (ins.length != 2) {
-//				mediatorPort = "std";
-//			} else {
-//				mediatorPort = ins[1];
-//			}
-//			mediatorId = ins[0];
-//			mediator = chain.getMediator(mediatorId);
-//			if (mediator == null) {
-//				log.error("Binding not added, Mediator " + mediatorId
-//						+ "is doesnt exist in chain.");
-//				return;
-//			}
-//			port = mediator.getOutPort(mediatorPort);
-//
-//		} else if (colport != null && sendport == null) {
-//			String[] ins = colport.split(PORT_SEPARATOR);
-//			if (ins.length != 2) {
-//				mediatorPort = "std";
-//			} else {
-//				mediatorPort = ins[1];
-//			}
-//			mediatorId = ins[0];
-//			mediator = chain.getMediator(mediatorId);
-//			if (mediator == null) {
-//				log.error("Binding not added, Mediator " + mediatorId
-//						+ "is doesnt exist in chain.");
-//				return;
-//			}
-//			port = mediator.getInPort(mediatorPort);
-//		} else {
-//			// It must never perform this code.
-//			log.error("Mediators in bindings must have ports. \"mediatorId:portName\"");
-//			log.error("Binding not added.");
-//		}
-//		log.warn("Binding added: portName" + port.getName() + " type:"
-//				+ bindingModel.getType() + "nature:" + port.getType());
-//		log.warn("Half binding is not supported, from and to is need.");
-//		chain.bind(port, bindingModel);
-//	}
 
 	protected boolean analizeBindingData(String sourceMediatorId,
 			String sourceMediatorPort, String targetMediatorId, String targetMediatorPort) {

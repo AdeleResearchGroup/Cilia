@@ -169,7 +169,7 @@ public class TestEA  {
 		CollectorHelper ch = createCollectorHelper(ht);
 		injectMessages(topic);
 		//wait to receive
-		CiliaHelper.waitSomeTime(100);
+		CiliaHelper.waitSomeTime(500);
 		//See if all messages are received.
 		Assert.assertEquals(10, ch.countReceived());
 		Data data = ch.getLast();

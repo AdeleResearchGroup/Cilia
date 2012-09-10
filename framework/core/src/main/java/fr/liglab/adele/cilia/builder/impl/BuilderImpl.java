@@ -14,11 +14,13 @@
  */
 package fr.liglab.adele.cilia.builder.impl;
 
+import fr.liglab.adele.cilia.ChainCallback;
 import fr.liglab.adele.cilia.CiliaContext;
 import fr.liglab.adele.cilia.builder.Architecture;
 import fr.liglab.adele.cilia.builder.Builder;
 import fr.liglab.adele.cilia.exceptions.BuilderException;
 import fr.liglab.adele.cilia.exceptions.BuilderPerformerException;
+import fr.liglab.adele.cilia.exceptions.CiliaException;
 import fr.liglab.adele.cilia.model.CiliaContainer;
 
 /**
@@ -65,9 +67,6 @@ public class BuilderImpl implements Builder {
 		if (null == chainId) {
 			throw new BuilderException("Unable to retrieve null chain");
 		}
-		if (container.getChain(chainId) == null && architecture == null) {
-			throw new BuilderException("There is any Chain with id :" + chainId);
-		}
 		if (architecture != null && !((ArchitectureImpl)architecture).getChainId().equalsIgnoreCase(chainId) ) {
 			throw new BuilderException("There is a Builder Configuration for a Chain with id :" + ((ArchitectureImpl)architecture).getChainId());
 		}
@@ -78,24 +77,42 @@ public class BuilderImpl implements Builder {
 	}
 
 	public Builder done() throws BuilderException, BuilderPerformerException {
+		setInvalid();//So it is impossible to modify again this builder.
+		if(!architecture.toCreate() && container.getChain(architecture.getChainId()) == null){
+			try {
+				System.out.println("Will wait until chain is ready: " + architecture.getChainId());
+				context.getApplicationRuntime().addListener("(chain="+architecture.getChainId()+")", new ChainListenerImpl());
+			} catch (CiliaException e) {
+				e.printStackTrace();
+				throw new BuilderPerformerException(e.getMessage());
+			}
+		} else {
+			performDone();
+		}
+
+		return this;
+	}
+
+	private Builder performDone() throws BuilderException, BuilderPerformerException {
 		try {
 			container.getMutex().writeLock().acquire();
 		} catch (InterruptedException e) {
 		}
-		try {
-
-			if (architecture == null) {
-				throw new BuilderException("Unable to build an invalid architecture chain: Architecture is null");
-			}
-			((ArchitectureImpl)architecture).checkValidation();
-			//Change validation, it cant' be modified.
-			((ArchitectureImpl)architecture).setValid(false);
+		try{
 			BuilderPerformer perf = new BuilderPerformer(architecture, container, context);
 			perf.perform();
 			return this;
 		}finally{
 			container.getMutex().writeLock().release();
 		}
+	}
+
+	private void setInvalid() throws BuilderException {
+		if (architecture == null) {
+			throw new BuilderException("Unable to build an invalid architecture chain: Architecture is null");
+		}
+		((ArchitectureImpl)architecture).checkValidation();
+		((ArchitectureImpl)architecture).setValid(false);
 	}
 
 	/* (non-Javadoc)
@@ -130,5 +147,22 @@ public class BuilderImpl implements Builder {
 			architecture =  new ArchitectureImpl(chainId, Architecture.REMOVE);
 		}
 		return this;
+	}
+
+	private class ChainListenerImpl implements ChainCallback {
+
+		public void onAdded(String chainId) {
+			try {
+				performDone();
+			} catch (BuilderException e) {
+				e.printStackTrace();
+			} catch (BuilderPerformerException e) {
+				e.printStackTrace();
+			}
+		}
+
+		public void onRemoved(String chainId) {	}
+
+		public void onStateChange(String chainId, boolean event) {	}
 	}
 }

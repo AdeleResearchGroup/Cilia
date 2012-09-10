@@ -99,6 +99,7 @@ public class ChainControllerImpl implements Observer {
 		modelChain = (ChainImpl) model;
 		creator = crea;
 		eventFirer = notifier;
+		modelChain.addObserver(this);
 	}
 
 	private void createControllers() {
@@ -141,7 +142,6 @@ public class ChainControllerImpl implements Observer {
 		synchronized (lockObject) {
 			/* Message (data) container for mediators managed by that chain */
 			isStarted = true;
-			modelChain.addObserver(this);
 		}
 
 	}
@@ -377,6 +377,7 @@ public class ChainControllerImpl implements Observer {
 
 	public void createMediatorController(Mediator mediator) {
 		boolean localStarted = false;
+		System.out.println("ChaincontrollerImpl: Creating Mediator controller and calling event");
 		MediatorControllerImpl mc = null;
 		synchronized (lockObject) {
 			if (!mediators.containsKey(mediator.getId())) {
@@ -467,6 +468,7 @@ public class ChainControllerImpl implements Observer {
 	}
 
 	public void update(Observable o, Object arg) {
+		System.out.println("ChainControllerImpl:update: " + arg);
 		log.debug("update");
 		if (o instanceof Chain) {
 			log.debug(" update, OK");

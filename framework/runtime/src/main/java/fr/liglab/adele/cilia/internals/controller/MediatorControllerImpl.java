@@ -202,12 +202,12 @@ public class MediatorControllerImpl implements Observer {
 	 */
 	public void updateInstanceProperties(Dictionary properties) {
 		if (mediatorInstance == null) {
-			throw new RuntimeException(
-					"Updating Mediator Model properties when runtime instance is null");
+			logger.warn("Updating Mediator Model properties when runtime instance is null");
+			return;
 		}
 		if (mediatorInstance.getState() != ComponentInstance.VALID) {
-			throw new RuntimeException(
-					"Updating Mediator instance when object is not valid" + getState());
+			logger.warn("Updating Mediator instance when object is not valid %", getState());
+			return;
 		}
 		mediatorInstance.updateInstanceProperties(properties);
 		eventFirer.fireEventNode(FirerEvents.EVT_MODIFIED, mediatorModel);
