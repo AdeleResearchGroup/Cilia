@@ -1,0 +1,41 @@
+monolog.classname org.objectweb.util.monolog.wrapper.log4j.MonologLoggerFactory
+# -----------------------------------------------------------------------
+# tty : console handler
+# -----------------------------------------------------------------------
+handler.tty.type Console
+handler.tty.output System.out
+handler.tty.pattern  %d : %O{1}.%M : %m%n
+
+# -----------------------------------------------------------------------
+# logf : rolling file handler
+# -----------------------------------------------------------------------
+handler.logf.type RollingFile
+handler.logf.output server.log
+handler.logf.pattern %h %l %d, %m%n
+handler.logf.fileNumber 2
+handler.logf.maxSize 1000000
+
+# -----------------------------------------------------------------------
+# logger definitions
+# -----------------------------------------------------------------------
+#logger.root.handler.0 tty
+logger.root.handler.1 logf
+
+logger.root.level ERROR
+
+------
+# JORAM
+#-------
+logger.fr.dyade.aaa.level WARN
+
+#logger.fr.dyade.aaa.agent.Agent.level DEBUG
+#logger.fr.dyade.aaa.agent.Engine.level DEBUG
+#logger.fr.dyade.aaa.agent.Service.level DEBUG
+
+#logger.fr.dyade.aaa.jndi2.client.level DEBUG
+#logger.fr.dyade.aaa.jndi2.server.level DEBUG
+
+#logger.org.objectweb.joram.mom.level DEBUG
+#logger.org.objectweb.joram.client.jms.level DEBUG
+#logger.org.objectweb.joram.client.connector.level DEBUG
+#logger.org.objectweb.joram.shared.level DEBUG

@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<config>
+  <domain name="D1"/>
+  
+  <property name="Transaction" value="fr.dyade.aaa.util.NullTransaction"/>
+  <property name="fr.dyade.aaa.jndi2.impl.LooseCoupling" value="true"/>
+
+  <cluster id="0" name="cluster0">
+    <property name="Engine" value="fr.dyade.aaa.agent.HAEngine" />
+    <property name="nbClusterExpected" value="1" />
+
+    <server id="0" hostname="localhost">
+      <network domain="D1" port="16300"/>
+      <service class="org.objectweb.joram.mom.proxies.tcp.TcpProxyService" args="2560"/>
+      <service class="org.objectweb.joram.mom.proxies.ConnectionManager" args="root root"/>
+      <service class="org.objectweb.joram.client.jms.ha.local.HALocalConnection"/>
+      <service class="fr.dyade.aaa.jndi2.ha.HADistributedJndiServer" args="16400 0 3"/>
+    </server>
+
+    <server id="1" hostname="localhost">
+      <network domain="D1" port="16301"/>
+      <service class="org.objectweb.joram.mom.proxies.tcp.TcpProxyService" args="2561"/>
+      <service class="org.objectweb.joram.mom.proxies.ConnectionManager" args="root root"/>
+      <service class="org.objectweb.joram.client.jms.ha.local.HALocalConnection"/>
+      <service class="fr.dyade.aaa.jndi2.ha.HADistributedJndiServer" args="16410 0 3"/>
+    </server>
+  </cluster>
+
+  <server id="3" name="s3" hostname="localhost">
+      <network domain="D1" port="16303"/>
+      <service class="org.objectweb.joram.mom.proxies.ConnectionManager" args="root root"/>
+      <service class="org.objectweb.joram.mom.proxies.tcp.TcpProxyService" args="16030"/>
+      <service class="fr.dyade.aaa.jndi2.distributed.DistributedJndiServer" args="16430 3 0"/>
+  </server>
+
+</config>

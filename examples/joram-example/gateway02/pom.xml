@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright 2010-2011 Université Joseph Fourier Licensed under the Apache 
+	License, Version 2.0 (the "License"); you may not use this file except in 
+	compliance with the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0 
+	Unless required by applicable law or agreed to in writing, software distributed 
+	under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES 
+	OR CONDITIONS OF ANY KIND, either express or implied. See the License for 
+	the specific language governing permissions and limitations under the License. -->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<modelVersion>4.0.0</modelVersion>
+
+	<!-- Project parent -->
+	<parent>
+		<groupId>fr.liglab.adele.cilia</groupId>
+		<artifactId>cilia-project</artifactId>
+		<version>1.2.2-SNAPSHOT</version>
+		<relativePath></relativePath>
+	</parent>
+
+	<!-- Project coordinates -->
+	<groupId>fr.liglab.adele.cilia</groupId>
+	<artifactId>cilia-joram-distribution-2</artifactId>
+	<packaging>pom</packaging>
+
+	<!-- Project description -->
+	<name>Cilia Distribution With Joram</name>
+
+	<!-- Project dependencies -->
+	<dependencies>
+		<!-- CILIA -->
+		<dependency>
+			<groupId>fr.liglab.adele.cilia</groupId>
+			<artifactId>cilia-core</artifactId>
+			<version>1.2.2-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>fr.liglab.adele.cilia</groupId>
+			<artifactId>cilia-runtime</artifactId>
+			<version>1.2.2-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>fr.liglab.adele.cilia</groupId>
+			<artifactId>jms-adapter</artifactId>
+			<version>1.2.2-SNAPSHOT</version>
+		</dependency>
+		<!-- Demo Components-->
+		<dependency>
+			<groupId>cilia.jms.demo</groupId>
+			<artifactId>jms-demo.mediators</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+		<!-- GOGO -->
+        <dependency>
+            <groupId>org.apache.felix</groupId>
+            <artifactId>org.apache.felix.gogo.runtime</artifactId>
+            <version>0.10.0</version>
+        </dependency>
+		<dependency>
+	          <groupId>org.apache.felix</groupId>
+			  <artifactId>org.apache.felix.gogo.command</artifactId>
+			  <version>0.12.0</version>
+		</dependency>
+		<dependency>
+	    	<groupId>org.apache.felix</groupId>
+			<artifactId>org.apache.felix.gogo.shell</artifactId>
+			<version>0.10.0</version>
+		</dependency>
+		<!-- iPOJO -->
+		<dependency>
+			<groupId>org.apache.felix</groupId>
+			<artifactId>org.apache.felix.ipojo</artifactId>
+			<version>1.8.0</version>
+		</dependency>
+		<dependency>
+			<artifactId>org.apache.felix.ipojo.arch.gogo</artifactId>
+			<groupId>org.apache.felix</groupId>
+			<version>1.0.1</version>
+		</dependency>
+		<!-- Felix Dependencies -->
+		<dependency>
+			<groupId>org.apache.felix</groupId>
+			<version>3.2.0</version>
+			<artifactId>org.apache.felix.fileinstall</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.felix</groupId>
+			<artifactId>org.osgi.compendium</artifactId>
+			<version>1.4.0</version>
+		</dependency>
+		<!-- Logger-->
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>1.6.4</version>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-log4j12</artifactId>
+			<version>1.6.4</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.log4j</groupId>
+			<artifactId>com.springsource.org.apache.log4j</artifactId>
+			<version>1.2.16</version>
+		</dependency>
+
+		<!-- JORAM 5.7.0 dependencies -->
+		<dependency>
+			<groupId>javax.jms</groupId>
+			<artifactId>com.springsource.javax.jms</artifactId>
+			<version>1.1.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.objectweb.joram</groupId>
+			<artifactId>joram-client-jms</artifactId>
+			<version>5.7.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.objectweb.joram</groupId>
+			<artifactId>a3-common</artifactId>
+			<version>5.7.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.objectweb.joram</groupId>
+			<artifactId>jndi-client</artifactId>
+			<version>5.7.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.objectweb.joram</groupId>
+			<artifactId>jndi-shared</artifactId>
+			<version>5.7.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.objectweb.joram</groupId>
+			<artifactId>joram-shared</artifactId>
+			<version>5.7.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.objectweb.joram</groupId>
+			<artifactId>jcup</artifactId>
+			<version>5.3.1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.ow2.jonas.osgi</groupId>
+			<artifactId>monolog</artifactId>
+			<version>5.2.0</version>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>maven-bundle-plugin</artifactId>
+				<extensions>true</extensions>
+			</plugin>
+			<!-- Copy dependencies -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<version>2.1</version>
+				<executions>
+					<!-- Copy bundles in the 'bundle' directory -->
+					<execution>
+						<id>copy-bundles</id>
+						<phase>compile</phase>
+						<goals>
+							<goal>copy-dependencies</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>${basedir}/bundle</outputDirectory>
+							<overWriteSnapshots>true</overWriteSnapshots>
+							<excludeTransitive>true</excludeTransitive>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<!-- copy configuration files -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-antrun-plugin</artifactId>
+				<version>1.6</version>
+				<executions>
+					<execution>
+						<phase>clean</phase>
+						<goals>
+							<goal>run</goal>
+						</goals>
+						<configuration>
+							<target>
+								<delete dir="${basedir}/felix-cache/" />
+								<delete dir="${basedir}/bundle/" />
+								<delete dir="${basedir}/target/" />
+								<delete dir="${basedir}/bin/" />
+							</target>
+						</configuration>
+					</execution>
+					<execution>
+						<id>copy-config</id>
+						<phase>process-resources</phase>
+						<goals>
+							<goal>run</goal>
+						</goals>
+						<configuration>
+							<target>
+								<mkdir dir="${basedir}/bin/" />
+								<mkdir dir="${basedir}/load/" />
+								<copy failonerror="false" todir="${basedir}/bin/">
+									<fileset dir="${basedir}/../../../distributions/cilia-distribution/bin/" />
+								</copy>
+								<copy failonerror="false" todir="${basedir}/load/">
+									<fileset dir="${basedir}/initial-config/" />
+								</copy>
+							</target>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+	<repositories>
+		<!-- For JMS API -->
+		<repository>
+			<id>repository.jboss.org-public</id>
+			<name>JBoss repository</name>
+			<url>https://repository.jboss.org/nexus/content/groups/public</url>
+		</repository>
+	</repositories>
+</project>
