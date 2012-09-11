@@ -340,6 +340,9 @@
 
 	<adapter name="console-adapter" pattern="out-only">
 		<sender type="console-sender" />
+		<ports>
+			<in-port name="unique" type="*" />
+		</ports>
 	</adapter>
 
 
@@ -348,15 +351,18 @@
 		classname="fr.liglab.adele.cilia.framework.components.RandomNumberCollector"
 		name="random-number-collector" >
 		<properties>
-			<property name="collector.sourceName" method="setSourceName"
-				type="String" />
+			<property name="delay" method="delay" value="5000"/>
+			<property name="period" method="period" value="5000"/>
 		</properties>
-		<callback transition="validate" method="started" />
-		<callback transition="invalidate" method="stopped" />
+		<callback transition="validate" method="start" />
+		<callback transition="invalidate" method="stop" />
 	</collector>
 
 	<adapter name="number-generator-adapter" pattern="in-only">
 		<collector type="random-number-collector" />
+		<ports>
+			<out-port name="unique" type="*" />
+		</ports>
 	</adapter>
 
 	<!-- Monitors -->

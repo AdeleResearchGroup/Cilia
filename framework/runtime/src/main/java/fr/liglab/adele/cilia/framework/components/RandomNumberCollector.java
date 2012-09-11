@@ -16,55 +16,45 @@
 
 package fr.liglab.adele.cilia.framework.components;
 
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Random;
 
 import fr.liglab.adele.cilia.Data;
-import fr.liglab.adele.cilia.framework.AbstractCollector;
+import fr.liglab.adele.cilia.framework.AbstractPullCollector;
 
-public class RandomNumberCollector extends AbstractCollector implements Runnable {
+public class RandomNumberCollector extends AbstractPullCollector  {
 
+	private final Random random = new Random();
 
-    private long m_interval=6000;	
-    private Thread m_thread;  
+	@Override
+	protected List<Data> pullData() throws IOException {
+		List<Data> list = new ArrayList<Data>(1);
+		long number = random.nextInt() % 100;
+		Dictionary<String, Object> metadata = new Hashtable<String, Object>();
+		metadata.put(Data.DATA_TYPE, Data.TEXT_DATA);
+		Data data = new Data(new Long(number),"random_number", metadata);
+		list.add(data);
+		return list;
+	}
+	public void delay(long iDelay) {
+		super.delay(iDelay);
+	}
 
-    public void started() {
-        m_thread = new Thread(this);					
-        m_thread.start();
-    }
-
-    public void stopped() {
-        
-        m_thread.interrupt();
-        m_thread = null;
-
-    }
-
-
-
- 
-    public void run() {			
-        while (true){          
-            try {
-                Thread.sleep(m_interval);
-                Random rn = new Random();
-                long number = rn.nextInt() % 100;
-                String source = "";
-
-                Dictionary metadata = new Hashtable();
-                metadata.put(Data.DATA_TYPE, Data.TEXT_DATA);
-                metadata.put(Data.DATA_SOURCE, source);
-                Data data = new Data(new Long(number),"random_number", metadata);
-
-
-                notifyDataArrival(data);					              
-                // wait t time			
-                
-            } catch (InterruptedException e) {	
-            }
-
-        }
-    }	
+	public void period(long lperiod) {
+		super.period(lperiod);
+	}
+	
+	public void start(){
+		super.start();
+		System.out.println("Starting");
+	}
+	public void stop(){
+		super.stop();
+		System.out.println("Stopping");
+	}
 
 }

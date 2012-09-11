@@ -109,13 +109,13 @@ public class SchedulerTest {
 	public void testPeriodicScheduler(){
 		CiliaHelper.waitSomeTime(2000);
 		Hashtable<String, String> properties = new Hashtable<String,String>();
-		properties.put("period", "1000");
-		properties.put("delay", "5000");
+		properties.put("period", "500");
+		properties.put("delay", "2000");
 		MediatorTestHelper helper = cilia.getSchedulerHelper("periodic-scheduler", "fr.liglab.adele.cilia", properties);
-		CiliaHelper.waitSomeTime(1000);//initial delay by default
+		CiliaHelper.waitSomeTime(3000);//initial delay by default
 		helper.injectData(new Data("Data one","data one"));
 		helper.injectData(new Data("Data two","data two"));
-		CiliaHelper.waitSomeTime(5000);
+		CiliaHelper.waitSomeTime(2000);
 		Assert.assertEquals(2, helper.getAmountData());
 		helper.getData();//to erase processed data.
 		//We inject another set of data

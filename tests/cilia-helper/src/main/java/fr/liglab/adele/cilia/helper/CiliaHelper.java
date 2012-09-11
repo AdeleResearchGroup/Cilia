@@ -137,7 +137,7 @@ public class CiliaHelper {
 			e.printStackTrace();
 			return null;
 		}
-		ohelper.waitForService(MediatorTestHelper.class.getName(), "(identifier="+id+")", 1000);
+		ohelper.waitForService(MediatorTestHelper.class.getName(), "(identifier="+id+")", 4000);
 		MediatorTestHelper helper = (MediatorTestHelper)ohelper.getServiceObject(MediatorTestHelper.class.getName(), "(identifier="+id+")");
 		return helper;
 	}
@@ -178,7 +178,7 @@ public class CiliaHelper {
 	}
 
 	public CiliaContext getCiliaContext() {
-		ohelper.waitForService(CiliaContext.class.getName(), null, 1000);
+		ohelper.waitForService(CiliaContext.class.getName(), null, 4000);
 		CiliaContext context = (CiliaContext)ohelper.getServiceObject(CiliaContext.class.getName(), null);
 		return context;
 	}
@@ -211,7 +211,7 @@ public class CiliaHelper {
 		SchedulerHelperCreator proc = new SchedulerHelperCreator(this, schedulername, schedulernamespace, properties);
 		proc.start();
 		System.out.println("Waiting for helper:" + proc.getId());
-		//ohelper.waitForService(MediatorTestHelper.class.getName(), "(identifier="+proc.getId()+")", 4000);
+		ohelper.waitForService(MediatorTestHelper.class.getName(), "(identifier="+proc.getId()+")", 4000);
 		MediatorTestHelper helper = (MediatorTestHelper)ohelper.getServiceObject(MediatorTestHelper.class.getName(), "(identifier="+proc.getId()+")");
 		return helper;
 	}
