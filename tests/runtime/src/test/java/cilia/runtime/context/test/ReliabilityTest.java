@@ -23,7 +23,6 @@ import static org.ops4j.pax.exam.CoreOptions.options;
 import static org.ops4j.pax.exam.CoreOptions.provision;
 
 import java.net.URL;
-import java.util.List;
 
 import org.apache.felix.ipojo.test.helpers.IPOJOHelper;
 import org.apache.felix.ipojo.test.helpers.OSGiHelper;
@@ -130,7 +129,7 @@ public class ReliabilityTest {
 		CiliaHelper.waitSomeTime(100);
 		Assert.assertEquals(0, qd.getAmountData());
 		qd.injectData(new Data ("data TWO", "dda"));
-		CiliaHelper.waitSomeTime(100);
+		CiliaHelper.waitSomeTime(500);
 		//wait some time to arrive message.
 		
 		//Now we replace component
@@ -154,7 +153,7 @@ public class ReliabilityTest {
 		//We inject the last data. Now processing must be performed on replaced mediator.
 		Assert.assertEquals(0, qd.getAmountData());
 		qd.injectData(new Data ("data THREE", "dda"));
-		CiliaHelper.waitSomeTime(500);
+		CiliaHelper.waitSomeTime(1500);
 		Assert.assertEquals(3, qd.getAmountData());
 		
 		Data lastData = qd.getLastData();
@@ -185,7 +184,7 @@ public class ReliabilityTest {
 		Assert.assertEquals(0, qd.getAmountData());
 		qd.injectData(new Data ("data THREE", "dda"));
 		//wait some time to arrive message.
-		CiliaHelper.waitSomeTime(500);
+		CiliaHelper.waitSomeTime(1500);
 		Assert.assertEquals(3, qd.getAmountData());
 		
 		
