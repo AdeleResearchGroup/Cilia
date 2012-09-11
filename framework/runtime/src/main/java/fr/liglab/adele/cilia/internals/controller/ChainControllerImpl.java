@@ -41,6 +41,8 @@ import fr.liglab.adele.cilia.model.impl.UpdateEvent;
 import fr.liglab.adele.cilia.runtime.CiliaInstance;
 import fr.liglab.adele.cilia.runtime.CiliaInstanceWrapper;
 import fr.liglab.adele.cilia.runtime.FirerEvents;
+import fr.liglab.adele.cilia.util.concurrent.ReadWriteLock;
+import fr.liglab.adele.cilia.util.concurrent.ReentrantWriterPreferenceReadWriteLock;
 
 /**
  * This class is used to control a model chain and will act as an intermediator
@@ -79,12 +81,11 @@ public class ChainControllerImpl implements Observer {
 
 	private CiliaInstance dataContainer = null;
 
-	private final Object lockObject = new Object();
-
 	private FirerEvents eventFirer;
 
 	private static final Logger log = LoggerFactory.getLogger("cilia.ipojo.runtime");
 
+	private final ReadWriteLock mutex;	
 	/**
 	 * Create a new Chain controller.
 	 * 
@@ -99,6 +100,7 @@ public class ChainControllerImpl implements Observer {
 		modelChain = (ChainImpl) model;
 		creator = crea;
 		eventFirer = notifier;
+		mutex = new ReentrantWriterPreferenceReadWriteLock();
 		modelChain.addObserver(this);
 	}
 
@@ -126,9 +128,7 @@ public class ChainControllerImpl implements Observer {
 	 * Get the chain model this current object handle.
 	 */
 	public Chain getChain() {
-		synchronized (lockObject) {
-			return modelChain;
-		}
+		return modelChain;
 	}
 
 	/**
@@ -139,11 +139,13 @@ public class ChainControllerImpl implements Observer {
 		createDataContainer();
 		createControllers();
 		startControllers();
-		synchronized (lockObject) {
-			/* Message (data) container for mediators managed by that chain */
-			isStarted = true;
+		try {
+			mutex.writeLock().acquire();
+		} catch (InterruptedException e) {
 		}
-
+		/* Message (data) container for mediators managed by that chain */
+		isStarted = true;
+		mutex.writeLock().release();
 	}
 
 	private void startControllers() {
@@ -159,27 +161,19 @@ public class ChainControllerImpl implements Observer {
 	 * model.
 	 */
 	public void stop() {
-		synchronized (lockObject) {
-			isStarted = false;
-			this.modelChain.deleteObserver(this);
+		try {
+			mutex.writeLock().acquire();
+		} catch (InterruptedException e) {
 		}
-		// stopControllers();
-		deleteAdapters();
-		deleteMediators();
-		deleteBindings();
+
+		isStarted = false;
+		this.modelChain.deleteObserver(this);
+		disposeControllers();
 		if (dataContainer != null) {
 			dataContainer.stop();
 			dataContainer = null;
 		}
-	}
-
-	/**
-	 * Stop all the controllers.
-	 */
-	private void stopControllers() {
-		stopMediators();
-		stopAdapters();
-		stopBindings();
+		mutex.writeLock().release();
 	}
 
 	/**
@@ -221,41 +215,64 @@ public class ChainControllerImpl implements Observer {
 	 * Stop all Mediators controllers and clear all mediators set.
 	 */
 	private void deleteMediators() {
+		try {
+			mutex.writeLock().acquire();
+		} catch (InterruptedException e) {
+		}
 		Iterator it = mediators.values().iterator();
 		while (it.hasNext()) {
 			MediatorControllerImpl mc = (MediatorControllerImpl) it.next();
 			mc.stop();
 		}
 		mediators.clear();
+		mutex.writeLock().release();
 	}
 
 	/**
 	 * Stop all Adapters controllers and clear all Adapters set.
 	 */
 	private void deleteAdapters() {
+		try {
+			mutex.writeLock().acquire();
+		} catch (InterruptedException e) {
+		}
 		Iterator it = adapters.values().iterator();
 		while (it.hasNext()) {
 			AdapterControllerImpl mc = (AdapterControllerImpl) it.next();
 			mc.stop();
 		}
 		adapters.clear();
+		mutex.writeLock().release();
 	}
 
 	/**
 	 * Delete all Bindings
 	 */
 	private void deleteBindings() {
+		try {
+			mutex.writeLock().acquire();
+		} catch (InterruptedException e) {
+		}
 		bindings.clear();
+		mutex.writeLock().release();
 	}
 
 	/**
 	 * Stop all the mediators added to this chain.
 	 */
 	private void stopMediators() {
-		Iterator it = mediators.values().iterator();
-		while (it.hasNext()) {
-			MediatorControllerImpl mc = (MediatorControllerImpl) it.next();
-			mc.stop();
+		try {
+			mutex.readLock().acquire();
+		} catch (InterruptedException e) {
+		}
+		try{
+			Iterator it = mediators.values().iterator();
+			while (it.hasNext()) {
+				MediatorControllerImpl mc = (MediatorControllerImpl) it.next();
+				mc.stop();
+			}
+		}finally{
+			mutex.readLock().release();
 		}
 	}
 
@@ -263,11 +280,18 @@ public class ChainControllerImpl implements Observer {
 	 * Stop all the mediators added to this chain.
 	 */
 	private void stopAdapters() {
-		Iterator it = adapters.values().iterator();
-		while (it.hasNext()) {
-			AdapterControllerImpl mc = (AdapterControllerImpl) it.next();
-			mc.stop();
-
+		try {
+			mutex.readLock().acquire();
+		} catch (InterruptedException e) {
+		}
+		try{
+			Iterator it = adapters.values().iterator();
+			while (it.hasNext()) {
+				AdapterControllerImpl mc = (AdapterControllerImpl) it.next();
+				mc.stop();
+			}
+		}finally{
+			mutex.readLock().release();
 		}
 	}
 
@@ -275,10 +299,17 @@ public class ChainControllerImpl implements Observer {
 	 * Stop all the mediators added to this chain.
 	 */
 	private void stopBindings() {
-		Iterator it = bindings.values().iterator();
-		while (it.hasNext()) {
-			BindingControllerImpl bc = (BindingControllerImpl) it.next();
-			bc.stop();
+		try {
+			mutex.readLock().acquire();
+		} catch (InterruptedException e) {		}
+		try{
+			Iterator it = bindings.values().iterator();
+			while (it.hasNext()) {
+				BindingControllerImpl bc = (BindingControllerImpl) it.next();
+				bc.stop();
+			}
+		}finally{
+			mutex.readLock().release();
 		}
 	}
 
@@ -287,17 +318,23 @@ public class ChainControllerImpl implements Observer {
 	 */
 	private void createMediators() {
 		Set mediators = null;
-		synchronized (lockObject) {
-			mediators = modelChain.getMediators();
+		try {
+			mutex.readLock().acquire();
+		} catch (InterruptedException e) {
 		}
-		if (mediators != null) {
-			Iterator it = mediators.iterator();
-			while (it.hasNext()) {
-				Mediator mediatorModel = (Mediator) it.next();
-				if (log.isDebugEnabled())
-					log.debug("creating mediator " + mediatorModel.getId());
-				createMediatorController(mediatorModel);
+		mediators = modelChain.getMediators();
+		try{
+			if (mediators != null) {
+				Iterator it = mediators.iterator();
+				while (it.hasNext()) {
+					Mediator mediatorModel = (Mediator) it.next();
+					if (log.isDebugEnabled())
+						log.debug("creating mediator " + mediatorModel.getId());
+					createMediatorController(mediatorModel);
+				}
 			}
+		}finally{
+			mutex.readLock().release();
 		}
 	}
 
@@ -305,15 +342,23 @@ public class ChainControllerImpl implements Observer {
 	 * Create all mediators controllers contained in the current model.
 	 */
 	private void createAdapters() {
+		try {
+			mutex.readLock().acquire();
+		} catch (InterruptedException e) {
+		}
 		Set adapters = modelChain.getAdapters();
-		if (adapters != null) {
-			Iterator it = adapters.iterator();
-			while (it.hasNext()) {
-				Adapter adapterModel = (Adapter) it.next();
-				if (log.isDebugEnabled())
-					log.debug("creating mediator " + adapterModel.getId());
-				createAdapterController(adapterModel);
+		try{
+			if (adapters != null) {
+				Iterator it = adapters.iterator();
+				while (it.hasNext()) {
+					Adapter adapterModel = (Adapter) it.next();
+					if (log.isDebugEnabled())
+						log.debug("creating mediator " + adapterModel.getId());
+					createAdapterController(adapterModel);
+				}
 			}
+		}finally{
+			mutex.readLock().release();
 		}
 	}
 
@@ -321,24 +366,36 @@ public class ChainControllerImpl implements Observer {
 	 * Create all bindings controllers contained in the chain model.
 	 */
 	private void createBindings() {
-		// initial bindings
-		Set bindings = modelChain.getBindings();
-		if (bindings != null) {
-			Iterator it = bindings.iterator();
-			if (log.isDebugEnabled())
-				log.debug(" Total bindings " + bindings.size());
-			while (it.hasNext()) {
-				Binding binding = (Binding) it.next();
-				createBindingController(binding);
+		try {
+			mutex.readLock().acquire();
+		} catch (InterruptedException e) {
+		}
+		try{
+			Set bindings = modelChain.getBindings();
+			if (bindings != null) {
+				Iterator it = bindings.iterator();
+				if (log.isDebugEnabled())
+					log.debug(" Total bindings " + bindings.size());
+				while (it.hasNext()) {
+					Binding binding = (Binding) it.next();
+					createBindingController(binding);
+				}
 			}
+		}finally{
+			mutex.readLock().release();
 		}
 	}
 
 	public void createBindingController(Binding binding) {
-
+		try {
+			mutex.readLock().acquire();
+		} catch (InterruptedException e) {
+		}
 		if (bindings.containsKey(binding.getId())) {
 			return;
 		}
+
+		mutex.readLock().release();			
 
 		BindingControllerImpl bindingController = new BindingControllerImpl(bcontext,
 				binding);
@@ -346,50 +403,66 @@ public class ChainControllerImpl implements Observer {
 		MediatorComponent tmediator = binding.getTargetMediator();
 		MediatorControllerImpl targetController = null;
 		MediatorControllerImpl sourceController = null;
-		synchronized (lockObject) {
-			if (smediator != null) {
-				sourceController = (MediatorControllerImpl) mediators.get(smediator
-						.getId());
-				if (sourceController == null) {
-					sourceController = (AdapterControllerImpl) adapters.get(smediator
-							.getId());
-				}
-			}
-			if (tmediator != null) {
-				targetController = (MediatorControllerImpl) mediators.get(tmediator
-						.getId());
-				if (targetController == null) {
-					targetController = (AdapterControllerImpl) adapters.get(tmediator
-							.getId());
-				}
-			}
-
-			bindingController.setTargetController(targetController);
-			bindingController.setSourceController(sourceController);
-			if (isStarted) {
-				bindingController.start();
-			}
-			bindings.put(binding.getId(), bindingController);
-			eventFirer.fireEventNode(FirerEvents.EVT_BIND,
-					smediator, tmediator);
+		try {
+			mutex.readLock().acquire();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
+		if (smediator != null) {
+			sourceController = (MediatorControllerImpl) mediators.get(smediator
+					.getId());
+			if (sourceController == null) {
+				sourceController = (AdapterControllerImpl) adapters.get(smediator
+						.getId());
+			}
+		}
+		if (tmediator != null) {
+			targetController = (MediatorControllerImpl) mediators.get(tmediator
+					.getId());
+			if (targetController == null) {
+				targetController = (AdapterControllerImpl) adapters.get(tmediator
+						.getId());
+			}
+		}
+		bindingController.setTargetController(targetController);
+		bindingController.setSourceController(sourceController);
+		if (isStarted) {
+			bindingController.start();
+		}
+		mutex.readLock().release();
+		try {
+			mutex.writeLock().acquire();
+		} catch (InterruptedException e) {	}
+		bindings.put(binding.getId(), bindingController);
+		mutex.writeLock().release();
+		eventFirer.fireEventNode(FirerEvents.EVT_BIND,
+				smediator, tmediator);
 	}
 
 	public void createMediatorController(Mediator mediator) {
 		boolean localStarted = false;
-		System.out.println("ChaincontrollerImpl: Creating Mediator controller and calling event");
 		MediatorControllerImpl mc = null;
-		synchronized (lockObject) {
-			if (!mediators.containsKey(mediator.getId())) {
-				mc = new MediatorControllerImpl(bcontext, mediator, creator,eventFirer);
-				mediators.put(mediator.getId(), mc);
-				eventFirer.fireEventNode(FirerEvents.EVT_ARRIVAL,
-						mediator);
-				if (isStarted) {
-					localStarted = true;
-				}
+
+		try {
+			mutex.readLock().acquire();
+		} catch (InterruptedException e) {	}
+
+		if (!mediators.containsKey(mediator.getId())) {
+			mc = new MediatorControllerImpl(bcontext, mediator, creator,eventFirer);
+			try {
+				mutex.writeLock().acquire();
+			} catch (InterruptedException e) {		}
+
+			mediators.put(mediator.getId(), mc);
+			mutex.writeLock().release();
+			eventFirer.fireEventNode(FirerEvents.EVT_ARRIVAL,
+					mediator);
+			if (isStarted) {
+				localStarted = true;
 			}
 		}
+		mutex.readLock().release();
 		// Initialize the component in a block separate from the synchronized
 		// block
 		if (localStarted) {
@@ -401,18 +474,23 @@ public class ChainControllerImpl implements Observer {
 		boolean create = true;
 		boolean localStarted = false;
 		AdapterControllerImpl mc = null;
-		synchronized (lockObject) {
-			if (!adapters.containsKey(adapter.getId())) {
-				mc = new AdapterControllerImpl(bcontext, adapter, creator,eventFirer);
-				if (isStarted) {
-					localStarted = true;
-				}
-				adapters.put(adapter.getId(), mc);
-				eventFirer.fireEventNode(FirerEvents.EVT_ARRIVAL,
-						adapter);
-
+		try {
+			mutex.readLock().acquire();
+		} catch (InterruptedException e) {	}
+		if (!adapters.containsKey(adapter.getId())) {
+			mc = new AdapterControllerImpl(bcontext, adapter, creator,eventFirer);
+			if (isStarted) {
+				localStarted = true;
 			}
+			try {
+				mutex.writeLock().acquire();
+			} catch (InterruptedException e) {	}
+			adapters.put(adapter.getId(), mc);
+			mutex.writeLock().release();
+			eventFirer.fireEventNode(FirerEvents.EVT_ARRIVAL,
+					adapter);
 		}
+		mutex.readLock().release();
 		// Initialize the component in a block separate from the synchronized
 		// block
 		if (localStarted) {
@@ -421,15 +499,26 @@ public class ChainControllerImpl implements Observer {
 	}
 
 	public void removeBinding(Binding binding) {
-		if (!bindings.containsKey(binding.getId())) {
-			return;
+		try {
+			mutex.readLock().acquire();
+		} catch (InterruptedException e) {}
+		try{
+			if (!bindings.containsKey(binding.getId())) {
+				return;
+			}
+		}finally{
+			mutex.readLock().release();
 		}
 		eventFirer.fireEventNode(FirerEvents.EVT_UNBIND,
 				binding.getSourceMediator(), binding.getTargetMediator());
 
+		try {
+			mutex.writeLock().acquire();
+		} catch (InterruptedException e) {		}
+		
 		BindingControllerImpl bindingController = (BindingControllerImpl) bindings
 				.remove(binding.getId());
-
+		mutex.writeLock().release();
 		if (bindingController != null) {
 			bindingController.stop();
 		}
@@ -438,9 +527,17 @@ public class ChainControllerImpl implements Observer {
 
 	public synchronized void removeMediator(Mediator mediator) {
 		String mediatorId = mediator.getId();
-
-		MediatorControllerImpl mediatorController = (MediatorControllerImpl) mediators
-				.remove(mediatorId);
+		MediatorControllerImpl mediatorController = null; 
+		try {
+			mutex.writeLock().acquire();
+		} catch (InterruptedException e) {
+		}
+		try{
+			mediatorController = (MediatorControllerImpl) mediators
+					.remove(mediatorId);
+		}finally{
+			mutex.writeLock().release();
+		}
 		if (mediatorController != null) {
 			mediatorController.stop();
 		}
@@ -452,9 +549,17 @@ public class ChainControllerImpl implements Observer {
 
 	public void removeAdapter(Adapter adapter) {
 		String adapterId = adapter.getId();
-
-		AdapterControllerImpl adapterController = (AdapterControllerImpl) adapters
-				.remove(adapterId);
+		AdapterControllerImpl adapterController  = null;
+		try {
+			mutex.writeLock().acquire();
+		} catch (InterruptedException e) {
+		}
+		try{
+			adapterController = (AdapterControllerImpl) adapters
+					.remove(adapterId);
+		}finally{
+			mutex.writeLock().release();
+		}
 		if (adapterController != null) {
 			adapterController.stop();
 		}
@@ -481,7 +586,7 @@ public class ChainControllerImpl implements Observer {
 					log.debug(" update instance property");
 					updateInstanceProperties(md.getProperties());
 				}
-					break;
+				break;
 				case UpdateActions.ADD_MEDIATOR: {
 					Mediator mediator = (Mediator) event.getSource();
 					log.debug(" add mediator");
@@ -489,7 +594,7 @@ public class ChainControllerImpl implements Observer {
 						createMediatorController(mediator);
 					}
 				}
-					break;
+				break;
 				case UpdateActions.ADD_ADAPTER: {
 					Adapter adapter = (Adapter) event.getSource();
 					log.debug(" add mediator");
@@ -498,7 +603,7 @@ public class ChainControllerImpl implements Observer {
 					}
 				}
 
-					break;
+				break;
 				case UpdateActions.REMOVE_MEDIATOR: {
 					Mediator mediator = (Mediator) event.getSource();
 					log.debug(" remove mediator");
@@ -506,7 +611,7 @@ public class ChainControllerImpl implements Observer {
 						removeMediator(mediator);
 					}
 				}
-					break;
+				break;
 				case UpdateActions.REMOVE_ADAPTER: {
 					Adapter adapter = (Adapter) event.getSource();
 					log.debug(" remove adapter");
@@ -514,19 +619,19 @@ public class ChainControllerImpl implements Observer {
 						removeAdapter(adapter);
 					}
 				}
-					break;
+				break;
 				case UpdateActions.ADD_BINDING: {
 					log.debug(" Add binding");
 					Binding binding = (Binding) event.getSource();
 					createBindingController(binding);
 				}
-					break;
+				break;
 				case UpdateActions.REMOVE_BINDING: {
 					log.debug(" Remove binding");
 					Binding binding = (Binding) event.getSource();
 					removeBinding(binding);
 				}
-					break;
+				break;
 				}
 			}
 		}
