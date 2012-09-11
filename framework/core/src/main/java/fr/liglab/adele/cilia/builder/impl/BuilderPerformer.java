@@ -131,14 +131,22 @@ public class BuilderPerformer {
 		MediatorImpl mediator = new MediatorImpl(creator.getId(), creator.getType(),
 				creator.getNamespace(), creator.getCategory(),
 				creator.getVersion(), creator.getConfiguration(), chain);
-		chain.add(mediator);
+		try {
+			chain.add(mediator);
+		} catch (CiliaException e) {
+			e.printStackTrace();
+		}
 	}
 
 	private void createAdapter(CreatorImpl creator) {
 		AdapterImpl adapter = new AdapterImpl(creator.getId(), creator.getType(),
 				creator.getNamespace(), creator.getVersion(),
 				creator.getConfiguration(), chain, PatternType.UNASSIGNED);
-		chain.add(adapter);
+		try {
+			chain.add(adapter);
+		} catch (CiliaException e) {
+			e.printStackTrace();
+		}
 	}
 
 	private void doRemove() throws BuilderPerformerException {
@@ -239,12 +247,20 @@ public class BuilderPerformer {
 					ad.getNamespace(), 
 					ad.getVersion(), properties, chain, ad.getPattern());
 
-			chain.add(nadapter);
+			try {
+				chain.add(nadapter);
+			} catch (CiliaException e) {
+				e.printStackTrace();
+			}
 		} else {
 			MediatorImpl mediator = new MediatorImpl(rep.getToMediator(), from.getType(),
 					from.getNamespace(), from.getCategory(),
 					from.getVersion(), properties, chain);
-			chain.add(mediator);
+			try {
+				chain.add(mediator);
+			} catch (CiliaException e) {
+				e.printStackTrace();
+			}
 		}
 		//
 	}

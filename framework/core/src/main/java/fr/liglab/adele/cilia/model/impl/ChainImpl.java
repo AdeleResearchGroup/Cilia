@@ -24,6 +24,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import fr.liglab.adele.cilia.exceptions.CiliaException;
 import fr.liglab.adele.cilia.model.Adapter;
 import fr.liglab.adele.cilia.model.Binding;
 import fr.liglab.adele.cilia.model.Chain;
@@ -53,7 +54,8 @@ public class ChainImpl extends ComponentImpl implements Chain{
 	 */
 	private Set /*<BindingImpl>*/ bindings = new HashSet();
 
-	private final Object lockObject = new Object();
+
+
 
 	/**
 	 * Constructor.
@@ -64,6 +66,7 @@ public class ChainImpl extends ComponentImpl implements Chain{
 	 */
 	public ChainImpl(String id, String type, String nspace, Dictionary properties) {
 		super(id, type, nspace, properties);
+
 	}
 	/**
 	 * Add a mediator to the chain model.
@@ -71,24 +74,33 @@ public class ChainImpl extends ComponentImpl implements Chain{
 	 * @return true if mediator is added or to the chain or if mediator was already in the chain.
 	 * return false if the mediator given as a parameter is null.
 	 */
-	public boolean add(Mediator mediator) {
+	public boolean add(Mediator mediator) throws CiliaException {
 		boolean inserted = false;
+		boolean exist = true;
 		String mediatorId = mediator.getId();
-		synchronized (lockObject) {
-			if (mediator != null && !mediators.containsKey(mediatorId) && (!adapters.containsKey(mediatorId))) {
-				mediators.put(mediatorId, mediator);
-				inserted = true;
-			}  else {
-				throw new RuntimeException("MediatorImpl identifier must be unique: " + mediator.getId());
-			}
+		try {
+			mutex.readLock().acquire();
+		} catch (InterruptedException e) {}
+		if(mediator != null && !mediators.containsKey(mediatorId) && (!adapters.containsKey(mediatorId))){
+			exist = false;
+		}
+		mutex.readLock().release();
+
+		if (!exist) {
+			try {
+				mutex.writeLock().acquire();
+			} catch (InterruptedException e) {}
+			mediators.put(mediatorId, mediator);
+			mutex.writeLock().release();
+			inserted = true;
+		}  else {
+			throw new CiliaException("MediatorImpl identifier must be unique: " + mediator.getId());
 		}
 		if (inserted) {
 			((MediatorComponentImpl)mediator).setChain(this);
-			synchronized (this) {
-				setChanged();
-				notifyObservers(new UpdateEvent(UpdateActions.ADD_MEDIATOR, mediator));
-			}
-			
+			setChanged();
+			notifyObservers(new UpdateEvent(UpdateActions.ADD_MEDIATOR, mediator));
+
 		}
 		return inserted;
 	}
@@ -117,19 +129,20 @@ public class ChainImpl extends ComponentImpl implements Chain{
 		Binding[] inbindings = null;
 		Binding[] outbindings = null;
 		boolean result = false;
-		//Remove Mediators and bindings from the chain.
-		synchronized (lockObject) {
-			mediatorToRemove = (MediatorImpl) mediators.remove(mediatorId);
-			if (mediatorToRemove != null) {
-				inbindings = mediatorToRemove.getInBindings();
-				outbindings = mediatorToRemove.getOutBindings();
-				unlinkBindingsFromChain(inbindings);
-				unlinkBindingsFromChain(outbindings);
-				mediatorToRemove.setChain(null);
-				result = true;
-			} else {
-				result = false;
-			}
+		try {
+			mutex.writeLock().acquire();
+		} catch (InterruptedException e) {}
+		mediatorToRemove = (MediatorImpl) mediators.remove(mediatorId);
+		mutex.writeLock().release();
+		if (mediatorToRemove != null) {
+			inbindings = mediatorToRemove.getInBindings();
+			outbindings = mediatorToRemove.getOutBindings();
+			unlinkBindingsFromChain(inbindings);
+			unlinkBindingsFromChain(outbindings);
+			mediatorToRemove.setChain(null);
+			result = true;
+		} else {
+			result = false;
 		}
 		//bindings are removed from the chain, we need to remove bindings from the mediator.
 		if (result) {
@@ -148,9 +161,11 @@ public class ChainImpl extends ComponentImpl implements Chain{
 	 */
 	public Mediator getMediator(String mediatorId) {
 		Mediator med = null;
-		synchronized (lockObject) {
-			med = (Mediator)mediators.get(mediatorId);
-		}
+		try {
+			mutex.readLock().acquire();
+		} catch (InterruptedException e) {}
+		med = (Mediator)mediators.get(mediatorId);
+		mutex.readLock().release();
 		return med;
 	}
 	/**
@@ -159,15 +174,25 @@ public class ChainImpl extends ComponentImpl implements Chain{
 	 * @return true if is correctely added, false if adapter is null or 
 	 * if there is an adapter with the same id in the chain.
 	 */
-	public boolean add(Adapter adapter) {
+	public boolean add(Adapter adapter) throws CiliaException {
 		boolean inserted = false;
-		synchronized (lockObject) {
-			if (adapter != null && !adapters.containsKey(adapter.getId()) && (!mediators.containsKey(adapter.getId()))) {
-				adapters.put(adapter.getId(), adapter);
-				inserted = true;
-			} else {
-				throw new RuntimeException("AdapterImpl identifier must be unique: " + adapter.getId());
-			}
+		boolean exist = true;
+		try {
+			mutex.readLock().acquire();
+		} catch (InterruptedException e) {}
+		if (adapter != null && !adapters.containsKey(adapter.getId()) && (!mediators.containsKey(adapter.getId()))) {
+			exist = false;
+		}
+		mutex.readLock().release();
+		if (!exist) {
+			try {
+				mutex.writeLock().acquire();
+			} catch (InterruptedException e) {}
+			adapters.put(adapter.getId(), adapter);
+			mutex.writeLock().release();
+			inserted = true;
+		} else {
+			throw new CiliaException("AdapterImpl identifier must be unique: " + adapter.getId());
 		}
 		if (inserted) {
 			((AdapterImpl)adapter).setChain(this);
@@ -182,9 +207,12 @@ public class ChainImpl extends ComponentImpl implements Chain{
 	 * @return
 	 */
 	public Set getMediators() {
-		synchronized (lockObject) {
-			return new HashSet(mediators.values());	
-		}
+		try {
+			mutex.readLock().acquire();
+		} catch (InterruptedException e) {}
+		Set ns = new HashSet(mediators.values());
+		mutex.readLock().release();
+		return 	ns;
 	}
 
 	/**
@@ -194,9 +222,11 @@ public class ChainImpl extends ComponentImpl implements Chain{
 	 */
 	public Adapter getAdapter(String adapterId) {
 		Adapter adap = null;
-		synchronized (lockObject) {
-			adap = (Adapter)adapters.get(adapterId);
-		}
+		try {
+			mutex.readLock().acquire();
+		} catch (InterruptedException e) {}
+		adap = (Adapter)adapters.get(adapterId);
+		mutex.readLock().release();
 		return adap;
 	}
 
@@ -205,9 +235,12 @@ public class ChainImpl extends ComponentImpl implements Chain{
 	 * @return
 	 */
 	public Set getAdapters() {
-		synchronized (lockObject) {
-			return new HashSet(adapters.values());
-		}
+		try {
+			mutex.readLock().acquire();
+		} catch (InterruptedException e) {}
+		Set ns = new HashSet(adapters.values());
+		mutex.readLock().release();
+		return ns;
 	}
 
 	/**
@@ -222,19 +255,20 @@ public class ChainImpl extends ComponentImpl implements Chain{
 		Binding[] inbindings = null;
 		Binding[] outbindings = null;
 		boolean result = false;
-		//Remove Mediators and bindings from the chain.
-		synchronized (lockObject) {
-			adapterToRemove = (AdapterImpl) adapters.remove(adapterId);
-			if (adapterToRemove != null) {
-				inbindings = adapterToRemove.getInBindings();
-				outbindings = adapterToRemove.getOutBindings();
-				unlinkBindingsFromChain(inbindings);
-				unlinkBindingsFromChain(outbindings);
-				adapterToRemove.setChain(null);
-				result = true;
-			} else {
-				result = false;
-			}
+		try {
+			mutex.writeLock().acquire();
+		} catch (InterruptedException e) {}
+		adapterToRemove = (AdapterImpl) adapters.remove(adapterId);
+		mutex.writeLock().release();
+		if (adapterToRemove != null) {
+			inbindings = adapterToRemove.getInBindings();
+			outbindings = adapterToRemove.getOutBindings();
+			unlinkBindingsFromChain(inbindings);
+			unlinkBindingsFromChain(outbindings);
+			adapterToRemove.setChain(null);
+			result = true;
+		} else {
+			result = false;
 		}
 		//bindings are removed from the chain, we need to remove bindings from the adapter.
 		if (result) {
@@ -250,10 +284,13 @@ public class ChainImpl extends ComponentImpl implements Chain{
 	 * Get all the bindings added to the chain model.
 	 * @return the added bindings.
 	 */
-	public Set getBindings() {		
-		synchronized (lockObject) {
-			return new HashSet(bindings);
-		}
+	public Set getBindings() {
+		try {
+			mutex.readLock().acquire();
+		} catch (InterruptedException e) {}
+		Set ns = new HashSet(bindings);
+		mutex.readLock().release();
+		return ns;
 	}
 
 	/**
@@ -294,10 +331,11 @@ public class ChainImpl extends ComponentImpl implements Chain{
 		//set the ports.
 		((BindingImpl)binding).setSourcePort(sourcePort);
 		((BindingImpl)binding).setTargetPort(targetPort);
-
-		synchronized (lockObject) {
-			result = bindings.add(binding);
-		}
+		try {
+			mutex.writeLock().acquire();
+		} catch (InterruptedException e) {}
+		result = bindings.add(binding);
+		mutex.writeLock().release();
 		if (result) {
 			setChanged();
 			notifyObservers(new UpdateEvent(UpdateActions.ADD_BINDING, binding));
@@ -320,9 +358,13 @@ public class ChainImpl extends ComponentImpl implements Chain{
 			throw new RuntimeException("PortImpl type not compatible, it must be PortType.INPUT");
 		}
 		((BindingImpl)binding).setTargetPort(inPort);
-		synchronized (lockObject) {
-			result = bindings.add(binding);
+		try {
+			mutex.writeLock().acquire();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
 		}
+		result = bindings.add(binding);
+		mutex.writeLock().release();
 		if (result == true) {
 			setChanged();
 			notifyObservers(new UpdateEvent(UpdateActions.ADD_BINDING, binding));
@@ -337,9 +379,11 @@ public class ChainImpl extends ComponentImpl implements Chain{
 		}
 
 		((BindingImpl)binding).setSourcePort(outPort);
-		synchronized (lockObject) {
-			result = bindings.add(binding);
-		}
+		try {
+			mutex.writeLock().acquire();
+		} catch (InterruptedException e) {}
+		result = bindings.add(binding);
+		mutex.writeLock().release();
 		if (result == true) {
 			setChanged();
 			notifyObservers(new UpdateEvent(UpdateActions.ADD_BINDING, binding));
@@ -358,9 +402,13 @@ public class ChainImpl extends ComponentImpl implements Chain{
 
 	private void unlinkBindingsFromChain(Binding[] bindingsToUnlink) { //called in a synchronized block.
 		if (bindingsToUnlink != null) {
+			try {
+				mutex.writeLock().acquire();
+			} catch (InterruptedException e) {}
 			for (int i = 0; i < bindingsToUnlink.length; i++) {
 				bindings.remove(bindingsToUnlink[i]);
 			}
+			mutex.writeLock().release();
 		}
 	}
 	/**
@@ -374,9 +422,7 @@ public class ChainImpl extends ComponentImpl implements Chain{
 		Binding bindingsToRemove[] = null;
 		boolean result = false;
 		bindingsToRemove = getBindings(sourceMediator, targetMediator);
-		synchronized (lockObject) { //We remove bindings from the chain.
-			unlinkBindingsFromChain(bindingsToRemove);
-		}
+		unlinkBindingsFromChain(bindingsToRemove);
 		if (bindingsToRemove != null) {//Notify to the mediators to remove bindings.
 			unbind(bindingsToRemove);
 			result = true;
@@ -401,9 +447,11 @@ public class ChainImpl extends ComponentImpl implements Chain{
 	 */
 	public boolean unbind(Binding binding) {
 		if (binding != null) {
-			synchronized (lockObject) {
-				bindings.remove(binding);
-			}
+			try {
+				mutex.writeLock().acquire();
+			} catch (InterruptedException e) {}
+			bindings.remove(binding);
+			mutex.writeLock().release();
 			MediatorComponentImpl outM = (MediatorComponentImpl)binding.getSourceMediator();
 			MediatorComponentImpl inM = (MediatorComponentImpl)binding.getTargetMediator();
 			inM.removeInBinding(binding);
@@ -460,12 +508,16 @@ public class ChainImpl extends ComponentImpl implements Chain{
 
 	public void dispose(){
 		super.dispose();
+		try {
+			mutex.writeLock().acquire();
+		} catch (InterruptedException e) {}
 		this.adapters.clear();
 		this.adapters = null;
 		this.mediators.clear();
 		this.mediators = null;
 		this.bindings.clear();
 		this.bindings = null;
+		mutex.writeLock().release();
 	}
 
 	public String toString(){
