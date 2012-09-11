@@ -154,7 +154,7 @@ public class CiliaChainInstanceParser implements ChainParser {
 		// It must add mediators at first.
 		String id = getId(nchain);
 		String type = getType(nchain);
-		String extentions = getAttributeValue(nchain, "extention");
+		String extentions = getAttributeValue(nchain, "extension");
 		Properties props = getProperties(nchain);
 		Builder builder = ccontext.getBuilder();
 		if (extentions != null && extentions.compareToIgnoreCase("true") == 0) {

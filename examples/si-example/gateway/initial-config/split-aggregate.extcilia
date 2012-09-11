@@ -1,5 +1,5 @@
 	<cilia xmlns:cbd="fr.imag.adele.cilia.compendium">
-		<chain id="DemoSplitAggregate" extention="true">
+		<chain id="DemoSplitAggregate" extension="true">
 			<mediators>
 				<mediator id="xslt-transformer-1" >
 					<processor>
