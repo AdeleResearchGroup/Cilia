@@ -154,7 +154,7 @@ public class ReliabilityTest {
 		//We inject the last data. Now processing must be performed on replaced mediator.
 		Assert.assertEquals(0, qd.getAmountData());
 		qd.injectData(new Data ("data THREE", "dda"));
-		CiliaHelper.waitSomeTime(100);
+		CiliaHelper.waitSomeTime(500);
 		Assert.assertEquals(3, qd.getAmountData());
 		
 		Data lastData = qd.getLastData();
@@ -185,7 +185,7 @@ public class ReliabilityTest {
 		Assert.assertEquals(0, qd.getAmountData());
 		qd.injectData(new Data ("data THREE", "dda"));
 		//wait some time to arrive message.
-		CiliaHelper.waitSomeTime(100);
+		CiliaHelper.waitSomeTime(500);
 		Assert.assertEquals(3, qd.getAmountData());
 		
 		
