@@ -1,0 +1,6 @@
+In order to run the JMS Test, it is needed a Joram JMS server on the localhost
+with following config:
+host		="localhost"
+port		="16010"
+login		="root"
+password	="root"

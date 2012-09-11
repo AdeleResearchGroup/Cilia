@@ -55,17 +55,4 @@
 		<sender type="jms-sender" namespace="fr.liglab.adele.cilia" />
 	</linker>
 
-
-	<component classname="fr.liglab.adele.cilia.jms.AdminCmd"
-		name="JMS_Admin">
-		<provides specifications="fr.liglab.adele.cilia.jms.AdminCmd">
-			<property name="osgi.command.scope" type="String" value="jms" />
-			<property name="osgi.command.function" type="String[]"
-				value="{create, remove}" />
-
-		</provides>
-	</component>
-
-	<instance component="JMS_Admin" name="JMS_Admin" />
-
 </cilia>

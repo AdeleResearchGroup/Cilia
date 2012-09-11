@@ -94,7 +94,6 @@ public class CiliaJMSTest {
 						mavenBundle().groupId("org.ow2.jonas.osgi").artifactId("monolog").version("5.2.0"),
 						mavenBundle().groupId("fr.liglab.adele.cilia").artifactId("cilia-core").version(CURRENT_VERSION),
 						mavenBundle().groupId("fr.liglab.adele.cilia").artifactId("cilia-runtime").version(CURRENT_VERSION),
-						mavenBundle().groupId("fr.liglab.adele.cilia").artifactId("cilia-admin").version(CURRENT_VERSION),
 						mavenBundle().groupId("fr.liglab.adele.cilia").artifactId("cilia-helper").version(CURRENT_VERSION),
 						mavenBundle().groupId("fr.liglab.adele.cilia").artifactId("jms-adapter").version(CURRENT_VERSION)
 
@@ -114,7 +113,7 @@ public class CiliaJMSTest {
 	}
 
 
-	//@Test
+	@Test
 	public void validateServices() {
 		waitSomeTime(2000);
 		Factory col = ipojo.getFactory("jms-collector");
@@ -127,7 +126,7 @@ public class CiliaJMSTest {
 		Assert.assertNotNull(gbs);
 	}
 
-	//@Test
+	@Test
 	public void collectorTest() {
 		String topic = "receivingTopic";
 		waitSomeTime(2000);
@@ -152,7 +151,7 @@ public class CiliaJMSTest {
 		System.out.println(data.getAllData());
 	}
 
-	//@Test
+	@Test
 	public void senderTest() {
 		String topic = "receivingTopic";
 		waitSomeTime(2000);
@@ -222,7 +221,7 @@ public class CiliaJMSTest {
 			e.printStackTrace();
 		}
 	}
-	//@Test
+	@Test
 	public void testBinding() {
 		waitSomeTime(2000);
 		URL url = context.getBundle().getResource("test.dscilia");

@@ -16,14 +16,15 @@
 
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>fr.liglab.adele.cilia</groupId>
-	<artifactId>cilia-components</artifactId>
+	<artifactId>cilia-JMS-reactor</artifactId>
 	<packaging>pom</packaging>
-	<name>Cilia Components Reactor</name>
+	<name>Cilia JMS Reactor</name>
 	<version>1.0.0</version>
 
 	<modules>
-		<module>jms</module>
-		<module>ea</module>
-		</modules>
+		<module>jms-adapter</module>
+		<!-- To RUN the test, read the jms-it/README file-->
+		<!--<module>jms-it</module>-->
+	</modules>
 
 </project>
