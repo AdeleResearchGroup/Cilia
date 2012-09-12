@@ -20,9 +20,9 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 	<scm>
-		<connection>scm:git:git@github.com:AdeleResearchGroup/Cilia.git</connection>
-		<developerConnection>scm:git:git@github.com:AdeleResearchGroup/Cilia.git</developerConnection>
-		<url>scm:git:git@github.com:AdeleResearchGroup/Cilia.git</url>
+		<connection>scm:git:ssh://git@github.com/AdeleResearchGroup/Cilia.git</connection>
+		<url>http://github.com/AdeleResearchGroup/Cilia/tree/master</url>
+		<developerConnection>scm:git:ssh://git@github.com/AdeleResearchGroup/Cilia.git</developerConnection>
 		<tag>HEAD</tag>
 	</scm>
 	<build>
