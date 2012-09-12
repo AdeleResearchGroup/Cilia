@@ -11,7 +11,7 @@
 	<groupId>fr.liglab.adele.cilia</groupId>
 	<artifactId>cilia-project</artifactId>
 	<name>Cilia Project</name>
-	<version>1.5.0</version>
+	<version>1.2.2-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<url>http://wikiadele.imag.fr/index.php/Cilia</url>
 	<properties>
