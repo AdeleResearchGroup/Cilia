@@ -155,6 +155,7 @@ public class CiliaHelper {
 			e.printStackTrace();
 			return null;
 		}
+		waitSomeTime(3000);
 		ohelper.waitForService(MediatorTestHelper.class.getName(), "(identifier="+id+")", 8000);
 		MediatorTestHelper helper = (MediatorTestHelper)ohelper.getServiceObject(MediatorTestHelper.class.getName(), "(identifier="+id+")");
 		return helper;

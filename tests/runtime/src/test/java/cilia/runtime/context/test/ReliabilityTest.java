@@ -127,7 +127,7 @@ public class ReliabilityTest {
 		
 		//wait to be added.
 		logger.info("will wait");
-		boolean found = cilia.waitToChain(chainID,1000);
+		boolean found = cilia.waitToChain(chainID,6000);
 		logger.info("Chain Ready");
 		MediatorTestHelper qd = cilia.instrumentChain(chainID, "firstMediator:unique", "lastMediator:unique");
 		//chain must exist, and helper should be well constructed.
@@ -135,11 +135,11 @@ public class ReliabilityTest {
 		Assert.assertNotNull(qd);
 		logger.info("Injecting First Data");
 		qd.injectData(new Data ("data ONE", "dda"));
-		CiliaHelper.waitSomeTime(100);
+		CiliaHelper.waitSomeTime(2000);
 		Assert.assertEquals(0, qd.getAmountData());
 		logger.info("Injecting Second Data");
 		qd.injectData(new Data ("data TWO", "dda"));
-		CiliaHelper.waitSomeTime(500);
+		CiliaHelper.waitSomeTime(2000);
 		//wait some time to arrive message.
 		
 		//Now we replace component
@@ -165,7 +165,7 @@ public class ReliabilityTest {
 		Assert.assertEquals(0, qd.getAmountData());
 		logger.info("Injecting third Data");
 		qd.injectData(new Data ("data THREE", "dda"));
-		CiliaHelper.waitSomeTime(1500);
+		CiliaHelper.waitSomeTime(3000);
 		logger.info("Assert data");
 		Assert.assertEquals(3, qd.getAmountData());
 		
@@ -185,23 +185,23 @@ public class ReliabilityTest {
 		cilia.load(url);
 		//wait to be added.
 		logger.info("will wait");
-		boolean found = cilia.waitToChain("reliableTest",1000);
+		boolean found = cilia.waitToChain("reliableTest",6000);
 		logger.info("Chain is ready");
 		MediatorTestHelper qd = cilia.instrumentChain("reliableTest", "firstMediator:unique", "lastMediator:unique");
 		logger.info("Chain has been instrumented");
 		Assert.assertNotNull(qd);
 		logger.info("Injecting first Data");
 		qd.injectData(new Data ("data ONE", "dda"));
-		CiliaHelper.waitSomeTime(100);
+		CiliaHelper.waitSomeTime(2000);
 		Assert.assertEquals(0, qd.getAmountData());
 		logger.info("Injecting second Data");
 		qd.injectData(new Data ("data TWO", "dda"));
-		CiliaHelper.waitSomeTime(100);
+		CiliaHelper.waitSomeTime(2000);
 		Assert.assertEquals(0, qd.getAmountData());
 		logger.info("Injecting third Data");
 		qd.injectData(new Data ("data THREE", "dda"));
 		//wait some time to arrive message.
-		CiliaHelper.waitSomeTime(1500);
+		CiliaHelper.waitSomeTime(3000);
 		logger.info("Analize Injected Data");
 		Assert.assertEquals(3, qd.getAmountData());
 		

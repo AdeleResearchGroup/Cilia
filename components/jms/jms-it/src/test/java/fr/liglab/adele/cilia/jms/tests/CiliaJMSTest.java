@@ -228,7 +228,7 @@ public class CiliaJMSTest {
 		cilia.load(url);
 		//wait to be added.
 		System.out.println("will wait");
-		boolean found = cilia.waitToChain("toto",10000);
+		boolean found = cilia.waitToChain("toto",6000);
 		System.out.println("found chain "+ found);
 		MediatorTestHelper qd = cilia.instrumentChain("toto", "m11:unique", "m22:unique");
 		//chain must exist, and helper should be well constructed.

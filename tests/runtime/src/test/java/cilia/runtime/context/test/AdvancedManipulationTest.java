@@ -87,9 +87,9 @@ public class AdvancedManipulationTest {
 						mavenBundle().groupId("org.osgi").artifactId("org.osgi.compendium").versionAsInProject(),
 						mavenBundle().groupId("org.slf4j").artifactId("slf4j-api").versionAsInProject(),
 						mavenBundle().groupId("org.slf4j").artifactId("slf4j-simple").version("1.6.1"),
+						mavenBundle().groupId("fr.liglab.adele.cilia").artifactId("cilia-core").versionAsInProject(),
 						mavenBundle().groupId("fr.liglab.adele.cilia").artifactId("cilia-runtime").versionAsInProject(),
-						mavenBundle().groupId("fr.liglab.adele.cilia").artifactId("cilia-helper").versionAsInProject(),
-						mavenBundle().groupId("fr.liglab.adele.cilia").artifactId("cilia-core").versionAsInProject()
+						mavenBundle().groupId("fr.liglab.adele.cilia").artifactId("cilia-helper").versionAsInProject()
 						)); // The target
 		Option[] r = OptionUtils.combine(platform, bundles);
 		return r;
@@ -113,7 +113,7 @@ public class AdvancedManipulationTest {
 		URL url = context.getBundle().getResource("ReplacerTest.dscilia");
 		cilia.load(url);
 		System.out.println("will wait");
-		boolean found = cilia.waitToChain("replacerExample",3000);
+		boolean found = cilia.waitToChain("replacerExample",6000);
 
 		//get the helper to inject and retrieve result.
 		MediatorTestHelper tester = cilia.instrumentChain("replacerExample","firstMediator:unique", "lastMediator:unique");
@@ -161,7 +161,7 @@ public class AdvancedManipulationTest {
 		URL url = context.getBundle().getResource("CopyTest.dscilia");
 		cilia.load(url);
 		System.out.println("will wait");
-		Assert.assertTrue(cilia.waitToChain("copyExample",3000));
+		Assert.assertTrue(cilia.waitToChain("copyExample",6000));
 		
 		//get the helper to inject and retrieve result.
 		MediatorTestHelper tester = cilia.instrumentChain("copyExample","firstMediator:unique", "lastMediator:unique");

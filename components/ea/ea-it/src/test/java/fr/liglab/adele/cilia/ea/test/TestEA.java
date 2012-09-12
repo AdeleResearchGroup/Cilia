@@ -234,7 +234,7 @@ public class TestEA  {
 		cilia.load(url);
 		//wait to be added.
 		System.out.println("will wait");
-		boolean found = cilia.waitToChain("toto",10000);
+		boolean found = cilia.waitToChain("toto",6000);
 		System.out.println("found chain "+ found);
 		MediatorTestHelper qd = cilia.instrumentChain("toto", "m11:unique", "m22:unique");
 		//chain must exist, and helper should be well constructed.
@@ -255,7 +255,7 @@ public class TestEA  {
 		URL url = context.getBundle().getResource("testAdapter.dscilia");
 		cilia.load(url);
 		System.out.println("will wait");
-		boolean found = cilia.waitToChain("toto",10000);
+		boolean found = cilia.waitToChain("toto",6000);
 		System.out.println("found chain "+ found);
 		Hashtable<String, String> ht = new Hashtable<String, String>();
 		ht.put("topic", "in_adapter_topic");
