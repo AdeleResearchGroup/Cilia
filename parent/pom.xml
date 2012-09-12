@@ -14,15 +14,16 @@
 	<packaging>pom</packaging>
 	<name>Cilia Project</name>
 	<version>1.2.2-SNAPSHOT</version>
-	<url>http://cilia.ligforge.imag.fr</url>
+	<url>http://wikiadele.imag.fr/index.php/Cilia</url>
 	<properties>
 		<skipTests>false</skipTests>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 	<scm>
-		<connection>scm:svn:svn+ssh://cilia@svn.ligforge.imag.fr/svnroot/cilia/trunk</connection>
-		<developerConnection>scm:svn:svn+ssh://cilia@svn.ligforge.imag.fr/svnroot/cilia/trunk</developerConnection>
-		<url>https://svn.ligforge.imag.fr/svnroot/cilia/</url>
+		<connection>scm:git:git@github.com:AdeleResearchGroup/Cilia.git</connection>
+		<developerConnection>scm:git:git@github.com:AdeleResearchGroup/Cilia.git</developerConnection>
+		<url>scm:git:git@github.com:AdeleResearchGroup/Cilia.git</url>
+		<tag>HEAD</tag>
 	</scm>
 	<build>
 		<plugins>
