@@ -30,7 +30,6 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-release-plugin</artifactId>
 				<configuration>
-					<!--tagBase>https://svn.ligforge.imag.fr/svnroot/cilia/tags/releases</tagBase -->
 					<allowTimestampedSnapshots>true</allowTimestampedSnapshots>
 				</configuration>
 			</plugin>
@@ -42,7 +41,22 @@
 					<skipTests>${skipTests}</skipTests>
 				</configuration>
 			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>2.8.1</version>
+				<configuration>
+					<excludePackageNames>*.internal,*.internal.*,*.impl,*.impl.*</excludePackageNames>
+				</configuration>
+			</plugin>
 		</plugins>
+		<extensions>
+			<extension>
+				<groupId>org.apache.maven.wagon</groupId>
+				<artifactId>wagon-webdav-jackrabbit</artifactId>
+				<version>2.2</version>
+			</extension>
+		</extensions>
 		<pluginManagement>
 			<plugins>
 				<!--This plugin's configuration is used to store Eclipse m2e settings 
@@ -151,14 +165,14 @@
 		</repository>
 		<!-- For RoSe -->
 		<repository>
-		    <id>maven-barjo-repository-release</id>
-    		<name>RoSe - Release</name>
-		    <url>https://repository-barjo.forge.cloudbees.com/release/</url>
+			<id>maven-barjo-repository-release</id>
+			<name>RoSe - Release</name>
+			<url>https://repository-barjo.forge.cloudbees.com/release/</url>
 		</repository>
 		<repository>
-		    <id>maven-barjo-repository-snapshot</id>
-		    <name>RoSe - Snapshot</name>
-		    <url>https://repository-barjo.forge.cloudbees.com/snapshot/</url>
+			<id>maven-barjo-repository-snapshot</id>
+			<name>RoSe - Snapshot</name>
+			<url>https://repository-barjo.forge.cloudbees.com/snapshot/</url>
 		</repository>
 		<repository>
 			<id>maven2-repository.dev.java.net</id>
@@ -169,6 +183,17 @@
 			<id>maven-glassfish-repository.dev.java.net</id>
 			<name>Java.net Repository for Maven</name>
 			<url>http://download.java.net/maven/glassfish/</url>
+		</repository>
+		<!-- Cloudbees Cilia Repositories -->
+		<repository>
+			<id>cloudbees-cilia-release</id>
+			<name>Cloudbees Private Repository - Cilia - Release </name>
+			<url>https://repository-cilia.forge.cloudbees.com/release/</url>
+		</repository>
+		<repository>
+			<id>cloudbees-cilia-snapshot</id>
+			<name>Cloudbees Private Repository - Cilia - Snapshot</name>
+			<url>https://repository-cilia.forge.cloudbees.com/snapshot/</url>
 		</repository>
 	</repositories>
 
@@ -304,15 +329,10 @@
 		<!-- <site> <id>LIGForge</id> <url>scp://cilia.ligforge.imag.fr/var/lib/gforge/chroot/home/groups/cilia/htdocs</url> 
 			</site> -->
 		<repository>
-			<id>LIGForge</id>
-			<name>LIGForge Repository</name>
-			<url>scp://cilia.ligforge.imag.fr/var/lib/gforge/chroot/home/groups/cilia/htdocs/repo</url>
+			<id>cloudbees-release</id>
+			<name>Cloudbees Private Repository</name>
+			<url>dav:https://repository-cilia.forge.cloudbees.com/release</url>
 		</repository>
-		<snapshotRepository>
-			<id>LIGForge</id>
-			<name>LIGForge Repository</name>
-			<url>scp://cilia.ligforge.imag.fr/var/lib/gforge/chroot/home/groups/cilia/htdocs/repo</url>
-		</snapshotRepository>
 	</distributionManagement>
 
 	<dependencyManagement>
@@ -348,28 +368,9 @@
 
 			<dependency>
 				<groupId>org.apache.felix</groupId>
-				<artifactId>org.apache.felix.gogo.runtime</artifactId>
-				<version>0.6.1</version>
-			</dependency>
-
-			<dependency>
-				<groupId>org.apache.felix</groupId>
 				<artifactId>org.apache.felix.fileinstall</artifactId>
 				<version>3.2.0</version>
 			</dependency>
-
-			<dependency>
-				<groupId>org.osgi</groupId>
-				<artifactId>org.osgi.core</artifactId>
-				<version>4.2.0</version>
-			</dependency>
-			<dependency>
-				<groupId>org.ow2.chameleon.rose</groupId>
-				<artifactId>rose-core</artifactId>
-				<version>0.3.1-SNAPSHOT</version>
-			</dependency>
 		</dependencies>
 	</dependencyManagement>
-
-
 </project>
