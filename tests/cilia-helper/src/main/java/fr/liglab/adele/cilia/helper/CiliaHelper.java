@@ -59,7 +59,7 @@ public class CiliaHelper {
 	private static final String NAMESPACE = "fr.liglab.adele.cilia.test";
 	
 	private volatile static int initial = 0;
-
+	
 	public CiliaHelper(BundleContext bc) {
 		ohelper = new OSGiHelper(bc);
 	}
@@ -92,19 +92,6 @@ public class CiliaHelper {
 			e.printStackTrace();
 		}
 		return null;
-	}
-
-	public int getMediatorState(String mm) {
-		CiliaContext context = getCiliaContext();
-		return 0;
-	}
-
-	public int getAdapterState(String mm) {
-		return 0;
-	}
-
-	public boolean isBindingOk(String from, String to) {
-		return false;
 	}
 
 
@@ -175,6 +162,16 @@ public class CiliaHelper {
 
 	public void dispose() {
 		ohelper.dispose();
+		CiliaContext context = getCiliaContext(); 
+		String ids[] = context.getApplicationRuntime().getChainId();
+		for (int i=0; ids != null && i < ids.length; i ++) {
+			try {
+				System.out.println("Removing Chain " + ids[i]);
+				context.getBuilder().remove(ids[i]).done();
+			} catch (Throwable e) {
+				e.printStackTrace();
+			}
+		}
 	}
 
 	public CiliaContext getCiliaContext() {
