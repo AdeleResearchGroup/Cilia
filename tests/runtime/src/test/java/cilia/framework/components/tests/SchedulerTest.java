@@ -23,7 +23,6 @@ import static org.ops4j.pax.exam.CoreOptions.options;
 import static org.ops4j.pax.exam.CoreOptions.provision;
 
 import java.util.Hashtable;
-import java.util.List;
 
 import junit.framework.Assert;
 

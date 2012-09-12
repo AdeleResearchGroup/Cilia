@@ -162,7 +162,7 @@ public class AdvancedManipulationTest {
 		cilia.load(url);
 		System.out.println("will wait");
 		Assert.assertTrue(cilia.waitToChain("copyExample",3000));
-
+		
 		//get the helper to inject and retrieve result.
 		MediatorTestHelper tester = cilia.instrumentChain("copyExample","firstMediator:unique", "lastMediator:unique");
 		Assert.assertNotNull(tester);
