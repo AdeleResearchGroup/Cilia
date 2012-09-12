@@ -241,7 +241,7 @@ public class TestEA  {
 		Assert.assertNotNull(qd);
 		qd.injectData(new Data ("data", "dda"));
 		//wait some time to arrive message.
-		CiliaHelper.waitSomeTime(1000);
+		CiliaHelper.waitSomeTime(4000);
 		Assert.assertEquals(1, qd.getAmountData());
 		Data lastData = qd.getLastData();
 		Assert.assertEquals("data", lastData.getContent());
