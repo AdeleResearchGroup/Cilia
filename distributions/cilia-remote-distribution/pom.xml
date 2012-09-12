@@ -103,6 +103,7 @@
 		<dependency>
 			<groupId>org.ow2.chameleon.rose</groupId>
 			<artifactId>rose-core</artifactId>
+			<version>0.3.1-SNAPSHOT</version>
 		</dependency>
 
 		<dependency>		
