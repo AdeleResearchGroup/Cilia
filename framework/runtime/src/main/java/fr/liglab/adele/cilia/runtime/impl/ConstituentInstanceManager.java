@@ -14,6 +14,7 @@
  */
 package fr.liglab.adele.cilia.runtime.impl;
 
+import java.util.Dictionary;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Observable;
@@ -23,7 +24,6 @@ import org.osgi.framework.BundleContext;
 
 import fr.liglab.adele.cilia.internals.factories.MediatorComponentManager;
 import fr.liglab.adele.cilia.model.Component;
-import fr.liglab.adele.cilia.model.MediatorComponent;
 import fr.liglab.adele.cilia.runtime.CiliaInstance;
 import fr.liglab.adele.cilia.runtime.CiliaInstanceWrapper;
 
@@ -71,12 +71,15 @@ public abstract class ConstituentInstanceManager extends CiliaInstanceManagerSet
 
 	protected abstract void organizeReferences(CiliaInstanceWrapper instance);
 
-
-	public CiliaInstanceWrapper addComponent(String port, Component component) {
+	public void reconfigureConstituant(Dictionary dico){
+		constituant.updateInstanceProperties(dico);
+	}
+	
+	protected CiliaInstanceWrapper addComponent(String port, Component component) {
 		return addComponent(port, component, true);
 	}
 
-	public CiliaInstanceWrapper addComponent(String port, Component component, boolean start) {
+	protected CiliaInstanceWrapper addComponent(String port, Component component, boolean start) {
 		CiliaInstanceWrapper elementInstance = new CiliaInstanceWrapper(bcontext, component.getId(), createConstituantFilter(component), component.getProperties(), this);
 		synchronized (lockObject) {
 			super.addInstance(port, elementInstance);
@@ -87,7 +90,7 @@ public abstract class ConstituentInstanceManager extends CiliaInstanceManagerSet
 		return elementInstance;
 	}
 
-	public boolean removeComponent(String port, Component component){
+	protected boolean removeComponent(String port, Component component){
 		synchronized (lockObject) {
 			return super.removeInstance(port, component.getId());
 		}
@@ -115,18 +118,7 @@ public abstract class ConstituentInstanceManager extends CiliaInstanceManagerSet
 		}
 		organizeReferences(instance);
 	}
-//	public int getState(){
-//		synchronized (lockObject) {
-//			if(validElements && validConstituant) {
-//				return MediatorComponent.VALID;
-//			} else if (validConstituant && !validElements) {
-//				return MediatorComponent.SEMIVALID;
-//			} else if (!validConstituant) {
-//				return MediatorComponent.INVALID;
-//			}
-//			return MediatorComponent.STOPPED;
-//		}
-//	}
+
 
 	private void printConstituants(){
 		System.out.println("Printing constituants");
@@ -143,5 +135,9 @@ public abstract class ConstituentInstanceManager extends CiliaInstanceManagerSet
 				}
 			}
 		}
+	}
+	
+	protected MediatorComponentManager getMediatorComponentManager(){
+		return mediatorInstance;
 	}
 }

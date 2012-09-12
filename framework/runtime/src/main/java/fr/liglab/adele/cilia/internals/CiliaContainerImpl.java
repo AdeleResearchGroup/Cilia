@@ -124,6 +124,7 @@ public class CiliaContainerImpl implements CiliaContainer {
 				throw new IllegalArgumentException(msg);
 			}
 		}
+		System.out.println("CiliaContainer: Chain Added OK");
 		notifyAdd(chain);
 		log.debug("chain [" + chainName + "] created OK");
 		return chain;

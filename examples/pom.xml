@@ -23,6 +23,7 @@
 
 	<modules>
 		<module>si-example</module>
+		<module>joram-example</module>
 	</modules>
 
 </project>

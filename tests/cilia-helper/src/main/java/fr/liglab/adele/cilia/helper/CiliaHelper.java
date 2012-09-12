@@ -59,7 +59,7 @@ public class CiliaHelper {
 	private static final String NAMESPACE = "fr.liglab.adele.cilia.test";
 	
 	private volatile static int initial = 0;
-
+	
 	public CiliaHelper(BundleContext bc) {
 		ohelper = new OSGiHelper(bc);
 	}
@@ -94,19 +94,6 @@ public class CiliaHelper {
 		return null;
 	}
 
-	public int getMediatorState(String mm) {
-		CiliaContext context = getCiliaContext();
-		return 0;
-	}
-
-	public int getAdapterState(String mm) {
-		return 0;
-	}
-
-	public boolean isBindingOk(String from, String to) {
-		return false;
-	}
-
 
 	public MediatorTestHelper instrumentMediatorInstance(String chainId,
 			String mediator, String inputports[], String exitports[]) {
@@ -137,7 +124,7 @@ public class CiliaHelper {
 			e.printStackTrace();
 			return null;
 		}
-		ohelper.waitForService(MediatorTestHelper.class.getName(), "(identifier="+id+")", 1000);
+		ohelper.waitForService(MediatorTestHelper.class.getName(), "(identifier="+id+")", 8000);
 		MediatorTestHelper helper = (MediatorTestHelper)ohelper.getServiceObject(MediatorTestHelper.class.getName(), "(identifier="+id+")");
 		return helper;
 	}
@@ -168,17 +155,28 @@ public class CiliaHelper {
 			e.printStackTrace();
 			return null;
 		}
-		ohelper.waitForService(MediatorTestHelper.class.getName(), "(identifier="+id+")", 4000);
+		waitSomeTime(3000);
+		ohelper.waitForService(MediatorTestHelper.class.getName(), "(identifier="+id+")", 8000);
 		MediatorTestHelper helper = (MediatorTestHelper)ohelper.getServiceObject(MediatorTestHelper.class.getName(), "(identifier="+id+")");
 		return helper;
 	}
 
 	public void dispose() {
 		ohelper.dispose();
+		CiliaContext context = getCiliaContext(); 
+		String ids[] = context.getApplicationRuntime().getChainId();
+		for (int i=0; ids != null && i < ids.length; i ++) {
+			try {
+				System.out.println("Removing Chain " + ids[i]);
+				context.getBuilder().remove(ids[i]).done();
+			} catch (Throwable e) {
+				e.printStackTrace();
+			}
+		}
 	}
 
 	public CiliaContext getCiliaContext() {
-		ohelper.waitForService(CiliaContext.class.getName(), null, 1000);
+		ohelper.waitForService(CiliaContext.class.getName(), null, 8000);
 		CiliaContext context = (CiliaContext)ohelper.getServiceObject(CiliaContext.class.getName(), null);
 		return context;
 	}
@@ -211,7 +209,7 @@ public class CiliaHelper {
 		SchedulerHelperCreator proc = new SchedulerHelperCreator(this, schedulername, schedulernamespace, properties);
 		proc.start();
 		System.out.println("Waiting for helper:" + proc.getId());
-		//ohelper.waitForService(MediatorTestHelper.class.getName(), "(identifier="+proc.getId()+")", 4000);
+		ohelper.waitForService(MediatorTestHelper.class.getName(), "(identifier="+proc.getId()+")", 8000);
 		MediatorTestHelper helper = (MediatorTestHelper)ohelper.getServiceObject(MediatorTestHelper.class.getName(), "(identifier="+proc.getId()+")");
 		return helper;
 	}
@@ -241,7 +239,7 @@ public class CiliaHelper {
 			e1.printStackTrace();
 		}
 		System.out.println("chain to be loaded...");
-		ohelper.waitForService(CiliaFileManager.class.getName(), null, 1000);
+		ohelper.waitForService(CiliaFileManager.class.getName(), null, 8000);
 		CiliaFileManager service = (CiliaFileManager)ohelper.getServiceObject(CiliaFileManager.class.getName(), null);
 		
 		service.loadChain(file);

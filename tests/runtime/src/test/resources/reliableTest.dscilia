@@ -1,0 +1,33 @@
+<cilia>
+	<chain id="reliableTest">
+		<mediators>
+			<mediator-instance id="enricher1" type="ReliableTest">
+				<property name="condition" value="(A=3)" />
+				<property name="count">
+					<item key="A" value="(data.name=*)" />
+				</property>
+				<property name="enricher.content">
+					<item key="enricher" value="old enricher content" />
+				</property>
+			</mediator-instance>
+			<mediator-instance id="enricher2" type="ReliableTest">
+				<property name="condition" value="(A=3)" />
+				<property name="count">
+					<item key="A" value="(data.name=*)" />
+				</property>
+				<property name="enricher.content">
+					<item key="enricher" value="new enricher content" />
+				</property>
+			</mediator-instance>
+			<!-- firstMediator and lastMediator used to connect to helper -->
+			<mediator-instance id="firstMediator" type="Mock" />
+			<mediator-instance id="lastMediator" type="Mock" />
+		</mediators>
+		<bindings>
+			<binding from="firstMediator:unique" to="enricher1:unique"
+				linker="event-admin" />
+			<binding from="enricher1:unique" to="lastMediator:unique"
+				linker="event-admin" />
+		</bindings>
+	</chain>
+</cilia>

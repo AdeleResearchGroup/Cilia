@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<config>
+  <property name="Transaction" value="fr.dyade.aaa.util.NullTransaction"/>
+
+  <server id="0" name="S0" hostname="localhost">
+    <service class="org.objectweb.joram.mom.proxies.ConnectionManager"
+             args="root root"/>
+    <service class="org.objectweb.joram.mom.proxies.tcp.TcpProxyService" 
+             args="16010"/>
+    <service class="fr.dyade.aaa.jndi2.server.JndiServer" args="16400"/>
+  </server>
+</config>

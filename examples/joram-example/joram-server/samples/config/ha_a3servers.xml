@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<config>
+  <domain name="D1"/>
+  
+  <property name="Transaction" value="fr.dyade.aaa.util.NullTransaction"/>
+
+  <cluster id="0" name="cluster0">
+
+    <property name="Engine" value="fr.dyade.aaa.agent.HAEngine" />
+    <property name="nbClusterExpected" value="2" />
+
+    <server id="0" hostname="localhost">
+      <network domain="D1" port="16300"/>
+      <service class="org.objectweb.joram.mom.proxies.tcp.TcpProxyService" args="2560"/>
+      <service class="org.objectweb.joram.mom.proxies.ConnectionManager" args="root root"/>
+    </server>
+
+    <server id="1" hostname="localhost">
+      <network domain="D1" port="16301"/>
+      <service class="org.objectweb.joram.mom.proxies.tcp.TcpProxyService" args="2561"/>
+      <service class="org.objectweb.joram.mom.proxies.ConnectionManager" args="root root"/>
+    </server>
+
+    <server id="2" hostname="localhost">
+      <network domain="D1" port="16302"/>
+      <service class="org.objectweb.joram.mom.proxies.tcp.TcpProxyService" args="2562"/>
+      <service class="org.objectweb.joram.mom.proxies.ConnectionManager" args="root root"/>
+    </server>
+
+  </cluster>
+
+</config>

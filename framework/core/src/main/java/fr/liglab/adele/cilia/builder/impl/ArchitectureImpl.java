@@ -17,17 +17,13 @@ package fr.liglab.adele.cilia.builder.impl;
 import java.util.ArrayList;
 import java.util.List;
 
-import fr.liglab.adele.cilia.CiliaContext;
 import fr.liglab.adele.cilia.builder.Architecture;
 import fr.liglab.adele.cilia.builder.Binder;
-import fr.liglab.adele.cilia.builder.Builder;
 import fr.liglab.adele.cilia.builder.Creator;
 import fr.liglab.adele.cilia.builder.Modifier;
 import fr.liglab.adele.cilia.builder.Remover;
 import fr.liglab.adele.cilia.builder.Replacer;
 import fr.liglab.adele.cilia.exceptions.BuilderException;
-import fr.liglab.adele.cilia.exceptions.BuilderPerformerException;
-import fr.liglab.adele.cilia.model.CiliaContainer;
 
 /**
  * 
@@ -234,7 +230,7 @@ public class ArchitectureImpl implements Architecture {
 	/**
 	 * @return the creatingChain
 	 */
-	protected boolean toCreate() {
+	public boolean toCreate() {
 		if (action == Architecture.CREATE)
 			return true;
 		return false;

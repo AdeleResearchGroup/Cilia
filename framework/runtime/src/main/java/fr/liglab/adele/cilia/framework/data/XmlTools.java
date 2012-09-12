@@ -78,12 +78,15 @@ public class XmlTools {
      * @throws CiliaException when there is a problem to build the Node.
      */
     public static Node stringToNode(String xml) throws CiliaException {
+    	Node node;
         ByteArrayInputStream is  = new ByteArrayInputStream (xml.getBytes());
         try {
-        return streamToNode(is);
+        node = streamToNode(is);
+        is.close();
         } catch(Exception ex) {
-            throw new CiliaException("Unable to parse" + xml);
+            throw new CiliaException("Unable to parse: " + xml);
         }
+        return node;
     }
     /**
      * Create a node from a given file.
@@ -94,35 +97,36 @@ public class XmlTools {
     public static Node urlToNode(String urlxml) throws CiliaException {
         InputStream is = null;
         URL url = null;
-
+        Node node = null;
         try {
             url = new URL(urlxml);
             is = url.openStream();
+            node =  streamToNode(is);
+            is.close();
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
             throw new CiliaException("File not found: " + e.getMessage());
         } catch (MalformedURLException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            throw new CiliaException("Unable to load malformed URL");
         } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+        	throw new CiliaException("I/O Exception when open file");
         }
-
-        return streamToNode(is);
+        return node;
     }
 
     public static Node fileToNode(String urlfile) throws CiliaException {
         InputStream is = null;
-
+        Node node = null;
         try {
             is = new FileInputStream(urlfile);
+            node = streamToNode(is);
+            is.close();
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
             throw new CiliaException("File not found: " + e.getMessage());
-        }
+        } catch (IOException e) {
+        	throw new CiliaException("I/O Exception when open file");
+		}
 
-        return streamToNode(is);
+        return node;
     }
     
     public static Node streamToNode(InputStream is) throws CiliaException{

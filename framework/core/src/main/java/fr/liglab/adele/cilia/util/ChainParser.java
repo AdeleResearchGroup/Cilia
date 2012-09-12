@@ -31,7 +31,7 @@ import fr.liglab.adele.cilia.exceptions.CiliaException;
  */
 public interface ChainParser {
 
-    Builder parseChain(Object chain) throws CiliaException, BuilderException, BuilderPerformerException;
+    Builder[] parseChains(Object chain) throws CiliaException, BuilderException, BuilderPerformerException;
     
     Builder[] obtainChains(URL url) throws CiliaException, BuilderException, BuilderPerformerException, FileNotFoundException;
     

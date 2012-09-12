@@ -25,6 +25,7 @@ import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import fr.liglab.adele.cilia.exceptions.CiliaRuntimeException;
 import fr.liglab.adele.cilia.internals.factories.MediatorComponentManager;
 import fr.liglab.adele.cilia.knowledge.MediatorMonitoring;
 import fr.liglab.adele.cilia.model.Component;
@@ -199,12 +200,12 @@ public class MediatorControllerImpl implements Observer {
 	 */
 	public void updateInstanceProperties(Dictionary properties) {
 		if (mediatorInstance == null) {
-			throw new RuntimeException(
-					"Updating Mediator Model properties when runtime instance is null");
+			logger.warn("Updating Mediator Model properties when runtime instance is null");
+			return;
 		}
 		if (mediatorInstance.getState() != ComponentInstance.VALID) {
-			throw new RuntimeException(
-					"Updating Mediator instance when object is not valid" + getState());
+			logger.warn("Updating Mediator instance when object is not valid %", getState());
+			return;
 		}
 		mediatorInstance.updateInstanceProperties(properties);
 		eventFirer.fireEventNode(FirerEvents.EVT_MODIFIED, mediatorModel);
@@ -218,6 +219,15 @@ public class MediatorControllerImpl implements Observer {
 			mediatorModel.deleteObserver(this);
 			if (mediatorInstance != null) {
 				mediatorInstance.deleteObserver(this);
+				MediatorComponentManager mcm =  (MediatorComponentManager)(mediatorInstance.getInstanceManager());
+				if (mcm != null) {
+					try {
+						mcm.waitToProcessing(5000);
+					} catch (CiliaRuntimeException e) {
+						e.printStackTrace();
+					}
+				}
+				//We stop the mediator even if 
 				mediatorInstance.stop();
 				logger.info("Component [{}] stopped",
 						FrameworkUtils.makeQualifiedId(mediatorModel));
@@ -295,7 +305,7 @@ public class MediatorControllerImpl implements Observer {
 	public void removeCollector(CollectorImpl collector) {
 		synchronized (lockObject) {
 			if (collector != null) {
-				
+
 				addedCollectors.remove(collector);
 				MediatorComponentManager mm = getMediatorManager();
 				if (mm != null){
@@ -314,9 +324,10 @@ public class MediatorControllerImpl implements Observer {
 	public void removeSender(SenderImpl sender) {
 		synchronized (lockObject) {
 			if (sender != null) {
-				
+
 				addedSenders.remove(sender);
 				MediatorComponentManager mm = getMediatorManager();
+
 				if (mm != null){
 					mm.removeSender(sender.getPortname(), sender);
 				}

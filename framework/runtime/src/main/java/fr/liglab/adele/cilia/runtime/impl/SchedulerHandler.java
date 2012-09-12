@@ -192,6 +192,7 @@ public class SchedulerHandler extends PrimitiveHandler implements ISchedulerHand
 	 */
 	public final void process(final List /* data */dataList) {
 		if (getInstanceManager().getState() >= MediatorComponent.VALID) {
+			schedulerManager.getMediatorComponentManager().startProcessing();
 			// stock triggered data to be used later (log/stats/...).
 			List list = null;
 			Object args[] = new Object[1];// it support only one parametter.

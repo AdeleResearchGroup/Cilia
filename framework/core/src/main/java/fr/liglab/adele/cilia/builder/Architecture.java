@@ -51,6 +51,8 @@ public interface Architecture {
 	Remover remove ()throws BuilderException;
 	
 	Modifier configure() throws BuilderException;
+	
+	boolean toCreate();
 
 	
 }

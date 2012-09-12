@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<config>
+  <property name="Transaction" value="fr.dyade.aaa.util.NullTransaction" />
+
+  <server id="1" name="S1" hostname="localhost">
+    <service class="org.objectweb.joram.mom.proxies.ConnectionManager" args="root root" />
+    <service class="org.objectweb.joram.mom.proxies.tcp.TcpProxyService" args="16011" />
+    
+    <!-- Service handling the connection to the foreign JMS server using "cf" connection factory -->
+    <service class="org.objectweb.joram.mom.dest.jms.JMSConnectionService" args="cf" />
+  </server>
+
+</config>

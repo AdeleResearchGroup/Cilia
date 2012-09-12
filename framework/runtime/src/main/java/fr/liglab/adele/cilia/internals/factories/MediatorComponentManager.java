@@ -14,20 +14,18 @@
  */
 package fr.liglab.adele.cilia.internals.factories;
 
-import java.util.ArrayList;
 import java.util.Dictionary;
-import java.util.List;
 import java.util.Properties;
 
 import org.apache.felix.ipojo.ComponentInstance;
 import org.apache.felix.ipojo.Handler;
 import org.apache.felix.ipojo.HandlerManager;
 import org.apache.felix.ipojo.InstanceManager;
-import org.apache.felix.ipojo.InstanceStateListener;
 import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import fr.liglab.adele.cilia.exceptions.CiliaRuntimeException;
 import fr.liglab.adele.cilia.model.Component;
 import fr.liglab.adele.cilia.model.MediatorComponent;
 import fr.liglab.adele.cilia.model.Port;
@@ -39,6 +37,8 @@ import fr.liglab.adele.cilia.runtime.impl.DispatcherInstanceManager;
 import fr.liglab.adele.cilia.runtime.impl.MonitorHandler;
 import fr.liglab.adele.cilia.runtime.impl.SchedulerHandler;
 import fr.liglab.adele.cilia.runtime.impl.SchedulerInstanceManager;
+import fr.liglab.adele.cilia.util.concurrent.ReadWriteLock;
+import fr.liglab.adele.cilia.util.concurrent.ReentrantWriterPreferenceReadWriteLock;
 
 /**
  * 
@@ -62,6 +62,12 @@ public abstract class MediatorComponentManager extends InstanceManager {
 
 	protected Dictionary configuration;
 
+	protected volatile int processing = 0;
+
+	protected final ReadWriteLock mutex;
+
+
+
 	/**
 	 * @param factory
 	 * @param context
@@ -71,6 +77,7 @@ public abstract class MediatorComponentManager extends InstanceManager {
 			BundleContext context, HandlerManager[] handlers) {
 		super(factory, context, handlers);
 		mfactory = factory;
+		mutex = new ReentrantWriterPreferenceReadWriteLock();
 	}
 
 	public Port getInPort(String name) {
@@ -118,9 +125,16 @@ public abstract class MediatorComponentManager extends InstanceManager {
 		configureHandlerMonitoring(im, "audit");
 	}
 
-	private synchronized void updateSchedulerManager() {
-		if (schedulerManager != null) {
-			return;
+	private void updateSchedulerManager() {
+		try {
+			mutex.readLock().acquire();
+		} catch (InterruptedException e) {	}
+		try{
+			if (schedulerManager != null) {
+				return;
+			}
+		}finally{
+			mutex.readLock().release();
 		}
 		String schedulerName = mfactory.getSchedulerDescription().getId();
 		String schedulerNS = mfactory.getSchedulerDescription().getNamespace();
@@ -128,20 +142,45 @@ public abstract class MediatorComponentManager extends InstanceManager {
 		Scheduler schedulerDescription = new Scheduler("scheduler",
 				schedulerName, schedulerNS, configuration);
 
+		try {
+			mutex.writeLock().acquire();
+		} catch (InterruptedException e) {	}
 		schedulerManager = new SchedulerInstanceManager(getContext(),
 				getScheduler(), schedulerDescription, this);
-		schedulerManager.start();
+		mutex.writeLock().release();
+		try {
+			mutex.readLock().acquire();
+		} catch (InterruptedException e) {}
+		try{
+			schedulerManager.start();
+		}finally{
+			mutex.readLock().release();
+		}
 	}
 
-	private synchronized void stopSchedulerManager() {
-		if (schedulerManager != null) {
-			schedulerManager.stop();
+	private void stopSchedulerManager() {
+		try {
+			mutex.readLock().acquire();
+		} catch (InterruptedException e) {}
+		try{
+			if (schedulerManager != null) {
+				schedulerManager.stop();
+			}
+		}finally{
+			mutex.readLock().release();
 		}
 	}
 
 	private synchronized void updateDispatcherManager() {
-		if (dispatcherManager != null) {
-			return;
+		try {
+			mutex.readLock().acquire();
+		} catch (InterruptedException e) {}
+		try{
+			if (dispatcherManager != null) {
+				return;
+			}
+		}finally{
+			mutex.readLock().release();
 		}
 
 		String dispatcherName = mfactory.getDispatcherDescription().getId();
@@ -150,44 +189,90 @@ public abstract class MediatorComponentManager extends InstanceManager {
 
 		Dispatcher dispatcherDescription = new Dispatcher("dispatcher",
 				dispatcherName, dispatcherNS, configuration);
+		try {
+			mutex.writeLock().acquire();
+		} catch (InterruptedException e) {}
 
 		dispatcherManager = new DispatcherInstanceManager(getContext(),
 				getDispatcher(), dispatcherDescription, this);
-		dispatcherManager.start();
+		mutex.writeLock().release();
+		try {
+			mutex.readLock().acquire();
+		} catch (InterruptedException e) {}
+		try{
+			dispatcherManager.start();
+		}finally{
+			mutex.readLock().release();
+		}
 	}
 
 	private synchronized void stopDispatcherManager() {
-		if (dispatcherManager != null) {
-			dispatcherManager.stop();
+		try {
+			mutex.readLock().acquire();
+		} catch (InterruptedException e) {}
+		try{
+			if (dispatcherManager != null) {
+				dispatcherManager.stop();
+			}
+		}finally{
+			mutex.readLock().release();
 		}
 	}
 
 	public synchronized void removeCollector(String port, Component collector) {
-		if (schedulerManager == null) {
-			logger.warn("Unable to remove Collector {} : Manager is invalid",
-					collector.getId());
-			return;
+		try {
+			mutex.readLock().acquire();
+		} catch (InterruptedException e) {}
+		try{
+			if (schedulerManager == null) {
+				logger.warn("Unable to remove Collector {} : Manager is invalid",
+						collector.getId());
+				return;
+			}
+			schedulerManager.removeCollector(port, collector);
+		}finally{
+			mutex.readLock().release();
 		}
-		schedulerManager.removeComponent(port, collector);
 	}
 
 	public synchronized void addCollector(String port, Component collector) {
 		updateSchedulerManager();
-		schedulerManager.addComponent(port, collector);
+		try {
+			mutex.readLock().acquire();
+		} catch (InterruptedException e) {}
+		try{
+			schedulerManager.addCollector(port, collector,true);
+		}finally{
+			mutex.readLock().release();
+		}
 	}
 
 	public synchronized void removeSender(String port, Component sender) {
-		if (dispatcherManager == null) {
-			logger.warn("Unable to remove Sender {} : Manager is invalid",
-					sender.getId());
-			return;
+		try {
+			mutex.readLock().acquire();
+		} catch (InterruptedException e) {}
+		try{
+			if (dispatcherManager == null) {
+				logger.warn("Unable to remove Sender {} : Manager is invalid",
+						sender.getId());
+				return;
+			}
+			dispatcherManager.removeSender(port, sender);
+		}finally{
+			mutex.readLock().release();
 		}
-		dispatcherManager.removeComponent(port, sender);
 	}
 
 	public synchronized void addSender(String port, Component sender) {
 		updateDispatcherManager();
-		dispatcherManager.addComponent(port, sender);
+		try {
+			mutex.readLock().acquire();
+		} catch (InterruptedException e) {}
+		try{
+			dispatcherManager.addSender(port, sender, true);
+		}finally{
+			mutex.readLock().release();
+		}
 	}
 
 	private SchedulerHandler getScheduler() {
@@ -219,6 +304,53 @@ public abstract class MediatorComponentManager extends InstanceManager {
 			}
 		}
 		return im;
+	}
+
+	public void reconfigure(Dictionary configuration) {
+		super.reconfigure(configuration);
+		try {
+			mutex.readLock().acquire();
+		} catch (InterruptedException e) {}
+		try{
+			schedulerManager.reconfigureConstituant(configuration);
+			dispatcherManager.reconfigureConstituant(configuration);
+		}finally{
+			mutex.readLock().release();
+		}
+	}
+
+	public void startProcessing(){
+		try {
+			mutex.writeLock().acquire();
+		} catch (InterruptedException e) {}
+		processing++;
+		mutex.writeLock().release();
+	}
+
+	public void stopProcessing(){
+		processing--;
+		if (processing<0){
+			processing = 0;
+		}
+	}
+
+	public synchronized void waitToProcessing(long maxtime) throws CiliaRuntimeException {
+		long currentTime = System.currentTimeMillis();
+		long finalTime = currentTime + maxtime;
+		while(isProcessing() != 0 && currentTime < finalTime ){
+			try {
+				Thread.sleep(100);
+				currentTime = System.currentTimeMillis();
+			} catch (InterruptedException e) {
+				throw new CiliaRuntimeException(e.getMessage());
+			}
+		}
+	}
+
+	private synchronized int isProcessing(){
+		int returningValue = 1;
+		returningValue = processing;
+		return returningValue;
 	}
 
 }

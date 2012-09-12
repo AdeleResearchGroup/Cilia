@@ -23,6 +23,8 @@ import java.util.Observable;
 import java.util.regex.Pattern;
 import fr.liglab.adele.cilia.exceptions.CiliaIllegalParameterException;
 import fr.liglab.adele.cilia.util.FrameworkUtils;
+import fr.liglab.adele.cilia.util.concurrent.ReadWriteLock;
+import fr.liglab.adele.cilia.util.concurrent.ReentrantWriterPreferenceReadWriteLock;
 import fr.liglab.adele.cilia.model.Component;
 
 
@@ -49,7 +51,7 @@ public class ComponentImpl extends Observable implements Component {
 	 */
 	private volatile String namespace;
 
-	private final Object lockObject = new Object();
+	protected final ReadWriteLock mutex;
 
 	/**
 	 * Model representation properties.
@@ -71,11 +73,12 @@ public class ComponentImpl extends Observable implements Component {
 	 * @throws CiliaIllegalParameterException 
 	 */
 	public ComponentImpl(String id, String type, String nspace, Dictionary properties)  {
+		mutex = new ReentrantWriterPreferenceReadWriteLock();
 		if (id == null || id.length() == 0) {
 			id = String.valueOf(this.hashCode());
 		}
 		else FrameworkUtils.checkIdentifier(id);
-		
+
 		this.id = id;
 		this.type = type;
 		this.namespace = nspace;
@@ -95,6 +98,7 @@ public class ComponentImpl extends Observable implements Component {
 	 * @param propertiesAsString
 	 */
 	public void setProperties(String propertiesAsString) {
+
 		Hashtable tmpProperties = new Hashtable();
 		if (propertiesAsString != null && propertiesAsString.trim().length() > 0) {
 			String[] propertiesTokens = propertiesAsString.split(",");
@@ -114,9 +118,7 @@ public class ComponentImpl extends Observable implements Component {
 	 * @return the model representation identificator.
 	 */
 	public String getId() {
-		synchronized (lockObject) {
-			return id;
-		}
+		return id;
 	}
 
 	/**
@@ -135,9 +137,11 @@ public class ComponentImpl extends Observable implements Component {
 	 */
 	public Hashtable getProperties() {
 		Hashtable rp = null;
-		synchronized (lockObject) {
-			rp = new Hashtable(properties);
-		}
+		try {
+			mutex.writeLock().acquire();
+		} catch (InterruptedException e) {}
+		rp = new Hashtable(properties);
+		mutex.writeLock().release();
 		return rp;
 	}
 
@@ -150,9 +154,11 @@ public class ComponentImpl extends Observable implements Component {
 	 */
 	public Object getProperty(Object key) {
 		Object value = null;
-		synchronized (lockObject) {
-			value = properties.get(key);
-		}
+		try {
+			mutex.readLock().acquire();
+		} catch (InterruptedException e) {}
+		value = properties.get(key);
+		mutex.readLock().release();
 		return value;
 	}
 
@@ -176,9 +182,12 @@ public class ComponentImpl extends Observable implements Component {
 					mapProp.put(key, value);
 				}
 			}
-			synchronized (lockObject) {
-				this.properties.putAll(mapProp);
-			}
+			try {
+				mutex.writeLock().acquire();
+			} catch (InterruptedException e) {}
+			
+			this.properties.putAll(mapProp);
+			mutex.writeLock().release();
 		}
 		setChanged();
 		notifyObservers(new UpdateEvent(UpdateActions.UPDATE_PROPERTIES, this));
@@ -193,9 +202,11 @@ public class ComponentImpl extends Observable implements Component {
 	 *            property value.
 	 */
 	public void setProperty(Object key, Object value) {
-		synchronized (lockObject) {
-			properties.put(key, value);
-		}
+		try {
+			mutex.writeLock().acquire();
+		} catch (InterruptedException e) {	}
+		properties.put(key, value);
+		mutex.writeLock().release();
 		setChanged();
 		notifyObservers(new UpdateEvent(UpdateActions.UPDATE_PROPERTIES, this));
 	}
@@ -214,18 +225,18 @@ public class ComponentImpl extends Observable implements Component {
 	 *            the namespace to set
 	 */
 	public void setNamespace(String namespace) {
-		synchronized (lockObject) {
-			this.namespace = namespace;
-		}
+		try {
+			mutex.writeLock().acquire();
+		} catch (InterruptedException e) {	}
+		this.namespace = namespace;
+		mutex.writeLock().release();
 	}
 
 	/**
 	 * @return the namespace
 	 */
 	public String getNamespace() {
-		synchronized (lockObject) {
 			return namespace;
-		}
 	}
 
 
@@ -233,10 +244,14 @@ public class ComponentImpl extends Observable implements Component {
 	 * 
 	 */
 	public void dispose() {
+		try {
+			mutex.writeLock().acquire();
+		} catch (InterruptedException e) {}
 		this.id = null;
 		this.namespace = null;
 		this.type = null;
 		this.properties.clear();
 		this.properties = null;
+		mutex.writeLock().release();
 	}
 }

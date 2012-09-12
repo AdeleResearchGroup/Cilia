@@ -14,7 +14,7 @@
  */
 package fr.liglab.adele.cilia.builder;
 
-import java.util.Hashtable;
+import java.util.Map;
 
 /**
  *
@@ -22,5 +22,5 @@ import java.util.Hashtable;
  *
  */
 public interface BinderConfigurator {
-	Architecture configure(Hashtable props);
+	Architecture configure(Map props);
 }

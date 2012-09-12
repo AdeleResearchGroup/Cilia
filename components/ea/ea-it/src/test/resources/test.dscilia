@@ -1,0 +1,12 @@
+<cilia>
+	<chain id="toto">
+		<mediators>
+			<mediator-instance id="m11" type="Mock" />
+			<mediator-instance id="m22" type="Mock" />
+		</mediators>
+
+		<bindings>
+			<binding from="m11:unique" to="m22:unique" linker="event-admin" />
+		</bindings>
+	</chain>
+</cilia>

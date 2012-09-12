@@ -1,0 +1,2 @@
+To launch the server with the default config:
+samples/bin/single_server.sh

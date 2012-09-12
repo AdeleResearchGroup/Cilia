@@ -39,7 +39,7 @@ import fr.liglab.adele.cilia.util.Watch;
  * 
  */
 public abstract class MediatorComponentImpl extends ComponentImpl implements
-		MediatorComponent {
+MediatorComponent {
 
 	/**
 	 * Reference to the parent chain which contains this mediator representation
@@ -79,9 +79,9 @@ public abstract class MediatorComponentImpl extends ComponentImpl implements
 	private final String uuid = Uuid.generate().toString();
 
 	private final static long creationTimeStamp = System.currentTimeMillis();
-	
+
 	private Map additionnalModel = new HashMap(1);
-	
+
 	private volatile int runningState = MediatorComponent.STOPPED;
 
 	/**
@@ -450,19 +450,23 @@ public abstract class MediatorComponentImpl extends ComponentImpl implements
 
 
 	public String toString() {
-		StringBuffer sb = new StringBuffer(FrameworkUtils.makeQualifiedId(chainId(), nodeId(), uuid()));
-		sb.append("creation date :"+Watch.formatDateIso8601(creationTimeStamp));
-		sb.append(",properties:").append(super.getProperties());
+		StringBuffer sb = new StringBuffer("{\n");
+		sb.append("UUID : ").append(FrameworkUtils.makeQualifiedId(chainId(), nodeId(), uuid())).append(",\n");
+		sb.append("Type : ").append(getType()).append(",\n");
+		sb.append("ID : ").append(getId()).append(",\n");
+		sb.append("Creation date :"+Watch.formatDateIso8601(creationTimeStamp)).append(",\n");
+		sb.append("Properties:").append(super.getProperties());
+		sb.append("\n}");
 		return sb.toString();
 	}
-	
+
 
 	public String[] extendedModelName() {
 		final Set keys = additionnalModel.keySet();
 		return (String[]) keys.toArray(new String[keys.size()]);
 	}
 
-	
+
 	public ModelExtension getModel(String modelName) {
 		ModelExtension modelExtension = null ;
 		if (modelName !=null) {
@@ -470,25 +474,25 @@ public abstract class MediatorComponentImpl extends ComponentImpl implements
 		}
 		return modelExtension ;
 	}
-	
-	
+
+
 	public void addModel(String modelName,ModelExtension modelExtension) {
 		if ((modelName !=null) && (modelName.length()>0))
 			additionnalModel.put(modelName, modelExtension) ;
 	}
-	
+
 	public void removeModel(String modelName) {
 		if ((modelName !=null) && (modelName.length()>0))
 			additionnalModel.remove(modelName) ;
 	}
-	
+
 
 	public int getState(){
 		synchronized (lockObject) {
 			return runningState;
 		}
 	}
-	
+
 
 	public boolean isRunning(){
 		if (getState() >= MediatorComponent.VALID) {
@@ -496,11 +500,11 @@ public abstract class MediatorComponentImpl extends ComponentImpl implements
 		}
 		return false;
 	}
-	
+
 	public void setRunningState(int state){
 		synchronized (lockObject) {
 			runningState = state;
 		}
 	}
-	
+
 }

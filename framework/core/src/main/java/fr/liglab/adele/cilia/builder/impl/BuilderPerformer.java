@@ -15,17 +15,22 @@
 package fr.liglab.adele.cilia.builder.impl;
 
 import java.util.Dictionary;
+import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 
 import fr.liglab.adele.cilia.CiliaContext;
+import fr.liglab.adele.cilia.Node;
+import fr.liglab.adele.cilia.NodeCallback;
 import fr.liglab.adele.cilia.builder.Architecture;
 import fr.liglab.adele.cilia.exceptions.BuilderException;
 import fr.liglab.adele.cilia.exceptions.BuilderPerformerException;
+import fr.liglab.adele.cilia.exceptions.CiliaException;
 import fr.liglab.adele.cilia.exceptions.CiliaIllegalParameterException;
+import fr.liglab.adele.cilia.exceptions.CiliaIllegalStateException;
+import fr.liglab.adele.cilia.exceptions.CiliaInvalidSyntaxException;
 import fr.liglab.adele.cilia.model.Adapter;
 import fr.liglab.adele.cilia.model.Binding;
-import fr.liglab.adele.cilia.model.Chain;
 import fr.liglab.adele.cilia.model.CiliaContainer;
 import fr.liglab.adele.cilia.model.MediatorComponent;
 import fr.liglab.adele.cilia.model.impl.AdapterImpl;
@@ -70,7 +75,12 @@ public class BuilderPerformer {
 		verifyOperations();
 		doCreate();
 		doReplace();
-		doModify();
+		try {
+			doModify();
+		} catch (CiliaException e) {
+			e.printStackTrace();
+			throw new BuilderPerformerException(e.getMessage());
+		} 
 		doCopy();
 		doRemove();
 		doBind();
@@ -121,14 +131,22 @@ public class BuilderPerformer {
 		MediatorImpl mediator = new MediatorImpl(creator.getId(), creator.getType(),
 				creator.getNamespace(), creator.getCategory(),
 				creator.getVersion(), creator.getConfiguration(), chain);
-		chain.add(mediator);
+		try {
+			chain.add(mediator);
+		} catch (CiliaException e) {
+			e.printStackTrace();
+		}
 	}
 
 	private void createAdapter(CreatorImpl creator) {
 		AdapterImpl adapter = new AdapterImpl(creator.getId(), creator.getType(),
 				creator.getNamespace(), creator.getVersion(),
 				creator.getConfiguration(), chain, PatternType.UNASSIGNED);
-		chain.add(adapter);
+		try {
+			chain.add(adapter);
+		} catch (CiliaException e) {
+			e.printStackTrace();
+		}
 	}
 
 	private void doRemove() throws BuilderPerformerException {
@@ -147,11 +165,12 @@ public class BuilderPerformer {
 		}
 	}
 
-	private void doModify() throws BuilderPerformerException {
+	private void doModify() throws BuilderPerformerException, CiliaIllegalParameterException, CiliaInvalidSyntaxException {
 		Iterator it = architecture.getModified().iterator();
 		while (it.hasNext()) {
 			InstanceModifierImpl toModify = (InstanceModifierImpl) it.next();
 			String id = toModify.getId();
+			
 			MediatorComponentImpl comp = null;
 			switch (toModify.getType()) {
 			case Architecture.ADAPTER:
@@ -162,10 +181,11 @@ public class BuilderPerformer {
 				break;
 			}
 			if (comp == null) {
-				throw new BuilderPerformerException(
-						"Unable to modify inexistent component:" + id);
+				String filter = "(&(node="+id+")(chain="+chain.getId()+"))";
+				ccontext.getApplicationRuntime().addListener(filter,  new NodeNotifier(toModify.getConfiguration()));
+			} else {
+				comp.setProperties(toModify.getConfiguration());
 			}
-			comp.setProperties(toModify.getConfiguration());
 		}
 	}
 
@@ -175,8 +195,7 @@ public class BuilderPerformer {
 			BinderImpl bi = (BinderImpl) it.next();
 			MediatorComponent from = getMediatorComponent(bi.getFromMediator());
 			MediatorComponent to = getMediatorComponent(bi.getToMediator());
-			Binding binding = new BindingImpl(bi.getUsing(),
-					bi.getConfiguration());
+			Binding binding = new BindingImpl(bi.getUsing(),bi.getConfiguration());
 			chain.bind(from.getOutPort(bi.getFromPort()),
 					to.getInPort(bi.getToPort()), binding);
 		}
@@ -228,12 +247,20 @@ public class BuilderPerformer {
 					ad.getNamespace(), 
 					ad.getVersion(), properties, chain, ad.getPattern());
 
-			chain.add(nadapter);
+			try {
+				chain.add(nadapter);
+			} catch (CiliaException e) {
+				e.printStackTrace();
+			}
 		} else {
 			MediatorImpl mediator = new MediatorImpl(rep.getToMediator(), from.getType(),
 					from.getNamespace(), from.getCategory(),
 					from.getVersion(), properties, chain);
-			chain.add(mediator);
+			try {
+				chain.add(mediator);
+			} catch (CiliaException e) {
+				e.printStackTrace();
+			}
 		}
 		//
 	}
@@ -312,7 +339,7 @@ public class BuilderPerformer {
 	private void verifyOperations() throws BuilderPerformerException {
 		verifyNewInstances();
 		verifyRemoveInstances();
-		verifyConfiguration();
+		//verifyConfiguration();
 		verifyBindings();
 		verifyUnbindings();
 		verifyReplaced();
@@ -497,4 +524,46 @@ public class BuilderPerformer {
 		return false;
 	}
 	
+	private class NodeNotifier implements NodeCallback {
+
+		private Hashtable properties = new Hashtable();
+		protected NodeNotifier(Hashtable props){
+			if(props != null) {
+				properties.putAll(props);
+			}
+		}
+
+		public void onArrival(Node node) {
+			try {
+				MediatorComponent mc = ccontext.getApplicationRuntime().getModel(node);
+				mc.setProperties(properties);
+			} catch (Throwable e1) {
+				e1.printStackTrace();
+			}
+			try {
+				ccontext.getApplicationRuntime().removeListener(this);
+			} catch (CiliaIllegalParameterException e) {
+				e.printStackTrace();
+			}
+		}
+
+
+		public void onDeparture(Node node) {
+		}
+
+
+		public void onModified(Node node) {
+		}
+
+
+		public void onBind(Node from, Node to) {
+		}
+
+		public void onUnBind(Node from, Node to) {
+		}
+
+		public void onStateChange(Node node, boolean isValid) {
+		}
+		
+	}
 }

@@ -38,7 +38,10 @@
 			<groupId>org.osgi</groupId>
 			<artifactId>org.osgi.core</artifactId>
 		</dependency>
-
+		<dependency>
+			<groupId>org.apache.felix</groupId>
+			<artifactId>org.apache.felix.fileinstall</artifactId>
+		</dependency>
 		<dependency>
 			<groupId>org.osgi</groupId>
 			<artifactId>org.osgi.compendium</artifactId>
@@ -60,6 +63,7 @@
 					<instructions>
 						<Bundle-SymbolicName>${pom.artifactId}</Bundle-SymbolicName>
 						<Export-Package>
+							fr.liglab.adele.cilia.admin.util,
 							fr.liglab.adele.cilia.framework,
 							fr.liglab.adele.cilia.framework.data,
 							fr.liglab.adele.cilia.framework.monitor,
@@ -72,6 +76,7 @@
 						</Export-Package>
 						<Private-Package>
 							fr.liglab.adele.cilia.internals,
+							fr.liglab.adele.cilia.admin.impl,
 							fr.liglab.adele.cilia.internals.controller,
 							fr.liglab.adele.cilia.internals.factories,
 							fr.liglab.adele.cilia.runtime.impl,							
@@ -108,15 +113,13 @@
 			<plugin>
 				<groupId>org.apache.felix</groupId>
 				<artifactId>maven-ipojo-plugin</artifactId>
+				<!-- <version>1.8.4</version>-->
 				<version>1.6.0</version>
 				<executions>
 					<execution>
 						<goals>
 							<goal>ipojo-bundle</goal>
 						</goals>
-						<configuration>
-							<metadata>metadata.xml</metadata>
-						</configuration>
 					</execution>
 				</executions>
 			</plugin>
