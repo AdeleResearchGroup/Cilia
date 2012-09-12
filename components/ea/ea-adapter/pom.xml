@@ -19,13 +19,14 @@
 		<groupId>fr.liglab.adele.cilia</groupId>
 		<artifactId>cilia-project</artifactId>
 		<version>1.2.2-SNAPSHOT</version>
+		<relativePath>../../../parent/pom.xml</relativePath>
 	</parent>
 
 	<groupId>fr.liglab.adele.cilia</groupId>
 	<artifactId>ea-adapter</artifactId>
-	<packaging>bundle</packaging>
 	<name>Cilia::Event-Admin Adapter/Binding</name>
 	<version>1.2.2-SNAPSHOT</version>
+	<packaging>bundle</packaging>
 
 
 	<dependencies>

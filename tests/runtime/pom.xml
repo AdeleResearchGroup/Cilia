@@ -19,9 +19,9 @@
 
 	<groupId>fr.liglab.adele.cilia</groupId>
 	<artifactId>cilia-runtime-tests</artifactId>
-	<packaging>jar</packaging>
 	<name>Cilia Runtime Tests</name>
 	<version>1.2.2-SNAPSHOT</version>
+	<packaging>jar</packaging>
 
 	<!--Project Test Repository -->
 	<repositories>
