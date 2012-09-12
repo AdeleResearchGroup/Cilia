@@ -38,6 +38,8 @@ import org.ops4j.pax.exam.junit.Configuration;
 import org.ops4j.pax.exam.junit.JUnit4TestRunner;
 import org.ops4j.pax.exam.junit.JUnitOptions;
 import org.osgi.framework.BundleContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import fr.liglab.adele.cilia.Data;
 import fr.liglab.adele.cilia.builder.Architecture;
@@ -46,6 +48,7 @@ import fr.liglab.adele.cilia.exceptions.BuilderException;
 import fr.liglab.adele.cilia.exceptions.CiliaException;
 import fr.liglab.adele.cilia.helper.CiliaHelper;
 import fr.liglab.adele.cilia.helper.MediatorTestHelper;
+import fr.liglab.adele.cilia.runtime.Const;
 import fr.liglab.adele.cilia.runtime.MediatorRuntimeSpecification;
 
 /**
@@ -65,6 +68,8 @@ public class ReliabilityTest {
 	private CiliaHelper cilia;
 	
 	private IPOJOHelper ipojo;
+	
+	private static final Logger logger = LoggerFactory.getLogger("cilia.debug");
 
 	@Before
 	public void setUp() {
@@ -119,15 +124,20 @@ public class ReliabilityTest {
 		String chainID = "reliableTest";
 		URL url = context.getBundle().getResource("reliableTest.dscilia");
 		cilia.load(url);
+		
 		//wait to be added.
-		System.out.println("will wait");
-		boolean found = cilia.waitToChain(chainID,10000);
+		logger.info("will wait");
+		boolean found = cilia.waitToChain(chainID,1000);
+		logger.info("Chain Ready");
 		MediatorTestHelper qd = cilia.instrumentChain(chainID, "firstMediator:unique", "lastMediator:unique");
 		//chain must exist, and helper should be well constructed.
+		logger.info("Chain has been instrumented");
 		Assert.assertNotNull(qd);
+		logger.info("Injecting First Data");
 		qd.injectData(new Data ("data ONE", "dda"));
 		CiliaHelper.waitSomeTime(100);
 		Assert.assertEquals(0, qd.getAmountData());
+		logger.info("Injecting Second Data");
 		qd.injectData(new Data ("data TWO", "dda"));
 		CiliaHelper.waitSomeTime(500);
 		//wait some time to arrive message.
@@ -150,10 +160,13 @@ public class ReliabilityTest {
 		} catch (CiliaException e) {
 			Assert.fail("Fail while done builder performer" + chainID);
 		}
+		logger.info("Replace in builder done");
 		//We inject the last data. Now processing must be performed on replaced mediator.
 		Assert.assertEquals(0, qd.getAmountData());
+		logger.info("Injecting third Data");
 		qd.injectData(new Data ("data THREE", "dda"));
 		CiliaHelper.waitSomeTime(1500);
+		logger.info("Assert data");
 		Assert.assertEquals(3, qd.getAmountData());
 		
 		Data lastData = qd.getLastData();
@@ -171,20 +184,25 @@ public class ReliabilityTest {
 		URL url = context.getBundle().getResource("reliableTest.dscilia");
 		cilia.load(url);
 		//wait to be added.
-		System.out.println("will wait");
-		boolean found = cilia.waitToChain("reliableTest",10000);
+		logger.info("will wait");
+		boolean found = cilia.waitToChain("reliableTest",1000);
+		logger.info("Chain is ready");
 		MediatorTestHelper qd = cilia.instrumentChain("reliableTest", "firstMediator:unique", "lastMediator:unique");
-		//chain must exist, and helper should be well constructed.
+		logger.info("Chain has been instrumented");
 		Assert.assertNotNull(qd);
+		logger.info("Injecting first Data");
 		qd.injectData(new Data ("data ONE", "dda"));
 		CiliaHelper.waitSomeTime(100);
 		Assert.assertEquals(0, qd.getAmountData());
+		logger.info("Injecting second Data");
 		qd.injectData(new Data ("data TWO", "dda"));
 		CiliaHelper.waitSomeTime(100);
 		Assert.assertEquals(0, qd.getAmountData());
+		logger.info("Injecting third Data");
 		qd.injectData(new Data ("data THREE", "dda"));
 		//wait some time to arrive message.
 		CiliaHelper.waitSomeTime(1500);
+		logger.info("Analize Injected Data");
 		Assert.assertEquals(3, qd.getAmountData());
 		
 		
