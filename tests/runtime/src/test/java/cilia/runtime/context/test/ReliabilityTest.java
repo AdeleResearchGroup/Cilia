@@ -173,7 +173,7 @@ public class ReliabilityTest {
 		System.out.println("Received NEW processed data: " + lastData.getAllData());
 	}
 	
-	@Test
+	//@Test
 	public void testCount() {
 		CiliaHelper.waitSomeTime(2000);
 		createEnricherMediator();
