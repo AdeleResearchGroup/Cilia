@@ -17,6 +17,11 @@
 
 	<dependencies>
 		<dependency>
+			<groupId>fr.liglab.adele.cilia</groupId>
+			<artifactId>cilia-core</artifactId>
+			<version>1.2.2-SNAPSHOT</version>
+		</dependency>
+		<dependency>
 			<groupId>org.osgi</groupId>
 			<artifactId>org.osgi.core</artifactId>
 		</dependency>
@@ -29,19 +34,12 @@
 			<artifactId>org.apache.felix.ipojo.annotations</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>fr.liglab.adele.cilia</groupId>
-			<artifactId>cilia-core</artifactId>
-			<version>1.2.2-SNAPSHOT</version>
-		</dependency>
-		<dependency>
 			<groupId>com.sun.jersey</groupId>
 			<artifactId>jersey-core</artifactId>
-			<version>1.8</version>
 		</dependency>
 		<dependency>
 			<groupId>org.ow2.chameleon.json</groupId>
 			<artifactId>json-service-json.org</artifactId>
-			<version>0.4.0</version>
 		</dependency>
 	</dependencies>
 	<build>
@@ -49,41 +47,21 @@
 			<plugin>
 				<groupId>org.apache.felix</groupId>
 				<artifactId>maven-bundle-plugin</artifactId>
-				<extensions>true</extensions>
 				<configuration>
 					<instructions>
-						<Bundle-SymbolicName>${pom.artifactId}</Bundle-SymbolicName>
 						<Private-Package>
 							fr.liglab.adele.cilia.remote.impl
 						</Private-Package>
-						<Include-Resource>
-							{maven-resources},
-							META-INF/LICENSE = LICENSE,
-							META-INF/NOTICE = NOTICE
-						</Include-Resource>
 					</instructions>
 				</configuration>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<configuration>
-					<source>1.5</source>
-					<target>1.5</target>
-					<debug>true</debug>
-				</configuration>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.felix</groupId>
 				<artifactId>maven-ipojo-plugin</artifactId>
-				<version>1.8.0</version>
-				<executions>
-					<execution>
-						<goals>
-							<goal>ipojo-bundle</goal>
-						</goals>
-					</execution>
-				</executions>
 			</plugin>
 		</plugins>
 	</build>
