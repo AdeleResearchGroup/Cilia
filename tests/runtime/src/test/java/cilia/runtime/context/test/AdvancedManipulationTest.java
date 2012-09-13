@@ -152,6 +152,7 @@ public class AdvancedManipulationTest {
 		/*<item key="enricher" value="enricher1"/>*/
 		Assert.assertEquals("enricher2", enricherValue2);
 		CiliaHelper.waitSomeTime(1000);
+		cilia.dispose();
 	}
 	
 	@Test
@@ -201,7 +202,8 @@ public class AdvancedManipulationTest {
 		//test the value based on the replacerTest.dscilia file
 		/*<item key="enricher" value="enricher1"/>*/
 		Assert.assertEquals("enricher1", enricherValue2);
-		
+		CiliaHelper.waitSomeTime(1000);
+		cilia.dispose();
 	}
 	
 	
