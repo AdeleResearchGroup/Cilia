@@ -403,8 +403,12 @@ public class MediatorControllerImpl implements Observer {
 	}
 
 	private MediatorComponentManager getMediatorManager(){
-		if(mediatorInstance.getInstanceManager() instanceof MediatorComponentManager) {
-			MediatorComponentManager mm = (MediatorComponentManager)mediatorInstance.getInstanceManager();
+		if (mediatorInstance==null){
+			return null;
+		}
+		ComponentInstance im = mediatorInstance.getInstanceManager();
+		if(im instanceof MediatorComponentManager) {
+			MediatorComponentManager mm = (MediatorComponentManager)im;
 			return mm;
 		}
 		return null;
@@ -415,12 +419,12 @@ public class MediatorControllerImpl implements Observer {
 	 * @return the port.
 	 */
 	public Port getInPort(String name){
-		if(mediatorInstance.getInstanceManager() instanceof MediatorComponentManager) {
-			MediatorComponentManager mm = (MediatorComponentManager)mediatorInstance.getInstanceManager();
+		MediatorComponentManager mm = getMediatorManager();
+		if(mm != null) {
 			return mm.getInPort(name);
 		}
 		logger.error("Unable to retrieve In-port '{}' on '{}'", name, this.mediatorModel.getId());
-		logger.error("Instance Manager {} ", mediatorInstance.getInstanceManager());
+		logger.error("Instance Manager {} ", getMediatorManager());
 		return null;
 	}
 	/**
@@ -429,12 +433,12 @@ public class MediatorControllerImpl implements Observer {
 	 * @return the port.
 	 */	
 	public Port getOutPort(String name) {
-		if(mediatorInstance.getInstanceManager() instanceof MediatorComponentManager) {
-			MediatorComponentManager mm = (MediatorComponentManager)mediatorInstance.getInstanceManager();
+		MediatorComponentManager mm = getMediatorManager();
+		if(mm != null) {
 			return mm.getOutPort(name);
 		}
 		logger.error("Unable to retrieve Out-port '{}' on '{}' ", name, this.mediatorModel.getId());
-		logger.error("Instance Manager {} ", mediatorInstance.getInstanceManager());
+		logger.error("Instance Manager {} ", getMediatorManager());
 		return null;
 	}
 }

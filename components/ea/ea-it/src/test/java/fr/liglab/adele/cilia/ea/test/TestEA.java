@@ -236,6 +236,7 @@ public class TestEA  {
 		System.out.println("will wait");
 		boolean found = cilia.waitToChain("toto",6000);
 		System.out.println("found chain "+ found);
+		CiliaHelper.waitSomeTime(3000);
 		MediatorTestHelper qd = cilia.instrumentChain("toto", "m11:unique", "m22:unique");
 		//chain must exist, and helper should be well constructed.
 		Assert.assertNotNull(qd);

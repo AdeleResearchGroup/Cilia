@@ -27,6 +27,8 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.felix.ipojo.test.helpers.OSGiHelper;
+import org.apache.felix.ipojo.util.Tracker;
+import org.apache.felix.ipojo.util.TrackerCustomizer;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -39,6 +41,7 @@ import org.ops4j.pax.exam.junit.Configuration;
 import org.ops4j.pax.exam.junit.JUnit4TestRunner;
 import org.ops4j.pax.exam.junit.JUnitOptions;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
 
 import fr.liglab.adele.cilia.ApplicationRuntime;
@@ -82,24 +85,25 @@ public class CiliaDynamicTest {
 
 		Option[] bundles = options(provision(
 				mavenBundle().groupId("org.apache.felix")
-						.artifactId("org.apache.felix.ipojo")
-						.versionAsInProject(),
+				.artifactId("org.apache.felix.ipojo")
+				.versionAsInProject(),
 				mavenBundle().groupId("org.apache.felix")
-						.artifactId("org.apache.felix.ipojo.test.helpers")
-						.versionAsInProject(),
+				.artifactId("org.apache.felix.ipojo.test.helpers")
+				.versionAsInProject(),
 				mavenBundle().groupId("org.osgi")
-						.artifactId("org.osgi.compendium").versionAsInProject(),
-						mavenBundle().groupId("org.apache.felix").artifactId("org.apache.felix.fileinstall").versionAsInProject(),
+				.artifactId("org.osgi.compendium").versionAsInProject(),
+				mavenBundle().groupId("org.apache.felix").artifactId("org.apache.felix.fileinstall").versionAsInProject(),
 				mavenBundle().groupId("org.slf4j").artifactId("slf4j-api")
-						.versionAsInProject(),
+				.versionAsInProject(),
 				mavenBundle().groupId("org.slf4j").artifactId("slf4j-simple")
-						.version("1.6.1"),
+				.version("1.6.1"),
 				mavenBundle().groupId("fr.liglab.adele.cilia")
-						.artifactId("cilia-core").versionAsInProject(),
+				.artifactId("cilia-core").versionAsInProject(),
 				mavenBundle().groupId("fr.liglab.adele.cilia")
-						.artifactId("cilia-helper").versionAsInProject(),
+				.artifactId("cilia-runtime").versionAsInProject()),
 				mavenBundle().groupId("fr.liglab.adele.cilia")
-						.artifactId("cilia-runtime").versionAsInProject()));
+				.artifactId("cilia-helper").versionAsInProject()
+				);
 		Option[] r = OptionUtils.combine(platform, bundles);
 		return r;
 	}
@@ -151,9 +155,9 @@ public class CiliaDynamicTest {
 			chain.create().adapter().type("gui-adapter").id("adapter_in");
 			chain.create().adapter().type("console-adapter").id("adapter_out");
 			chain.create().mediator().type("immediate-mediator")
-					.id("mediator_1");
+			.id("mediator_1");
 			chain.create().mediator().type("immediate-mediator")
-					.id("mediator_2");
+			.id("mediator_2");
 			chain.bind().from("adapter_in:out").to("mediator_1:in");
 			chain.bind().from("mediator_1:out").to("mediator_2:in");
 			chain.bind().from("mediator_2:out").to("adapter_out:in");
@@ -728,6 +732,7 @@ public class CiliaDynamicTest {
 		api_findNodeByFilter(runtime);
 	}
 
+
 	public void testGetChainState() {
 		CiliaHelper.waitSomeTime(2000);
 		CiliaContext ciliaContext = getCiliaContextService();
@@ -778,4 +783,36 @@ public class CiliaDynamicTest {
 		// illegalStateException(application);
 	}
 
+	private class CustomTracker implements TrackerCustomizer {
+
+		/* (non-Javadoc)
+		 * @see org.apache.felix.ipojo.util.TrackerCustomizer#addedService(org.osgi.framework.ServiceReference)
+		 */
+		public void addedService(ServiceReference arg0) {
+			System.out.println("Added Service with:\n" + arg0.getPropertyKeys());
+			// TODO Auto-generated method stub
+		}
+
+		/* (non-Javadoc)
+		 * @see org.apache.felix.ipojo.util.TrackerCustomizer#addingService(org.osgi.framework.ServiceReference)
+		 */
+		public boolean addingService(ServiceReference arg0) {
+			System.out.println("To Add Service with:\n" + arg0.getPropertyKeys());
+			return false;
+		}
+
+		/* (non-Javadoc)
+		 * @see org.apache.felix.ipojo.util.TrackerCustomizer#modifiedService(org.osgi.framework.ServiceReference, java.lang.Object)
+		 */
+		public void modifiedService(ServiceReference arg0, Object arg1) {
+		}
+
+		/* (non-Javadoc)
+		 * @see org.apache.felix.ipojo.util.TrackerCustomizer#removedService(org.osgi.framework.ServiceReference, java.lang.Object)
+		 */
+		public void removedService(ServiceReference arg0, Object arg1) {
+		}
+		
+	}
+	
 }

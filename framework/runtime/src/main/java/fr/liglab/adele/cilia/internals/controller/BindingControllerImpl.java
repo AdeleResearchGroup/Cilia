@@ -52,6 +52,15 @@ public class BindingControllerImpl implements TrackerCustomizer {
 
 	private final Object lockObject = new Object();
 
+	private CiliaBindingService bindingService = null;
+
+	private volatile byte allServices=0x0;
+
+	private final static byte ALL_SERVICES = 0x7;
+	private final static byte BINDING_SERVICE = 0x1;
+	private final static byte RECEIVING_SERVICE = 0x2;
+	private final static byte SENDING_SERVICE = 0x4;
+
 	public void setSourceController(MediatorControllerImpl sourceController) {
 		this.sourceController = sourceController;
 	}
@@ -76,7 +85,7 @@ public class BindingControllerImpl implements TrackerCustomizer {
 	private static String DEFAULT_TYPE = "direct";
 
 	public BindingControllerImpl(BundleContext context, Binding binding) {
-		modelBinding = (BindingImpl)binding;
+		modelBinding = (BindingImpl) binding;
 		bcontext = context;
 		settingUp();
 		// start();
@@ -94,18 +103,18 @@ public class BindingControllerImpl implements TrackerCustomizer {
 	 * @throws CiliaException
 	 * 
 	 */
-	private void createModels(ServiceReference ref) throws CiliaException {
+	private void createModels(CiliaBindingService cbs) throws CiliaException {
 
-		CiliaBindingService cbs = null;
 		CollectorImpl collector = null;
 		SenderImpl sender = null;
 		String bindingId = null;
-		cbs = (CiliaBindingService) bcontext.getService(ref);
 
 		if (log.isDebugEnabled())
 			log.debug("Adding Binding:" + getBindingType());
-		Component collectorModel = cbs.getCollectorModel(modelBinding.getProperties());
-		Component senderModel = cbs.getSenderModel(modelBinding.getProperties());
+		Component collectorModel = cbs.getCollectorModel(modelBinding
+				.getProperties());
+		Component senderModel = cbs
+				.getSenderModel(modelBinding.getProperties());
 		Dictionary colProps = null;
 		Dictionary senProps = null;
 		if (collectorModel != null) {
@@ -117,22 +126,24 @@ public class BindingControllerImpl implements TrackerCustomizer {
 		Dictionary componentProperties = cbs.getProperties(colProps, senProps,
 				modelBinding);
 
-		colProps = (Dictionary) componentProperties.get("cilia.collector.properties");
-		senProps = (Dictionary) componentProperties.get("cilia.sender.properties");
+		colProps = (Dictionary) componentProperties
+				.get("cilia.collector.properties");
+		senProps = (Dictionary) componentProperties
+				.get("cilia.sender.properties");
 
 		Port port1 = modelBinding.getSourcePort();
 		Port port2 = modelBinding.getTargetPort();
 		if (port1 != null) {
 			if (log.isDebugEnabled())
-				log.debug("Source Port in model binding is NOT null" + port1.getPortType()
-						+ " " + port1.getName());
+				log.debug("Source Port in model binding is NOT null"
+						+ port1.getPortType() + " " + port1.getName());
 		} else {
 			senderModel = null;
 		}
 		if (port2 != null) {
 			if (log.isDebugEnabled())
-				log.debug("Target Port in model binding is NOT null " + port2.getPortType()
-						+ " " + port2.getName());
+				log.debug("Target Port in model binding is NOT null "
+						+ port2.getPortType() + " " + port2.getName());
 		} else {
 			collectorModel = null;
 		}
@@ -140,20 +151,21 @@ public class BindingControllerImpl implements TrackerCustomizer {
 		bindingId = modelBinding.getSourceMediator().getId() + ":"
 				+ modelBinding.getSourcePort().getName() + ":"
 				+ modelBinding.getTargetMediator().getId() + ":"
-				+ modelBinding.getTargetPort().getName() ;
-
+				+ modelBinding.getTargetPort().getName();
 
 		if (collectorModel != null) {
 			colProps.put("cilia.collector.identifier", bindingId);
-			colProps.put("cilia.collector.port", modelBinding.getTargetPort().getName());
-			collector = new CollectorImpl(bindingId,
-					collectorModel.getType(),null,modelBinding.getTargetPort().getName(),   colProps);
+			colProps.put("cilia.collector.port", modelBinding.getTargetPort()
+					.getName());
+			collector = new CollectorImpl(bindingId, collectorModel.getType(),
+					null, modelBinding.getTargetPort().getName(), colProps);
 		}
 		if (senderModel != null) {
 			senProps.put("cilia.sender.identifier", bindingId);
-			senProps.put("cilia.sender.port", modelBinding.getSourcePort().getName());
-			sender = new SenderImpl(bindingId, 
-					senderModel.getType(),null,modelBinding.getSourcePort().getName(), senProps);
+			senProps.put("cilia.sender.port", modelBinding.getSourcePort()
+					.getName());
+			sender = new SenderImpl(bindingId, senderModel.getType(), null,
+					modelBinding.getSourcePort().getName(), senProps);
 		}
 		addModels(sender, collector);
 	}
@@ -169,7 +181,6 @@ public class BindingControllerImpl implements TrackerCustomizer {
 	private void addModels(SenderImpl senderm, CollectorImpl collectorm) {
 		MediatorComponent sm = modelBinding.getSourceMediator();
 		MediatorComponent tm = modelBinding.getTargetMediator();
-
 
 		if (sm != null && senderm != null) {
 			synchronized (lockObject) {
@@ -205,7 +216,7 @@ public class BindingControllerImpl implements TrackerCustomizer {
 	public void stop() {
 		unregisterTracker();
 		if (sourceController != null) {
-			SenderImpl s = modelBinding.getSender(); 
+			SenderImpl s = modelBinding.getSender();
 			modelBinding.addSender(null);
 			sourceController.removeSender(s);
 		}
@@ -236,8 +247,8 @@ public class BindingControllerImpl implements TrackerCustomizer {
 		String filter = createFilter();
 		if (bindingTracker == null) {
 			try {
-				bindingTracker = new Tracker(bcontext, bcontext.createFilter(filter),
-						this);
+				bindingTracker = new Tracker(bcontext,
+						bcontext.createFilter(filter), this);
 				bindingTracker.open();
 			} catch (InvalidSyntaxException e) {
 				e.printStackTrace();
@@ -252,8 +263,12 @@ public class BindingControllerImpl implements TrackerCustomizer {
 	}
 
 	private String createFilter() {
-		String filter = "(|(cilia.binding.protocol=" + getBindingType()
-				+ ")(cilia.binding.type=" + getBindingType() + "))";
+		String filter = "(|(cilia.binding.protocol=" + getBindingType() + ")"
+				+ "(cilia.binding.type=" + getBindingType() + ")"
+				+ "(&(factory.name=" + sourceController.mediatorModel.getType()
+				+ ")(factory.state=1))" + "(&(factory.name="
+				+ targetController.mediatorModel.getType()
+				+ ")(factory.state=1))" + ")";
 		return filter;
 	}
 
@@ -271,28 +286,51 @@ public class BindingControllerImpl implements TrackerCustomizer {
 	 * Methods from TrackerCustomizer.
 	 */
 	public void addedService(ServiceReference reference) {
-		boolean performBinding = true;
-		try {
-			if (validatePort(modelBinding.getSourcePort(), modelBinding.getTargetPort()))
-				createModels(reference);
-		} catch (CiliaException e) {
-			e.printStackTrace();
+		if(allServices == ALL_SERVICES){
+			try{
+				if (validatePort(modelBinding.getSourcePort(),
+						modelBinding.getTargetPort()))
+					createModels(bindingService);
+			} catch (CiliaException e) {
+				e.printStackTrace();
+			}
+
 		}
 	}
 
 	public boolean addingService(ServiceReference reference) {
 		Object cbs = null;
+		boolean toAdd = false;
 		cbs = bcontext.getService(reference);
 		if (cbs instanceof CiliaBindingService) {
-			return true;
+			allServices = (byte) (allServices | BINDING_SERVICE);
+			bindingService = (CiliaBindingService)cbs;
+			toAdd = true;
+		} else if (String.valueOf(reference.getProperty("factory.name")).compareToIgnoreCase(sourceController.mediatorModel.getType()) == 0 ){
+			allServices = (byte) (allServices | SENDING_SERVICE);
+			toAdd = true;
 		}
-		return false;
+		if (String.valueOf(reference.getProperty("factory.name")).compareToIgnoreCase(targetController.mediatorModel.getType()) == 0 ){
+			allServices = (byte) (allServices | RECEIVING_SERVICE);
+			toAdd = true;
+		}
+		return toAdd;
 	}
 
 	public void modifiedService(ServiceReference reference, Object service) {
 	}
 
 	public void removedService(ServiceReference reference, Object service) {
+		try{
+			if (service instanceof CiliaBindingService) {
+				allServices = (byte) (allServices ^ BINDING_SERVICE);
+			} else if (String.valueOf(reference.getProperty("factory.name")).compareToIgnoreCase(sourceController.mediatorModel.getType()) == 0 ){
+				allServices = (byte) (allServices ^ SENDING_SERVICE);
+			}	 
+			if (String.valueOf(reference.getProperty("factory.name")).compareToIgnoreCase(targetController.mediatorModel.getType()) == 0 ){
+				allServices = (byte) (allServices ^ RECEIVING_SERVICE);
+			}
+		}catch(Exception e){}
 		if (sourceController != null) {
 			sourceController.removeSender(modelBinding.getSender());
 		}
@@ -311,32 +349,45 @@ public class BindingControllerImpl implements TrackerCustomizer {
 			forceBinding = false;
 		}
 
-		Port componentExitPort = sourceController.getOutPort(exitPort.getName());
-		Port componentEntryPort = targetController.getInPort(entryPort.getName());
+		Port componentExitPort = sourceController
+				.getOutPort(exitPort.getName());
+		Port componentEntryPort = targetController.getInPort(entryPort
+				.getName());
 		if (componentExitPort == null) {
-			log.error("Mediator {} does not have a port named {}", exitPort.getMediator().getId(), exitPort.getName() );
+			log.error("Mediator {} does not have a port named {}", exitPort
+					.getMediator().getId(), exitPort.getName());
 			valid = false;
 		}
 		if (valid && componentExitPort.getDataType() == null) {
-			log.error("Mediator port {} in {} does not have a well defined data type",  exitPort.getName(), exitPort.getMediator().getId() );
+			log.error(
+					"Mediator port {} in {} does not have a well defined data type",
+					exitPort.getName(), exitPort.getMediator().getId());
 			valid = false;
 		}
 		if (valid && componentEntryPort == null) {
-			log.error("Mediator {} does not have a port named {}", entryPort.getMediator().getId(), entryPort.getName() );
+			log.error("Mediator {} does not have a port named {}", entryPort
+					.getMediator().getId(), entryPort.getName());
 			valid = false;
 		}
 		if (valid && componentEntryPort.getDataType() == null) {
-			log.error("Mediator port {} in {} does not have a well defined data type",entryPort.getName(), entryPort.getMediator().getId() );
+			log.error(
+					"Mediator port {} in {} does not have a well defined data type",
+					entryPort.getName(), entryPort.getMediator().getId());
 			valid = false;
 		}
-		if (valid && ((componentEntryPort.getDataType().compareToIgnoreCase(componentExitPort.getDataType()) !=0)
-				&& (componentEntryPort.getDataType().compareTo("*") !=0 && (componentExitPort.getDataType().compareTo("*")!=0))
-				)) {
-			log.error("Trying to bind incompatible ports: ExitPort[" + componentExitPort.getName() + " = "+componentExitPort.getDataType()+"] & EntryPort[" + componentEntryPort.getName() + " = "+componentEntryPort.getDataType()+"]");
+		if (valid
+				&& ((componentEntryPort.getDataType().compareToIgnoreCase(
+						componentExitPort.getDataType()) != 0) && (componentEntryPort
+								.getDataType().compareTo("*") != 0 && (componentExitPort
+										.getDataType().compareTo("*") != 0)))) {
+			log.error("Trying to bind incompatible ports: ExitPort["
+					+ componentExitPort.getName() + " = "
+					+ componentExitPort.getDataType() + "] & EntryPort["
+					+ componentEntryPort.getName() + " = "
+					+ componentEntryPort.getDataType() + "]");
 			valid = false;
 		}
 		return valid || forceBinding;
 	}
-
 
 }
