@@ -68,8 +68,8 @@ public class ProcessorsTest {
 
 	@After
 	public void tearDown() {
-		osgi.dispose();
 		cilia.dispose();
+		osgi.dispose();
 	}
 
 	@Configuration
@@ -125,7 +125,7 @@ public class ProcessorsTest {
 		Assert.assertNotNull(data);
 		String enricherValue = (String)data.getProperty("enricher");
 		Assert.assertEquals("enricher1", enricherValue);
-		
+		cilia.dispose();
 	}
 	
 	/**

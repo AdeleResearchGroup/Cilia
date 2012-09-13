@@ -70,6 +70,7 @@ public class MediatorStateTest {
 
 	@After
 	public void tearDown() {
+		cilia.dispose();
 		osgi.dispose();
 	}
 

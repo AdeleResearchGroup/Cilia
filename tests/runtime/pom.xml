@@ -72,21 +72,9 @@
 		</dependency>
 		<dependency>
 			<groupId>org.apache.felix</groupId>
-			<artifactId>org.apache.felix.ipojo.tinybundles.bundleAsiPOJO
-			</artifactId>
-			<version>1.3.0-SNAPSHOT</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.felix</groupId>
 			<artifactId>org.apache.felix.ipojo.test.helpers</artifactId>
 			<version>1.5.0-SNAPSHOT</version>
 			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.felix</groupId>
-			<artifactId>org.apache.felix.ipojo.api</artifactId>
-			<version>1.6.0</version>
 		</dependency>
 		<!-- Pax Exam API: -->
 		<dependency>

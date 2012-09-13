@@ -68,8 +68,8 @@ public class SchedulerTest {
 
 	@After
 	public void tearDown() {
-		osgi.dispose();
 		cilia.dispose();
+		osgi.dispose();
 	}
 
 	@Configuration

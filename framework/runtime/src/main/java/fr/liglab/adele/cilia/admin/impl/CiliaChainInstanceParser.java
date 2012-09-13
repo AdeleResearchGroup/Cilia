@@ -99,6 +99,11 @@ public class CiliaChainInstanceParser implements ChainParser {
 		}
 		// First child is the root node.
 		Node node = XmlTools.streamToNode(fis).getFirstChild();
+		try {
+			fis.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		return parseChains(node);
 	}
 

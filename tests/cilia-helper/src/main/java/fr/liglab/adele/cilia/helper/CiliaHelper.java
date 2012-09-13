@@ -162,7 +162,6 @@ public class CiliaHelper {
 	}
 
 	public void dispose() {
-		ohelper.dispose();
 		CiliaContext context = getCiliaContext(); 
 		String ids[] = context.getApplicationRuntime().getChainId();
 		for (int i=0; ids != null && i < ids.length; i ++) {
@@ -173,6 +172,7 @@ public class CiliaHelper {
 				e.printStackTrace();
 			}
 		}
+		ohelper.dispose();
 	}
 
 	public CiliaContext getCiliaContext() {

@@ -48,7 +48,6 @@ import fr.liglab.adele.cilia.exceptions.BuilderException;
 import fr.liglab.adele.cilia.exceptions.CiliaException;
 import fr.liglab.adele.cilia.helper.CiliaHelper;
 import fr.liglab.adele.cilia.helper.MediatorTestHelper;
-import fr.liglab.adele.cilia.runtime.Const;
 import fr.liglab.adele.cilia.runtime.MediatorRuntimeSpecification;
 
 /**
@@ -67,7 +66,6 @@ public class ReliabilityTest {
 	
 	private CiliaHelper cilia;
 	
-	private IPOJOHelper ipojo;
 	
 	private static final Logger logger = LoggerFactory.getLogger("cilia.debug");
 
@@ -75,14 +73,12 @@ public class ReliabilityTest {
 	public void setUp() {
 		osgi = new OSGiHelper(context);
 		cilia = new CiliaHelper(context);
-		ipojo = new IPOJOHelper(context);
 	}
 
 	@After
 	public void tearDown() {
-		osgi.dispose();
 		cilia.dispose();
-		ipojo.dispose();
+		osgi.dispose();
 	}
 
 	@Configuration

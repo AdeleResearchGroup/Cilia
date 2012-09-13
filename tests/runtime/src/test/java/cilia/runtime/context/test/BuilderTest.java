@@ -70,6 +70,7 @@ public class BuilderTest {
 
 	@After
 	public void tearDown() {
+		cilia.dispose();
 		osgi.dispose();
 	}
 
