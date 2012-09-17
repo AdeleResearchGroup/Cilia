@@ -11,7 +11,7 @@
 	<groupId>fr.liglab.adele.cilia</groupId>
 	<artifactId>cilia-remote</artifactId>
 	<name>Cilia Remote Admin</name>
-	<version>1.5.0</version>
+	<version>1.5.1-SNAPSHOT</version>
 	<packaging>bundle</packaging>
 
 	<dependencies>
@@ -68,6 +68,6 @@
 		<connection>scm:git:ssh://git@github.com/AdeleResearchGroup/Cilia.git</connection>
 		<url>http://github.com/AdeleResearchGroup/Cilia/tree/master</url>
 		<developerConnection>scm:git:ssh://git@github.com/AdeleResearchGroup/Cilia.git</developerConnection>
-		<tag>cilia-remote-1.5.0</tag>
+		<tag>HEAD</tag>
 	</scm>
 </project>
