@@ -20,7 +20,7 @@
 	<groupId>fr.liglab.adele.cilia</groupId>
 	<artifactId>jms-adapter</artifactId>
 	<name>CILIA::JMS (Joram 5.7.0) Adapter/Binding</name>
-	<version>1.5.0</version>
+	<version>1.5.1-SNAPSHOT</version>
 	<packaging>bundle</packaging>
 
 	<dependencies>
@@ -93,6 +93,6 @@
 		<connection>scm:git:ssh://git@github.com/AdeleResearchGroup/Cilia.git</connection>
 		<url>http://github.com/AdeleResearchGroup/Cilia/tree/master</url>
 		<developerConnection>scm:git:ssh://git@github.com/AdeleResearchGroup/Cilia.git</developerConnection>
-		<tag>jms-adapter-1.5.0</tag>
+		<tag>HEAD</tag>
 	</scm>
 </project>
