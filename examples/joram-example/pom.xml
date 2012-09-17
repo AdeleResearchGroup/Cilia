@@ -19,7 +19,7 @@
 	<artifactId>cilia-JMS-demo-reactor</artifactId>
 	<packaging>pom</packaging>
 	<name>Cilia JMS Demo Reactor</name>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.0.1</version>
 
 	<modules>
 		<module>demo-mediators</module>

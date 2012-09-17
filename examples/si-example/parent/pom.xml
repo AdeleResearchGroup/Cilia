@@ -19,7 +19,7 @@
 	<artifactId>cilia-si-parent</artifactId>
 	<packaging>pom</packaging>
 	<name>Cilia SI Parent</name>
-	<version>1.0.0-SNAPSHOT</version>
+	<version>1.5.1-SNAPSHOT</version>
 	<url>http://cilia.ligforge.imag.fr</url>
 	<properties>
 		<demo.version>1.5.1-SNAPSHOT</demo.version>
@@ -178,6 +178,18 @@
 			<id>com.springsource.repository.bundles.external</id>
 			<name>EBR External Release Repository</name>
 			<url>http://repository.springsource.com/maven/bundles/external</url>
+		</repository>
+		<repository>
+			<id>maven-cilia-repository-release</id>
+			<name>Cilia - Release</name>
+			<url>http://repository-cilia.forge.cloudbees.com/release/</url>
+			<layout>default</layout>
+		</repository>
+		<repository>
+			<id>maven-cilia-repository-snapshot</id>
+			<name>Cilia - Snapshot</name>
+			<url>http://repository-cilia.forge.cloudbees.com/snapshot/</url>
+			<layout>default</layout>
 		</repository>
 	</repositories>
 </project>

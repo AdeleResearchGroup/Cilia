@@ -26,7 +26,7 @@
 		<module>demo-services-interfaces</module>
 		<module>demo-components</module>
 		<module>demo-endpoint</module>
-	    	<module>demo-services-implems</module>
+	    <module>demo-services-implems</module>
 		<module>demo-servlet</module>
 		<module>gateway</module>
 	</modules>
