@@ -1,4 +1,3 @@
-
 Cilia Project
 =============
 Cilia is an application development framework with its specialized run-time for mediation flows.  
@@ -7,3 +6,20 @@ Cilia has been designed for the widest range of uses, including embedded applica
 
 Cilia is a project in collaboration with the Adele Research Team and Orange Labs.
 
+
+### Repository 
+  	
+```xml
+<repository>
+	<id>maven-cilia-repository-release</id>
+	<name>Cilia - Release</name>
+	<url>http://repository-cilia.forge.cloudbees.com/release/</url>
+	<layout>default</layout>
+</repository>
+<repository>
+	<id>maven-cilia-repository-snapshot</id>
+	<name>Cilia - Snapshot</name>
+	<url>http://repository-cilia.forge.cloudbees.com/snapshot/</url>
+	<layout>default</layout>
+</repository>
+```
