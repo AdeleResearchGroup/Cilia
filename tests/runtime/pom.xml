@@ -13,14 +13,14 @@
 	<parent>
 		<groupId>fr.liglab.adele.cilia</groupId>
 		<artifactId>cilia-project</artifactId>
-		<version>1.2.2-SNAPSHOT</version>
+		<version>1.5.1-SNAPSHOT</version>
 		<relativePath></relativePath>
 	</parent>
 
 	<groupId>fr.liglab.adele.cilia</groupId>
 	<artifactId>cilia-runtime-tests</artifactId>
 	<name>Cilia Runtime Tests</name>
-	<version>1.2.2-SNAPSHOT</version>
+	<version>1.5.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
 
@@ -47,17 +47,17 @@
 		<dependency>
 			<groupId>fr.liglab.adele.cilia</groupId>
 			<artifactId>cilia-core</artifactId>
-			<version>1.2.2-SNAPSHOT</version>
+			<version>${cilia.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>fr.liglab.adele.cilia</groupId>
 			<artifactId>cilia-runtime</artifactId>
-			<version>1.2.2-SNAPSHOT</version>
+			<version>${cilia.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>fr.liglab.adele.cilia</groupId>
 			<artifactId>ea-adapter</artifactId>
-			<version>1.2.2-SNAPSHOT</version>
+			<version>${cilia.version}</version>
 		</dependency>
 		
 		<dependency>
@@ -68,7 +68,7 @@
 		<dependency>
 			<groupId>fr.liglab.adele.cilia</groupId>
 			<artifactId>cilia-helper</artifactId>
-			<version>1.2.2-SNAPSHOT</version>
+			<version>${cilia.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.felix</groupId>

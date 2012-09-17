@@ -14,14 +14,14 @@
 	<parent>
 		<groupId>fr.liglab.adele.cilia</groupId>
 		<artifactId>cilia-project</artifactId>
-		<version>1.2.2-SNAPSHOT</version>
+		<version>1.5.1-SNAPSHOT</version>
 	</parent>
 
 	<groupId>fr.liglab.adele.cilia</groupId>
 	<artifactId>jms-it</artifactId>
 	<packaging>jar</packaging>
 	<name>CILIA::JMS (Joram 5.7.0) Adapter/Binding Tests</name>
-	<version>1.2.2-SNAPSHOT</version>
+	<version>1.5.1-SNAPSHOT</version>
 
 	<dependencies>
 		<dependency>
@@ -42,17 +42,17 @@
 		<dependency>
 			<groupId>fr.liglab.adele.cilia</groupId>
 			<artifactId>cilia-core</artifactId>
-			<version>1.2.2-SNAPSHOT</version>
+			<version>${cilia.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>fr.liglab.adele.cilia</groupId>
 			<artifactId>cilia-runtime</artifactId>
-			<version>1.2.2-SNAPSHOT</version>
+			<version>${cilia.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>fr.liglab.adele.cilia</groupId>
 			<artifactId>jms-adapter</artifactId>
-			<version>1.2.2-SNAPSHOT</version>
+			<version>${cilia.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>

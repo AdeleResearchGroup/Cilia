@@ -3,14 +3,14 @@
 	<parent>
 		<groupId>fr.liglab.adele.cilia</groupId>
 		<artifactId>cilia-project</artifactId>
-		<version>1.2.2-SNAPSHOT</version>
+		<version>1.5.1-SNAPSHOT</version>
 		<relativePath></relativePath>
 	</parent>
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>cilia.jms.demo</groupId>
 	<artifactId>jms-demo.mediators</artifactId>
 	<packaging>bundle</packaging>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>1.5.1-SNAPSHOT</version>
 	<name>Cilia:JMS:Demo mediators</name>
 	<build>
 		<plugins>

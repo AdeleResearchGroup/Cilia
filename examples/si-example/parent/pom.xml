@@ -22,8 +22,8 @@
 	<version>1.0.0-SNAPSHOT</version>
 	<url>http://cilia.ligforge.imag.fr</url>
 	<properties>
-		<demo.version>1.0.0-SNAPSHOT</demo.version>
-		<cilia.version>1.2.2-SNAPSHOT</cilia.version>
+		<demo.version>1.5.1-SNAPSHOT</demo.version>
+		<cilia.version>1.5.1-SNAPSHOT</cilia.version>
 	</properties>
 	<dependencyManagement>
 		<dependencies>

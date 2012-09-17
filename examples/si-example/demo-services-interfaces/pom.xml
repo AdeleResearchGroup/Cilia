@@ -9,7 +9,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>cilia.demo.split-aggregate</groupId>
 	<artifactId>demo-services-interfaces</artifactId>
-	<version>1.0.0-SNAPSHOT</version>
+	<version>${demo.version}</version>
 	<packaging>bundle</packaging>
 	<name>Split/Aggregate Demo - chain Services Interfaces</name>
 	<build>

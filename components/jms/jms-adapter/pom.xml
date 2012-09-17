@@ -13,7 +13,7 @@
 	<parent>
 		<groupId>fr.liglab.adele.cilia</groupId>
 		<artifactId>cilia-project</artifactId>
-		<version>1.5.0</version>
+		<version>1.5.1-SNAPSHOT</version>
 		<relativePath>../../../parent/pom.xml</relativePath>
 	</parent>
 
@@ -42,12 +42,12 @@
 		<dependency>
 			<groupId>fr.liglab.adele.cilia</groupId>
 			<artifactId>cilia-core</artifactId>
-			<version>1.5.0</version>
+			<version>${cilia.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>fr.liglab.adele.cilia</groupId>
 			<artifactId>cilia-runtime</artifactId>
-			<version>1.5.0</version>
+			<version>${cilia.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>

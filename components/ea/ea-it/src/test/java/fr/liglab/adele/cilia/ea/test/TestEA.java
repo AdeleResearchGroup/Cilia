@@ -61,7 +61,7 @@ import fr.liglab.adele.cilia.runtime.CiliaInstance;
 @RunWith(JUnit4TestRunner.class)
 public class TestEA  {
 
-	private final static String CURRENT_VERSION="1.2.2-SNAPSHOT"; 
+	private final static String CURRENT_VERSION="1.5.1-SNAPSHOT"; 
 
 	private final static String COLLECTOR = "ea-collector";
 
@@ -111,7 +111,7 @@ public class TestEA  {
 						mavenBundle().groupId("fr.liglab.adele.cilia").artifactId("cilia-runtime").version(CURRENT_VERSION),
 						mavenBundle().groupId("fr.liglab.adele.cilia").artifactId("cilia-helper").version(CURRENT_VERSION),
 						mavenBundle().groupId("org.apache.felix").artifactId("org.apache.felix.eventadmin").version("1.2.14"),
-						mavenBundle().groupId("fr.liglab.adele.cilia").artifactId("ea-adapter").version("1.2.2-SNAPSHOT")
+						mavenBundle().groupId("fr.liglab.adele.cilia").artifactId("ea-adapter").version(CURRENT_VERSION)
 						)); // The target
 		Option[] r = OptionUtils.combine(platform, bundles);
 		return r;
