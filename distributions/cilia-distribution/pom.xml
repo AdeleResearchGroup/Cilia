@@ -17,7 +17,7 @@
 		<groupId>fr.liglab.adele.cilia</groupId>
 		<artifactId>cilia-project</artifactId>
 		<version>1.5.1-SNAPSHOT</version>
-		<relativePath></relativePath>
+		<relativePath>../../parent</relativePath>
 	</parent>
 
 	<!-- Project coordinates -->
@@ -27,126 +27,272 @@
 
 	<!-- Project description -->
 	<name>Cilia Simple Distribution</name>
+ 
+  <!-- Project dependencies -->
+  <dependencies>
+	<dependency>
+		<groupId>fr.liglab.adele.cilia</groupId>
+		<artifactId>config.base</artifactId>
+		<version>1.5.0</version>
+		<type>zip</type>
+	</dependency>
+  </dependencies>
+  
+  <build>
+    <plugins>
+    <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <extensions>true</extensions>
+      </plugin>
+    <!-- Copy dependencies -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+		<executions>     
+		  <!-- Copy bundles in the 'bundle' directory -->
+          <execution>
+            <id>copy-felix-binaries</id>
+            <phase>compile</phase>
+            <goals>
+              <goal>copy</goal>
+            </goals>
+            <configuration>
+			  <artifactItems>
+				<artifactItem>
+					<groupId>org.apache.felix</groupId>
+					<artifactId>org.apache.felix.main</artifactId>
+					<version>3.0.8</version>
+					<destFileName>felix.jar</destFileName>
+				</artifactItem>
+              </artifactItems>
+              <outputDirectory>${basedir}/bin</outputDirectory>
+			  <overWriteSnapshots>true</overWriteSnapshots>
+			  <overWriteIfNewer>true</overWriteIfNewer>
+            </configuration>
+          </execution>
+    
+		  <!-- Copy bundles in the 'bundle' directory -->
+          <execution>
+            <id>copy-platform-bundles</id>
+            <phase>compile</phase>
+            <goals>
+              <goal>copy</goal>
+            </goals>
+            <configuration>
+			<artifactItems>
+				<artifactItem>
+					<groupId>log4j</groupId>
+					<artifactId>log4j</artifactId>
+					<version>1.2.16</version>
+				</artifactItem>
+				<artifactItem>
+					<groupId>org.apache.felix</groupId>
+					<artifactId>org.apache.felix.fileinstall</artifactId>
+					<version>3.1.10</version>
+				</artifactItem>
+				<artifactItem>
+					<groupId>org.apache.felix</groupId>
+					<artifactId>org.apache.felix.gogo.command</artifactId>
+					<version>0.8.0</version>
+				</artifactItem>
+				<artifactItem>
+					<groupId>org.apache.felix</groupId>
+					<artifactId>org.apache.felix.gogo.runtime</artifactId>
+					<version>0.8.0</version>
+				</artifactItem>
+				<artifactItem>
+					<groupId>org.apache.felix</groupId>
+					<artifactId>org.apache.felix.gogo.shell</artifactId>
+					<version>0.8.0</version>
+				</artifactItem>
+				<artifactItem>
+					<groupId>org.apache.felix</groupId>
+					<artifactId>org.apache.felix.ipojo.arch.gogo</artifactId>
+					<version>1.0.1</version>
+				</artifactItem>
+				<artifactItem>
+					<groupId>org.apache.felix</groupId>
+					<artifactId>org.apache.felix.ipojo</artifactId>
+					<version>1.8.0</version>
+				</artifactItem>
+				<artifactItem>
+					<groupId>org.apache.felix</groupId>
+					<artifactId>org.apache.felix.log</artifactId>
+					<version>1.0.0</version>
+				</artifactItem>
+				<artifactItem>
+					<groupId>org.apache.felix</groupId>
+					<artifactId>org.apache.felix.webconsole</artifactId>
+					<version>3.1.6</version>
+				</artifactItem>
+				<artifactItem>
+					<groupId>org.osgi</groupId>
+					<artifactId>org.osgi.compendium</artifactId>
+					<version>4.2.0</version>
+				</artifactItem>
+				<artifactItem>
+					<groupId>org.slf4j</groupId>
+					<artifactId>slf4j-api</artifactId>
+					<version>1.6.1</version>
+				</artifactItem>
+				<artifactItem>
+					<groupId>org.slf4j</groupId>
+					<artifactId>slf4j-simple</artifactId>
+					<version>1.6.1</version>
+				</artifactItem>
+              </artifactItems>
+              <outputDirectory>${basedir}/bundle</outputDirectory>
+			  <overWriteSnapshots>true</overWriteSnapshots>
+			  <overWriteIfNewer>true</overWriteIfNewer>
+            </configuration>
+          </execution>
+		
+          <!-- Copy bundles in the 'bundle' directory -->
+          <execution>
+            <id>copy-autoload-bundles</id>
+            <phase>compile</phase>
+            <goals>
+              <goal>copy-dependencies</goal>
+            </goals>
+            <configuration>
+			  <excludeArtifactIds>config.base</excludeArtifactIds>
+              <outputDirectory>${basedir}/bundle</outputDirectory>
+              <overWriteSnapshots>true</overWriteSnapshots>
+              <excludeTransitive>true</excludeTransitive>
+            </configuration>
+          </execution>
+		  
+		  <!-- copy inherited config files -->
+		  <execution>
+				<id>unpack-inherited-config</id>
+				<phase>process-resources</phase>
+				<goals>
+					<goal>unpack-dependencies</goal>
+				</goals>
+				<configuration>
+					<includeGroupIds>fr.liglab.adele.cilia</includeGroupIds>
+					<includeArtifactIds>config.base</includeArtifactIds>
+					<includeVersion>1.5.0</includeVersion>
+					<outputDirectory>
+						${project.build.directory}/distrib-temp/
+					</outputDirectory>
+				</configuration>
+			</execution>
+        </executions>
+      </plugin>
+	  
+	  <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-antrun-plugin</artifactId>
+		<version>1.6</version>
+         <executions>
 
-	<!-- Project dependencies -->
-	<dependencies>
-		<!-- CILIA -->
-		<dependency>
-			<groupId>fr.liglab.adele.cilia</groupId>
-			<artifactId>cilia-core</artifactId>
-			<version>${cilia.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>fr.liglab.adele.cilia</groupId>
-			<artifactId>cilia-runtime</artifactId>
-			<version>${cilia.version}</version>
-		</dependency>
-		<!-- GOGO -->
-        <dependency>
-            <groupId>org.apache.felix</groupId>
-            <artifactId>org.apache.felix.gogo.runtime</artifactId>
-            <version>0.10.0</version>
-        </dependency>
-		<dependency>
-	          <groupId>org.apache.felix</groupId>
-			  <artifactId>org.apache.felix.gogo.command</artifactId>
-			  <version>0.12.0</version>
-		</dependency>
-		<dependency>
-	    	<groupId>org.apache.felix</groupId>
-			<artifactId>org.apache.felix.gogo.shell</artifactId>
-			<version>0.10.0</version>
-		</dependency>
-		<!-- iPOJO -->
-		<dependency>
-			<groupId>org.apache.felix</groupId>
-			<artifactId>org.apache.felix.ipojo</artifactId>
-			<version>1.8.0</version>
-		</dependency>
-		<dependency>
-			<artifactId>org.apache.felix.ipojo.arch.gogo</artifactId>
-			<groupId>org.apache.felix</groupId>
-			<version>1.0.1</version>
-		</dependency>
-		<!-- Felix Dependencies -->
-		<dependency>
-			<groupId>org.apache.felix</groupId>
-			<version>3.2.0</version>
-			<artifactId>org.apache.felix.fileinstall</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.felix</groupId>
-			<artifactId>org.osgi.compendium</artifactId>
-			<version>1.4.0</version>
-		</dependency>
-		<!-- Logger-->
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-api</artifactId>
-			<version>1.6.4</version>
-		</dependency>
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-log4j12</artifactId>
-			<version>1.6.4</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.log4j</groupId>
-			<artifactId>com.springsource.org.apache.log4j</artifactId>
-			<version>1.2.16</version>
-		</dependency>
-	</dependencies>
+		  <!-- copy inherited config files -->
+          <execution>
+			<id>copy-inherited-config</id>
+            <phase>compile</phase>
+            <goals>
+              <goal>run</goal>
+            </goals>
+            <configuration>
+              <target>
+                <copy failonerror="true"
+					overwrite="true"
+					todir="${basedir}/">
+					<fileset dir="${project.build.directory}/distrib-temp/">
+					    <include name="*"/>
+						<exclude name="*.txt"/>
+						<exclude name="conf/*"/>
+						<exclude name="assembly.xml"/>
+					</fileset>
+				</copy>
+				<copy failonerror="true"
+					overwrite="false"
+					todir="${basedir}/">
+					<fileset dir="${project.build.directory}/distrib-temp/">
+					    <include name="*.txt"/>
+						<include name="conf/*"/>
+					</fileset>
+				</copy>
+              </target>
+            </configuration>
+          </execution>
 
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.felix</groupId>
-				<artifactId>maven-bundle-plugin</artifactId>
-				<extensions>true</extensions>
-			</plugin>
-			<!-- Copy dependencies -->
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-dependency-plugin</artifactId>
-				<version>2.1</version>
-				<executions>
-					<!-- Copy bundles in the 'bundle' directory -->
-					<execution>
-						<id>copy-bundles</id>
-						<phase>compile</phase>
-						<goals>
-							<goal>copy-dependencies</goal>
-						</goals>
-						<configuration>
-							<outputDirectory>${basedir}/bundle</outputDirectory>
-							<overWriteSnapshots>true</overWriteSnapshots>
-							<excludeTransitive>true</excludeTransitive>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-			<!-- copy configuration files -->
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-antrun-plugin</artifactId>
-				<version>1.6</version>
-				<executions>
-					<execution>
-						<phase>clean</phase>
-						<goals>
-							<goal>run</goal>
-						</goals>
-						<configuration>
-							<target>
-								<delete dir="${basedir}/felix-cache/" />
-								<delete dir="${basedir}/bundle/" />
-								<delete dir="${basedir}/target/" />
-							</target>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-		</plugins>
-	</build>
+		  <!-- copy configuration files -->
+		  <execution>
+			<id>copy-config</id>
+            <phase>process-resources</phase>
+            <goals>
+              <goal>run</goal>
+            </goals>
+            <configuration>
+              <target>
+                <mkdir dir="${basedir}/load/"/>
+				<copy failonerror="false"
+					todir="${basedir}/load/" >
+					<fileset dir="${basedir}/save-conf-files/" />
+					</copy>
+              </target>
+            </configuration>
+          </execution>
 
+        </executions>
+      </plugin>
+	  
+	  <!-- clean implementation -->
+	  <plugin>
+		<artifactId>maven-clean-plugin</artifactId>
+		<version>2.5</version>
+		<configuration>
+			<filesets>
+				<fileset>
+					<directory>.</directory>
+					<includes>
+						<include>bin/*</include>
+						<include>bundle/*</include>
+						<include>bin</include>
+						<include>bundle</include>
+						<include>felix-cache/**/*</include>
+						<include>felix-cache</include>
+						<include>load/*</include>
+						<include>load</include>
+						<include>cilia.bat</include>
+						<include>ciliaDebug.bat</include>
+						<include>cilia</include>
+						<include>ciliaDebug</include>
+					</includes>
+					<excludes>
+						<exclude>README.txt</exclude>
+						<exclude>pom.xml</exclude>
+						<exclude>save-conf-files/*</exclude>
+					</excludes>
+					<followSymlinks>false</followSymlinks>
+				</fileset>
+			</filesets>
+		</configuration>
+	  </plugin>
+	  
+	  <!-- generate distribution zip -->
+	  <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-assembly-plugin</artifactId>
+		<executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+                <goal>single</goal>
+              </goals>
+              <configuration>
+			    <appendAssemblyId>false</appendAssemblyId>
+				<descriptors>
+					<descriptor>${project.build.directory}/distrib-temp/assembly.xml</descriptor>
+				</descriptors>
+              </configuration>
+            </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+  
 </project>
