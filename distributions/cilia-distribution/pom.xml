@@ -81,31 +81,50 @@
             </goals>
             <configuration>
 			<artifactItems>
+				<!-- CILIA -->
 				<artifactItem>
-					<groupId>log4j</groupId>
-					<artifactId>log4j</artifactId>
-					<version>1.2.16</version>
+					<groupId>fr.liglab.adele.cilia</groupId>
+					<artifactId>cilia-core</artifactId>
+					<version>1.5.0</version>
 				</artifactItem>
+				<artifactItem>
+					<groupId>fr.liglab.adele.cilia</groupId>
+					<artifactId>cilia-runtime</artifactId>
+					<version>1.5.0</version>
+				</artifactItem>
+				<!-- Felix Dependences -->
 				<artifactItem>
 					<groupId>org.apache.felix</groupId>
 					<artifactId>org.apache.felix.fileinstall</artifactId>
-					<version>3.1.10</version>
+					<version>3.2.0</version>
 				</artifactItem>
 				<artifactItem>
 					<groupId>org.apache.felix</groupId>
+					<artifactId>org.apache.felix.log</artifactId>
+					<version>1.0.0</version>
+				</artifactItem>
+				<artifactItem>
+					<groupId>org.osgi</groupId>
+					<artifactId>org.osgi.compendium</artifactId>
+					<version>4.2.0</version>
+				</artifactItem>
+				<!--GOGO-->
+				<artifactItem>
+					<groupId>org.apache.felix</groupId>
 					<artifactId>org.apache.felix.gogo.command</artifactId>
-					<version>0.8.0</version>
+					<version>0.12.0</version>
 				</artifactItem>
 				<artifactItem>
 					<groupId>org.apache.felix</groupId>
 					<artifactId>org.apache.felix.gogo.runtime</artifactId>
-					<version>0.8.0</version>
+					<version>0.10.0</version>
 				</artifactItem>
 				<artifactItem>
 					<groupId>org.apache.felix</groupId>
 					<artifactId>org.apache.felix.gogo.shell</artifactId>
-					<version>0.8.0</version>
+					<version>0.10.0</version>
 				</artifactItem>
+				<!-- iPOJO-->
 				<artifactItem>
 					<groupId>org.apache.felix</groupId>
 					<artifactId>org.apache.felix.ipojo.arch.gogo</artifactId>
@@ -116,30 +135,21 @@
 					<artifactId>org.apache.felix.ipojo</artifactId>
 					<version>1.8.0</version>
 				</artifactItem>
+				<!-- Logger -->
 				<artifactItem>
-					<groupId>org.apache.felix</groupId>
-					<artifactId>org.apache.felix.log</artifactId>
-					<version>1.0.0</version>
-				</artifactItem>
-				<artifactItem>
-					<groupId>org.apache.felix</groupId>
-					<artifactId>org.apache.felix.webconsole</artifactId>
-					<version>3.1.6</version>
-				</artifactItem>
-				<artifactItem>
-					<groupId>org.osgi</groupId>
-					<artifactId>org.osgi.compendium</artifactId>
-					<version>4.2.0</version>
+					<groupId>org.apache.log4j</groupId>
+					<artifactId>com.springsource.org.apache.log4j</artifactId>
+					<version>1.2.16</version>
 				</artifactItem>
 				<artifactItem>
 					<groupId>org.slf4j</groupId>
 					<artifactId>slf4j-api</artifactId>
-					<version>1.6.1</version>
+					<version>1.6.4</version>
 				</artifactItem>
 				<artifactItem>
 					<groupId>org.slf4j</groupId>
-					<artifactId>slf4j-simple</artifactId>
-					<version>1.6.1</version>
+					<artifactId>slf4j-log4j12</artifactId>
+					<version>1.6.4</version>
 				</artifactItem>
               </artifactItems>
               <outputDirectory>${basedir}/bundle</outputDirectory>

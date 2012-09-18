@@ -15,9 +15,9 @@
 	<!-- Project parent -->
 	<parent>
 		<groupId>fr.liglab.adele.cilia</groupId>
-		<artifactId>cilia-project</artifactId>
+		<artifactId>cilia-distribution</artifactId>
 		<version>1.5.1-SNAPSHOT</version>
-		<relativePath></relativePath>
+		<relativePath>../cilia-distribution</relativePath>
 	</parent>
 
 	<!-- Project coordinates -->
@@ -30,77 +30,6 @@
 
 	<!-- Project dependencies -->
 	<dependencies>
-		<!-- CILIA -->
-		<dependency>
-			<groupId>fr.liglab.adele.cilia</groupId>
-			<artifactId>cilia-core</artifactId>
-			<version>${cilia.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>fr.liglab.adele.cilia</groupId>
-			<artifactId>cilia-runtime</artifactId>
-			<version>${cilia.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>fr.liglab.adele.cilia</groupId>
-			<artifactId>jms-adapter</artifactId>
-			<version>${cilia.version}</version>
-		</dependency>
-		<!-- GOGO -->
-        <dependency>
-            <groupId>org.apache.felix</groupId>
-            <artifactId>org.apache.felix.gogo.runtime</artifactId>
-            <version>0.10.0</version>
-        </dependency>
-		<dependency>
-	          <groupId>org.apache.felix</groupId>
-			  <artifactId>org.apache.felix.gogo.command</artifactId>
-			  <version>0.12.0</version>
-		</dependency>
-		<dependency>
-	    	<groupId>org.apache.felix</groupId>
-			<artifactId>org.apache.felix.gogo.shell</artifactId>
-			<version>0.10.0</version>
-		</dependency>
-		<!-- iPOJO -->
-		<dependency>
-			<groupId>org.apache.felix</groupId>
-			<artifactId>org.apache.felix.ipojo</artifactId>
-			<version>1.8.0</version>
-		</dependency>
-		<dependency>
-			<artifactId>org.apache.felix.ipojo.arch.gogo</artifactId>
-			<groupId>org.apache.felix</groupId>
-			<version>1.0.1</version>
-		</dependency>
-		<!-- Felix Dependencies -->
-		<dependency>
-			<groupId>org.apache.felix</groupId>
-			<version>3.2.0</version>
-			<artifactId>org.apache.felix.fileinstall</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.felix</groupId>
-			<artifactId>org.osgi.compendium</artifactId>
-			<version>1.4.0</version>
-		</dependency>
-		<!-- Logger-->
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-api</artifactId>
-			<version>1.6.4</version>
-		</dependency>
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-log4j12</artifactId>
-			<version>1.6.4</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.log4j</groupId>
-			<artifactId>com.springsource.org.apache.log4j</artifactId>
-			<version>1.2.16</version>
-		</dependency>
-
 		<!-- JORAM 5.7.0 dependencies -->
 		<dependency>
 			<groupId>javax.jms</groupId>
@@ -144,73 +73,6 @@
 		</dependency>
 	</dependencies>
 
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.felix</groupId>
-				<artifactId>maven-bundle-plugin</artifactId>
-				<extensions>true</extensions>
-			</plugin>
-			<!-- Copy dependencies -->
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-dependency-plugin</artifactId>
-				<version>2.1</version>
-				<executions>
-					<!-- Copy bundles in the 'bundle' directory -->
-					<execution>
-						<id>copy-bundles</id>
-						<phase>compile</phase>
-						<goals>
-							<goal>copy-dependencies</goal>
-						</goals>
-						<configuration>
-							<outputDirectory>${basedir}/bundle</outputDirectory>
-							<overWriteSnapshots>true</overWriteSnapshots>
-							<excludeTransitive>true</excludeTransitive>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-			<!-- copy configuration files -->
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-antrun-plugin</artifactId>
-				<version>1.6</version>
-				<executions>
-					<execution>
-						<phase>clean</phase>
-						<goals>
-							<goal>run</goal>
-						</goals>
-						<configuration>
-							<target>
-								<delete dir="${basedir}/felix-cache/" />
-								<delete dir="${basedir}/bundle/" />
-								<delete dir="${basedir}/target/" />
-								<delete dir="${basedir}/bin/" />
-							</target>
-						</configuration>
-					</execution>
-					<execution>
-						<id>copy-config</id>
-						<phase>process-resources</phase>
-						<goals>
-							<goal>run</goal>
-						</goals>
-						<configuration>
-							<target>
-								<mkdir dir="${basedir}/bin/" />
-								<copy failonerror="false" todir="${basedir}/bin/">
-									<fileset dir="${basedir}/../cilia-distribution/bin/" />
-								</copy>
-							</target>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-		</plugins>
-	</build>
 	<repositories>
 		<!-- For JMS API -->
 		<repository>
