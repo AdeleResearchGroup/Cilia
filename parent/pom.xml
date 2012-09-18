@@ -239,6 +239,13 @@
 		</repository>
 	</repositories>
 
+	 <pluginRepositories>
+		<pluginRepository>
+			<id>icasa-snapshot-repository</id>
+			<name>iCASA Snapshot repository</name>
+			<url>http://repository-icasa.forge.cloudbees.com/snapshot/</url>
+		</pluginRepository>
+	</pluginRepositories>
 
 
 	<properties>
