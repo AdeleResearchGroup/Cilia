@@ -15,9 +15,9 @@
 	<!-- Project parent -->
 	<parent>
 		<groupId>fr.liglab.adele.cilia</groupId>
-		<artifactId>cilia-distribution</artifactId>
+		<artifactId>cilia-remote-distribution</artifactId>
 		<version>1.5.1-SNAPSHOT</version>
-		<relativePath>../cilia-distribution</relativePath>
+		<relativePath>../cilia-remote-distribution</relativePath>
 	</parent>
 
 	<!-- Project coordinates -->
@@ -30,6 +30,11 @@
 
 	<!-- Project dependencies -->
 	<dependencies>
+		<dependency>
+			<groupId>fr.liglab.adele.cilia</groupId>
+			<artifactId>ea-adapter</artifactId>
+			<version>1.5.1-SNAPSHOT</version>
+		</dependency>
 		<!-- JORAM 5.7.0 dependencies -->
 		<dependency>
 			<groupId>javax.jms</groupId>

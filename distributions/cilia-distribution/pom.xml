@@ -33,7 +33,7 @@
 	<dependency>
 		<groupId>fr.liglab.adele.cilia</groupId>
 		<artifactId>config.base</artifactId>
-		<version>1.5.0</version>
+		<version>1.5.1-SNAPSHOT</version>
 		<type>zip</type>
 	</dependency>
   </dependencies>
@@ -62,7 +62,7 @@
 				<artifactItem>
 					<groupId>org.apache.felix</groupId>
 					<artifactId>org.apache.felix.main</artifactId>
-					<version>3.0.8</version>
+					<version>4.0.3</version>
 					<destFileName>felix.jar</destFileName>
 				</artifactItem>
               </artifactItems>
@@ -85,12 +85,17 @@
 				<artifactItem>
 					<groupId>fr.liglab.adele.cilia</groupId>
 					<artifactId>cilia-core</artifactId>
-					<version>1.5.0</version>
+					<version>1.5.1-SNAPSHOT</version>
 				</artifactItem>
 				<artifactItem>
 					<groupId>fr.liglab.adele.cilia</groupId>
 					<artifactId>cilia-runtime</artifactId>
-					<version>1.5.0</version>
+					<version>1.5.1-SNAPSHOT</version>
+				</artifactItem>
+				<artifactItem>
+					<groupId>fr.liglab.adele.cilia</groupId>
+					<artifactId>ea-adapter</artifactId>
+					<version>1.5.1-SNAPSHOT</version>
 				</artifactItem>
 				<!-- Felix Dependences -->
 				<artifactItem>
@@ -101,7 +106,7 @@
 				<artifactItem>
 					<groupId>org.apache.felix</groupId>
 					<artifactId>org.apache.felix.log</artifactId>
-					<version>1.0.0</version>
+					<version>1.0.1</version>
 				</artifactItem>
 				<artifactItem>
 					<groupId>org.osgi</groupId>
@@ -135,6 +140,13 @@
 					<artifactId>org.apache.felix.ipojo</artifactId>
 					<version>1.8.0</version>
 				</artifactItem>
+				<!--Event Admin-->
+				<artifactItem>
+					<groupId>org.apache.felix</groupId>
+					<artifactId>org.apache.felix.eventadmin</artifactId>
+					<version>1.2.14</version>
+				</artifactItem>
+								
 				<!-- Logger -->
 				<artifactItem>
 					<groupId>org.apache.log4j</groupId>
@@ -183,7 +195,7 @@
 				<configuration>
 					<includeGroupIds>fr.liglab.adele.cilia</includeGroupIds>
 					<includeArtifactIds>config.base</includeArtifactIds>
-					<includeVersion>1.5.0</includeVersion>
+					<includeVersion>1.5.0-SNAPSHOT</includeVersion>
 					<outputDirectory>
 						${project.build.directory}/distrib-temp/
 					</outputDirectory>

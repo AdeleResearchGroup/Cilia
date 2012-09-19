@@ -67,8 +67,6 @@ public class AdminChainREST {
 	private JSONService jsonservice; //JsonService, in order to parse
 
 
-
-
 	/**
 	 * Retrieve a mediation chain.
 	 * @param id The ID of the chain  to retrieve 
@@ -78,7 +76,7 @@ public class AdminChainREST {
 	 */
 	@GET
 	@Produces("application/json")
-	public String chain(@PathParam("chainid") String chainid) throws ParseException{
+	public String chain(@PathParam("chainid") String chainid) {
 		Chain chain = admin.getChain(chainid);
 		StringBuilder result = new StringBuilder();
 		if (chain == null) {
