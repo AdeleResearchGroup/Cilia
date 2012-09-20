@@ -15,15 +15,32 @@
 --><project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>fr.liglab.adele.cilia.demo</groupId>
+	<parent>
+		<groupId>fr.liglab.adele.cilia</groupId>
+		<artifactId>cilia-project</artifactId>
+		<version>1.5.2-SNAPSHOT</version>
+		<relativePath>../../parent/</relativePath>
+	</parent>
+
+	<groupId>fr.liglab.adele.cilia</groupId>
 	<artifactId>cilia-JMS-demo-reactor</artifactId>
 	<packaging>pom</packaging>
 	<name>Cilia JMS Demo Reactor</name>
-	<version>0.0.1</version>
 
 	<modules>
 		<module>demo-mediators</module>
 		<module>gateway01</module>
 		<module>gateway02</module>
 	</modules>
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-deploy-plugin</artifactId>
+		<version>2.7</version>
+        <configuration>
+          <skip>true</skip>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
 </project>

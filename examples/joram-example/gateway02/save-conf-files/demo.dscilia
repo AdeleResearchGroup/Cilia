@@ -1,0 +1,21 @@
+<cilia>
+	<chain id="jms-demo-2">
+		<mediators>
+			<mediator-instance type="DemoSufixMediator" id="sm">
+				<property name="enricher.sufix" value=" World!"/>
+			</mediator-instance>
+		</mediators>
+	
+		<adapters>
+			<adapter-instance type="JMS-in-adapter" id="jms-adapter-1">
+				<property name="jms.topic" value="demo$topic"/>
+			</adapter-instance>
+			<adapter-instance type="console-adapter" id="ca"/>
+		</adapters>
+
+		<bindings>	
+			<binding from="jms-adapter-1:unique" to="sm:unique"/>
+			<binding from="sm:unique" to="ca:unique"/>
+		</bindings>
+	</chain>
+</cilia>
