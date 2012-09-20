@@ -14,7 +14,7 @@
 	<parent>
 		<groupId>fr.liglab.adele.cilia</groupId>
 		<artifactId>cilia-remote-distribution</artifactId>
-		<version>1.5.1</version>
+		<version>1.5.2-SNAPSHOT</version>
 		<relativePath>../cilia-remote-distribution</relativePath>
 	</parent>
 
@@ -31,7 +31,7 @@
 		<dependency>
 			<groupId>fr.liglab.adele.cilia</groupId>
 			<artifactId>ea-adapter</artifactId>
-			<version>1.5.1</version>
+			<version>1.5.2-SNAPSHOT</version>
 		</dependency>
 		<!-- JORAM 5.7.0 dependencies -->
 		<dependency>
