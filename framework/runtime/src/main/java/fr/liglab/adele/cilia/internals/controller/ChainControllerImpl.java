@@ -180,11 +180,17 @@ public class ChainControllerImpl implements Observer {
 	 * Start all the mediators added to this chain.
 	 */
 	private void startMediators() {
-		// mediators.
-		Iterator it = mediators.values().iterator();
-		while (it.hasNext()) {
-			MediatorControllerImpl mc = (MediatorControllerImpl) it.next();
-			mc.start();
+		try {
+			mutex.readLock().acquire();
+		} catch (InterruptedException e) {		}
+		try{
+			Iterator it = mediators.values().iterator();
+			while (it.hasNext()) {
+				MediatorControllerImpl mc = (MediatorControllerImpl) it.next();
+				mc.start();
+			}
+		} finally {
+			mutex.readLock().release();
 		}
 	}
 
@@ -192,11 +198,17 @@ public class ChainControllerImpl implements Observer {
 	 * Start all the adapters added to this chain.
 	 */
 	private void startAdapters() {
-		// mediators.
-		Iterator it = adapters.values().iterator();
-		while (it.hasNext()) {
-			AdapterControllerImpl mc = (AdapterControllerImpl) it.next();
-			mc.start();
+		try {
+			mutex.readLock().acquire();
+		} catch (InterruptedException e) {		}
+		try{
+			Iterator it = adapters.values().iterator();
+			while (it.hasNext()) {
+				AdapterControllerImpl mc = (AdapterControllerImpl) it.next();
+				mc.start();
+			}
+		}finally{
+			mutex.readLock().release();
 		}
 	}
 
@@ -204,11 +216,18 @@ public class ChainControllerImpl implements Observer {
 	 * Start all the bindings controllers.
 	 */
 	private void startBindings() {
-		Iterator it = bindings.values().iterator();
-		while (it.hasNext()) {
-			BindingControllerImpl bc = (BindingControllerImpl) it.next();
-			bc.start();
+		try {
+			mutex.readLock().acquire();
+		} catch (InterruptedException e) {		}
+		try{
+			Iterator it = bindings.values().iterator();
+			while (it.hasNext()) {
+				BindingControllerImpl bc = (BindingControllerImpl) it.next();
+				bc.start();
+			}
+		}finally{
 		}
+		mutex.readLock().release();
 	}
 
 	/**
@@ -515,7 +534,7 @@ public class ChainControllerImpl implements Observer {
 		try {
 			mutex.writeLock().acquire();
 		} catch (InterruptedException e) {		}
-		
+
 		BindingControllerImpl bindingController = (BindingControllerImpl) bindings
 				.remove(binding.getId());
 		mutex.writeLock().release();
