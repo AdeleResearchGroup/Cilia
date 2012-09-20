@@ -27,7 +27,6 @@
 	<name>Cilia Framework Reactor</name>
 	<packaging>pom</packaging>
 
-
 	<modules>
 		<module>core</module>
 		<module>remote</module>
