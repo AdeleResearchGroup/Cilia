@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!--
  Copyright Adele Team LIG
  Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,7 +21,7 @@
 	<parent>
 		<groupId>fr.liglab.adele.cilia</groupId>
 		<artifactId>cilia-project</artifactId>
-		<version>1.5.1-SNAPSHOT</version>
+		<version>1.5.1</version>
 		<relativePath>../parent</relativePath>
 	</parent>
 

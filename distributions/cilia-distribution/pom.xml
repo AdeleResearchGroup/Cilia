@@ -7,16 +7,14 @@
 	OR CONDITIONS OF ANY KIND, either express or implied. See the License for 
 	the specific language governing permissions and limitations under the License. -->
 
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<!-- Project parent -->
 	<parent>
 		<groupId>fr.liglab.adele.cilia</groupId>
 		<artifactId>cilia-project</artifactId>
-		<version>1.5.1-SNAPSHOT</version>
+		<version>1.5.1</version>
 		<relativePath>../../parent</relativePath>
 	</parent>
 
@@ -33,7 +31,7 @@
 	<dependency>
 		<groupId>fr.liglab.adele.cilia</groupId>
 		<artifactId>config.base</artifactId>
-		<version>1.5.1-SNAPSHOT</version>
+		<version>1.5.1</version>
 		<type>zip</type>
 	</dependency>
   </dependencies>
@@ -219,22 +217,18 @@
             </goals>
             <configuration>
               <target>
-                <copy failonerror="true"
-					overwrite="true"
-					todir="${basedir}/">
+                <copy failonerror="true" overwrite="true" todir="${basedir}/">
 					<fileset dir="${project.build.directory}/distrib-temp/">
-					    <include name="*"/>
-						<exclude name="*.txt"/>
-						<exclude name="conf/*"/>
-						<exclude name="assembly.xml"/>
+					    <include name="*" />
+						<exclude name="*.txt" />
+						<exclude name="conf/*" />
+						<exclude name="assembly.xml" />
 					</fileset>
 				</copy>
-				<copy failonerror="true"
-					overwrite="false"
-					todir="${basedir}/">
+				<copy failonerror="true" overwrite="false" todir="${basedir}/">
 					<fileset dir="${project.build.directory}/distrib-temp/">
-					    <include name="*.txt"/>
-						<include name="conf/*"/>
+					    <include name="*.txt" />
+						<include name="conf/*" />
 					</fileset>
 				</copy>
               </target>
@@ -250,9 +244,8 @@
             </goals>
             <configuration>
               <target>
-                <mkdir dir="${basedir}/load/"/>
-				<copy failonerror="false"
-					todir="${basedir}/load/" >
+                <mkdir dir="${basedir}/load/" />
+				<copy failonerror="false" todir="${basedir}/load/">
 					<fileset dir="${basedir}/save-conf-files/" />
 					</copy>
               </target>
