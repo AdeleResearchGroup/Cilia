@@ -14,13 +14,11 @@
 		<groupId>fr.liglab.adele.cilia</groupId>
 		<artifactId>cilia-project</artifactId>
 		<version>1.5.1-SNAPSHOT</version>
-		<relativePath>../../parent/pom.xml</relativePath>
+		<relativePath>../../parent</relativePath>
 	</parent>
 
-	<groupId>fr.liglab.adele.cilia</groupId>
 	<artifactId>cilia-core</artifactId>
 	<name>Cilia Core</name>
-	<version>1.5.1-SNAPSHOT</version>
 	<packaging>bundle</packaging>
 
 	<dependencies>

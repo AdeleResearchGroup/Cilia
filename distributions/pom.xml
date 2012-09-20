@@ -17,13 +17,20 @@
 
 	<!-- Project Descrkiption -->
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>fr.liglab.adele.cilia</groupId>
+
+	<parent>
+		<groupId>fr.liglab.adele.cilia</groupId>
+		<artifactId>cilia-project</artifactId>
+		<version>1.5.1-SNAPSHOT</version>
+		<relativePath>../parent</relativePath>
+	</parent>
+
 	<artifactId>cilia.distributions</artifactId>
-	<packaging>pom</packaging>
 	<name>Cilia Distributions Reactor</name>
-	<version>1.0.0</version>
+	<packaging>pom</packaging>
 
 	<modules>
+		<module>config.base</module>				
 		<module>cilia-distribution</module>		
 		<module>cilia-remote-distribution</module>
 		<module>cilia-joram-distribution</module>

@@ -20,13 +20,11 @@
 		<relativePath>../cilia-distribution</relativePath>
 	</parent>
 
-	<!-- Project coordinates -->
-	<groupId>fr.liglab.adele.cilia</groupId>
 	<artifactId>cilia-remote-distribution</artifactId>
 	<packaging>pom</packaging>
+	<name>Cilia Remote Distribution With RoSe</name>
 
 	<!-- Project description -->
-	<name>Cilia Remote Distribution With RoSe</name>
 
 	<!-- Project dependencies -->
 	<dependencies>

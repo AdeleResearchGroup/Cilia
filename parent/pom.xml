@@ -250,7 +250,6 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<cilia.version>${project.version}</cilia.version>
 	</properties>
 	<scm>
 		<connection>scm:git:ssh://git@github.com/AdeleResearchGroup/Cilia.git</connection>
@@ -266,6 +265,7 @@
 				<version>2.3.2</version>
 				<configuration>
 					<allowTimestampedSnapshots>true</allowTimestampedSnapshots>
+					<autoVersionSubmodules>true</autoVersionSubmodules>
 				</configuration>
 			</plugin>
 			<plugin>

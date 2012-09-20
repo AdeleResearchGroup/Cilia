@@ -22,10 +22,8 @@
 		<relativePath>../../../parent/pom.xml</relativePath>
 	</parent>
 
-	<groupId>fr.liglab.adele.cilia</groupId>
 	<artifactId>ea-adapter</artifactId>
 	<name>Cilia::Event-Admin Adapter/Binding</name>
-	<version>1.5.1-SNAPSHOT</version>
 	<packaging>bundle</packaging>
 
 
@@ -33,7 +31,7 @@
 		<dependency>
 			<groupId>fr.liglab.adele.cilia</groupId>
 			<artifactId>cilia-runtime</artifactId>
-			<version>${cilia.version}</version>
+			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.felix</groupId>

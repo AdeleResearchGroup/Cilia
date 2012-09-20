@@ -23,24 +23,23 @@
 	<url>http://cilia.ligforge.imag.fr</url>
 	<properties>
 		<demo.version>1.5.1-SNAPSHOT</demo.version>
-		<cilia.version>1.5.1-SNAPSHOT</cilia.version>
 	</properties>
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
 				<groupId>fr.liglab.adele.cilia</groupId>
 				<artifactId>cilia-core</artifactId>
-				<version>${cilia.version}</version>
+				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>fr.liglab.adele.cilia</groupId>
 				<artifactId>cilia-runtime</artifactId>
-				<version>${cilia.version}</version>
+				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>fr.liglab.adele.cilia</groupId>
 				<artifactId>cilia-admin</artifactId>
-				<version>${cilia.version}</version>
+				<version>${project.version}</version>
 			</dependency>
 			<!-- ROSE Depdendencies-->
 			<dependency>

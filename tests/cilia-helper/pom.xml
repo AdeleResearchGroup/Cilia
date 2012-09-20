@@ -17,10 +17,8 @@
 		<relativePath>../../parent/pom.xml</relativePath>
 	</parent>
 
-	<groupId>fr.liglab.adele.cilia</groupId>
 	<artifactId>cilia-helper</artifactId>
 	<name>Cilia Helper</name>
-	<version>1.5.1-SNAPSHOT</version>
 	<packaging>bundle</packaging>
 
 	<dependencies>
@@ -42,12 +40,12 @@
 		<dependency>
 			<groupId>fr.liglab.adele.cilia</groupId>
 			<artifactId>cilia-core</artifactId>
-			<version>${cilia.version}</version>
+			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>fr.liglab.adele.cilia</groupId>
 			<artifactId>cilia-runtime</artifactId>
-			<version>${cilia.version}</version>
+			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>

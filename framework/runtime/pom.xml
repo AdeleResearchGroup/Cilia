@@ -13,20 +13,18 @@
 		<groupId>fr.liglab.adele.cilia</groupId>
 		<artifactId>cilia-project</artifactId>
 		<version>1.5.1-SNAPSHOT</version>
-		<relativePath>../../parent/pom.xml</relativePath>
+		<relativePath>../../parent</relativePath>
 	</parent>
 
-	<groupId>fr.liglab.adele.cilia</groupId>
 	<artifactId>cilia-runtime</artifactId>
 	<name>Cilia Runtime</name>
-	<version>1.5.1-SNAPSHOT</version>
 	<packaging>bundle</packaging>
 
 	<dependencies>
 		<dependency>
 			<groupId>fr.liglab.adele.cilia</groupId>
 			<artifactId>cilia-core</artifactId>
-			<version>${cilia.version}</version>
+			<version>${project.version}</version>
 		</dependency>
 
 		<dependency>
