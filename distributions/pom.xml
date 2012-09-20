@@ -35,5 +35,14 @@
 		<module>cilia-remote-distribution</module>
 		<module>cilia-joram-distribution</module>
 	</modules>
-
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-deploy-plugin</artifactId>
+        <configuration>
+          <skip>true</skip>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
 </project>

@@ -6,7 +6,7 @@
 		<groupId>fr.liglab.adele.cilia</groupId>
 		<artifactId>cilia-project</artifactId>
 		<version>1.5.1-SNAPSHOT</version>
-		<relativePath>../../../parent/pom.xml</relativePath>
+		<relativePath>../../parent</relativePath>
 	</parent>
 	<artifactId>ea-test</artifactId>
 	<name>CILIA::Event Admin Adapter/Binding Tests</name>
