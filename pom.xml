@@ -63,5 +63,10 @@
 		  </plugin>
 		</plugins>
 	  </build>
-
+	<scm>
+		<connection>scm:git:ssh://git@github.com/AdeleResearchGroup/Cilia.git</connection>
+		<url>http://github.com/AdeleResearchGroup/Cilia/tree/master</url>
+		<developerConnection>scm:git:ssh://git@github.com/AdeleResearchGroup/Cilia.git</developerConnection>
+		<tag>HEAD</tag>
+	</scm>
 </project>
