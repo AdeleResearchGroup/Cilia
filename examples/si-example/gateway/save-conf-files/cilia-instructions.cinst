@@ -1,0 +1,63 @@
+emptychain SA2
+createadapter SA2 SplitAggregateEndpoint getPriceAdapter \{\"endpoint.id\":\"toto\"\}
+
+createmediator SA2 XsltTransformer xslt-transformer-1 \{\"xslt-file\":\"conf/trans.xslt\"\}
+
+createmediator SA2 XmlSplitter xml-splitter-1 \{\"separator\":\"//suiviconso-requete\",\"language\":\"xpath\",\"conditions\":\{\"//suiviconso-requete[@produit=\'mobile\']\":\"mobile\",\"//suiviconso-requete[@produit=\'fixe\']\":\"fixe\",\"//suiviconso-requete[@produit=\'internet\']\":\"internet\"\}\}
+
+createmediator SA2 Translator translator-1 \{\"dictionary\":\{\"CLIENT-ID\":\"CLIENT-IDENT\",\"SuiviConso\":\"SuiviConsoInternet\"\}\}
+createmediator SA2 Translator translator-2 \{\"dictionary\":\{\"SuiviConso\":\"SuiviConsoFixe\"\}\}
+createmediator SA2 Translator translator-3 \{\"dictionary\":\{\"SuiviConso\":\"SuiviConsoMobile\"\}\}
+
+createmediator SA2 XsltTransformer xslt-transformer-2 \{\"xslt-file\":\"conf/delproduitinternet.xslt\"\}
+createmediator SA2 XsltTransformer xslt-transformer-3 \{\"xslt-file\":\"conf/delproduitfixe.xslt\"\}
+createmediator SA2 XsltTransformer xslt-transformer-4 \{\"xslt-file\":\"conf/delproduitmobile.xslt\"\}
+
+createmediator SA2 FacturationMobile facturation-mobile-1
+createmediator SA2 FacturationInternet facturation-internet-1
+createmediator SA2 FacturationFixe facturation-fixe-1
+
+createmediator SA2 UC1Aggregator uc1-aggregator-1
+
+createbinding SA2 getPriceAdapter:unique xslt-transformer-1:unique
+createbinding SA2 xslt-transformer-1:unique xml-splitter-1:unique
+createbinding SA2 xml-splitter-1:mobile translator-3:unique
+createbinding SA2 xml-splitter-1:internet translator-1:unique
+createbinding SA2 xml-splitter-1:fixe translator-2:unique
+createbinding SA2 translator-1:unique xslt-transformer-2:unique
+createbinding SA2 translator-2:unique xslt-transformer-3:unique
+createbinding SA2 translator-3:unique xslt-transformer-4:unique
+createbinding SA2 xslt-transformer-2:unique facturation-internet-1:unique
+createbinding SA2 xslt-transformer-3:unique facturation-fixe-1:unique
+createbinding SA2 xslt-transformer-4:unique facturation-mobile-1:unique
+createbinding SA2 facturation-mobile-1:unique uc1-aggregator-1:mobile
+createbinding SA2 facturation-internet-1:unique uc1-aggregator-1:internet
+createbinding SA2 facturation-fixe-1:unique uc1-aggregator-1:fixe
+createbinding SA2 uc1-aggregator-1:unique getPriceAdapter:unique
+
+****************************************
+
+curl -X POST http://localhost:8080/cilia/SA2
+curl -X POST http://localhost:8080/cilia/SA2/adapter/SplitAggregateEndpoint/getPriceAdapter?properties="\{\"endpoint.id\":\"toto\"\}"
+curl -X POST http://localhost:8080/cilia/SA2/mediator/XsltTransformer/xslt-transformer-1?properties="\{\"xslt-file\":\"conf/trans.xslt\"\}"
+
+curl -X POST http://localhost:8080/cilia/SA2/mediator/XmlSplitter/xml-splitter-1?properties="\{\"separator\":\"//suiviconso-requete\",\"language\":\"xpath\",\"conditions\":\{\"//suiviconso-requete\[@produit'mobile'\]\":\"mobile\",\"//suiviconso-requete\[@produit='fixe'\]\":\"fixe\",\"//suiviconso-requete\[@produit='internet'\]\":\"internet\"\}\}"
+
+
+curl -X POST http://localhost:8080/cilia/SA2/mediator/Translator/translator-1?properties="\{\"dictionary\":\{\"CLIENT-ID\":\"CLIENT-IDENT\",\"SuiviConso\":\"SuiviConsoInternet\"\}\}"
+curl -X POST http://localhost:8080/cilia/SA2/mediator/Translator/translator-2?properties="\{\"dictionary\":\{\"SuiviConso\":\"SuiviConsoFixe\"\}\}"
+curl -X POST http://localhost:8080/cilia/SA2/mediator/Translator/translator-3?properties="\{\"dictionary\":\{\"SuiviConso\":\"SuiviConsoMobile\"\}\}"
+
+curl -X POST http://localhost:8080/cilia/SA2/mediator/XsltTransformer/xslt-transformer-2?properties="\{\"xslt-file\":\"conf/delproduitinternet.xslt\"\}"
+curl -X POST http://localhost:8080/cilia/SA2/mediator/XsltTransformer/xslt-transformer-3?properties="\{\"xslt-file\":\"conf/delproduitfixe.xslt\"\}"
+curl -X POST http://localhost:8080/cilia/SA2/mediator/XsltTransformer/xslt-transformer-4?properties="\{\"xslt-file\":\"conf/delproduitmobile.xslt\"\}"
+
+curl -X POST http://localhost:8080/cilia/SA2/mediator/FacturationMobile/facturation-mobile-1
+curl -X POST http://localhost:8080/cilia/SA2/mediator/FacturationInternet/facturation-internet-1
+curl -X POST http://localhost:8080/cilia/SA2/mediator/FacturationFixe/facturation-fixe-1
+
+curl -X POST http://localhost:8080/cilia/SA2/mediator/UC1Aggregator/uc1-aggregator-1
+
+curl -X POST http://localhost:8080/cilia/SA2/uc1-aggregator-1?properties="\{\"endpoint.id\":\"aggregator new property\"\}"
+
+
