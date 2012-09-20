@@ -1,0 +1,32 @@
+<assembly>
+    <id>distribution</id>
+    <formats>
+        <format>zip</format>
+    </formats>
+
+    <fileSets>
+		<fileSet>
+			<directory>${basedir}</directory>
+			<includes>
+				<include>bin/*</include>
+				<include>bundle/*</include>
+				<include>conf/*</include>
+				<include>load/*</include>
+				<include>WEB-INF/*</include>
+				<include>cilia</include>
+				<include>cilia.bat</include>
+				<include>ciliaDebug</include>
+				<include>ciliaDebug.bat</include>
+			</includes>
+			<excludes>
+				<exclude>pom.xml</exclude>
+				<exclude>.settings/*</exclude>
+				<exclude>.project</exclude>
+				<exclude>.classpath</exclude>
+				<exclude>assembly.xml</exclude>
+				<exclude>save-conf-files/*</exclude>
+				<exclude>target/*</exclude>
+			</excludes>
+		</fileSet>
+	</fileSets>
+</assembly>

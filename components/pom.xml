@@ -29,8 +29,8 @@
 
 
 	<modules>
-		<module>jms</module>
-		<module>ea</module>
+		<module>jms-adapter</module>
+		<module>ea-adapter</module>
 	</modules>
   <build>
     <plugins>

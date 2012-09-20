@@ -24,6 +24,10 @@
 	<modules>
 		<module>cilia-helper</module>
 		<module>runtime</module>
-		</modules>
+		<module>ea-it</module>
+<!--
+		<module>jms-it</module>
+-->
+	</modules>
 
 </project>
