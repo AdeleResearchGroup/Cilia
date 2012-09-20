@@ -31,7 +31,7 @@
 	<dependency>
 		<groupId>fr.liglab.adele.cilia</groupId>
 		<artifactId>config.base</artifactId>
-		<version>1.5.2-SNAPSHOT</version>
+		<version>${project.version}</version>
 		<type>zip</type>
 	</dependency>
   </dependencies>
@@ -83,17 +83,17 @@
 				<artifactItem>
 					<groupId>fr.liglab.adele.cilia</groupId>
 					<artifactId>cilia-core</artifactId>
-					<version>1.5.1-SNAPSHOT</version>
+					<version>${project.version}</version>
 				</artifactItem>
 				<artifactItem>
 					<groupId>fr.liglab.adele.cilia</groupId>
 					<artifactId>cilia-runtime</artifactId>
-					<version>1.5.1-SNAPSHOT</version>
+					<version>${project.version}</version>
 				</artifactItem>
 				<artifactItem>
 					<groupId>fr.liglab.adele.cilia</groupId>
 					<artifactId>ea-adapter</artifactId>
-					<version>1.5.1-SNAPSHOT</version>
+					<version>${project.version}</version>
 				</artifactItem>
 				<!-- Felix Dependences -->
 				<artifactItem>

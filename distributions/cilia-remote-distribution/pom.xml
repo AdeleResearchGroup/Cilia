@@ -22,14 +22,12 @@
 	<packaging>pom</packaging>
 	<name>Cilia Remote Distribution With RoSe</name>
 
-	<!-- Project description -->
-
 	<!-- Project dependencies -->
 	<dependencies>
 		<dependency>
 			<groupId>fr.liglab.adele.cilia</groupId>
 			<artifactId>cilia-remote</artifactId>
-			<version>1.5.2-SNAPSHOT</version>
+			<version>${project.version}</version>
 		</dependency>
 		<!-- RoSe-->
 		<dependency>

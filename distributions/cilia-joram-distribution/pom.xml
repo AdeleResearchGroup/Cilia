@@ -28,11 +28,6 @@
 
 	<!-- Project dependencies -->
 	<dependencies>
-		<dependency>
-			<groupId>fr.liglab.adele.cilia</groupId>
-			<artifactId>ea-adapter</artifactId>
-			<version>1.5.2-SNAPSHOT</version>
-		</dependency>
 		<!-- JORAM 5.7.0 dependencies -->
 		<dependency>
 			<groupId>javax.jms</groupId>
