@@ -237,6 +237,12 @@
 			<name>Cloudbees Private Repository - Cilia - Snapshot</name>
 			<url>https://repository-cilia.forge.cloudbees.com/snapshot/</url>
 		</repository>
+		<!-- OW2 Release-->
+		<repository>
+			<id>ow2.releases</id>
+			<name>OW2 Repository</name>
+			<url>http://maven.ow2.org/maven2/</url>
+		  </repository>
 	</repositories>
 
 	 <pluginRepositories>
