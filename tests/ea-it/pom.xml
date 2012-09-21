@@ -5,19 +5,19 @@
 	<parent>
 		<groupId>fr.liglab.adele.cilia</groupId>
 		<artifactId>cilia-project</artifactId>
-		<version>1.5.1-SNAPSHOT</version>
+		<version>1.5.2-SNAPSHOT</version>
 		<relativePath>../../parent</relativePath>
 	</parent>
 	<artifactId>ea-test</artifactId>
 	<name>CILIA::Event Admin Adapter/Binding Tests</name>
 	<packaging>jar</packaging>
-	
+
 	<dependencies>
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
 		</dependency>
-		
+
 		<!-- Project Test dependencies -->
 		<dependency>
 			<groupId>fr.liglab.adele.cilia</groupId>
@@ -112,17 +112,31 @@
 	</dependencies>
 	<build>
 		<plugins>
-			<plugin>		
+			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
 			</plugin>
-			  <plugin>
+			<plugin>
 				<artifactId>maven-deploy-plugin</artifactId>
 				<configuration>
-				  <skip>true</skip>
+					<skip>true</skip>
 				</configuration>
-			  </plugin>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.servicemix.tooling</groupId>
+				<artifactId>depends-maven-plugin</artifactId>
+				<version>1.2</version>
+				<executions>
+					<execution>
+						<id>generate-depends-file</id>
+						<goals>
+							<goal>generate-depends-file</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
 		</plugins>
+
 	</build>
 
 </project>

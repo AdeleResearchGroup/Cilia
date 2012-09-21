@@ -33,8 +33,6 @@ public class CiliaHelperTest {
 
 	private CiliaHelper cilia;
 
-	private IPOJOHelper ipojo;
-
 	private OSGiHelper osgi;
 	
 	
@@ -42,13 +40,13 @@ public class CiliaHelperTest {
 	@Before
 	public void setUp() {
 		osgi = new OSGiHelper(context);
-		ipojo = new IPOJOHelper(context);
 		cilia = new CiliaHelper(context);
 	}
 
 	@After
 	public void tearDown() {
 		cilia.dispose();
+		osgi.dispose();
 	}
 
 	@Configuration
@@ -65,9 +63,8 @@ public class CiliaHelperTest {
 						mavenBundle().groupId("org.slf4j").artifactId("slf4j-api").versionAsInProject(),
 						mavenBundle().groupId("org.slf4j").artifactId("slf4j-simple").version("1.6.1"),
 						mavenBundle().groupId("fr.liglab.adele.cilia").artifactId("cilia-core").versionAsInProject(),
-						mavenBundle().groupId("fr.liglab.adele.cilia").artifactId("cilia-admin").version("1.2.2-SNAPSHOT"),
 						mavenBundle().groupId("fr.liglab.adele.cilia").artifactId("cilia-runtime").versionAsInProject(),
-						mavenBundle().groupId("fr.liglab.adele.cilia").artifactId("cilia-helper").version("1.2.2-SNAPSHOT")
+						mavenBundle().groupId("fr.liglab.adele.cilia").artifactId("cilia-helper").version("1.5.2-SNAPSHOT")
 						)); // The target
 		Option[] r = OptionUtils.combine(platform, bundles);
 		return r;

@@ -84,9 +84,9 @@ public class SchedulerTest {
 						mavenBundle().groupId("org.apache.felix").artifactId("org.apache.felix.fileinstall").versionAsInProject(),
 						mavenBundle().groupId("org.slf4j").artifactId("slf4j-api").versionAsInProject(),
 						mavenBundle().groupId("org.slf4j").artifactId("slf4j-simple").version("1.6.1"),
+						mavenBundle().groupId("fr.liglab.adele.cilia").artifactId("cilia-core").versionAsInProject(),
 						mavenBundle().groupId("fr.liglab.adele.cilia").artifactId("cilia-runtime").versionAsInProject(),
-						mavenBundle().groupId("fr.liglab.adele.cilia").artifactId("cilia-helper").versionAsInProject(),
-						mavenBundle().groupId("fr.liglab.adele.cilia").artifactId("cilia-core").versionAsInProject()
+						mavenBundle().groupId("fr.liglab.adele.cilia").artifactId("cilia-helper").versionAsInProject()
 						)); // The target
 		Option[] r = OptionUtils.combine(platform, bundles);
 		return r;

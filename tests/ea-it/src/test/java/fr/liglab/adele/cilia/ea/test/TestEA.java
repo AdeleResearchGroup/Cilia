@@ -61,7 +61,7 @@ import fr.liglab.adele.cilia.runtime.CiliaInstance;
 @RunWith(JUnit4TestRunner.class)
 public class TestEA  {
 
-	private final static String CURRENT_VERSION="1.5.1-SNAPSHOT"; 
+	private final static String CURRENT_VERSION="1.5.2-SNAPSHOT"; 
 
 	private final static String COLLECTOR = "ea-collector";
 
@@ -107,11 +107,11 @@ public class TestEA  {
 						mavenBundle().groupId("org.apache.felix").artifactId("org.apache.felix.fileinstall").version("3.2.0"),
 						mavenBundle().groupId("org.slf4j").artifactId("slf4j-api").version("1.6.1"),
 						mavenBundle().groupId("org.slf4j").artifactId("slf4j-simple").version("1.6.1"),
-						mavenBundle().groupId("fr.liglab.adele.cilia").artifactId("cilia-core").version(CURRENT_VERSION),
-						mavenBundle().groupId("fr.liglab.adele.cilia").artifactId("cilia-runtime").version(CURRENT_VERSION),
-						mavenBundle().groupId("fr.liglab.adele.cilia").artifactId("cilia-helper").version(CURRENT_VERSION),
+						mavenBundle().groupId("fr.liglab.adele.cilia").artifactId("cilia-core").versionAsInProject(),
+						mavenBundle().groupId("fr.liglab.adele.cilia").artifactId("cilia-runtime").versionAsInProject(),
 						mavenBundle().groupId("org.apache.felix").artifactId("org.apache.felix.eventadmin").version("1.2.14"),
-						mavenBundle().groupId("fr.liglab.adele.cilia").artifactId("ea-adapter").version(CURRENT_VERSION)
+						mavenBundle().groupId("fr.liglab.adele.cilia").artifactId("ea-adapter").versionAsInProject(),
+						mavenBundle().groupId("fr.liglab.adele.cilia").artifactId("cilia-helper").versionAsInProject()
 						)); // The target
 		Option[] r = OptionUtils.combine(platform, bundles);
 		return r;

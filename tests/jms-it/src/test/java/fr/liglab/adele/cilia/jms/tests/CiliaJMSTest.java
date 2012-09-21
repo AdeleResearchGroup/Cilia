@@ -92,10 +92,10 @@ public class CiliaJMSTest {
 						mavenBundle().groupId("org.objectweb.joram").artifactId("joram-shared").version("5.7.0"),
 						mavenBundle().groupId("org.objectweb.joram").artifactId("jcup").version("5.3.1"),
 						mavenBundle().groupId("org.ow2.jonas.osgi").artifactId("monolog").version("5.2.0"),
-						mavenBundle().groupId("fr.liglab.adele.cilia").artifactId("cilia-core").version(CURRENT_VERSION),
-						mavenBundle().groupId("fr.liglab.adele.cilia").artifactId("cilia-runtime").version(CURRENT_VERSION),
-						mavenBundle().groupId("fr.liglab.adele.cilia").artifactId("cilia-helper").version(CURRENT_VERSION),
-						mavenBundle().groupId("fr.liglab.adele.cilia").artifactId("jms-adapter").version(CURRENT_VERSION)
+						mavenBundle().groupId("fr.liglab.adele.cilia").artifactId("cilia-core").versionAsInProject(),
+						mavenBundle().groupId("fr.liglab.adele.cilia").artifactId("cilia-runtime").versionAsInProject(),
+						mavenBundle().groupId("fr.liglab.adele.cilia").artifactId("cilia-helper").versionAsInProject(),
+						mavenBundle().groupId("fr.liglab.adele.cilia").artifactId("jms-adapter").versionAsInProject()
 
 						)); // The target
 		Option[] r = OptionUtils.combine(platform, bundles);
