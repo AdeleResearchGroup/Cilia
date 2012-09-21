@@ -47,6 +47,7 @@
 				<module>components</module>
 				<module>distributions</module>
 				<module>tests</module>
+				<module>examples</module>
 			</modules>
 		</profile>
 	</profiles>
