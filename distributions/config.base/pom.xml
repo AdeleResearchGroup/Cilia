@@ -19,13 +19,13 @@
  	<parent>
 		<groupId>fr.liglab.adele.cilia</groupId>
 		<artifactId>cilia-project</artifactId>
-		<version>1.5.2</version>
+		<version>1.5.3-SNAPSHOT</version>
 		<relativePath>../../parent</relativePath>
 	</parent>
   <!-- Project coordinates -->
   <groupId>fr.liglab.adele.cilia</groupId>
   <artifactId>config.base</artifactId>
-  <version>1.5.2</version>
+  <version>1.5.3-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <!-- Project description -->
