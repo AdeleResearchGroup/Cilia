@@ -27,6 +27,8 @@ import junit.framework.Assert;
 
 import org.apache.felix.ipojo.test.helpers.OSGiHelper;
 import org.osgi.framework.BundleContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import fr.liglab.adele.cilia.ApplicationRuntime;
 import fr.liglab.adele.cilia.CiliaContext;
@@ -53,6 +55,7 @@ import fr.liglab.adele.cilia.util.CiliaFileManager;
  */
 public class CiliaHelper {
 
+	private static final Logger logger = LoggerFactory.getLogger("cilia.debug");
 
 	protected OSGiHelper ohelper;
 	
@@ -146,17 +149,20 @@ public class CiliaHelper {
 		Architecture arch = null;
 		try {
 			arch = builder.get(chainId);
+			logger.info("Getting chain {}", chainId);
 			arch.create().adapter().type("cilia-adapter-helper")
 			.namespace(NAMESPACE).id(id).configure().key("identifier").value(id);
 			arch.bind().from(id+":unique").to(firstMediatorWithPort);
 			arch.bind().from(lastMediatorWithPort).to(id+":unique");
+			logger.info("Chain will be modified");
 			builder.done();
+			logger.info("Chain is ready");
 		} catch (CiliaException e) {
 			e.printStackTrace();
 			return null;
 		}
 		waitSomeTime(3000);
-		ohelper.waitForService(MediatorTestHelper.class.getName(), "(identifier="+id+")", 8000);
+		ohelper.waitForService(MediatorTestHelper.class.getName(), "(identifier="+id+")", 5000);
 		MediatorTestHelper helper = (MediatorTestHelper)ohelper.getServiceObject(MediatorTestHelper.class.getName(), "(identifier="+id+")");
 		return helper;
 	}
