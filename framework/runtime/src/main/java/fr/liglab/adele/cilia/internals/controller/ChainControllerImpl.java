@@ -592,12 +592,12 @@ public class ChainControllerImpl implements Observer {
 	}
 
 	public void update(Observable o, Object arg) {
-		System.out.println("ChainControllerImpl:update: " + arg);
+		UpdateEvent event = (UpdateEvent) arg;
+		System.out.println("ChainControllerImpl:update: " + event.getUpdateAction());
 		log.debug("update");
 		if (o instanceof Chain) {
 			log.debug(" update, OK");
 			Chain md = ((Chain) o);
-			UpdateEvent event = (UpdateEvent) arg;
 			if (event != null) {
 				int action = event.getUpdateAction();
 				switch (action) {
@@ -654,6 +654,7 @@ public class ChainControllerImpl implements Observer {
 				}
 			}
 		}
+		System.out.println("ChainControllerImpl:End update: " + event.getUpdateAction());
 	}
 
 	private String createDataContainerFilter() {
