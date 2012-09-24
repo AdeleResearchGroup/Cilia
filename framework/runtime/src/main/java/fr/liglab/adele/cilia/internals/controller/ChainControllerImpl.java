@@ -460,28 +460,37 @@ public class ChainControllerImpl implements Observer {
 	}
 
 	public void createMediatorController(Mediator mediator) {
+		boolean created = false;
 		boolean localStarted = false;
 		MediatorControllerImpl mc = null;
 
 		try {
 			mutex.readLock().acquire();
 		} catch (InterruptedException e) {	}
-
 		if (!mediators.containsKey(mediator.getId())) {
+			created = true;
+		} else {
+			created = false;
+		}
+		mutex.readLock().release();
+		
+		if (created) {
 			mc = new MediatorControllerImpl(bcontext, mediator, creator,eventFirer);
 			try {
 				mutex.writeLock().acquire();
 			} catch (InterruptedException e) {		}
-
 			mediators.put(mediator.getId(), mc);
 			mutex.writeLock().release();
 			eventFirer.fireEventNode(FirerEvents.EVT_ARRIVAL,
 					mediator);
+			try {
+				mutex.readLock().acquire();
+			} catch (InterruptedException e) {}
 			if (isStarted) {
 				localStarted = true;
 			}
+			mutex.readLock().release();
 		}
-		mutex.readLock().release();
 		// Initialize the component in a block separate from the synchronized
 		// block
 		if (localStarted) {
@@ -496,11 +505,25 @@ public class ChainControllerImpl implements Observer {
 		try {
 			mutex.readLock().acquire();
 		} catch (InterruptedException e) {	}
-		if (!adapters.containsKey(adapter.getId())) {
+		try{
+			if (!adapters.containsKey(adapter.getId())){
+				create = true;
+			} else {
+				create = false;
+			}
+		}finally{
+			mutex.readLock().release();
+		}
+		if (create) {
 			mc = new AdapterControllerImpl(bcontext, adapter, creator,eventFirer);
+			try {
+				mutex.readLock().acquire();
+			} catch (InterruptedException e) {	}
 			if (isStarted) {
 				localStarted = true;
 			}
+			mutex.readLock().release();
+
 			try {
 				mutex.writeLock().acquire();
 			} catch (InterruptedException e) {	}
@@ -509,7 +532,6 @@ public class ChainControllerImpl implements Observer {
 			eventFirer.fireEventNode(FirerEvents.EVT_ARRIVAL,
 					adapter);
 		}
-		mutex.readLock().release();
 		// Initialize the component in a block separate from the synchronized
 		// block
 		if (localStarted) {
