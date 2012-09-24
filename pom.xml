@@ -37,6 +37,15 @@
 			</modules>
 		</profile>
 		<profile>
+			<id>test</id>
+			<modules>
+				<module>parent</module>
+				<module>framework</module>
+				<module>components</module>
+				<module>tests</module>
+			</modules>
+		</profile>
+		<profile>
 			<id>all</id>
 			<activation>
 			  <activeByDefault>true</activeByDefault>
