@@ -13,12 +13,6 @@ public class AdapterControllerImpl extends MediatorControllerImpl {
 		super(context, model, creat,notifier);
 	}
 
-	protected void updateProperties(){
-		mediatorModel.setProperty(ConstModel.PROPERTY_COMPONENT_ID, mediatorModel.nodeId());
-		mediatorModel.setProperty(ConstModel.PROPERTY_CHAIN_ID, mediatorModel.chainId());
-		mediatorModel.setProperty(ConstModel.PROPERTY_UUID,mediatorModel.uuid());
-	}
-
 	protected String createComponentFilter (MediatorComponent mediator) {
         StringBuffer filter = new StringBuffer();
         filter.append("(&");
