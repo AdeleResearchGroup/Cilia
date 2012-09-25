@@ -24,7 +24,6 @@ import static org.ops4j.pax.exam.CoreOptions.provision;
 
 import java.net.URL;
 
-import org.apache.felix.ipojo.test.helpers.IPOJOHelper;
 import org.apache.felix.ipojo.test.helpers.OSGiHelper;
 import org.junit.After;
 import org.junit.Assert;
@@ -160,6 +159,7 @@ public class ReliabilityTest {
 		//We inject the last data. Now processing must be performed on replaced mediator.
 		Assert.assertEquals(0, qd.getAmountData());
 		logger.info("Injecting third Data");
+		CiliaHelper.waitSomeTime(2000);
 		qd.injectData(new Data ("data THREE", "dda"));
 		CiliaHelper.waitSomeTime(3000);
 		logger.info("Assert data");

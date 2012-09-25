@@ -368,7 +368,6 @@ public abstract class MediatorComponentManager extends InstanceManager {
 	}
 	
 	private void addDescriptionEntry(){
-		System.out.println("ADD DE" + configuration.get(ConstModel.PROPERTY_COMPONENT_ID));
 		Hashtable props = new Hashtable();
 		props.put(ConstModel.PROPERTY_INSTANCE_TYPE, configuration.get(ConstModel.PROPERTY_INSTANCE_TYPE));
 		props.put(ConstModel.PROPERTY_CHAIN_ID, configuration.get(ConstModel.PROPERTY_CHAIN_ID));
