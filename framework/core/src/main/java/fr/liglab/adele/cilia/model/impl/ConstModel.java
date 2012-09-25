@@ -20,16 +20,18 @@ public interface ConstModel {
 	public static final String INSTANCE_TYPE_COLLECTOR = "collector";
 	public static final String INSTANCE_TYPE_SENDER = "sender";
 	public static final String INSTANCE_TYPE_SCHEDULER = "scheduler";
+	public static final String INSTANCE_TYPE_DISPATCHER = "dispatcher";
 	public static final String INSTANCE_TYPE_PROCESSOR = "processor";
 	public static final String CILIA_NAMESPACE = "fr.liglab.adele.cilia";
 
-	public String PROPERTY_CHAIN_ID = "cilia.chain.name";
-	public String PROPERTY_COMPONENT_ID = "cilia.component.id";
-	public String PROPERTY_UUID ="cilia.component.uuid" ;
+	public static final String PROPERTY_INSTANCE_TYPE = "cilia.component.type";
+	public static final String PROPERTY_CHAIN_ID = "cilia.chain.name";
+	public static final String PROPERTY_COMPONENT_ID = "cilia.component.id";
+	public static final String PROPERTY_UUID ="cilia.component.uuid" ;
 	
-	public String PROPERTY_LOCK_UNLOCK = "cilia.command.lock.unlock" ;
-	public String SET_LOCK ="lock" ;
-	public String SET_UNLOCK = "unlock" ;
+	public static final String PROPERTY_LOCK_UNLOCK = "cilia.command.lock.unlock" ;
+	public static final String SET_LOCK ="lock" ;
+	public static final String SET_UNLOCK = "unlock" ;
 	
 
 }
