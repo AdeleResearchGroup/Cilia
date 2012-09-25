@@ -33,6 +33,7 @@ import fr.liglab.adele.cilia.model.MediatorComponent;
 import fr.liglab.adele.cilia.model.Port;
 import fr.liglab.adele.cilia.model.impl.BindingImpl;
 import fr.liglab.adele.cilia.model.impl.CollectorImpl;
+import fr.liglab.adele.cilia.model.impl.ConstModel;
 import fr.liglab.adele.cilia.model.impl.SenderImpl;
 
 /**
@@ -54,7 +55,7 @@ public class BindingControllerImpl implements TrackerCustomizer {
 
 	private CiliaBindingService bindingService = null;
 
-	private volatile byte allServices=0x0;
+	private volatile byte allServices = 0x0;
 
 	private final static byte ALL_SERVICES = 0x7;
 	private final static byte BINDING_SERVICE = 0x1;
@@ -264,11 +265,15 @@ public class BindingControllerImpl implements TrackerCustomizer {
 
 	private String createFilter() {
 		String filter = "(|(cilia.binding.protocol=" + getBindingType() + ")"
-				+ "(cilia.binding.type=" + getBindingType() + ")"
-				+ "(&(factory.name=" + sourceController.mediatorModel.getType()
-				+ ")(factory.state=1))" + "(&(factory.name="
-				+ targetController.mediatorModel.getType()
-				+ ")(factory.state=1))" + ")";
+				+ "(cilia.binding.type=" + getBindingType() + ")" + "(&("
+				+ ConstModel.PROPERTY_CHAIN_ID + "="
+				+ modelBinding.getChain().getId() + ")("
+				+ ConstModel.PROPERTY_COMPONENT_ID + "="
+				+ sourceController.mediatorModel.getId() + "))" + "(&("
+				+ ConstModel.PROPERTY_CHAIN_ID + "="
+				+ modelBinding.getChain().getId() + ")("
+				+ ConstModel.PROPERTY_COMPONENT_ID + "="
+				+ targetController.mediatorModel.getId() + "))" + ")";
 		return filter;
 	}
 
@@ -286,11 +291,12 @@ public class BindingControllerImpl implements TrackerCustomizer {
 	 * Methods from TrackerCustomizer.
 	 */
 	public void addedService(ServiceReference reference) {
-		if(allServices == ALL_SERVICES){
-			try{
+		if (allServices == ALL_SERVICES) {
+			try {
 				if (validatePort(modelBinding.getSourcePort(),
-						modelBinding.getTargetPort()))
+						modelBinding.getTargetPort())) {
 					createModels(bindingService);
+				}
 			} catch (CiliaException e) {
 				e.printStackTrace();
 			}
@@ -301,36 +307,45 @@ public class BindingControllerImpl implements TrackerCustomizer {
 	public boolean addingService(ServiceReference reference) {
 		Object cbs = null;
 		boolean toAdd = false;
+		if (allServices == ALL_SERVICES){
+			return false;
+		}
 		cbs = bcontext.getService(reference);
 		if (cbs instanceof CiliaBindingService) {
 			allServices = (byte) (allServices | BINDING_SERVICE);
-			bindingService = (CiliaBindingService)cbs;
+			bindingService = (CiliaBindingService) cbs;
 			toAdd = true;
-		} else if (String.valueOf(reference.getProperty("factory.name")).compareToIgnoreCase(sourceController.mediatorModel.getType()) == 0 ){
+		} else if (String.valueOf(reference.getProperty(ConstModel.PROPERTY_COMPONENT_ID))
+				.compareToIgnoreCase(sourceController.mediatorModel.getId()) == 0) {
 			allServices = (byte) (allServices | SENDING_SERVICE);
 			toAdd = true;
-		}
-		if (String.valueOf(reference.getProperty("factory.name")).compareToIgnoreCase(targetController.mediatorModel.getType()) == 0 ){
+		} else if (String.valueOf(reference.getProperty(ConstModel.PROPERTY_COMPONENT_ID))
+				.compareToIgnoreCase(targetController.mediatorModel.getId()) == 0) {
 			allServices = (byte) (allServices | RECEIVING_SERVICE);
 			toAdd = true;
 		}
 		return toAdd;
+
 	}
 
 	public void modifiedService(ServiceReference reference, Object service) {
 	}
 
 	public void removedService(ServiceReference reference, Object service) {
-		try{
+		try {
 			if (service instanceof CiliaBindingService) {
 				allServices = (byte) (allServices ^ BINDING_SERVICE);
-			} else if (String.valueOf(reference.getProperty("factory.name")).compareToIgnoreCase(sourceController.mediatorModel.getType()) == 0 ){
+			} else if (String.valueOf(reference.getProperty(ConstModel.PROPERTY_COMPONENT_ID))
+					.compareToIgnoreCase(
+							sourceController.mediatorModel.getId()) == 0) {
 				allServices = (byte) (allServices ^ SENDING_SERVICE);
-			}	 
-			if (String.valueOf(reference.getProperty("factory.name")).compareToIgnoreCase(targetController.mediatorModel.getType()) == 0 ){
-				allServices = (byte) (allServices ^ RECEIVING_SERVICE);
-			}
-		}catch(Exception e){}
+			} else	if (String.valueOf(reference.getProperty(ConstModel.PROPERTY_COMPONENT_ID))
+						.compareToIgnoreCase(
+								targetController.mediatorModel.getId()) == 0) {
+					allServices = (byte) (allServices ^ RECEIVING_SERVICE);
+				}
+		} catch (Exception e) {
+		}
 		if (sourceController != null) {
 			sourceController.removeSender(modelBinding.getSender());
 		}
