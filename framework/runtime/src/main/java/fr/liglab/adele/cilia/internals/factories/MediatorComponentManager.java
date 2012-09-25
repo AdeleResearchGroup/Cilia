@@ -15,13 +15,17 @@
 package fr.liglab.adele.cilia.internals.factories;
 
 import java.util.Dictionary;
+import java.util.Hashtable;
 import java.util.Properties;
 
 import org.apache.felix.ipojo.ComponentInstance;
+import org.apache.felix.ipojo.ConfigurationException;
 import org.apache.felix.ipojo.Handler;
 import org.apache.felix.ipojo.HandlerManager;
 import org.apache.felix.ipojo.InstanceManager;
+import org.apache.felix.ipojo.metadata.Element;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceRegistration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,9 +33,11 @@ import fr.liglab.adele.cilia.exceptions.CiliaRuntimeException;
 import fr.liglab.adele.cilia.model.Component;
 import fr.liglab.adele.cilia.model.MediatorComponent;
 import fr.liglab.adele.cilia.model.Port;
+import fr.liglab.adele.cilia.model.impl.ConstModel;
 import fr.liglab.adele.cilia.model.impl.Dispatcher;
 import fr.liglab.adele.cilia.model.impl.Scheduler;
 import fr.liglab.adele.cilia.runtime.Const;
+import fr.liglab.adele.cilia.runtime.MediatorDescriptionEntry;
 import fr.liglab.adele.cilia.runtime.impl.DispatcherHandler;
 import fr.liglab.adele.cilia.runtime.impl.DispatcherInstanceManager;
 import fr.liglab.adele.cilia.runtime.impl.MonitorHandler;
@@ -66,6 +72,8 @@ public abstract class MediatorComponentManager extends InstanceManager {
 
 	protected final ReadWriteLock mutex;
 
+	private ServiceRegistration entryRegistry;
+
 
 
 	/**
@@ -92,12 +100,13 @@ public abstract class MediatorComponentManager extends InstanceManager {
 		updateSchedulerManager();
 		updateDispatcherManager();
 		configureHandlersMonitoring();
+		addDescriptionEntry();
 	}
 
 	public void stopManagers() {
 		stopSchedulerManager();
 		stopDispatcherManager();
-
+		removeDescriptionEntry();
 	}
 
 	private void configureHandlerMonitoring(InstanceManager im,
@@ -353,4 +362,23 @@ public abstract class MediatorComponentManager extends InstanceManager {
 		return returningValue;
 	}
 
+	public void configure(Element metadata, Dictionary config) throws ConfigurationException {
+		this.configuration = config;
+		super.configure(metadata, config);
+	}
+	
+	private void addDescriptionEntry(){
+		System.out.println("ADD DE" + configuration.get(ConstModel.PROPERTY_COMPONENT_ID));
+		Hashtable props = new Hashtable();
+		props.put(ConstModel.PROPERTY_INSTANCE_TYPE, configuration.get(ConstModel.PROPERTY_INSTANCE_TYPE));
+		props.put(ConstModel.PROPERTY_CHAIN_ID, configuration.get(ConstModel.PROPERTY_CHAIN_ID));
+		props.put(ConstModel.PROPERTY_COMPONENT_ID, configuration.get(ConstModel.PROPERTY_COMPONENT_ID));
+		MediatorDescriptionEntry mde = new MediatorDescriptionEntry() {	};
+		entryRegistry = getContext().registerService(MediatorDescriptionEntry.class.getName(), mde, props);
+	}
+	
+	private void removeDescriptionEntry(){
+		entryRegistry.unregister();
+	}
+	
 }
