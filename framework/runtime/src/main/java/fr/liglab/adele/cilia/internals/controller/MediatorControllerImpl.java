@@ -108,6 +108,7 @@ public class MediatorControllerImpl implements Observer {
 	}
 
 	protected void updateProperties() {
+		mediatorModel.setProperty(ConstModel.PROPERTY_INSTANCE_TYPE, mediatorModel.getType());
 		mediatorModel.setProperty(ConstModel.PROPERTY_COMPONENT_ID, mediatorModel.nodeId());
 		mediatorModel.setProperty(ConstModel.PROPERTY_CHAIN_ID, mediatorModel.chainId());
 		mediatorModel.setProperty(ConstModel.PROPERTY_UUID, mediatorModel.uuid());
