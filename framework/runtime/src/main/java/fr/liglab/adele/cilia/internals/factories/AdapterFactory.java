@@ -132,26 +132,41 @@ public class AdapterFactory extends MediatorFactory {
 			throw new ConfigurationException(msg);
 		}
 
+		getConstituents();
+		
+	}
+
+	private void getConstituents() throws ConfigurationException {
+		Element[] constituents = null;
 		if (adapterType.equals(PatternType.IN_ONLY)) {
-			Element[] constituents = m_componentMetadata.getElements("collector");
+			if(m_componentMetadata.containsElement("collector", DEFAULT_NAMESPACE)){
+				constituents = m_componentMetadata.getElements("collector", DEFAULT_NAMESPACE);
+			} else if (m_componentMetadata.containsElement("collector")){
+				constituents = m_componentMetadata.getElements("collector");
+			}
 			if ((constituents == null) || (constituents.length != 1)) {
-				msg = "Adapter must contain only one valid collector";
+				String msg = "Adapter must contain only one valid collector";
 				throw new ConfigurationException(msg);
 			}
 			constituent = constituents[0];
 		}
 
-		if (adapterType.equals(PatternType.OUT_ONLY)) {
-			Element[] constituents = m_componentMetadata.getElements("sender");
+		else if (adapterType.equals(PatternType.OUT_ONLY)) {
+			if(m_componentMetadata.containsElement("sender", DEFAULT_NAMESPACE)){
+				constituents = m_componentMetadata.getElements("sender", DEFAULT_NAMESPACE);
+			} else if (m_componentMetadata.containsElement("sender")){
+				constituents = m_componentMetadata.getElements("sender");
+			}
+			
 			if ((constituents == null) || (constituents.length != 1)) {
-				msg = "Adapter must contain only one valid sender";
+				String msg = "Adapter must contain only one valid sender";
 				logger.error(msg);
 				throw new ConfigurationException(msg);
 			}
 			constituent = constituents[0];
 		}
 	}
-
+	
 	public ComponentInstance createInstance(Dictionary config, IPojoContext context,
 			HandlerManager[] handlers)
 			throws org.apache.felix.ipojo.ConfigurationException {
