@@ -257,6 +257,7 @@ public class TestEA  {
 		cilia.load(url);
 		System.out.println("will wait");
 		boolean found = cilia.waitToChain("toto",6000);
+		CiliaHelper.waitSomeTime(1000);
 		System.out.println("found chain "+ found);
 		Hashtable<String, String> ht = new Hashtable<String, String>();
 		ht.put("topic", "in_adapter_topic");
@@ -274,7 +275,7 @@ public class TestEA  {
 			Data ndata = new Data("Test number " + i, "data");
 			is.send(ndata);
 		}
-		CiliaHelper.waitSomeTime(1000);
+		CiliaHelper.waitSomeTime(3000);
 		//See if all messages are received.
 		Assert.assertEquals(10, ch.countReceived());
 		Data data = ch.getLast();
