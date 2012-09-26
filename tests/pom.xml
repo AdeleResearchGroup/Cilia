@@ -29,6 +29,7 @@
 		<module>cilia-helper</module>
 		<module>runtime</module>
 		<module>ea-it</module>
+		<module>tcp-it</module>
 <!--
 		<module>jms-it</module>
 -->

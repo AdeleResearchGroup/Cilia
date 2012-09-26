@@ -31,6 +31,7 @@
 	<modules>
 		<module>jms-adapter</module>
 		<module>ea-adapter</module>
+		<module>tcp-adapter</module>
 	</modules>
   <build>
     <plugins>

@@ -1,0 +1,19 @@
+<cilia>
+	<chain id="toto">
+		<mediators>
+			<mediator-instance type="Mock" id="m1"/>
+		</mediators>
+		<adapters>
+			<adapter-instance id="a1" type="tcp-in-adapter" >
+				<property name="port" value="8888"/>
+			</adapter-instance>
+			<adapter-instance id="a2" type="tcp-out-adapter" >
+				<property name="port" value="9999"/>
+			</adapter-instance>
+		</adapters>
+		<bindings>
+			<binding from="a1:unique" to="m1:unique"/>
+			<binding from="m1:unique" to="a2:unique"/>
+		</bindings>
+	</chain>
+</cilia>
