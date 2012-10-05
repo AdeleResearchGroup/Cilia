@@ -17,7 +17,6 @@
  */
 package fr.liglab.adele.cilia;
 
-import java.util.Hashtable;
 import java.util.Map;
 
 import fr.liglab.adele.cilia.exceptions.CiliaException;
