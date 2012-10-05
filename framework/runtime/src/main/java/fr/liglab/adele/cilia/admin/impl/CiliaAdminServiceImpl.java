@@ -14,7 +14,6 @@
  */
 package fr.liglab.adele.cilia.admin.impl;
 
-import java.util.Hashtable;
 import java.util.Map;
 
 import org.w3c.dom.Node;
