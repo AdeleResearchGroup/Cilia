@@ -98,6 +98,10 @@ public class BuilderPerformer {
 						"Chain with the same ID already exist: "
 								+ architecture.getChainId());
 			}
+			if (architecture.getChainId().compareToIgnoreCase("cilia")==0){
+				throw new BuilderPerformerException(
+						"Chain with the 'cilia' as ID is not forbiden");
+			}
 			chain = new ChainImpl(architecture.getChainId(), null, null, null);
 		} else {
 			if (container.getChain(architecture.getChainId()) == null) {
