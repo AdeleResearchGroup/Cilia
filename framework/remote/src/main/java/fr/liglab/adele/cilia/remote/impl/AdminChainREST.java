@@ -37,6 +37,7 @@ import org.ow2.chameleon.json.JSONService;
 import fr.liglab.adele.cilia.AdminBinding;
 import fr.liglab.adele.cilia.AdminChain;
 import fr.liglab.adele.cilia.AdminComponent;
+import fr.liglab.adele.cilia.CiliaContext;
 import fr.liglab.adele.cilia.exceptions.CiliaException;
 import fr.liglab.adele.cilia.exceptions.CiliaIllegalParameterException;
 import fr.liglab.adele.cilia.model.Chain;
@@ -55,6 +56,9 @@ public class AdminChainREST {
 
 	@Requires
 	AdminChain admin;
+	
+	@Requires
+	CiliaContext ccontext;
 
 	@Requires
 	AdminComponent acomponent;
@@ -65,6 +69,21 @@ public class AdminChainREST {
 	@Requires
 	private JSONService jsonservice; //JsonService, in order to parse
 
+	
+	public String getChainNames() {
+		boolean atLeastOne = false;
+		StringBuffer chainsIds = new StringBuffer("{ \nchains: [");
+		for (String id : ccontext.getApplicationRuntime().getChainId()) {
+			chainsIds.append(id.trim());
+			chainsIds.append(", ");
+			atLeastOne = true;
+		}
+		if (atLeastOne) {
+			chainsIds.delete(chainsIds.length()-2,chainsIds.length());
+		}
+		chainsIds.append("]\n}");
+		return chainsIds.toString();
+	}
 
 	/**
 	 * Retrieve a mediation chain.
@@ -76,6 +95,9 @@ public class AdminChainREST {
 	@GET
 	@Produces("application/json")
 	public String chain(@PathParam("chainid") String chainid) {
+		if (chainid == null || chainid.length()<1 || chainid.compareToIgnoreCase("cilia")==0){
+			return getChainNames();
+		}
 		Chain chain = admin.getChain(chainid);
 		StringBuilder result = new StringBuilder();
 		if (chain == null) {
