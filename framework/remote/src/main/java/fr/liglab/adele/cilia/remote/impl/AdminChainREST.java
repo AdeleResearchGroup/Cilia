@@ -27,6 +27,7 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Response;
 
 import org.apache.felix.ipojo.annotations.Component;
 import org.apache.felix.ipojo.annotations.Instantiate;
@@ -94,18 +95,17 @@ public class AdminChainREST {
 	 */
 	@GET
 	@Produces("application/json")
-	public String chain(@PathParam("chainid") String chainid) {
+	public Response chain(@PathParam("chainid") String chainid) {
 		if (chainid == null || chainid.length()<1 || chainid.compareToIgnoreCase("cilia")==0){
-			return getChainNames();
+			return Response.ok(getChainNames()).build();
 		}
 		Chain chain = admin.getChain(chainid);
-		StringBuilder result = new StringBuilder();
 		if (chain == null) {
-			result.append("{").append(chainid).append(": Does not exist}");
+			return Response.status(404).build();
 		} else {
-			result.append(chain);
+			return Response.ok(String.valueOf(chain)).build();
 		}
-		return result.toString();
+		
 	}
 
 	/**
@@ -219,16 +219,15 @@ public class AdminChainREST {
 	@GET
 	@Path("{componentId}")
 	@Produces("application/json")
-	public String getComponent(@PathParam("chainid")String chainid, @PathParam("componentId")String componentId) {
+	public Response getComponent(@PathParam("chainid")String chainid, @PathParam("componentId")String componentId) {
 		MediatorComponent component = acomponent.getComponent(chainid, componentId);
 		StringBuilder result = new StringBuilder();
 		if (component != null) {
 			result.append(component);
 		} else {
-			result.append("{ chain : ").append(chainid).append(",\n");
-			result.append(componentId).append(" : Does not exist}");
+			return Response.status(404).build();
 		}
-		return result.toString();
+		return Response.ok(result.toString()).build();
 	}
 
 	/**
