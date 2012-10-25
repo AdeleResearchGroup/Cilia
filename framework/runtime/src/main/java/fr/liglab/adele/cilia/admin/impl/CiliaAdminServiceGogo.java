@@ -71,7 +71,18 @@ public class CiliaAdminServiceGogo {
 	 * @throws CiliaException if the given chain id already exist.
 	 */
 	//@Descriptor("Creates an empty mediation chain.")
-	public void emptyChain(/*@Descriptor("The chain ID")*/ String id) throws CiliaException { 
+	public void emptyChain(/*@Descriptor("The chain ID")*/ String id) throws CiliaException {
+		System.err.println("Deprecated: please use createEmptyChain(String chainId) instead");
+		admin.createEmptyChain(id);
+	}
+	
+	/**
+	 * Create a new initial empty chain chain/
+	 * @param id The ID of the new mediation chain.
+	 * @throws CiliaException if the given chain id already exist.
+	 */
+	//@Descriptor("Creates an empty mediation chain.")
+	public void createEmptyChain(/*@Descriptor("The chain ID")*/ String id) throws CiliaException { 
 		admin.createEmptyChain(id);
 	}
 
@@ -82,7 +93,7 @@ public class CiliaAdminServiceGogo {
 	 */
 	//@Descriptor("Creates a chain using XML format")
 	public void createChain(/*@Descriptor("The chain in XML format")*/String chain) throws CiliaException {
-		admin.createChain(chain);
+		System.err.println("Deprecated: please use loadChain(String url) instead");
 	}
 	/**
 	 * Load a mediation chain specified on the given URI string. The resource must be in XML format.

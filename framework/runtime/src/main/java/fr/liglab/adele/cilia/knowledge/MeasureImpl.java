@@ -54,9 +54,10 @@ public class MeasureImpl implements Measure {
 	}
 	
 	public String toString() {
-		StringBuffer sb = new StringBuffer();
-		sb.append("value=").append(value().toString());
-		sb.append(",Timestamp=").append(timeStampMs());
+		StringBuffer sb = new StringBuffer('[');
+		sb.append("\"value\":\"").append(value().toString()).append("\"");
+		sb.append(",\"Timestamp\":\"").append(timeStampMs()).append("\"");
+		sb.append("]");
 		return sb.toString();
 	}
 

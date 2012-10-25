@@ -15,6 +15,8 @@
 
 package fr.liglab.adele.cilia;
 
+import java.util.Map;
+
 import fr.liglab.adele.cilia.exceptions.CiliaIllegalParameterException;
 import fr.liglab.adele.cilia.exceptions.CiliaIllegalStateException;
 import fr.liglab.adele.cilia.exceptions.CiliaInvalidSyntaxException;
@@ -122,5 +124,7 @@ public interface SetUp extends Node {
 	 * @return list of state variable enabled
 	 */
 	String[] getEnabledVariable() throws CiliaIllegalStateException ;
+	
+	Map toMap();
 	
 }

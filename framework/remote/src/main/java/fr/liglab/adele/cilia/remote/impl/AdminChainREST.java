@@ -28,6 +28,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 
 import org.apache.felix.ipojo.annotations.Component;
 import org.apache.felix.ipojo.annotations.Instantiate;
@@ -39,8 +40,10 @@ import fr.liglab.adele.cilia.AdminBinding;
 import fr.liglab.adele.cilia.AdminChain;
 import fr.liglab.adele.cilia.AdminComponent;
 import fr.liglab.adele.cilia.CiliaContext;
+import fr.liglab.adele.cilia.Node;
 import fr.liglab.adele.cilia.exceptions.CiliaException;
 import fr.liglab.adele.cilia.exceptions.CiliaIllegalParameterException;
+import fr.liglab.adele.cilia.exceptions.CiliaInvalidSyntaxException;
 import fr.liglab.adele.cilia.model.Chain;
 import fr.liglab.adele.cilia.model.MediatorComponent;
 
@@ -57,7 +60,7 @@ public class AdminChainREST {
 
 	@Requires
 	AdminChain admin;
-	
+
 	@Requires
 	CiliaContext ccontext;
 
@@ -70,7 +73,7 @@ public class AdminChainREST {
 	@Requires
 	private JSONService jsonservice; //JsonService, in order to parse
 
-	
+
 	public String getChainNames() {
 		boolean atLeastOne = false;
 		StringBuffer chainsIds = new StringBuffer("{ \nchains: [");
@@ -105,8 +108,10 @@ public class AdminChainREST {
 		} else {
 			return Response.ok(String.valueOf(chain)).build();
 		}
-		
+
 	}
+
+
 
 	/**
 	 * Create a new initial empty chain chain/
@@ -120,13 +125,12 @@ public class AdminChainREST {
 			admin.createEmptyChain(id);
 		} catch (CiliaException e) {
 			e.printStackTrace();
-			return "{ return : false, " +
+			return "{ \"return\" : false, " +
 			"exception : " + e.getMessage() +
 			"}";
 		}
 		return "{ return : true}";
 	}
-
 
 
 	/**
@@ -220,14 +224,26 @@ public class AdminChainREST {
 	@Path("{componentId}")
 	@Produces("application/json")
 	public Response getComponent(@PathParam("chainid")String chainid, @PathParam("componentId")String componentId) {
+		Response reponse;
 		MediatorComponent component = acomponent.getComponent(chainid, componentId);
 		StringBuilder result = new StringBuilder();
 		if (component != null) {
-			result.append(component);
-		} else {
-			return Response.status(404).build();
+			reponse =  Response.ok(component.toString()).build();
+		} else { // Maybe it is an uuid
+			try {
+				Node []nodes = ccontext.getApplicationRuntime().findNodeByFilter("(uuid=" + componentId+")");
+				if (nodes.length > 0) {
+					reponse = Response.ok(nodes[0].toString()).build(); 
+				} else {
+					reponse = Response.status(404).build();
+				}
+			} catch (CiliaIllegalParameterException e) {
+				reponse = Response.status(404).build();
+			} catch (CiliaInvalidSyntaxException e) {
+				reponse = Response.status(Status.BAD_REQUEST).build();
+			}
 		}
-		return Response.ok(result.toString()).build();
+		return reponse;
 	}
 
 	/**

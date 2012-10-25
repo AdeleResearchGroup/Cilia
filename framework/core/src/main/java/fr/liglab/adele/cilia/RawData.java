@@ -15,6 +15,8 @@
 
 package fr.liglab.adele.cilia;
 
+import java.util.Map;
+
 import fr.liglab.adele.cilia.exceptions.CiliaIllegalParameterException;
 import fr.liglab.adele.cilia.exceptions.CiliaIllegalStateException;
 import fr.liglab.adele.cilia.exceptions.CiliaRuntimeException;
@@ -48,5 +50,7 @@ public interface RawData extends Node {
 	 */
 	Measure[] measures(String variableId) throws CiliaIllegalParameterException,
 			CiliaIllegalStateException;
+	
+	Map toMap();
 
 }

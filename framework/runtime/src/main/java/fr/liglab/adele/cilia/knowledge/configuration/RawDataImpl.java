@@ -14,6 +14,9 @@
 
 package fr.liglab.adele.cilia.knowledge.configuration;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import fr.liglab.adele.cilia.Measure;
 import fr.liglab.adele.cilia.Node;
 import fr.liglab.adele.cilia.RawData;
@@ -53,12 +56,38 @@ public class RawDataImpl extends NodeImpl implements RawData {
 	}
 
 	public Measure[] measures(String variableId) throws CiliaIllegalParameterException,
-			CiliaIllegalStateException {
+	CiliaIllegalStateException {
 		return getModel().measures(variableId);
 	}
 
 	public String[] getEnabledVariable() throws CiliaIllegalStateException {
 		return getModel().getEnabledVariable();
+	}
+
+	public Map toMap(){
+		Map map = new HashMap();
+		String variables[] = ConfigurationHelper.variablesByCategory(null);
+		for (String variable : variables) {
+			Map variableMap = new HashMap();
+			variableMap.put("Enabled", "unknown");
+			try {
+				Measure measures[] = measures(variable);
+				StringBuffer buffer = new StringBuffer("[");
+				for (Measure measure : measures) {
+					buffer.append(measure.toString()).append(",");
+				}
+				if (measures.length>0){
+					buffer.delete(buffer.length()-2, buffer.length()-1);
+				}
+				buffer.append("]");
+				variableMap.put("Measures", buffer.toString());
+			} catch (CiliaIllegalParameterException e) {
+			} catch (CiliaIllegalStateException e) {
+				return new HashMap();
+			}
+			map.put(variable, variableMap);
+		}
+		return map;
 	}
 
 }
