@@ -246,5 +246,12 @@ public class MonitorREST {
 		return Response.ok(jsonservice.toJSON(variableMap)).build();
 	}
 	
+	@PUT
+	@Path("{chainid}/component/{id}/setup/{variable}/{concept}/{value}")
+	@Produces("application/json")
+	public Response modifySetup(@PathParam("chainid") String chainid,@PathParam("id") String id,@PathParam("variable") String variable,@PathParam("concept") String concept, @PathParam("value") String value){
+		
+		return Response.ok().build();
+	}
 	
 }
