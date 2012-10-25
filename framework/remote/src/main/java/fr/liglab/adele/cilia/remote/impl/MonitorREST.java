@@ -18,6 +18,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -247,10 +248,14 @@ public class MonitorREST {
 	}
 	
 	@PUT
-	@Path("{chainid}/component/{id}/setup/{variable}/{concept}/{value}")
+	@Path("{chainid}/component/{id}/setup/{variable}/{concept}")
 	@Produces("application/json")
-	public Response modifySetup(@PathParam("chainid") String chainid,@PathParam("id") String id,@PathParam("variable") String variable,@PathParam("concept") String concept, @PathParam("value") String value){
-		
+	public Response modifySetup(@PathParam("chainid") String chainid,@PathParam("id") String id,@PathParam("variable") String variable,@PathParam("concept") String concept, @FormParam("value") String value){
+		System.out.println("chain" + chainid);
+		System.out.println("component" + id);
+		System.out.println("variable" + variable);
+		System.out.println("concept" + concept);
+		System.out.println("value" + value);
 		return Response.ok().build();
 	}
 	
