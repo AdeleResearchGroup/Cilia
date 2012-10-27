@@ -41,8 +41,11 @@ import fr.liglab.adele.cilia.AdminChain;
 import fr.liglab.adele.cilia.AdminComponent;
 import fr.liglab.adele.cilia.CiliaContext;
 import fr.liglab.adele.cilia.Node;
+import fr.liglab.adele.cilia.exceptions.BuilderException;
+import fr.liglab.adele.cilia.exceptions.BuilderPerformerException;
 import fr.liglab.adele.cilia.exceptions.CiliaException;
 import fr.liglab.adele.cilia.exceptions.CiliaIllegalParameterException;
+import fr.liglab.adele.cilia.exceptions.CiliaIllegalStateException;
 import fr.liglab.adele.cilia.exceptions.CiliaInvalidSyntaxException;
 import fr.liglab.adele.cilia.model.Chain;
 import fr.liglab.adele.cilia.model.MediatorComponent;
@@ -102,7 +105,12 @@ public class AdminChainREST {
 		if (chainid == null || chainid.length()<1 || chainid.compareToIgnoreCase("cilia")==0){
 			return Response.ok(getChainNames()).build();
 		}
-		Chain chain = admin.getChain(chainid);
+		Chain chain;
+		try {
+			chain = admin.getChain(chainid);
+		} catch (CiliaIllegalParameterException e) {
+			chain = null;
+		}
 		if (chain == null) {
 			return Response.status(404).build();
 		} else {
@@ -207,7 +215,12 @@ public class AdminChainREST {
 	@DELETE
 	@Produces("application/json")
 	public String deleteChain(@PathParam("chainid")String id) {
-		boolean res = admin.deleteChain(id);
+		boolean res = false;
+		try {
+			res = admin.deleteChain(id);
+		} catch (CiliaException e) {
+			res = false;
+		}
 		if (res){
 			return "{result : true}";
 		}
@@ -225,7 +238,12 @@ public class AdminChainREST {
 	@Produces("application/json")
 	public Response getComponent(@PathParam("chainid")String chainid, @PathParam("componentId")String componentId) {
 		Response reponse;
-		MediatorComponent component = acomponent.getComponent(chainid, componentId);
+		MediatorComponent component;
+		try {
+			component = acomponent.getComponent(chainid, componentId);
+		} catch (CiliaIllegalParameterException e1) {
+			component = null;
+		}
 		StringBuilder result = new StringBuilder();
 		if (component != null) {
 			reponse =  Response.ok(component.toString()).build();
@@ -359,26 +377,18 @@ public class AdminChainREST {
 				return result.toString();
 			}
 		}
-		if (acomponent.getMediator(chainId, componentId) != null) {
-			try {
+		try {
+			if (acomponent.isMediator(chainId, componentId) == true) {
 				acomponent.updateMediator(chainId, componentId, prop);
-			} catch (CiliaException e) {
-				e.printStackTrace();
-				result.append(createMessage(chainId, componentId, "Unable to update component"));
+			} else if (acomponent.isAdapter(chainId, componentId) == true){
+				acomponent.updateAdapter(chainId, componentId, prop);
+			} else {
+				result.append(createMessage(chainId, componentId, "Component does not exist"));
 				result.append("}");
 				return result.toString();
 			}
-		} else if (acomponent.getAdapter(chainId, componentId) != null){
-			try {
-				acomponent.updateAdapter(chainId, componentId, prop);
-			} catch (CiliaException e) {
-				e.printStackTrace();
-				result.append(createMessage(chainId, componentId, "Unable to update component"));
-				result.append("}");
-				return result.toString();				
-			}
-		} else { // It does not exist
-			result.append(createMessage(chainId, componentId, "Component does not exist"));
+		} catch (CiliaException e) {
+			result.append(createMessage(chainId, componentId, "Unable to update component"));
 			result.append("}");
 			return result.toString();
 		}
@@ -397,10 +407,10 @@ public class AdminChainREST {
 	@Produces("application/json")
 	public String deleteComponent(@PathParam("chainid")String chainId, @PathParam("componentId")String componentId){
 		StringBuilder result = new StringBuilder('{');
-		if (acomponent.getMediator(chainId, componentId) != null) {
+		if (acomponent.isMediator(chainId, componentId) == true) {
 			acomponent.deleteMediator(chainId, componentId);
 			result.append(createMessage(chainId, componentId, "true"));
-		} else if (acomponent.getAdapter(chainId, componentId) != null) {
+		} else if (acomponent.isAdapter(chainId, componentId) == true) {
 			acomponent.deleteAdapter(chainId, componentId);
 			result.append(createMessage(chainId, componentId, "true"));
 		} else {

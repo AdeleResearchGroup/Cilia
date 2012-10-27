@@ -58,11 +58,6 @@
 					</processor>
 				</mediator>
 			</mediators>
-			<adapters>
-				<adapter id="getPriceAdapter">
-		          <property name="endpoint.id" type="String" value="toto"/>
-				</adapter>
-			</adapters>
 		</chain>
 	</cilia>
 

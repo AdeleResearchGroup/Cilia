@@ -36,8 +36,9 @@ public interface AdminComponent {
 	 * @param chainid The chain where the component is.
 	 * @param componentId The id of the component
 	 * @return The required component, null if it does not exist.
+	 * @throws CiliaIllegalParameterException 
 	 */
-	MediatorComponent getComponent(String chainid, String componentId);
+	MediatorComponent getComponent(String chainid, String componentId) throws CiliaIllegalParameterException;
 	
 	
 	/**
@@ -45,8 +46,9 @@ public interface AdminComponent {
 	 * @param chainid The chain where the component is.
 	 * @param componentId The id of the component
 	 * @return The required component, null if it does not exist.
+	 * @throws CiliaIllegalParameterException 
 	 */
-	Mediator getMediator(String chainid, String componentId);
+	Mediator getMediator(String chainid, String componentId) throws CiliaIllegalParameterException;
 	
 	/**
 	 * Retrieve a mediation component.
@@ -107,4 +109,8 @@ public interface AdminComponent {
 	 * @return true if component is deleted, false if not.
 	 */
 	boolean deleteAdapter(String chainId, String componentId);
+	
+	boolean isMediator(String chainId, String componentId);
+	
+	boolean isAdapter(String chainId, String componentId);
 }

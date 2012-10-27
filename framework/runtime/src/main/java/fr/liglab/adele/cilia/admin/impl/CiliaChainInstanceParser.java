@@ -26,6 +26,7 @@ import fr.liglab.adele.cilia.exceptions.BuilderConfigurationException;
 import fr.liglab.adele.cilia.exceptions.BuilderException;
 import fr.liglab.adele.cilia.exceptions.BuilderPerformerException;
 import fr.liglab.adele.cilia.exceptions.CiliaException;
+import fr.liglab.adele.cilia.exceptions.CiliaIllegalParameterException;
 import fr.liglab.adele.cilia.exceptions.CiliaParserException;
 import fr.liglab.adele.cilia.framework.data.XmlTools;
 import fr.liglab.adele.cilia.model.Adapter;
@@ -107,12 +108,12 @@ public class CiliaChainInstanceParser implements ChainParser {
 		return parseChains(node);
 	}
 
-	public Builder[] parseChains(Object nodeobject) throws CiliaException{
+	public Builder[] parseChains(Object nodeobject) throws CiliaIllegalParameterException, BuilderException, BuilderPerformerException, BuilderConfigurationException{
 		List listChains = new ArrayList();
 		Node node = (Node)nodeobject;
 		String rootName = node.getNodeName();
 		if (rootName.compareTo(ROOT_FILE) != 0) {
-			throw new CiliaException(" Root element must be <"
+			throw new CiliaIllegalParameterException(" Root element must be <"
 					+ ROOT_FILE + "> and is <" + rootName + ">");
 		}
 		log.debug("Found cilia tag");
@@ -142,19 +143,21 @@ public class CiliaChainInstanceParser implements ChainParser {
 	
 	/**
 	 * It will convert a Chain in a Node to a chain model. TODO: Use JAXB.
+	 * @throws CiliaIllegalParameterException 
+	 * @throws BuilderConfigurationException 
 	 */
-	private Builder parseChain(Object objectchain) throws CiliaException, BuilderException, BuilderPerformerException {
+	private Builder parseChain(Object objectchain) throws BuilderException, BuilderPerformerException, CiliaIllegalParameterException, BuilderConfigurationException {
 		Node nchain = checkObject(objectchain);
 		Architecture chain = null;
 
 		if (nchain == null) {
-			throw new CiliaException("Object:" + objectchain
+			throw new CiliaIllegalParameterException("Object:" + objectchain
 					+ " is not instance of org.w3c.dom.Node");
 		}
 		
 		if (nchain.getNodeName().compareTo(ROOT_CHAIN) != 0) {
 			log.debug(nchain.getNodeName() + "Node is not a chain");
-			throw new CiliaException("Node is not a chain. It must start with <chain>. It is: " + nchain.getNodeName());
+			throw new CiliaIllegalParameterException("Node is not a chain. It must start with <chain>. It is: " + nchain.getNodeName());
 		}
 		// It must add mediators at first.
 		String id = getId(nchain);
@@ -301,12 +304,14 @@ public class CiliaChainInstanceParser implements ChainParser {
 	 * 
 	 * @param node
 	 * @return
+	 * @throws BuilderException 
+	 * @throws BuilderConfigurationException 
 	 */
-	protected void getMediators(Node node, Architecture chain) throws CiliaException {
+	protected void getMediators(Node node, Architecture chain) throws CiliaIllegalParameterException, BuilderConfigurationException, BuilderException {
 		Node mediatorNode = node.getFirstChild();
 		int iterator = 0;
 		if (mediatorNode == null) {
-			throw new CiliaException("Unable to retrieve first mediator in XML Node");
+			throw new CiliaIllegalParameterException("Unable to retrieve first mediator in XML Node");
 		}
 		do {
 			if (mediatorNode.getNodeName().compareTo(MEDIATOR) == 0) {
@@ -326,13 +331,15 @@ public class CiliaChainInstanceParser implements ChainParser {
 	 * 
 	 * @param node
 	 * @return
+	 * @throws BuilderException 
+	 * @throws BuilderConfigurationException 
 	 */
-	protected void getAdapters(Node node, Architecture chain) throws CiliaException {
+	protected void getAdapters(Node node, Architecture chain) throws CiliaIllegalParameterException, BuilderConfigurationException, BuilderException {
 		Node mediatorNode = node.getFirstChild();
 		int iterator = 0;
 
 		if (mediatorNode == null) {
-			throw new CiliaException("Unable to retrieve first adapter in XML Node");
+			throw new CiliaIllegalParameterException("Unable to retrieve first adapter in XML Node");
 		}
 		do {
 			if (mediatorNode.getNodeName().compareTo(ADAPTER) == 0) {

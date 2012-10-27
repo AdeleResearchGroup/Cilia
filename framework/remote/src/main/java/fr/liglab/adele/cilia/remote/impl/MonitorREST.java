@@ -151,8 +151,8 @@ public class MonitorREST {
 	public Response getSetup(@PathParam("chainid") String chainid,@PathParam("id") String id) {
 		SetUp setup = null;
 		ApplicationRuntime runtime = ccontext.getApplicationRuntime();
-		MediatorComponent component = admin.getComponent(chainid, id);
 		try {
+			MediatorComponent component = admin.getComponent(chainid, id);
 			setup = runtime.nodeSetup(component);
 		} catch (CiliaIllegalParameterException e) {
 			return Response.status(Status.BAD_REQUEST).build();
@@ -177,8 +177,8 @@ public class MonitorREST {
 		Map setupMap = null;
 		Map variableMap = null;
 		ApplicationRuntime runtime = ccontext.getApplicationRuntime();
-		MediatorComponent component = admin.getComponent(chainid, id);
 		try {
+			MediatorComponent component = admin.getComponent(chainid, id);
 			setup = runtime.nodeSetup(component);
 		} catch (CiliaIllegalParameterException e) {
 			return Response.status(Status.BAD_REQUEST).build();
@@ -205,8 +205,8 @@ public class MonitorREST {
 	public Response getRawData(@PathParam("chainid") String chainid,@PathParam("id") String id) {
 		RawData rawdata = null;
 		ApplicationRuntime runtime = ccontext.getApplicationRuntime();
-		MediatorComponent component = admin.getComponent(chainid, id);
 		try {
+			MediatorComponent component = admin.getComponent(chainid, id);
 			rawdata = runtime.nodeRawData(component);
 		} catch (CiliaIllegalParameterException e) {
 			return Response.status(Status.BAD_REQUEST).build();
@@ -227,23 +227,23 @@ public class MonitorREST {
 	@Path("{chainid}/component/{id}/rawdata/{variable}")
 	@Produces("application/json")
 	public Response getRawData(@PathParam("chainid") String chainid,@PathParam("id") String id,@PathParam("variable") String variable) {
-		SetUp setup = null;
-		Map setupMap = null;
+		RawData rawdata = null;
+		Map rawMap = null;
 		Map variableMap = null;
 		ApplicationRuntime runtime = ccontext.getApplicationRuntime();
-		MediatorComponent component = admin.getComponent(chainid, id);
 		try {
-			setup = runtime.nodeSetup(component);
+			MediatorComponent component = admin.getComponent(chainid, id);
+			rawdata = runtime.nodeRawData(component);
 		} catch (CiliaIllegalParameterException e) {
 			return Response.status(Status.BAD_REQUEST).build();
 		} catch (CiliaIllegalStateException e) {
 			return Response.status(404).build();
 		}
-		setupMap = setup.toMap();
-		if (!setupMap.containsKey(variable)){
+		rawMap = rawdata.toMap();
+		if (!rawMap.containsKey(variable)){
 			return Response.status(404).build();
 		}
-		variableMap = (Map)setupMap.get(variable);
+		variableMap = (Map)rawMap.get(variable);
 		return Response.ok(jsonservice.toJSON(variableMap)).build();
 	}
 	
@@ -251,6 +251,18 @@ public class MonitorREST {
 	@Path("{chainid}/component/{id}/setup/{variable}/{concept}")
 	@Produces("application/json")
 	public Response modifySetup(@PathParam("chainid") String chainid,@PathParam("id") String id,@PathParam("variable") String variable,@PathParam("concept") String concept, @FormParam("value") String value){
+		System.out.println("chain" + chainid);
+		System.out.println("component" + id);
+		System.out.println("variable" + variable);
+		System.out.println("concept" + concept);
+		System.out.println("value" + value);
+		return Response.ok().build();
+	}
+	
+	@PUT
+	@Path("{chainid}/component/{id}/threshold/{variable}/{concept}")
+	@Produces("application/json")
+	public Response modifyThreshold(@PathParam("chainid") String chainid,@PathParam("id") String id,@PathParam("variable") String variable,@PathParam("concept") String concept, @FormParam("value") String value){
 		System.out.println("chain" + chainid);
 		System.out.println("component" + id);
 		System.out.println("variable" + variable);

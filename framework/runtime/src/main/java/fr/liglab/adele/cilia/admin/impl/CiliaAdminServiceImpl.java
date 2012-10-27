@@ -26,6 +26,7 @@ import fr.liglab.adele.cilia.CiliaContext;
 import fr.liglab.adele.cilia.builder.Architecture;
 import fr.liglab.adele.cilia.builder.Builder;
 import fr.liglab.adele.cilia.exceptions.BuilderException;
+import fr.liglab.adele.cilia.exceptions.BuilderPerformerException;
 import fr.liglab.adele.cilia.exceptions.CiliaException;
 import fr.liglab.adele.cilia.exceptions.CiliaIllegalParameterException;
 import fr.liglab.adele.cilia.exceptions.CiliaIllegalStateException;
@@ -53,24 +54,22 @@ public class CiliaAdminServiceImpl implements CiliaAdminService, AdminChain, Adm
 	 * @param id The ID of the chain  to retrieve 
 	 * @return The required Chain, 
 	 * return <code>null<code> if chain does not exist.
+	 * @throws CiliaIllegalParameterException 
 	 */
-	public Chain getChain(String chainId) {
+	public Chain getChain(String chainId) throws CiliaIllegalParameterException {
 		Chain chain = null;
-		try {
-			chain = ccontext.getApplicationRuntime().getChain(chainId);
-		} catch (CiliaIllegalParameterException e) {
-			e.printStackTrace();
-			return null;
-		}
+		chain = ccontext.getApplicationRuntime().getChain(chainId);
 		return chain;
 	}
 
 	/**
 	 * Create a new initial empty chain chain/
 	 * @param id The ID of the new mediation chain.
+	 * @throws BuilderException 
+	 * @throws BuilderPerformerException 
 	 * @throws CiliaException if the given chain id already exist.
 	 */
-	public void createEmptyChain(String id) throws CiliaException { 
+	public void createEmptyChain(String id) throws BuilderException, BuilderPerformerException  { 
 		Builder builder = ccontext.getBuilder();
 		builder.create(id);
 		builder.done();
@@ -81,7 +80,7 @@ public class CiliaAdminServiceImpl implements CiliaAdminService, AdminChain, Adm
 	 * @param chain
 	 * @throws CiliaException
 	 */
-	public void createChain(String chain) throws CiliaException {
+	public void createChain(String chain) throws CiliaException  {
 		Builder builders[] = null;
 		Node node = XmlTools.stringToNode(chain);
 		builders = parser.parseChains(node);
@@ -119,17 +118,18 @@ public class CiliaAdminServiceImpl implements CiliaAdminService, AdminChain, Adm
 	 * Delete a mediation chain. 
 	 * @param id The ID of the chain to be deleted
 	 * @return true if chain is successful deleted, false if it does not exist.
+	 * @throws CiliaIllegalStateException 
+	 * @throws CiliaIllegalParameterException 
+	 * @throws BuilderException 
+	 * @throws BuilderPerformerException 
 	 */
-	public boolean deleteChain(String id) {
+	public boolean deleteChain(String id) throws CiliaIllegalParameterException, CiliaIllegalStateException, BuilderException, BuilderPerformerException {
 		Builder b = null;
-		try {
-			ccontext.getApplicationRuntime().stopChain(id);
-			b = ccontext.getBuilder();
-			b.remove(id);
-			b.done();
-		} catch (CiliaException e) {
-			e.printStackTrace();
-		}
+		ccontext.getApplicationRuntime().stopChain(id);
+		b = ccontext.getBuilder();
+		b.remove(id);
+		b.done();
+
 		return true;
 	}
 
@@ -138,15 +138,12 @@ public class CiliaAdminServiceImpl implements CiliaAdminService, AdminChain, Adm
 	 * @param chainid The chain where the component is.
 	 * @param componentId The id of the component
 	 * @return The required component, null if it does not exist.
+	 * @throws CiliaIllegalParameterException 
 	 */
-	public MediatorComponent getComponent(String chainid, String componentId){
+	public MediatorComponent getComponent(String chainid, String componentId) throws CiliaIllegalParameterException{
 		Chain chain = null;
 		MediatorComponent component = null;
-		try {
-			chain = ccontext.getApplicationRuntime().getChain(chainid);
-		} catch (CiliaIllegalParameterException e) {
-			e.printStackTrace();
-		}
+		chain = ccontext.getApplicationRuntime().getChain(chainid);
 		if (chain == null) {
 			return null;
 		}
@@ -163,15 +160,12 @@ public class CiliaAdminServiceImpl implements CiliaAdminService, AdminChain, Adm
 	 * @param chainid The chain where the component is.
 	 * @param componentId The id of the component
 	 * @return The required component, null if it does not exist.
+	 * @throws CiliaIllegalParameterException 
 	 */
-	public Mediator getMediator(String chainid, String componentId){
+	public Mediator getMediator(String chainid, String componentId) throws CiliaIllegalParameterException{
 		Chain chain = null;
 		Mediator component = null;
-		try {
-			chain = ccontext.getApplicationRuntime().getChain(chainid);
-		} catch (CiliaIllegalParameterException e) {
-			e.printStackTrace();
-		}
+		chain = ccontext.getApplicationRuntime().getChain(chainid);
 		if (chain == null) {
 			return null;
 		}
@@ -214,7 +208,7 @@ public class CiliaAdminServiceImpl implements CiliaAdminService, AdminChain, Adm
 		chain.create().mediator().type(componentType).id(componentID).configure().set(properties);
 		builder.done();
 	}
-	
+
 	/**
 	 * Create a new mediator component
 	 * @param chainId The chain where the mediator will be created.
@@ -472,6 +466,40 @@ public class CiliaAdminServiceImpl implements CiliaAdminService, AdminChain, Adm
 		chain.replace().id(from).to(to);
 
 		builder.done();
-		
+
+	}
+
+	/* (non-Javadoc)
+	 * @see fr.liglab.adele.cilia.AdminComponent#isMediator(java.lang.String, java.lang.String)
+	 */
+	public boolean isMediator(String chainId, String componentId) {
+		Chain chain = null;
+		try {
+			chain = ccontext.getApplicationRuntime().getChain(chainId);
+		} catch (CiliaIllegalParameterException e) {
+			return false;
+		}
+		if (chain.getMediator(componentId) != null){
+			return true;
+		}
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	/* (non-Javadoc)
+	 * @see fr.liglab.adele.cilia.AdminComponent#isAdapter(java.lang.String, java.lang.String)
+	 */
+	public boolean isAdapter(String chainId, String componentId) {
+		Chain chain = null;
+		try {
+			chain = ccontext.getApplicationRuntime().getChain(chainId);
+		} catch (CiliaIllegalParameterException e) {
+			return false;
+		}
+		if (chain.getAdapter(componentId) != null){
+			return true;
+		}
+		// TODO Auto-generated method stub
+		return false;
 	}
 }

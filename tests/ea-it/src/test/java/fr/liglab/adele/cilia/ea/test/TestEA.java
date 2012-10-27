@@ -61,7 +61,6 @@ import fr.liglab.adele.cilia.runtime.CiliaInstance;
 @RunWith(JUnit4TestRunner.class)
 public class TestEA  {
 
-	private final static String CURRENT_VERSION="1.5.2-SNAPSHOT"; 
 
 	private final static String COLLECTOR = "ea-collector";
 
@@ -275,7 +274,7 @@ public class TestEA  {
 			Data ndata = new Data("Test number " + i, "data");
 			is.send(ndata);
 		}
-		CiliaHelper.waitSomeTime(3000);
+		CiliaHelper.waitSomeTime(6000);
 		//See if all messages are received.
 		Assert.assertEquals(10, ch.countReceived());
 		Data data = ch.getLast();

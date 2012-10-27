@@ -17,7 +17,11 @@
  */
 package fr.liglab.adele.cilia;
 
+import fr.liglab.adele.cilia.exceptions.BuilderException;
+import fr.liglab.adele.cilia.exceptions.BuilderPerformerException;
 import fr.liglab.adele.cilia.exceptions.CiliaException;
+import fr.liglab.adele.cilia.exceptions.CiliaIllegalParameterException;
+import fr.liglab.adele.cilia.exceptions.CiliaIllegalStateException;
 import fr.liglab.adele.cilia.exceptions.CiliaParserException;
 import fr.liglab.adele.cilia.model.Chain;
 
@@ -33,8 +37,9 @@ public interface AdminChain {
 	 * @param id The ID of the chain  to retrieve 
 	 * @return The required Chain, 
 	 * return <code>null<code> if chain does not exist.
+	 * @throws CiliaIllegalParameterException 
 	 */
-	Chain getChain(String id);
+	Chain getChain(String id) throws CiliaIllegalParameterException;
 	
 	/**
 	 * Create a new initial empty chain chain/
@@ -87,6 +92,10 @@ public interface AdminChain {
 	 * Delete a mediation chain. 
 	 * @param id The ID of the chain to be deleted
 	 * @return true if chain is successful deleted, false if it does not exist.
+	 * @throws CiliaIllegalStateException 
+	 * @throws CiliaIllegalParameterException 
+	 * @throws BuilderException 
+	 * @throws BuilderPerformerException 
 	 */
-	boolean deleteChain(String id);
+	boolean deleteChain(String id) throws CiliaIllegalParameterException, CiliaIllegalStateException, BuilderException, BuilderPerformerException;
 }

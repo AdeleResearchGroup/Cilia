@@ -1,20 +1,21 @@
 {
 	"machine" : {
-		"id" : "server1",
+		"id" : "server2",
 		"host" : "localhost",
 
 		"connection" : [
 				{
 				"out" : {
-					"service_filter" : "(&(objectClass=fr.liglab.adele.cilia.remote.impl.AdminChainREST)(instance.name=remote-admin-chain-0))"
+					"service_filter" : "(&(objectClass=fr.liglab.adele.cilia.demo.endpoint.DemoEndpointI)(instance.name=SplitAggregateEndpoint-0))",
+					"protocol" : ["jsonrpc"]
 					}
 				}
 		],
 
 		"component" : [
 			{ 
-			  "factory" : "RoSe_exporter.jersey",
-			  "properties" : { "jersey.servlet.name" : "/cilia" }
+			  "factory" : "RoSe_exporter.jabsorb",
+			  "properties" : { "jsonrpc.servlet.name" : "/jsonrpc" }
 			}
 		],
 	}

@@ -40,6 +40,7 @@ import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
 
 import fr.liglab.adele.cilia.exceptions.CiliaException;
+import fr.liglab.adele.cilia.exceptions.CiliaIllegalParameterException;
 
 /**
  * This class intends to be used when working with XML data.
@@ -52,7 +53,7 @@ public class XmlTools {
      * @param node to be converted.
      * @return the XML string. 
      */
-    public static String nodeToString(Node node) throws CiliaException{
+    public static String nodeToString(Node node) throws CiliaIllegalParameterException{
         Source source = new DOMSource(node);
         StringWriter stringWriter = new StringWriter();
         Result result = new StreamResult(stringWriter);
@@ -67,7 +68,7 @@ public class XmlTools {
         catch (TransformerException e)
         {
             e.printStackTrace();
-            throw new CiliaException (e.getMessage());
+            throw new CiliaIllegalParameterException (e.getMessage());
         }
     }
 
@@ -77,14 +78,14 @@ public class XmlTools {
      * @return the create Node
      * @throws CiliaException when there is a problem to build the Node.
      */
-    public static Node stringToNode(String xml) throws CiliaException {
+    public static Node stringToNode(String xml) throws CiliaIllegalParameterException {
     	Node node;
         ByteArrayInputStream is  = new ByteArrayInputStream (xml.getBytes());
         try {
         node = streamToNode(is);
         is.close();
         } catch(Exception ex) {
-            throw new CiliaException("Unable to parse: " + xml);
+            throw new CiliaIllegalParameterException("Unable to parse: " + xml);
         }
         return node;
     }
@@ -94,7 +95,7 @@ public class XmlTools {
      * @return the builded node.
      * @throws CiliaException when there is a problem to build the Node.
      */
-    public static Node urlToNode(String urlxml) throws CiliaException {
+    public static Node urlToNode(String urlxml) throws CiliaIllegalParameterException {
         InputStream is = null;
         URL url = null;
         Node node = null;
@@ -104,16 +105,16 @@ public class XmlTools {
             node =  streamToNode(is);
             is.close();
         } catch (FileNotFoundException e) {
-            throw new CiliaException("File not found: " + e.getMessage());
+            throw new CiliaIllegalParameterException("File not found: " + e.getMessage());
         } catch (MalformedURLException e) {
-            throw new CiliaException("Unable to load malformed URL");
+            throw new CiliaIllegalParameterException("Unable to load malformed URL");
         } catch (IOException e) {
-        	throw new CiliaException("I/O Exception when open file");
+        	throw new CiliaIllegalParameterException("I/O Exception when open file");
         }
         return node;
     }
 
-    public static Node fileToNode(String urlfile) throws CiliaException {
+    public static Node fileToNode(String urlfile) throws CiliaIllegalParameterException {
         InputStream is = null;
         Node node = null;
         try {
@@ -121,15 +122,15 @@ public class XmlTools {
             node = streamToNode(is);
             is.close();
         } catch (FileNotFoundException e) {
-            throw new CiliaException("File not found: " + e.getMessage());
+            throw new CiliaIllegalParameterException("File not found: " + e.getMessage());
         } catch (IOException e) {
-        	throw new CiliaException("I/O Exception when open file");
+        	throw new CiliaIllegalParameterException("I/O Exception when open file");
 		}
 
         return node;
     }
     
-    public static Node streamToNode(InputStream is) throws CiliaException{
+    public static Node streamToNode(InputStream is) throws CiliaIllegalParameterException{
         DocumentBuilderFactory domFactory = 
             DocumentBuilderFactory.newInstance();
         domFactory.setNamespaceAware(true); 
@@ -138,17 +139,17 @@ public class XmlTools {
             builder = domFactory.newDocumentBuilder();
         } catch (ParserConfigurationException e) {
             e.printStackTrace();
-            throw new CiliaException("Unable to create DocumentBuilder in XmlTools: " + e.getMessage());
+            throw new CiliaIllegalParameterException("Unable to create DocumentBuilder in XmlTools: " + e.getMessage());
         }
         Document doc = null;
         try {
             doc = builder.parse(is);
         } catch (SAXException e) {
             e.printStackTrace();
-            throw new CiliaException("Unable to create org.w3c.dom.Node from URL in XmlTools: " + e.getMessage());
+            throw new CiliaIllegalParameterException("Unable to create org.w3c.dom.Node from URL in XmlTools: " + e.getMessage());
         } catch (IOException e) {
             e.printStackTrace();
-            throw new CiliaException(e.getMessage());
+            throw new CiliaIllegalParameterException(e.getMessage());
         }
         return doc;
     }

@@ -15,7 +15,9 @@
 				<mediator-instance type="UC1Aggregator" id="uc1-aggregator-1" />
 			</mediators>
 			<adapters>
-				<adapter-instance type="SplitAggregateEndpoint" id="getPriceAdapter" />
+				<adapter-instance type="SplitAggregateEndpoint" id="getPriceAdapter" >
+					<property name="endpoint.id" type="String" value="toto"/>
+				</adapter-instance>
 			</adapters>
 			<bindings>
 				<binding from="getPriceAdapter:unique" to="xslt-transformer-1:unique" />

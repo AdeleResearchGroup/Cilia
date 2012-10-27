@@ -23,8 +23,11 @@ import java.util.Hashtable;
 import fr.liglab.adele.cilia.CiliaAdminService;
 import fr.liglab.adele.cilia.CiliaContext;
 import fr.liglab.adele.cilia.admin.util.ParserUtils;
+import fr.liglab.adele.cilia.exceptions.BuilderException;
+import fr.liglab.adele.cilia.exceptions.BuilderPerformerException;
 import fr.liglab.adele.cilia.exceptions.CiliaException;
 import fr.liglab.adele.cilia.exceptions.CiliaIllegalParameterException;
+import fr.liglab.adele.cilia.exceptions.CiliaIllegalStateException;
 import fr.liglab.adele.cilia.exceptions.CiliaInvalidSyntaxException;
 import fr.liglab.adele.cilia.exceptions.CiliaParserException;
 import fr.liglab.adele.cilia.model.Adapter;
@@ -50,7 +53,11 @@ public class CiliaAdminServiceGogo {
 	 */
 	//@Descriptor("Shows the information of a chain.")
 	public String chain(/*@Descriptor("The chain ID")*/String chainId) {
-		Chain chain = admin.getChain(chainId);
+		Chain chain = null;
+		try {
+			chain = admin.getChain(chainId);
+		} catch (CiliaIllegalParameterException e) {
+		}
 		return String.valueOf(chain);
 	}
 
@@ -115,7 +122,12 @@ public class CiliaAdminServiceGogo {
 	 */
 	//@Descriptor("Detele a mediation chain")
 	public boolean deleteChain(/*@Descriptor("The chain ID")*/ String id) {
-		return admin.deleteChain(id);
+		try {
+			return admin.deleteChain(id);
+		} catch (CiliaException e) {
+			e.printStackTrace();
+		}
+		return false;
 	}
 
 
@@ -127,7 +139,12 @@ public class CiliaAdminServiceGogo {
 	 */
 	//@Descriptor("Get the mediator information")
 	public String mediator(/*@Descriptor("The chain ID")*/String chainid, /*@Descriptor("The mediator ID")*/String componentId){
-		Mediator mediator = admin.getMediator(chainid, componentId);
+		Mediator mediator = null;
+		try {
+			mediator = admin.getMediator(chainid, componentId);
+		} catch (CiliaIllegalParameterException e) {
+			e.printStackTrace();
+		}
 		return String.valueOf(mediator);
 	}
 
