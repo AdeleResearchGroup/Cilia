@@ -32,6 +32,7 @@ import fr.liglab.adele.cilia.CiliaContext;
 import fr.liglab.adele.cilia.builder.Architecture;
 import fr.liglab.adele.cilia.builder.Builder;
 import fr.liglab.adele.cilia.exceptions.BuilderException;
+import fr.liglab.adele.cilia.exceptions.BuilderPerformerException;
 import fr.liglab.adele.cilia.exceptions.CiliaException;
 import fr.liglab.adele.cilia.util.ChainParser;
 import fr.liglab.adele.cilia.util.CiliaFileManager;
@@ -161,8 +162,14 @@ public class CiliaFileManagerImpl implements CiliaFileManager {
 					if (ccontext != null) { //CiliaContext could disappear and this service is stopping also.
 						try{
 							ccontext.getApplicationRuntime().stopChain(chains[i]);
-							//ccontext.removeChain(chains[i]);
 						}catch(Exception ex) {} //Exception when stoping iPOJO runtime.
+					}
+					try {
+						ccontext.getBuilder().remove(chains[i]).done();
+					} catch (BuilderException e) {
+						e.printStackTrace();
+					} catch (BuilderPerformerException e) {
+						e.printStackTrace();
 					}
 				}
 				chainList.clear();
