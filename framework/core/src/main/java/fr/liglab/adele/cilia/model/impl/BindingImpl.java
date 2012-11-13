@@ -205,19 +205,22 @@ public class BindingImpl extends ComponentImpl implements Binding{
 	}
 	
 	public String toString(){
-		StringBuffer toShow = new StringBuffer();
+		StringBuffer toShow = new StringBuffer("{");
 		if (getSourcePort() != null) {
-			toShow.append("FROM ");
+			toShow.append("\"from\":\"");
 			toShow.append(getSourceMediator().getId());
 			toShow.append(":");
 			toShow.append(getSourcePort().getName());
+			toShow.append("\", ");
 		}
-		if (getSourcePort() != null) {
-			toShow.append(" TO ");
+		if (getTargetPort() != null) {
+			toShow.append("\"to\":\"");
 			toShow.append(getTargetMediator().getId());
 			toShow.append(":");
 			toShow.append(getTargetPort().getName());
+			toShow.append("\"");
 		}
+		toShow.append("}");
 		return toShow.toString();
 	}
     
