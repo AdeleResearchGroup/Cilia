@@ -61,7 +61,7 @@
 		<dependency>
 			<groupId>org.ow2.chameleon.rose.jsonrpc</groupId>
 			<artifactId>jabsorb-exporter</artifactId>
-			<version>1.0.0</version>
+			<version>1.0.1-SNAPSHOT</version>
 		</dependency>
 		<!-- WEB-->
 		<dependency>
