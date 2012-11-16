@@ -19,13 +19,14 @@ import fr.liglab.adele.cilia.Data;
 import fr.liglab.adele.cilia.framework.AbstractAsyncIOAdapter;
 import fr.liglab.adele.cilia.framework.AbstractIOAdapter;
 import fr.liglab.adele.cilia.framework.monitor.IMonitor;
+import fr.liglab.adele.cilia.model.impl.PatternType;
 import fr.liglab.adele.cilia.runtime.Const;
 import fr.liglab.adele.cilia.runtime.MediatorHandler;
 import fr.liglab.adele.cilia.runtime.impl.DispatcherHandler;
 import fr.liglab.adele.cilia.runtime.impl.MonitorHandler;
 import fr.liglab.adele.cilia.runtime.impl.SchedulerHandler;
 
-public class IOAdapterFactory extends MediatorComponentFactory {
+public class IOAdapterFactory extends MediatorComponentFactory implements AdapterFactoryI {
 
 	private static final String COMPONENT_TYPE = "adapter";
 
@@ -34,6 +35,13 @@ public class IOAdapterFactory extends MediatorComponentFactory {
 		super(context, element);
 	}
 
+	/**
+	 * @return the adapterType
+	 */
+	public PatternType getPattern() {
+		return PatternType.IN_OUT;
+	}
+	
 	protected void updateMetadata() {
 		Element scheduler = null;
 		Element dispatcher = null;

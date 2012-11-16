@@ -162,7 +162,7 @@ public class MediatorControllerImpl implements Observer {
 	/**
 	 * Update the mediator instance using model information.
 	 */
-	private void updateMediatorInstance() {
+	protected void updateMediationComponentInstance() {
 		if (mediatorInstance.getState() == ComponentInstance.VALID) {
 			createCollectorInstances();
 			createSenderInstances();
@@ -377,7 +377,7 @@ public class MediatorControllerImpl implements Observer {
 			mediatorModel.setRunningState(state);
 			switch (state) {
 			case CiliaInstance.VALID: {
-				updateMediatorInstance();
+				updateMediationComponentInstance();
 			}
 			break;
 			case CiliaInstance.DISPOSED:

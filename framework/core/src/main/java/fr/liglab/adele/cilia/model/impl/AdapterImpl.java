@@ -18,6 +18,8 @@ import java.util.Dictionary;
 
 import fr.liglab.adele.cilia.model.Adapter;
 import fr.liglab.adele.cilia.model.Chain;
+import fr.liglab.adele.cilia.util.FrameworkUtils;
+import fr.liglab.adele.cilia.util.Watch;
 
 /**
  * This class represent the adapter in the model at execution.
@@ -55,6 +57,15 @@ public class AdapterImpl  extends MediatorComponentImpl implements Adapter{
 	
 	
 	/**
+	 * Get the pattern associated to the AdapterImpl.
+	 * @return The pattern.
+	 */
+	public void setPattern(PatternType type) {
+		adapterPattern = type;
+	}
+	
+	
+	/**
 	 * Set the chain representation model which will contain this mediator.
 	 * 
 	 * @param chain
@@ -65,5 +76,16 @@ public class AdapterImpl  extends MediatorComponentImpl implements Adapter{
 			this.chain = chain;
 		}
 	}
-	
+	public String toString() {
+		StringBuffer sb = new StringBuffer("{\n");
+		sb.append("UUID : ").append(FrameworkUtils.makeQualifiedId(chainId(), nodeId(), uuid())).append(",\n");
+		sb.append("Type : ").append(getType()).append(",\n");
+		sb.append("Pattern : ").append(getPattern().getName()).append(",\n");
+		sb.append("ID : ").append(getId()).append(",\n");
+		sb.append("State : ").append(getState()).append(",\n");
+		sb.append("Creation date :"+Watch.formatDateIso8601(timeStamp())).append(",\n");
+		sb.append("Properties:").append(super.getProperties());
+		sb.append("\n}");
+		return sb.toString();
+	}
 }

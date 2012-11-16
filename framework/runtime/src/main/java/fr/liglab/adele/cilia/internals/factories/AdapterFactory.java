@@ -23,7 +23,7 @@ import fr.liglab.adele.cilia.runtime.Const;
 import fr.liglab.adele.cilia.runtime.impl.DispatcherHandler;
 import fr.liglab.adele.cilia.runtime.impl.SchedulerHandler;
 
-public class AdapterFactory extends MediatorFactory {
+public class AdapterFactory extends MediatorFactory  implements AdapterFactoryI {
 
 	private static final Logger logger = LoggerFactory
 			.getLogger("cilia.ipojo.runtime");
@@ -31,6 +31,13 @@ public class AdapterFactory extends MediatorFactory {
 	private static final String COMPONENT_TYPE = "adapter";
 
 	private volatile PatternType adapterType = PatternType.UNASSIGNED;
+
+	/**
+	 * @return the adapterType
+	 */
+	public PatternType getPattern() {
+		return adapterType;
+	}
 
 	private Element constituent;
 
