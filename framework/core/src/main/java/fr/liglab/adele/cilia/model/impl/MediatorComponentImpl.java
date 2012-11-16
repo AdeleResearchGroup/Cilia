@@ -454,6 +454,7 @@ MediatorComponent {
 		sb.append("UUID : ").append(FrameworkUtils.makeQualifiedId(chainId(), nodeId(), uuid())).append(",\n");
 		sb.append("Type : ").append(getType()).append(",\n");
 		sb.append("ID : ").append(getId()).append(",\n");
+		sb.append("State : ").append(getState()).append(",\n");
 		sb.append("Creation date :"+Watch.formatDateIso8601(creationTimeStamp)).append(",\n");
 		sb.append("Properties:").append(super.getProperties());
 		sb.append("\n}");
