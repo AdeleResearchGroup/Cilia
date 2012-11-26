@@ -31,11 +31,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import fr.liglab.adele.cilia.framework.monitor.IMonitor;
-import fr.liglab.adele.cilia.runtime.Const;
 import fr.liglab.adele.cilia.runtime.MediatorHandler;
 import fr.liglab.adele.cilia.runtime.impl.DispatcherHandler;
 import fr.liglab.adele.cilia.runtime.impl.MonitorHandler;
 import fr.liglab.adele.cilia.runtime.impl.SchedulerHandler;
+import fr.liglab.adele.cilia.util.Const;
 /**
  * 
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project
@@ -44,7 +44,7 @@ import fr.liglab.adele.cilia.runtime.impl.SchedulerHandler;
  */
 public class MediatorManager extends MediatorComponentManager implements ComponentInstance, InstanceStateListener {
 
-	private static final Logger logger = LoggerFactory.getLogger("cilia.ipojo.runtime");
+	private static final Logger logger = LoggerFactory.getLogger(Const.LOGGER_RUNTIME);
 
 
 	/**

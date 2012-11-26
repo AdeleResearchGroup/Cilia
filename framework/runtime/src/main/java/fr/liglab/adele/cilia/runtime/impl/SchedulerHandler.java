@@ -21,7 +21,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-import org.apache.felix.ipojo.ComponentInstance;
 import org.apache.felix.ipojo.ConfigurationException;
 import org.apache.felix.ipojo.PrimitiveHandler;
 import org.apache.felix.ipojo.architecture.ComponentTypeDescription;
@@ -41,11 +40,10 @@ import fr.liglab.adele.cilia.Data;
 import fr.liglab.adele.cilia.framework.IScheduler;
 import fr.liglab.adele.cilia.model.Component;
 import fr.liglab.adele.cilia.model.MediatorComponent;
-import fr.liglab.adele.cilia.model.impl.ConstModel;
-import fr.liglab.adele.cilia.runtime.Const;
 import fr.liglab.adele.cilia.runtime.ISchedulerHandler;
 import fr.liglab.adele.cilia.runtime.ProcessorMetadata;
 import fr.liglab.adele.cilia.runtime.WorkQueue;
+import fr.liglab.adele.cilia.util.Const;
 import fr.liglab.adele.cilia.util.concurrent.ReadWriteLock;
 import fr.liglab.adele.cilia.util.concurrent.WriterPreferenceReadWriteLock;
 
@@ -59,12 +57,16 @@ import fr.liglab.adele.cilia.util.concurrent.WriterPreferenceReadWriteLock;
 @SuppressWarnings({ "rawtypes", "unchecked" })
 public class SchedulerHandler extends PrimitiveHandler implements ISchedulerHandler, Runnable {
 
-	protected Logger logger;
+	protected Logger rtLogger = LoggerFactory.getLogger(Const.LOGGER_RUNTIME);
+	
+	protected Logger appLogger = LoggerFactory.getLogger(Const.LOGGER_APPLICATION);
 
 	protected MonitorHandler monitor;
 	private ReadWriteLock writeLock = new WriterPreferenceReadWriteLock();
+	private String componentId = null;
 	/**
 	 * Method process metadata, to invoke processor.
+	 * 
 	 */
 	private MethodMetadata methodMetadata;
 
@@ -137,7 +139,7 @@ public class SchedulerHandler extends PrimitiveHandler implements ISchedulerHand
 			}
 
 		} else {
-			System.out.println("Componnent metadata" + metadata);
+			rtLogger.error("Invalid Componnent metadata" + metadata);
 			throw new ConfigurationException("Error in configuration"
 					+ " this handler should be configured with one handler name:"
 					+ HANDLER_NAME + " and HandlerNamespace:" + Const.CILIA_NAMESPACE);
@@ -145,7 +147,7 @@ public class SchedulerHandler extends PrimitiveHandler implements ISchedulerHand
 	}
 
 	protected void initializeProperties(Dictionary dictionary) {
-		logger = LoggerFactory.getLogger("cilia.ipojo.runtime");
+		componentId = (String)dictionary.get(Const.PROPERTY_COMPONENT_ID);
 	}
 
 	/**
@@ -216,10 +218,10 @@ public class SchedulerHandler extends PrimitiveHandler implements ISchedulerHand
 					}
 				}
 			} catch (Exception e) {
-				logger.error(e.getStackTrace().toString());
+				appLogger.error("[{}] unable to process", componentId, e);
 			}
 		} else {
-			logger.error("Trying to process but processor is not valid: " + getInstanceManager().getState());
+			appLogger.error("[{}] Trying to process but processor is not valid",componentId );
 		}
 	}
 
@@ -264,45 +266,33 @@ public class SchedulerHandler extends PrimitiveHandler implements ISchedulerHand
 
 		initializeProperties(props);
 		/* Check property lock */
-		value = (String) props.get(ConstModel.PROPERTY_LOCK_UNLOCK);
-		if ((value != null) && (value.equals(ConstModel.SET_LOCK)))
+		value = (String) props.get(Const.PROPERTY_LOCK_UNLOCK);
+		if ((value != null) && (value.equals(Const.SET_LOCK)))
 			lock();
 		else {
-			if ((value != null) && (value.equals(ConstModel.SET_UNLOCK)))
+			if ((value != null) && (value.equals(Const.SET_UNLOCK)))
 				unlock();
 		}
 	}
 
 	public void notifyOnCollect(Data data) {
-
-		StringBuffer msg = new StringBuffer().append("data collected");
-		if (logger.isDebugEnabled()) {
-			if (data != null)
-				msg.append("=").append(data.toString());
-
-			logger.debug(msg.toString());
-		}
 		MonitorHandler mon = getMonitor();
 		if (mon != null) {
 			mon.notifyOnCollect(data);
 		} else {
-			logger.error("Monitor is null");
+			appLogger.error("[{}]Monitor is not valid");
 		}
 
 	}
 
 	public void fireEvent(Map info) {
-		StringBuffer msg = new StringBuffer().append("fire event");
+		appLogger.debug("[{}] to fire event", componentId);
 		MonitorHandler mon = getMonitor();
-		if (logger.isDebugEnabled()) {
-			if (info != null)
-				msg.append(" parameter=").append(info.toString());
-			logger.debug(msg.toString());
-		}
+
 		if (mon != null) {
 			mon.fireEvent(info);
 		} else {
-			logger.error("Monitor is null");
+			appLogger.error("[{}] Monitor is not valid", componentId);
 		}
 	}
 
@@ -316,9 +306,10 @@ public class SchedulerHandler extends PrimitiveHandler implements ISchedulerHand
 
 	// call scheduler object reference.
 	public void notifyData(Data data) {
+		appLogger.debug("[{}] Data has been received", componentId);
 		IScheduler scheduler = schedulerManager.getScheduler();
 		if (scheduler == null) {
-			logger.error("Some Error happend in scheduler, scheduler object is not present ");
+			appLogger.error("[{}] scheduler object is not valid when notifying the data arrive", componentId);
 			return;
 		}
 		if (isLocked())
@@ -341,12 +332,12 @@ public class SchedulerHandler extends PrimitiveHandler implements ISchedulerHand
 	}
 
 	public void unvalidate() {
-		logger.debug("stop scheduler");
+		rtLogger.debug("[{}] scheduler stopped", componentId);
 		m_refData = null;
 	}
 
 	public void validate() {
-		logger.debug("start scheduler");
+		rtLogger.debug("[{}] scheduler started", componentId);
 		m_refData = null;
 	}
 
@@ -355,8 +346,8 @@ public class SchedulerHandler extends PrimitiveHandler implements ISchedulerHand
 			getAdminData(false).put("cilia.stored.messages", new ArrayList());
 		}
 		((ArrayList) getAdminData(false).get("cilia.stored.messages")).add(data);
-		logger.trace("#Message stored ="
-				+ ((ArrayList) getAdminData(false).get("cilia.stored.messages")).size());
+		appLogger.trace(" [{}]#Message stored ="
+				+ ((ArrayList) getAdminData(false).get("cilia.stored.messages")).size(), componentId);
 	}
 
 	private ArrayList getStoredMessage() {
@@ -371,17 +362,17 @@ public class SchedulerHandler extends PrimitiveHandler implements ISchedulerHand
 
 	public void lock() {
 		isLocked = true;
-		logger.debug("Scheduler now is locked");
+		rtLogger.debug("[{}] Scheduler now is locked", componentId);
 	}
 
 	private void injectDataStored(ArrayList dataStored) {
 		Data data;
 		IScheduler scheduler = schedulerManager.getScheduler();
 		if (scheduler != null) {
-			logger.trace("inject Data size=" + dataStored.size());
+			rtLogger.trace("[{}] inject Data size=" + dataStored.size(), componentId);
 			for (int i = 0; i < dataStored.size(); i++) {
 				data = (Data) dataStored.get(i);
-				logger.trace("Inject data = " + data.getContent());
+				rtLogger.trace("[{}] Inject data = " + data.getContent(), componentId);
 				notifyOnCollect(data);
 				scheduler.notifyData(data);
 			}
@@ -390,7 +381,7 @@ public class SchedulerHandler extends PrimitiveHandler implements ISchedulerHand
 	}
 
 	public void unlock() {
-		logger.trace("unlock called");
+		rtLogger.trace("[{}] unlock called", componentId);
 		m_systemQueue.execute(this);
 	}
 
@@ -403,15 +394,15 @@ public class SchedulerHandler extends PrimitiveHandler implements ISchedulerHand
 		BundleContext context = getInstanceManager().getContext();
 		try {
 			refs = context.getServiceReferences(AdminData.class.getName(), "(chain.name="
-					+ (String) m_dictionary.get(ConstModel.PROPERTY_CHAIN_ID) + ")");
+					+ (String) m_dictionary.get(Const.PROPERTY_CHAIN_ID) + ")");
 		} catch (InvalidSyntaxException e) {
-			logger.warn("Admin data service lookup unrecoverable error");
+			rtLogger.warn("[{}] Admin data service lookup unrecoverable error", componentId);
 			refs = null;
 		}
 		if (refs != null)
 			m_refData = refs[0];
 		else {
-			logger.warn("Admin data service not found");
+			rtLogger.warn("[{}] Admin data service not found", componentId);
 			return;
 		}
 	}
@@ -424,7 +415,7 @@ public class SchedulerHandler extends PrimitiveHandler implements ISchedulerHand
 		dataContainer = (AdminData) getInstanceManager().getContext().getService(
 				m_refData);
 		data = dataContainer.getData(
-				(String) m_dictionary.get(ConstModel.PROPERTY_COMPONENT_ID), isRunning);
+				(String) m_dictionary.get(Const.PROPERTY_COMPONENT_ID), isRunning);
 		getInstanceManager().getContext().ungetService(m_refData);
 		return data;
 	}
@@ -448,7 +439,7 @@ public class SchedulerHandler extends PrimitiveHandler implements ISchedulerHand
 	public void init() {
 		IScheduler scheduler = schedulerManager.getScheduler();
 		if (scheduler != null) {
-			logger.trace("init called");
+			rtLogger.trace("[{}] init called", componentId);
 			scheduler.init();
 		}
 	}

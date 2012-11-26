@@ -22,12 +22,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import fr.liglab.adele.cilia.exceptions.CiliaException;
-
 import fr.liglab.adele.cilia.model.Binding;
 import fr.liglab.adele.cilia.model.Component;
 import fr.liglab.adele.cilia.model.impl.CollectorImpl;
 import fr.liglab.adele.cilia.model.impl.SenderImpl;
-import fr.liglab.adele.cilia.runtime.Const;
+import fr.liglab.adele.cilia.util.Const;
 
 /**
  * 
@@ -49,7 +48,7 @@ public abstract class AbstractBindingService implements CiliaBindingService {
     
     private volatile static int identificator = 0;
     
-    private static final Logger logger = LoggerFactory.getLogger("cilia.ipojo.runtime");
+    private static final Logger loggerRt = LoggerFactory.getLogger(Const.LOGGER_RUNTIME);
     
     public abstract Dictionary getProperties(Dictionary collectorProperties,
             Dictionary senderProperties, Binding b) throws CiliaException;
@@ -58,7 +57,7 @@ public abstract class AbstractBindingService implements CiliaBindingService {
         
         if (collectorType == null || collectorType.compareTo("") == 0) {
             if ((nature & NATURE_IN) > 0) {
-                logger.error("Binding is not well configured, Collector.type not set");
+                loggerRt.error("Linker Service is not well configured, collector.type not set");
             }
             return null;
         }
@@ -72,7 +71,7 @@ public abstract class AbstractBindingService implements CiliaBindingService {
     public Component getSenderModel(Dictionary props) {
         if (senderType == null || senderType.compareTo("") == 0) {
             if ((nature & NATURE_OUT) > 0) {
-                logger.error("Binding is not well configured, Sender.type not set");
+                loggerRt.error("Linker service is not well configured, sender.type not set");
             }
             return null;
         }

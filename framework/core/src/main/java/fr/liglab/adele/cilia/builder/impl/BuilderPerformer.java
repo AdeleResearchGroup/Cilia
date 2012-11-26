@@ -36,10 +36,10 @@ import fr.liglab.adele.cilia.model.MediatorComponent;
 import fr.liglab.adele.cilia.model.impl.AdapterImpl;
 import fr.liglab.adele.cilia.model.impl.BindingImpl;
 import fr.liglab.adele.cilia.model.impl.ChainImpl;
-import fr.liglab.adele.cilia.model.impl.ConstModel;
 import fr.liglab.adele.cilia.model.impl.MediatorComponentImpl;
 import fr.liglab.adele.cilia.model.impl.MediatorImpl;
 import fr.liglab.adele.cilia.model.impl.PatternType;
+import fr.liglab.adele.cilia.util.Const;
 
 /**
  * 
@@ -241,9 +241,9 @@ public class BuilderPerformer {
 
 		//why Denis?
 		if (properties != null) {
-			properties.remove(ConstModel.PROPERTY_COMPONENT_ID);
-			properties.remove(ConstModel.PROPERTY_CHAIN_ID);
-			properties.remove(ConstModel.PROPERTY_LOCK_UNLOCK);
+			properties.remove(Const.PROPERTY_COMPONENT_ID);
+			properties.remove(Const.PROPERTY_CHAIN_ID);
+			properties.remove(Const.PROPERTY_LOCK_UNLOCK);
 		}
 		if (from instanceof Adapter){
 			Adapter ad = (Adapter)from;

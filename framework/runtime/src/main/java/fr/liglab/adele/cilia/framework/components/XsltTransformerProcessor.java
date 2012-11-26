@@ -6,16 +6,17 @@ import org.slf4j.LoggerFactory;
 import fr.liglab.adele.cilia.Data;
 import fr.liglab.adele.cilia.exceptions.CiliaException;
 import fr.liglab.adele.cilia.framework.data.XsltTransformator;
+import fr.liglab.adele.cilia.util.Const;
 
 public class XsltTransformerProcessor {
 
     //String filepath = "http://localhost:8080/addAcountRes/xslt.xslt";
     String filepath ;
    
-    Logger log = LoggerFactory.getLogger("cilia.framework.compendium.mediators");
+    Logger log = LoggerFactory.getLogger(Const.LOGGER_APPLICATION);
     
     public Data process(Data data) {
-        log.debug("messages has been arrived");
+        log.debug("[XSLTTransformer] messages will be processed");
         if (filepath == null) {
             log.error( "There is any xslt file set");
             return null;
@@ -26,7 +27,6 @@ public class XsltTransformerProcessor {
         } catch (CiliaException e2) {
            log.error( "Error when transforming data");
         }
-        log.debug("messages will be sent" + newData.getContent());
         return newData;
     }
 	

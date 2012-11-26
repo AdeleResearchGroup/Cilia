@@ -24,10 +24,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
-import org.apache.felix.ipojo.ComponentInstance;
 import org.apache.felix.ipojo.ConfigurationException;
-import org.apache.felix.ipojo.Handler;
-import org.apache.felix.ipojo.InstanceManager;
 import org.apache.felix.ipojo.PrimitiveHandler;
 import org.apache.felix.ipojo.architecture.ComponentTypeDescription;
 import org.apache.felix.ipojo.metadata.Element;
@@ -41,11 +38,10 @@ import fr.liglab.adele.cilia.exceptions.CiliaException;
 import fr.liglab.adele.cilia.framework.IDispatcher;
 import fr.liglab.adele.cilia.framework.ISender;
 import fr.liglab.adele.cilia.runtime.CiliaInstance;
-import fr.liglab.adele.cilia.runtime.CiliaInstanceWrapper;
-import fr.liglab.adele.cilia.runtime.Const;
 import fr.liglab.adele.cilia.runtime.IDispatcherHandler;
 import fr.liglab.adele.cilia.runtime.ProcessorMetadata;
 import fr.liglab.adele.cilia.runtime.WorkQueue;
+import fr.liglab.adele.cilia.util.Const;
 import fr.liglab.adele.cilia.util.concurrent.ReadWriteLock;
 import fr.liglab.adele.cilia.util.concurrent.WriterPreferenceReadWriteLock;
 /**
@@ -58,6 +54,7 @@ import fr.liglab.adele.cilia.util.concurrent.WriterPreferenceReadWriteLock;
 @SuppressWarnings({"unchecked","rawtypes"})
 public class DispatcherHandler extends PrimitiveHandler implements IDispatcherHandler {
 
+	private String componentId = null;
 
 	private ThreadLocal thLProcessor = new ThreadLocal();
 	/**
@@ -69,7 +66,9 @@ public class DispatcherHandler extends PrimitiveHandler implements IDispatcherHa
 	 */
 	private MethodMetadata m_methodProcessMetadata;
 
-	private Logger logger;
+	private Logger logger = LoggerFactory.getLogger(Const.LOGGER_APPLICATION);
+
+	private Logger rtlogger = LoggerFactory.getLogger(Const.LOGGER_RUNTIME);
 
 	private ReadWriteLock m_lock = new WriterPreferenceReadWriteLock();
 
@@ -147,7 +146,7 @@ public class DispatcherHandler extends PrimitiveHandler implements IDispatcherHa
 	 * @param dictionary
 	 */
 	private void initiainitializeProperties(Dictionary dictionary) {
-		logger = LoggerFactory.getLogger("cilia.ipojo.runtime");
+		componentId = (String)dictionary.get(Const.PROPERTY_COMPONENT_ID);
 	}
 
 	public void configure(Element metadata, Dictionary properties)
@@ -183,7 +182,6 @@ public class DispatcherHandler extends PrimitiveHandler implements IDispatcherHa
 		m_methodProcessMetadata = getPojoMetadata().getMethod(dm.getMethod(),
 				dm.getParameterDataType());
 		getInstanceManager().register(m_methodProcessMetadata, this);
-		logger.debug("registring method:" + m_methodProcessMetadata.getMethodName());
 	}
 
 	public void onError(Object pojo, Method method, Throwable throwable) {
@@ -221,7 +219,7 @@ public class DispatcherHandler extends PrimitiveHandler implements IDispatcherHa
 			Data ndata = null;
 			boolean isList = false;
 			if (returnedObj == null) {
-				logger.warn("Dispatching empty dataset");
+				logger.warn("[{}] Dispatching empty dataset", componentId);
 				list = null;
 			} else if (returnedObj instanceof List) {
 				list = new ArrayList((List) returnedObj);
@@ -232,9 +230,9 @@ public class DispatcherHandler extends PrimitiveHandler implements IDispatcherHa
 				list.add(ndata);
 				isList = false;
 			} else {
-				msg = new StringBuffer().append("Unable to identify returned data type ")
+				msg = new StringBuffer().append("[{}] Unable to identify returned data type ")
 						.append(returnedObj);
-				logger.error(msg.toString());
+				logger.error(msg.toString(), componentId);
 			}
 			final List rList = list;
 			notifyOnProcessExit(list);
@@ -245,7 +243,7 @@ public class DispatcherHandler extends PrimitiveHandler implements IDispatcherHa
 					dispatch(ndata);
 				}
 			} catch (CiliaException e) {
-				logger.error("Error while dispatching :"+e.getMessage());
+				logger.error("[{}] Error while dispatching", componentId,e);
 				throw new RuntimeException(e.getMessage());
 			}
 			notifyOnDispatch(rList);
@@ -270,9 +268,7 @@ public class DispatcherHandler extends PrimitiveHandler implements IDispatcherHa
 		boolean synchronous = extendedProperties.isModeSynchronous;
 		List pojoList = (List) dispatcherManager.getPojo(senderName);
 		if (pojoList == null) {
-			logger.error("There is any sender present in port : "
-					+ String.valueOf(senderName));
-
+			logger.error("[{}] there is any sender present in port {}", componentId, String.valueOf(senderName));
 		} else {
 			List senders = new ArrayList(pojoList);
 			Iterator it = senders.iterator();
@@ -282,16 +278,14 @@ public class DispatcherHandler extends PrimitiveHandler implements IDispatcherHa
 				CiliaInstance ci = (CiliaInstance) it.next();
 				ISender msender = (ISender) ci.getObject();
 				if (msender != null) {
-					logger.debug("[" + (iteration++) + "]Sending using:"
-								+ ci.getName());
+					logger.debug("[{}] [" + (iteration++) + "] Sending using to {}", componentId, ci.getName());
 					if (synchronous == true) {
 						msender.send(data);
 					} else {
 						m_applicationQueue.execute(new AsynchronousSend(msender, data));
 					}
 				} else {
-					logger.error( iteration + " Sending throw port:" + senderName + " " + ci.getName()
-							+ " is not valid: " + ci.getStateAsString());
+					logger.error("[{}][" + (iteration) + "] Sending using {} is not valid", componentId, ci.getName());
 				}
 			}
 		}
@@ -340,7 +334,7 @@ public class DispatcherHandler extends PrimitiveHandler implements IDispatcherHa
 	}
 
 	public void notifyOnProcessError(List data, Exception ex) {
-		logger.error("processing error with: " + data);
+		logger.error("{} processing error with {}", componentId, data);
 		if (monitor == null) {
 			monitor = getMonitor();
 		}
@@ -350,11 +344,7 @@ public class DispatcherHandler extends PrimitiveHandler implements IDispatcherHa
 	}
 
 	protected void notifyOnProcessExit(List data) {
-		StringBuffer msg = new StringBuffer().append("process entry");
-		if (logger.isDebugEnabled()) {
-			msg.append(" data=").append(String.valueOf(data));
-		}
-		logger.debug(msg.toString());
+		logger.debug("[{}] has finish to process", componentId);
 		if (monitor == null) {
 			monitor = getMonitor();
 		}
@@ -364,11 +354,7 @@ public class DispatcherHandler extends PrimitiveHandler implements IDispatcherHa
 	}
 
 	protected void notifyOnProcessEntry(List data) {
-		StringBuffer msg = new StringBuffer().append("process entry");
-		if (logger.isDebugEnabled()) {
-			msg.append(" data=").append(String.valueOf(data)); 
-		}
-		logger.debug(msg.toString());
+		logger.debug("[{}] will process data", componentId);
 		if (monitor == null) {
 			monitor = getMonitor();
 		}
@@ -378,11 +364,7 @@ public class DispatcherHandler extends PrimitiveHandler implements IDispatcherHa
 	}
 
 	protected void notifyOnDispatch(List data) {
-		StringBuffer msg = new StringBuffer().append("dispatch ");
-		if (logger.isDebugEnabled()) {
-			msg.append(" data=").append(String.valueOf(data)); 
-		}
-		logger.debug(msg.toString());
+		logger.debug("[{}] will dispatch data", componentId);
 		if (monitor == null) {
 			monitor = getMonitor();
 		}
@@ -393,11 +375,8 @@ public class DispatcherHandler extends PrimitiveHandler implements IDispatcherHa
 
 
 	public void fireEvent(Map info) {
-		StringBuffer msg = new StringBuffer().append("fire event");
-		if (logger.isDebugEnabled()) {
-			msg.append(" parameter=").append(info.toString());
-		}
-		logger.debug(msg.toString());
+		
+		logger.debug("[{}] will fire event with {}", componentId, info);
 		if (monitor == null) {
 			monitor = getMonitor();
 		}
@@ -408,7 +387,6 @@ public class DispatcherHandler extends PrimitiveHandler implements IDispatcherHa
 
 
 	public void reconfigure(Dictionary props) {
-		logger.debug("reconfiguration");
 		extendedReconfiguration(props);
 		initiainitializeProperties(props);
 	}
@@ -429,7 +407,7 @@ public class DispatcherHandler extends PrimitiveHandler implements IDispatcherHa
 	public void dispatch(Data data) throws CiliaException {
 		IDispatcher dispatcher =  dispatcherManager.getDispatcher();
 		if (dispatcher == null) {
-			logger.warn("Dispatcher is not valid when dispatching, waiting to be valid");
+			logger.error("[{}] dispatcher is not valid when dispatching", componentId);
 			return;
 		}
 		dispatcher.dispatch(data);
@@ -438,7 +416,7 @@ public class DispatcherHandler extends PrimitiveHandler implements IDispatcherHa
 	private void dispatch(List dataset) throws CiliaException {
 		IDispatcher dispatcher = dispatcherManager.getDispatcher();
 		if (dispatcher == null) {
-			logger.warn("Dispatcher is not valid when dispatching, waiting to be valid");
+			logger.error("[{}] dispatcher is not valid when dispatching", componentId);
 			return;
 		}
 		for (int i = 0; i < dataset.size(); i ++) {
@@ -454,11 +432,11 @@ public class DispatcherHandler extends PrimitiveHandler implements IDispatcherHa
 	}
 
 	public void unvalidate() {
-		logger.debug("stop dispatcher");
+		rtlogger.debug("[{}] dispatcher stopped", componentId);
 	}
 
 	public void validate() {
-		logger.debug("start dispatcher");
+		rtlogger.debug("[{}] dispatcher started", componentId);
 	}
 
 	/* Initialization by default */

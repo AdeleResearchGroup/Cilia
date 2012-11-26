@@ -28,20 +28,18 @@ import org.slf4j.LoggerFactory;
 import fr.liglab.adele.cilia.exceptions.CiliaRuntimeException;
 import fr.liglab.adele.cilia.internals.factories.MediatorComponentManager;
 import fr.liglab.adele.cilia.knowledge.MediatorMonitoring;
-import fr.liglab.adele.cilia.model.Component;
 import fr.liglab.adele.cilia.model.MediatorComponent;
 import fr.liglab.adele.cilia.model.Port;
 import fr.liglab.adele.cilia.model.impl.BindingImpl;
 import fr.liglab.adele.cilia.model.impl.CollectorImpl;
-import fr.liglab.adele.cilia.model.impl.ConstModel;
 import fr.liglab.adele.cilia.model.impl.MediatorComponentImpl;
 import fr.liglab.adele.cilia.model.impl.SenderImpl;
 import fr.liglab.adele.cilia.model.impl.UpdateActions;
 import fr.liglab.adele.cilia.model.impl.UpdateEvent;
 import fr.liglab.adele.cilia.runtime.CiliaInstance;
 import fr.liglab.adele.cilia.runtime.CiliaInstanceWrapper;
-import fr.liglab.adele.cilia.runtime.Const;
 import fr.liglab.adele.cilia.runtime.FirerEvents;
+import fr.liglab.adele.cilia.util.Const;
 import fr.liglab.adele.cilia.util.FrameworkUtils;
 
 /**
@@ -71,7 +69,8 @@ public class MediatorControllerImpl implements Observer {
 
 	protected Hashtable addedSenders = new Hashtable();
 
-	private static Logger logger = LoggerFactory.getLogger(Const.LOGGER_CORE);
+	private static Logger logger = LoggerFactory
+			.getLogger(Const.LOGGER_RUNTIME);
 
 	protected CreatorThread creator;
 
@@ -87,8 +86,8 @@ public class MediatorControllerImpl implements Observer {
 	 * @param model
 	 *            Mediator model to handle.
 	 */
-	public MediatorControllerImpl(BundleContext context, MediatorComponent model,
-			CreatorThread creat, FirerEvents notifier) {
+	public MediatorControllerImpl(BundleContext context,
+			MediatorComponent model, CreatorThread creat, FirerEvents notifier) {
 		bcontext = context;
 		creator = creat;
 		mediatorModel = (MediatorComponentImpl) model;
@@ -108,10 +107,13 @@ public class MediatorControllerImpl implements Observer {
 	}
 
 	protected void updateProperties() {
-		mediatorModel.setProperty(ConstModel.PROPERTY_INSTANCE_TYPE, mediatorModel.getType());
-		mediatorModel.setProperty(ConstModel.PROPERTY_COMPONENT_ID, mediatorModel.nodeId());
-		mediatorModel.setProperty(ConstModel.PROPERTY_CHAIN_ID, mediatorModel.chainId());
-		mediatorModel.setProperty(ConstModel.PROPERTY_UUID, mediatorModel.uuid());
+		mediatorModel.setProperty(Const.PROPERTY_INSTANCE_TYPE,
+				mediatorModel.getType());
+		mediatorModel.setProperty(Const.PROPERTY_COMPONENT_ID,
+				mediatorModel.nodeId());
+		mediatorModel.setProperty(Const.PROPERTY_CHAIN_ID,
+				mediatorModel.chainId());
+		mediatorModel.setProperty(Const.PROPERTY_UUID, mediatorModel.uuid());
 	}
 
 	/**
@@ -125,13 +127,18 @@ public class MediatorControllerImpl implements Observer {
 				mediatorInstance.stop();
 				mediatorInstance = null;
 			}
-			mediatorInstance = new CiliaInstanceWrapper(bcontext, mediatorModel.getId(),
-					filter, mediatorModel.getProperties(), this);
+			mediatorInstance = new CiliaInstanceWrapper(bcontext,
+					mediatorModel.getId(), filter,
+					mediatorModel.getProperties(), this);
 		}
+		logger.debug("[{}] instance will be created",
+				mediatorModel.getId());
 		mediatorInstance.start();
 	}
+
 	/**
 	 * Create the filter to locate the mediator factory.
+	 * 
 	 * @param mediator
 	 * @return
 	 */
@@ -200,12 +207,11 @@ public class MediatorControllerImpl implements Observer {
 	 * update mediator properties.
 	 */
 	public void updateInstanceProperties(Dictionary properties) {
-		if (mediatorInstance == null) {
-			logger.warn("Updating Mediator Model properties when runtime instance is null");
-			return;
-		}
-		if (mediatorInstance.getState() != ComponentInstance.VALID) {
-			logger.warn("Updating Mediator instance when object is not valid %", getState());
+		if (mediatorInstance == null
+				|| mediatorInstance.getState() != ComponentInstance.VALID) {
+			logger.warn(
+					"[{}] Component instance is not valid when updating model properties",
+					this.mediatorModel.getId());
 			return;
 		}
 		mediatorInstance.updateInstanceProperties(properties);
@@ -220,7 +226,8 @@ public class MediatorControllerImpl implements Observer {
 			mediatorModel.deleteObserver(this);
 			if (mediatorInstance != null) {
 				mediatorInstance.deleteObserver(this);
-				MediatorComponentManager mcm =  (MediatorComponentManager)(mediatorInstance.getInstanceManager());
+				MediatorComponentManager mcm = (MediatorComponentManager) (mediatorInstance
+						.getInstanceManager());
 				if (mcm != null) {
 					try {
 						mcm.waitToProcessing(5000);
@@ -228,10 +235,9 @@ public class MediatorControllerImpl implements Observer {
 						e.printStackTrace();
 					}
 				}
-				//We stop the mediator even if 
+				// We stop the mediator even if
 				mediatorInstance.stop();
-				logger.info("Component [{}] stopped",
-						FrameworkUtils.makeQualifiedId(mediatorModel));
+				logger.info("[{}] stopped",mediatorModel.getId());
 				mediatorModel.dispose();
 			}
 		}
@@ -243,11 +249,8 @@ public class MediatorControllerImpl implements Observer {
 	public void start() {
 		mediatorModel.setRunningState(MediatorComponent.INVALID);
 		createMediatorInstance();
-		logger.info("Component [{}] started",
-				FrameworkUtils.makeQualifiedId(mediatorModel));
+
 	}
-
-
 
 	/**
 	 * Add collector instance to the mediator.
@@ -262,13 +265,15 @@ public class MediatorControllerImpl implements Observer {
 				addedCollectors.put(collector.getId(), collector);
 				toAdd = true;
 			} else {
-				//logger.warn(" (addCollector) Object instance in " + mediatorModel
-				//		+ " already exist " + collector.getId());
+				// logger.warn(" (addCollector) Object instance in " +
+				// mediatorModel
+				// + " already exist " + collector.getId());
 				toAdd = false;
 			}
 			if (toAdd) { // create
-				getMediatorManager().addCollector(collector.getPortname(), collector);
-				//scheduler.addCollector(collectorType, portName, properties);
+				getMediatorManager().addCollector(collector.getPortname(),
+						collector);
+				// scheduler.addCollector(collectorType, portName, properties);
 			}
 		}
 	}
@@ -287,8 +292,9 @@ public class MediatorControllerImpl implements Observer {
 				addedSenders.put(senderm.getId(), senderm);
 				toAdd = true;
 			} else {
-				//logger.warn(" (addSender) Object instance in " + mediatorModel
-				//		+ "already exist" + senderm.getId());
+				// logger.warn(" (addSender) Object instance in " +
+				// mediatorModel
+				// + "already exist" + senderm.getId());
 				toAdd = false;
 			}
 			if (toAdd) { // create
@@ -309,7 +315,7 @@ public class MediatorControllerImpl implements Observer {
 
 				addedCollectors.remove(collector);
 				MediatorComponentManager mm = getMediatorManager();
-				if (mm != null){
+				if (mm != null) {
 					mm.removeCollector(collector.getPortname(), collector);
 				}
 			}
@@ -329,7 +335,7 @@ public class MediatorControllerImpl implements Observer {
 				addedSenders.remove(sender);
 				MediatorComponentManager mm = getMediatorManager();
 
-				if (mm != null){
+				if (mm != null) {
 					mm.removeSender(sender.getPortname(), sender);
 				}
 			}
@@ -341,8 +347,9 @@ public class MediatorControllerImpl implements Observer {
 	 */
 	public int getState() {
 		if (mediatorInstance != null) {
-			MediatorComponentManager mm = (MediatorComponentManager)mediatorInstance.getInstanceManager();
-			if (mm!= null){
+			MediatorComponentManager mm = (MediatorComponentManager) mediatorInstance
+					.getInstanceManager();
+			if (mm != null) {
 				return mm.getState();
 			}
 		}
@@ -358,16 +365,14 @@ public class MediatorControllerImpl implements Observer {
 	 *            Observer method parapeters.
 	 */
 	public void update(Observable mediator, Object arg) {
-		logger.debug(" update");
 		if (mediator instanceof MediatorComponent) {
-			logger.debug(" update, OK");
 			MediatorComponent md = ((MediatorComponent) mediator);
 			UpdateEvent event = (UpdateEvent) arg;
 			if (event != null) {
 				int action = event.getUpdateAction();
 				switch (action) {
 				case UpdateActions.UPDATE_PROPERTIES: {
-					logger.debug(" update instance property");
+					logger.debug("[{}] updating Properties: \n\t {}", md.getId(), md.getProperties());
 					updateInstanceProperties(md.getProperties());
 				}
 				}
@@ -379,16 +384,21 @@ public class MediatorControllerImpl implements Observer {
 			case CiliaInstance.VALID: {
 				updateMediationComponentInstance();
 			}
-			break;
+				break;
 			case CiliaInstance.DISPOSED:
 			case CiliaInstance.STOPPED:
 			case CiliaInstance.INVALID: {
 				cleanInstances();
 			}
-			break;
+				break;
 			}
-			if (mediatorModel.isRunning()) eventFirer.fireEventNode(FirerEvents.EVT_VALID, mediatorModel);
-			else eventFirer.fireEventNode(FirerEvents.EVT_INVALID, mediatorModel);
+			if (mediatorModel.isRunning()) {
+				eventFirer.fireEventNode(FirerEvents.EVT_VALID, mediatorModel);
+			}
+			else {
+				eventFirer
+						.fireEventNode(FirerEvents.EVT_INVALID, mediatorModel);
+			}
 		}
 		synchronized (creator) {
 			creator.notifyAll();
@@ -403,42 +413,50 @@ public class MediatorControllerImpl implements Observer {
 		}
 	}
 
-	private MediatorComponentManager getMediatorManager(){
-		if (mediatorInstance==null){
+	private MediatorComponentManager getMediatorManager() {
+		if (mediatorInstance == null) {
 			return null;
 		}
 		ComponentInstance im = mediatorInstance.getInstanceManager();
-		if(im instanceof MediatorComponentManager) {
-			MediatorComponentManager mm = (MediatorComponentManager)im;
+		if (im instanceof MediatorComponentManager) {
+			MediatorComponentManager mm = (MediatorComponentManager) im;
 			return mm;
 		}
 		return null;
 	}
+
 	/**
 	 * Get the In port description of the executing component.
-	 * @param name Name of the port.
+	 * 
+	 * @param name
+	 *            Name of the port.
 	 * @return the port.
 	 */
-	public Port getInPort(String name){
+	public Port getInPort(String name) {
 		MediatorComponentManager mm = getMediatorManager();
-		if(mm != null) {
+		if (mm != null) {
 			return mm.getInPort(name);
 		}
-		logger.error("Unable to retrieve In-port '{}' on '{}'", name, this.mediatorModel.getId());
+		logger.error("Unable to retrieve In-port '{}' on '{}'", name,
+				this.mediatorModel.getId());
 		logger.error("Instance Manager {} ", getMediatorManager());
 		return null;
 	}
+
 	/**
 	 * Get the Out port description of the executing component.
-	 * @param name Name of the port.
+	 * 
+	 * @param name
+	 *            Name of the port.
 	 * @return the port.
-	 */	
+	 */
 	public Port getOutPort(String name) {
 		MediatorComponentManager mm = getMediatorManager();
-		if(mm != null) {
+		if (mm != null) {
 			return mm.getOutPort(name);
 		}
-		logger.error("Unable to retrieve Out-port '{}' on '{}' ", name, this.mediatorModel.getId());
+		logger.error("Unable to retrieve Out-port '{}' on '{}' ", name,
+				this.mediatorModel.getId());
 		logger.error("Instance Manager {} ", getMediatorManager());
 		return null;
 	}

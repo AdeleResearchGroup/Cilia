@@ -12,24 +12,28 @@ import org.apache.felix.ipojo.HandlerManager;
 import org.apache.felix.ipojo.IPojoContext;
 import org.apache.felix.ipojo.metadata.Attribute;
 import org.apache.felix.ipojo.metadata.Element;
-import org.apache.felix.ipojo.util.Logger;
 import org.osgi.framework.BundleContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import fr.liglab.adele.cilia.Data;
 import fr.liglab.adele.cilia.framework.AbstractAsyncIOAdapter;
 import fr.liglab.adele.cilia.framework.AbstractIOAdapter;
 import fr.liglab.adele.cilia.framework.monitor.IMonitor;
 import fr.liglab.adele.cilia.model.impl.PatternType;
-import fr.liglab.adele.cilia.runtime.Const;
 import fr.liglab.adele.cilia.runtime.MediatorHandler;
 import fr.liglab.adele.cilia.runtime.impl.DispatcherHandler;
 import fr.liglab.adele.cilia.runtime.impl.MonitorHandler;
 import fr.liglab.adele.cilia.runtime.impl.SchedulerHandler;
+import fr.liglab.adele.cilia.util.Const;
 
 public class IOAdapterFactory extends MediatorComponentFactory implements AdapterFactoryI {
 
 	private static final String COMPONENT_TYPE = "adapter";
 
+	private static final Logger logger = LoggerFactory.getLogger(Const.LOGGER_RUNTIME);
+
+	
 	public IOAdapterFactory(BundleContext context, Element element)
 			throws ConfigurationException {
 		super(context, element);
@@ -75,7 +79,7 @@ public class IOAdapterFactory extends MediatorComponentFactory implements Adapte
 		try {
 			clazz = super.loadClass(getClassName());
 		} catch (ClassNotFoundException e) {
-			log.error("Error when analysing Class:" + getClassName(), e);
+			logger.error("Error when analysing Class:" + getClassName(), e);
 			return;// anything to do.
 		}
 
@@ -135,8 +139,7 @@ public class IOAdapterFactory extends MediatorComponentFactory implements Adapte
 				}
 			}
 			if (req.equals(new RequiredHandler("method", null))) {
-				m_logger.log(Logger.WARNING,
-						"Method in mediator must be configured with cilia namespace ("
+				logger.warn("Method in mediator must be configured with cilia namespace ("
 								+ DEFAULT_NAMESPACE + ")");
 			}
 		}
@@ -201,8 +204,8 @@ public class IOAdapterFactory extends MediatorComponentFactory implements Adapte
 	public ComponentInstance createAdapterInstance(Dictionary config,
 			IPojoContext context, HandlerManager[] handlers)
 					throws org.apache.felix.ipojo.ConfigurationException {
+		logger.debug("[{}] creating adaptor instance with {}", config.get(Const.PROPERTY_COMPONENT_ID), config);
 		AdapterManager instance = new AdapterManager(this, context, handlers);
-
 		try {
 			instance.configure(m_componentMetadata, config);
 			instance.start();
@@ -220,7 +223,7 @@ public class IOAdapterFactory extends MediatorComponentFactory implements Adapte
 				instance = null;
 			}
 			e.printStackTrace();
-			m_logger.log(Logger.ERROR, e.getMessage(), e);
+			logger.error(e.getMessage(), e);
 			throw new ConfigurationException(e.getMessage());
 		}
 

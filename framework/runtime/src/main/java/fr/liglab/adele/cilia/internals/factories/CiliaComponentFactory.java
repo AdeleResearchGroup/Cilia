@@ -12,7 +12,7 @@ import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import fr.liglab.adele.cilia.runtime.Const;
+import fr.liglab.adele.cilia.util.Const;
 
 
 public abstract class CiliaComponentFactory extends ComponentFactory {
@@ -57,8 +57,6 @@ public abstract class CiliaComponentFactory extends ComponentFactory {
 
     private final  String DEFAULT_CATEGORY = "generic";
     
-    protected static Logger log =LoggerFactory.getLogger("cilia.ipojo.runtime");
-
 
     public CiliaComponentFactory(BundleContext context, Element element)
     throws ConfigurationException {

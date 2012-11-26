@@ -25,6 +25,7 @@ import fr.liglab.adele.cilia.builder.Creator;
 import fr.liglab.adele.cilia.builder.InstanceCreator;
 import fr.liglab.adele.cilia.builder.InstanceCreatorConfiguration;
 import fr.liglab.adele.cilia.exceptions.BuilderConfigurationException;
+import fr.liglab.adele.cilia.util.Const;
 
 /**
  * 
@@ -39,7 +40,7 @@ public class CreatorImpl extends MediatorConfiguratorImpl implements Creator,
 
 	private String category = null;
 
-	private String namespace = null;
+	private String namespace = Const.CILIA_NAMESPACE;
 
 	private String id = null;
 

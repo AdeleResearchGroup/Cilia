@@ -25,6 +25,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import fr.liglab.adele.cilia.util.CiliaFileManager;
+import fr.liglab.adele.cilia.util.Const;
 
 /**
  * This class will listen all deployed files using fileinstall,
@@ -42,7 +43,6 @@ public class CiliaFileInstall implements ArtifactInstaller {
 	/**
 	 * The Cilia logger.
 	 */
-	protected static Logger logger= LoggerFactory.getLogger("cilia.framework.deployer");
 
 	private CiliaFileManager manager;
 

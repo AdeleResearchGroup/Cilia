@@ -38,9 +38,9 @@ import org.slf4j.LoggerFactory;
 
 import fr.liglab.adele.cilia.Data;
 import fr.liglab.adele.cilia.framework.monitor.AbstractMonitor;
-import fr.liglab.adele.cilia.model.impl.ConstModel;
 import fr.liglab.adele.cilia.runtime.ConstRuntime;
 import fr.liglab.adele.cilia.runtime.WorkQueue;
+import fr.liglab.adele.cilia.util.Const;
 import fr.liglab.adele.cilia.util.FrameworkUtils;
 import fr.liglab.adele.cilia.util.Watch;
 import fr.liglab.adele.cilia.util.concurrent.ConcurrentReaderHashMap;
@@ -48,7 +48,7 @@ import fr.liglab.adele.cilia.util.concurrent.ConcurrentReaderHashMap;
 @SuppressWarnings({ "rawtypes", "unchecked" })
 public class MonitorHandlerStateVar extends AbstractMonitor {
 
-	private static Logger logger = LoggerFactory.getLogger(ConstRuntime.LOGGER_KNOWLEDGE);
+	private static Logger logger = LoggerFactory.getLogger(Const.LOGGER_RUNTIME);
 
 	private BundleContext m_bundleContext;
 
@@ -75,9 +75,9 @@ public class MonitorHandlerStateVar extends AbstractMonitor {
 	/* Handler configuration */
 	public void configure(Element metadata, Dictionary configuration)
 			throws ConfigurationException {
-		chainId = (String) configuration.get(ConstModel.PROPERTY_CHAIN_ID);
-		componentId = (String) configuration.get(ConstModel.PROPERTY_COMPONENT_ID);
-		uuid = (String) configuration.get(ConstModel.PROPERTY_UUID);
+		chainId = (String) configuration.get(Const.PROPERTY_CHAIN_ID);
+		componentId = (String) configuration.get(Const.PROPERTY_COMPONENT_ID);
+		uuid = (String) configuration.get(Const.PROPERTY_UUID);
 		topic = ConstRuntime.TOPIC_HEADER + chainId;
 
 		configureStateVar(configuration);
@@ -253,11 +253,9 @@ public class MonitorHandlerStateVar extends AbstractMonitor {
 			m_eventAdmin = (EventAdmin) m_bundleContext.getService(refEventAdmin);
 			m_eventAdmin.postEvent(new Event(topic, data));
 			m_bundleContext.ungetService(refEventAdmin);
-			if (logger.isDebugEnabled()) {
-				logger.debug("Node [{}] publish state variable  [{}]",
+			logger.debug("Node [{}] publish state variable  [{}]",
 						FrameworkUtils.makeQualifiedId(chainId, componentId, uuid) + ":"
 								+ stateVarId, value.toString());
-			}
 
 		}
 	}

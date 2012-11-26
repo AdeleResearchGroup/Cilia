@@ -2,11 +2,11 @@
 
 	<!-- ******************* Processors ****************-->
 
-	<processor name="UC1AggregatorProcessor" namespace="fr.examples.tp5"
+	<processor name="UC1AggregatorProcessor" 
 		classname="fr.liglab.adele.cilia.demo.components.UC1AggregatorProcessor">
 	</processor>
 
-	<processor name="FacturationMobileProcessor" namespace="fr.examples.tp5"
+	<processor name="FacturationMobileProcessor" 
 		classname="fr.liglab.adele.cilia.demo.components.FacturationMobileProcessor">
 		<properties>
 			<property name="service" field="service" service="true"/>
@@ -14,7 +14,7 @@
 		<cilia:method data.type="fr.liglab.adele.cilia.Data" />
 	</processor>
 
-	<processor name="FacturationInternetProcessor" namespace="fr.examples.tp5"
+	<processor name="FacturationInternetProcessor" 
 		classname="fr.liglab.adele.cilia.demo.components.FacturationInternetProcessor">
 		<properties>
 			<property name="service" field="service" service="true"/>
@@ -22,7 +22,7 @@
 		<cilia:method data.type="fr.liglab.adele.cilia.Data" />
 	</processor>
 
-	<processor name="FacturationFixeProcessor" namespace="fr.examples.tp5"
+	<processor name="FacturationFixeProcessor" 
 		classname="fr.liglab.adele.cilia.demo.components.FacturationFixeProcessor">
 		<properties>
 			<property name="service" field="service" service="true"/>
@@ -31,7 +31,7 @@
 	</processor>
 
 	<!-- ***************** Mediators **********************-->
-	<mediator-component name="UC1Aggregator" namespace="fr.examples.tp5"
+	<mediator-component name="UC1Aggregator" 
 		category="Aggregator">
 		<ports>
 			<in-port name="mobile" type="XML" />
@@ -39,46 +39,46 @@
 			<in-port name="fixe" type="XML" />
 			<out-port name="unique" type="XML" />
 		</ports>
-		<cilia:processor name="UC1AggregatorProcessor" namespace="fr.examples.tp5"/>
+		<cilia:processor name="UC1AggregatorProcessor" />
 		<cilia:scheduler name="correlation-scheduler" />
 		<cilia:dispatcher name="multicast-dispatcher" />
 	</mediator-component>
 
 	<mediator-component name="FacturationMobile"
-		namespace="fr.examples.tp5" category="invoker">
+		 category="invoker">
 		<ports>
 			<in-port name="unique" type="XML" />
 			<out-port name="unique" type="XML" />
 		</ports>
-		<cilia:processor name="FacturationMobileProcessor" namespace="fr.examples.tp5"/>
+		<cilia:processor name="FacturationMobileProcessor" />
 		<cilia:scheduler name="immediate-scheduler" />
 		<cilia:dispatcher name="multicast-dispatcher" />
 	</mediator-component>
 
 	<mediator-component name="FacturationInternet"
-		namespace="fr.examples.tp5" category="invoker">
+		category="invoker">
 		<ports>
 			<in-port name="unique" type="XML" />
 			<out-port name="unique" type="XML" />
 		</ports>
-		<cilia:processor name="FacturationInternetProcessor" namespace="fr.examples.tp5"/>
+		<cilia:processor name="FacturationInternetProcessor" />
 		<cilia:scheduler name="immediate-scheduler" />
 		<cilia:dispatcher name="multicast-dispatcher" />
 	</mediator-component>
 
 	<mediator-component name="FacturationFixe"
-		namespace="fr.examples.tp5" category="invoker">
+		 category="invoker">
 		<ports>
 			<in-port name="unique" type="XML" />
 			<out-port name="unique" type="XML" />
 		</ports>
-		<cilia:processor name="FacturationFixeProcessor" namespace="fr.examples.tp5"/>
+		<cilia:processor name="FacturationFixeProcessor" />
 		<cilia:scheduler name="immediate-scheduler" />
 		<cilia:dispatcher name="multicast-dispatcher" />
 	</mediator-component>
 
 	<mediator-component name="XsltTransformer"
-		namespace="fr.examples.tp5" >
+		 >
 		<ports>
 			<in-port name="unique" type="XML" />
 			<out-port name="unique" type="XML" />
@@ -89,7 +89,7 @@
 	</mediator-component>
 
 	<mediator-component name="XmlSplitter"
-		namespace="fr.examples.tp5" >
+		 >
 		<ports>
 			<in-port name="unique" type="XML" />
 			<out-port name="mobile" type="XML" />
@@ -101,7 +101,7 @@
 		<cilia:dispatcher name="content-based-dispatcher" />
 	</mediator-component>
 
-	<mediator-component name="Translator" namespace="fr.liglab.adele.cilia"
+	<mediator-component name="Translator" 
 		category="Translator" architecture="true">
 		<ports>
 			<in-port name="unique" type="XML" />
@@ -109,9 +109,8 @@
 		</ports>
 		<cilia:processor name="SemanticTranslatorProcessor"
 			namespace="fr.liglab.adele.cilia" />
-		<cilia:scheduler name="immediate-scheduler" namespace="fr.liglab.adele.cilia" />
-		<cilia:dispatcher name="multicast-dispatcher"
-			namespace="fr.liglab.adele.cilia" />
+		<cilia:scheduler name="immediate-scheduler"  />
+		<cilia:dispatcher name="multicast-dispatcher"/>
 	</mediator-component>
 
 </cilia>

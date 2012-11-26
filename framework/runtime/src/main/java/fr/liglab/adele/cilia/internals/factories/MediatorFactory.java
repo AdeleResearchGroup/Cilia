@@ -19,6 +19,7 @@ import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
 
 import fr.liglab.adele.cilia.model.Component;
+import fr.liglab.adele.cilia.util.Const;
 
 public class MediatorFactory extends MediatorComponentFactory implements
 		TrackerCustomizer {
@@ -138,9 +139,6 @@ public class MediatorFactory extends MediatorComponentFactory implements
 					dispatcherDescription.getNamespace());
 		}
 
-		if (logger.isDebugEnabled()) {
-			logger.debug("creating mediator instance with " + config);
-		}
 		return createMediatorInstance(config, context, handlers);
 
 		// return processorFactory.createComponentInstance(config);
@@ -151,6 +149,7 @@ public class MediatorFactory extends MediatorComponentFactory implements
 	protected MediatorManager createMediatorInstance(Dictionary config,
 			IPojoContext context, HandlerManager[] handlers)
 			throws ConfigurationException {
+		logger.debug("[{}] creating component instance with {}", config.get(Const.PROPERTY_COMPONENT_ID), config);
 		MediatorManager instance = new MediatorManager(this,
 				(ProcessorFactory) processorFactory, context, handlers);
 		try {

@@ -16,7 +16,6 @@
 package fr.liglab.adele.cilia.framework.monitor;
 
 import java.util.Dictionary;
-
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -31,11 +30,11 @@ import org.apache.felix.ipojo.parser.PojoMetadata;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import fr.liglab.adele.cilia.runtime.Const;
+import fr.liglab.adele.cilia.util.Const;
 
 @SuppressWarnings({ "rawtypes", "unchecked" })
 public class AuditHandler extends PrimitiveHandler {
-	private final Logger logger = LoggerFactory.getLogger("cilia.runtime.audit-handler");
+	private final Logger logger = LoggerFactory.getLogger(Const.LOGGER_RUNTIME);
 
 	private Set fieldsGet = new HashSet();
 	private Set fieldsSet = new HashSet();
@@ -119,7 +118,7 @@ public class AuditHandler extends PrimitiveHandler {
 				mon.onFieldGet(qualifiedField, o);
 			}
 		}
-		logger.info("onGet {}", qualifiedField);
+		logger.debug("Audit onGet {}", qualifiedField);
 		return o;
 	}
 
@@ -143,7 +142,7 @@ public class AuditHandler extends PrimitiveHandler {
 			if (mon != null)
 				mon.onFieldSet(qualifiedField, newvalue);
 		}
-		logger.info("onSet {}", qualifiedField);
+		logger.debug("Audit onSet {}", qualifiedField);
 	}
 
 	/* called by schedulerHandler and dispatcherHandler */

@@ -30,6 +30,7 @@ import org.slf4j.LoggerFactory;
 import fr.liglab.adele.cilia.exceptions.CiliaIllegalStateException;
 import fr.liglab.adele.cilia.runtime.ConstRuntime;
 import fr.liglab.adele.cilia.runtime.WorkQueue;
+import fr.liglab.adele.cilia.util.Const;
 
 /**
  * This class is in charge listen data published and store data in the model <br>
@@ -41,7 +42,7 @@ import fr.liglab.adele.cilia.runtime.WorkQueue;
 @SuppressWarnings({ "rawtypes", "unchecked" })
 public class BaseLevelListener implements EventHandler {
 
-	private final Logger logger = LoggerFactory.getLogger(ConstRuntime.LOGGER_KNOWLEDGE);
+	private final Logger logger = LoggerFactory.getLogger(Const.LOGGER_RUNTIME);
 
 	private final BundleContext bundleContext;
 

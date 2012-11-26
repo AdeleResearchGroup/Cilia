@@ -18,21 +18,18 @@
 package fr.liglab.adele.cilia.admin.impl;
 
 import java.util.Hashtable;
-//import org.apache.felix.service.command.Descriptor;
 
 import fr.liglab.adele.cilia.CiliaAdminService;
 import fr.liglab.adele.cilia.CiliaContext;
 import fr.liglab.adele.cilia.admin.util.ParserUtils;
-import fr.liglab.adele.cilia.exceptions.BuilderException;
-import fr.liglab.adele.cilia.exceptions.BuilderPerformerException;
 import fr.liglab.adele.cilia.exceptions.CiliaException;
 import fr.liglab.adele.cilia.exceptions.CiliaIllegalParameterException;
-import fr.liglab.adele.cilia.exceptions.CiliaIllegalStateException;
 import fr.liglab.adele.cilia.exceptions.CiliaInvalidSyntaxException;
 import fr.liglab.adele.cilia.exceptions.CiliaParserException;
 import fr.liglab.adele.cilia.model.Adapter;
 import fr.liglab.adele.cilia.model.Chain;
 import fr.liglab.adele.cilia.model.Mediator;
+//import org.apache.felix.service.command.Descriptor;
 
 /**
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project

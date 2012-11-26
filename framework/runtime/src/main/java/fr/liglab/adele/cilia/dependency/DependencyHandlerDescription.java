@@ -27,7 +27,7 @@ import org.apache.felix.ipojo.metadata.Element;
 import org.osgi.framework.Constants;
 import org.osgi.framework.ServiceReference;
 
-import fr.liglab.adele.cilia.runtime.Const;
+import fr.liglab.adele.cilia.util.Const;
 
 
 /**

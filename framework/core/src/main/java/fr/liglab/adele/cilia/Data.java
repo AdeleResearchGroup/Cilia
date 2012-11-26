@@ -38,7 +38,7 @@ public class Data {
 	/**
 	 * All the data will be stored in this Data dictionary.
 	 */
-	private Hashtable/* <String, Object> */data = new Hashtable/* <String, Object> */();
+	private Hashtable <String, Object> data = new Hashtable <String, Object> ();
 
 	/**
 	 * The lock used to keep data integrity.

@@ -67,25 +67,25 @@ public abstract class AbstractCorrelationScheduler extends AbstractScheduler {
 
 	public void notifyData(Data data) {
 		String msg = "Data received ";
-		if (logger.isTraceEnabled()) {
+		if (appLogger.isTraceEnabled()) {
 			msg = msg + data.toString();
 		}
-		logger.debug(msg);
+		appLogger.debug(msg);
 
 		String corre = getCorrelationKey(data);
 		List<Data> dataset = null;
 		boolean complet = false;
 		if (getData() == null) {
-			logger.warn("data received map is null");
+			appLogger.warn("data received map is null");
 		}
 		synchronized (getData()) {
 			dataset = (List<Data>) getData().get(corre);
-			if (logger.isDebugEnabled())
-				logger.debug("data received in synchronized block" + corre);
+			if (appLogger.isDebugEnabled())
+				appLogger.debug("data received in synchronized block" + corre);
 			if (dataset == null) {
 				dataset = new ArrayList();
 				getData().put(corre, dataset);
-				logger.debug("data received in synchronized block dataset is null");
+				appLogger.debug("data received in synchronized block dataset is null");
 			}
 
 			dataset.add(data);

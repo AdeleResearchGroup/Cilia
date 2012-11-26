@@ -1,8 +1,8 @@
 <cilia>
 	<chain id="toto">
 		<mediators>
-			<mediator-instance id="m11" type="Mock" />
-			<mediator-instance id="m22" type="Mock" />
+			<mediator-instance id="m11" type="Mock" namespace="fr.liglab.adele.cilia.test"/>
+			<mediator-instance id="m22" type="Mock" namespace="fr.liglab.adele.cilia.test" />
 		</mediators>
 
 		<bindings>

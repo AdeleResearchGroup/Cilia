@@ -39,6 +39,7 @@ import fr.liglab.adele.cilia.model.Mediator;
 import fr.liglab.adele.cilia.model.MediatorComponent;
 import fr.liglab.adele.cilia.model.impl.PatternType;
 import fr.liglab.adele.cilia.runtime.ConstRuntime;
+import fr.liglab.adele.cilia.util.Const;
 
 /**
  * topological access
@@ -49,7 +50,7 @@ import fr.liglab.adele.cilia.runtime.ConstRuntime;
  */
 @SuppressWarnings({ "rawtypes", "unchecked" })
 public class TopologyImpl implements Topology {
-	private final Logger logger = LoggerFactory.getLogger(ConstRuntime.LOGGER_KNOWLEDGE);
+	private final Logger logger = LoggerFactory.getLogger(Const.LOGGER_RUNTIME);
 
 	protected CiliaContainer ciliaContainer;
 

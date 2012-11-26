@@ -33,8 +33,8 @@ import fr.liglab.adele.cilia.model.MediatorComponent;
 import fr.liglab.adele.cilia.model.Port;
 import fr.liglab.adele.cilia.model.impl.BindingImpl;
 import fr.liglab.adele.cilia.model.impl.CollectorImpl;
-import fr.liglab.adele.cilia.model.impl.ConstModel;
 import fr.liglab.adele.cilia.model.impl.SenderImpl;
+import fr.liglab.adele.cilia.util.Const;
 
 /**
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project
@@ -75,7 +75,7 @@ public class BindingControllerImpl implements TrackerCustomizer {
 	 */
 	private BundleContext bcontext;
 
-	private static Logger log = LoggerFactory.getLogger("cilia.ipojo.runtime");
+	private static Logger log = LoggerFactory.getLogger(Const.LOGGER_RUNTIME);
 	private Tracker bindingTracker;
 	/**
 	 * Create a new binding controller.
@@ -110,8 +110,7 @@ public class BindingControllerImpl implements TrackerCustomizer {
 		SenderImpl sender = null;
 		String bindingId = null;
 
-		if (log.isDebugEnabled())
-			log.debug("Adding Binding:" + getBindingType());
+		log.debug("Adding internal models for binding from {} to {}", modelBinding.getSourceMediator().getId(), modelBinding.getTargetMediator().getId());
 		Component collectorModel = cbs.getCollectorModel(modelBinding
 				.getProperties());
 		Component senderModel = cbs
@@ -134,18 +133,14 @@ public class BindingControllerImpl implements TrackerCustomizer {
 
 		Port port1 = modelBinding.getSourcePort();
 		Port port2 = modelBinding.getTargetPort();
-		if (port1 != null) {
-			if (log.isDebugEnabled())
-				log.debug("Source Port in model binding is NOT null"
+		if (port1 == null) {
+			log.error("Source Port in model binding is null"
 						+ port1.getPortType() + " " + port1.getName());
-		} else {
 			senderModel = null;
 		}
-		if (port2 != null) {
-			if (log.isDebugEnabled())
-				log.debug("Target Port in model binding is NOT null "
+		if (port2 == null) {
+			log.error("Target Port in model binding is null "
 						+ port2.getPortType() + " " + port2.getName());
-		} else {
 			collectorModel = null;
 		}
 
@@ -246,6 +241,9 @@ public class BindingControllerImpl implements TrackerCustomizer {
 
 	protected void registerTracker() {
 		String filter = createFilter();
+		if (!readyToBind()) {
+			log.warn("Services to bind {} to {} are not immediately available. It will wait...", modelBinding.getSourceMediator().getId(), modelBinding.getTargetMediator().getId());	
+		}
 		if (bindingTracker == null) {
 			try {
 				bindingTracker = new Tracker(bcontext,
@@ -257,6 +255,21 @@ public class BindingControllerImpl implements TrackerCustomizer {
 		}
 	}
 
+	private boolean readyToBind(){
+		ServiceReference sr[] = null;
+		try {
+			sr = bcontext.getServiceReferences(null, createFilter());
+		} catch (InvalidSyntaxException e) {
+			log.error("Unable to bind. Invalid Filter.", e);
+			sr = null;
+			e.printStackTrace();
+		}
+		if (sr != null && sr.length>=3){
+			return true;
+		}
+		return false;
+	}
+	
 	protected void unregisterTracker() {
 		if (bindingTracker != null) {
 			bindingTracker.close();
@@ -266,13 +279,13 @@ public class BindingControllerImpl implements TrackerCustomizer {
 	private String createFilter() {
 		String filter = "(|(cilia.binding.protocol=" + getBindingType() + ")"
 				+ "(cilia.binding.type=" + getBindingType() + ")" + "(&("
-				+ ConstModel.PROPERTY_CHAIN_ID + "="
+				+ Const.PROPERTY_CHAIN_ID + "="
 				+ modelBinding.getChain().getId() + ")("
-				+ ConstModel.PROPERTY_COMPONENT_ID + "="
+				+ Const.PROPERTY_COMPONENT_ID + "="
 				+ sourceController.mediatorModel.getId() + "))" + "(&("
-				+ ConstModel.PROPERTY_CHAIN_ID + "="
+				+ Const.PROPERTY_CHAIN_ID + "="
 				+ modelBinding.getChain().getId() + ")("
-				+ ConstModel.PROPERTY_COMPONENT_ID + "="
+				+ Const.PROPERTY_COMPONENT_ID + "="
 				+ targetController.mediatorModel.getId() + "))" + ")";
 		return filter;
 	}
@@ -315,11 +328,11 @@ public class BindingControllerImpl implements TrackerCustomizer {
 			allServices = (byte) (allServices | BINDING_SERVICE);
 			bindingService = (CiliaBindingService) cbs;
 			toAdd = true;
-		} else if (String.valueOf(reference.getProperty(ConstModel.PROPERTY_COMPONENT_ID))
+		} else if (String.valueOf(reference.getProperty(Const.PROPERTY_COMPONENT_ID))
 				.compareToIgnoreCase(sourceController.mediatorModel.getId()) == 0) {
 			allServices = (byte) (allServices | SENDING_SERVICE);
 			toAdd = true;
-		} else if (String.valueOf(reference.getProperty(ConstModel.PROPERTY_COMPONENT_ID))
+		} else if (String.valueOf(reference.getProperty(Const.PROPERTY_COMPONENT_ID))
 				.compareToIgnoreCase(targetController.mediatorModel.getId()) == 0) {
 			allServices = (byte) (allServices | RECEIVING_SERVICE);
 			toAdd = true;
@@ -335,11 +348,11 @@ public class BindingControllerImpl implements TrackerCustomizer {
 		try {
 			if (service instanceof CiliaBindingService) {
 				allServices = (byte) (allServices ^ BINDING_SERVICE);
-			} else if (String.valueOf(reference.getProperty(ConstModel.PROPERTY_COMPONENT_ID))
+			} else if (String.valueOf(reference.getProperty(Const.PROPERTY_COMPONENT_ID))
 					.compareToIgnoreCase(
 							sourceController.mediatorModel.getId()) == 0) {
 				allServices = (byte) (allServices ^ SENDING_SERVICE);
-			} else	if (String.valueOf(reference.getProperty(ConstModel.PROPERTY_COMPONENT_ID))
+			} else	if (String.valueOf(reference.getProperty(Const.PROPERTY_COMPONENT_ID))
 						.compareToIgnoreCase(
 								targetController.mediatorModel.getId()) == 0) {
 					allServices = (byte) (allServices ^ RECEIVING_SERVICE);

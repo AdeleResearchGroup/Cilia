@@ -19,14 +19,14 @@ import org.slf4j.LoggerFactory;
 import fr.liglab.adele.cilia.model.impl.CollectorImpl;
 import fr.liglab.adele.cilia.model.impl.PatternType;
 import fr.liglab.adele.cilia.model.impl.SenderImpl;
-import fr.liglab.adele.cilia.runtime.Const;
 import fr.liglab.adele.cilia.runtime.impl.DispatcherHandler;
 import fr.liglab.adele.cilia.runtime.impl.SchedulerHandler;
+import fr.liglab.adele.cilia.util.Const;
 
 public class AdapterFactory extends MediatorFactory  implements AdapterFactoryI {
 
 	private static final Logger logger = LoggerFactory
-			.getLogger("cilia.ipojo.runtime");
+			.getLogger(Const.LOGGER_RUNTIME);
 
 	private static final String COMPONENT_TYPE = "adapter";
 
@@ -61,13 +61,13 @@ public class AdapterFactory extends MediatorFactory  implements AdapterFactoryI 
 		if (name == null) {
 			msg = new StringBuffer().append("An adapter needs a name : ")
 					.append(metadata);
-			log.error(msg.toString());
+			logger.error(msg.toString());
 			throw new ConfigurationException(msg.toString());
 		}
 
 		String pattern = metadata.getAttribute("pattern");
 		if (pattern == null) {
-			msg = new StringBuffer().append("An adapter needs a pattern : ").append(
+			msg = new StringBuffer().append(name).append(" adapter needs a pattern : ").append(
 					metadata);
 			logger.error(msg.toString());
 			throw new ConfigurationException(msg.toString());
@@ -122,7 +122,7 @@ public class AdapterFactory extends MediatorFactory  implements AdapterFactoryI 
 	private void settingUpPattern() throws ConfigurationException {
 		String msg;
 		if (!m_componentMetadata.containsAttribute("pattern")) {
-			msg = "Adapter must contain a defined pattern";
+			msg = getComponentName() + " Adapter must contain a defined pattern";
 			logger.error(msg);
 			throw new ConfigurationException(msg);
 		}
@@ -134,8 +134,8 @@ public class AdapterFactory extends MediatorFactory  implements AdapterFactoryI 
 		} else if ("in-out".compareToIgnoreCase(pattern) == 0) {
 			adapterType = PatternType.IN_OUT;
 		} else {
-			msg = "Adapter must contain a valid pattern (in-only, out-only, in-out)";
-			logger.error(msg);
+			msg = getComponentName() + "adapter must contain a valid pattern (in-only, out-only, in-out)";
+			logger.error("[{}] adapter must contain a valid pattern (in-only, out-only, in-out)", getComponentName());
 			throw new ConfigurationException(msg);
 		}
 
@@ -178,9 +178,6 @@ public class AdapterFactory extends MediatorFactory  implements AdapterFactoryI 
 			HandlerManager[] handlers)
 			throws org.apache.felix.ipojo.ConfigurationException {
 		StringBuffer msg;
-		if (logger.isDebugEnabled())
-			logger.debug("Creating adapter instance " + adapterType.hashCode());
-
 		MediatorManager mi = (MediatorManager) super.createInstance(config, context,
 				handlers);
 		InstanceManager pi = (InstanceManager) mi.getProcessorInstance();
@@ -192,25 +189,22 @@ public class AdapterFactory extends MediatorFactory  implements AdapterFactoryI 
 			throw new org.apache.felix.ipojo.ConfigurationException(msg.toString());
 		}
 		if (adapterType.equals(PatternType.IN_ONLY)) {
-			logger.debug("Adding in only " + constituent.getAttribute("type"));
 			SchedulerHandler scheduler = (SchedulerHandler) pi
 					.getHandler(Const.ciliaQualifiedName("scheduler"));
 			if (scheduler == null) {
-				logger.debug("scheduler handler is null");
+				logger.warn("scheduler handler is invalid");
 			}
 			mi.addCollector("std", new CollectorImpl(constituent.getAttribute("type"), constituent.getAttribute("type"), null,"unique", config));
 			
 		}
 		if (adapterType.equals(PatternType.OUT_ONLY)) {
-			logger.debug("Adding out only " + constituent.getAttribute("type"));
 			DispatcherHandler dispatcher = (DispatcherHandler) pi
 					.getHandler(Const.ciliaQualifiedName("dispatcher"));
 			if (dispatcher == null) {
-				logger.debug("dispatcher handler is null");
+				logger.warn("dispatcher handler is invalid");
 			}
 			mi.addSender("std", new SenderImpl(constituent.getAttribute("type"), constituent.getAttribute("type"), null,"unique", config));
 		}
 		return mi;
 	}
-
 }

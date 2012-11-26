@@ -16,6 +16,9 @@
 package fr.liglab.adele.cilia.admin.impl;
 
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import fr.liglab.adele.cilia.ApplicationRuntime;
 import fr.liglab.adele.cilia.ChainCallback;
 import fr.liglab.adele.cilia.CiliaContext;
@@ -28,6 +31,7 @@ import fr.liglab.adele.cilia.ThresholdsCallback;
 import fr.liglab.adele.cilia.Topology;
 import fr.liglab.adele.cilia.VariableCallback;
 import fr.liglab.adele.cilia.exceptions.CiliaIllegalStateException;
+import fr.liglab.adele.cilia.util.Const;
 import fr.liglab.adele.cilia.util.FrameworkUtils;
 
 /**
@@ -45,6 +49,9 @@ public class GogoMonitoringCommands {
 	private ApplicationRuntime runtime;
 
 	private CallbackEvent callbacks = new CallbackEvent();
+	
+	protected static Logger log = LoggerFactory.getLogger(Const.LOGGER_CORE);
+
 
 	private void printSuccessor(Node[] nodes) throws CiliaIllegalStateException {
 		if (nodes.length == 0) {
@@ -434,45 +441,45 @@ public class GogoMonitoringCommands {
 
 		public void onUpdate(Node node, String variable, Measure m) {
 
-			System.out.println("GogoCommand--> onUpdate "
+			log.info("GogoCommand--> onUpdate "
 					+ FrameworkUtils.makeQualifiedId(node) + ", variable :" + variable
 					+ ", value=" + m.toString());
 		}
 
 		public void onThreshold(Node node, String variable, Measure m, int thresholdType) {
 
-			System.out.println("GogoCommand--> onThreshold "
+			log.info("GogoCommand--> onThreshold "
 					+ FrameworkUtils.makeQualifiedId(node) + ", variable :" + variable
 					+ ", measure =" + m.toString());
 
 		}
 
 		public void onArrival(Node node) {
-			System.out.println("GogoCommand--> onArrival "
+			log.info("GogoCommand--> onArrival "
 					+ FrameworkUtils.makeQualifiedId(node));
 
 		}
 
 		public void onDeparture(Node node) {
-			System.out.println("GogoCommand--> onDeparture "
+			log.info("GogoCommand--> onDeparture "
 					+ FrameworkUtils.makeQualifiedId(node));
 		}
 
 		public void onModified(Node node) {
-			System.out.println("GogoCommand-->" + " onModified "
+			log.info("GogoCommand-->" + " onModified "
 					+ FrameworkUtils.makeQualifiedId(node));
 		}
 
 		public void onBind(Node from, Node to) {
 
-			System.out.println("GogoCommand-->" + " onBind from"
+			log.info("GogoCommand-->" + " onBind from"
 					+ FrameworkUtils.makeQualifiedId(from) + ", to"
 					+ FrameworkUtils.makeQualifiedId(to));
 		}
 
 		public void onUnBind(Node from, Node to) {
 
-			System.out.println("GogoCommand-->" + " onUnbind from"
+			log.info("GogoCommand-->" + " onUnbind from"
 					+ FrameworkUtils.makeQualifiedId(from) + ", to"
 					+ FrameworkUtils.makeQualifiedId(to));
 
@@ -480,27 +487,27 @@ public class GogoMonitoringCommands {
 
 
 		public void onAdded(String chainId) {
-			System.out.println("GogoCommand-->" + " Chain Added " + chainId);
+			log.info("GogoCommand-->" + " Chain Added " + chainId);
 		}
 
 		public void onRemoved(String chainId) {
-			System.out.println("GogoCommand-->" + " Chain Removed " + chainId);
+			log.info("GogoCommand-->" + " Chain Removed " + chainId);
 		}
 
 		public void onStateChange(String chaindId,boolean type) {
 			if (type==true) 
-				System.out.println("GogoCommand-->" + " Chain Started " + chaindId);
-			else System.out.println("GogoCommand-->" + " Chain Stopped " + chaindId);
+				log.info("GogoCommand-->" + " Chain Started " + chaindId);
+			else log.info("GogoCommand-->" + " Chain Stopped " + chaindId);
 
 		}
 
 		public void onStateChange(Node node, boolean isValid) {
-			System.out.println("GogoCommand-->" + " Node state changed "
+			log.info("GogoCommand-->" + " Node state changed "
 					+ FrameworkUtils.makeQualifiedId(node) + "valid=" + isValid);
 		}
 
 		public void onStateChange(Node node, String variable, boolean enable) {
-			System.out.println("GogoCommand--> variable state changed "
+			log.info("GogoCommand--> variable state changed "
 					+ FrameworkUtils.makeQualifiedId(node) + ", variable :" + variable
 					+ ", enable =" + enable);
 		}

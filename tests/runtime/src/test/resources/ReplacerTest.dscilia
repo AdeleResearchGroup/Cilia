@@ -11,8 +11,8 @@
 					<item key="enricher" value="enricher2"/>
 				</property>
 			</mediator-instance>
-			<mediator-instance id="firstMediator" type="Mock" />
-			<mediator-instance id="lastMediator" type="Mock" />
+			<mediator-instance id="firstMediator" type="Mock" namespace="fr.liglab.adele.cilia.test" />
+			<mediator-instance id="lastMediator" type="Mock" namespace="fr.liglab.adele.cilia.test" />
 		</mediators>
 		<bindings>
 			<binding from="firstMediator:unique" to="enricher1:unique"/>

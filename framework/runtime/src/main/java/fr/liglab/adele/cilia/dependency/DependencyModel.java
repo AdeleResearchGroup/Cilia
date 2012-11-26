@@ -41,6 +41,8 @@ import org.osgi.framework.ServiceReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import fr.liglab.adele.cilia.util.Const;
+
 /**
  * Abstract dependency model. This class is the parent class of every service
  * dependency. It manages the most part of dependency management. This class
@@ -50,7 +52,7 @@ import org.slf4j.LoggerFactory;
  */
 public abstract class DependencyModel implements TrackerCustomizer {
 	protected static Logger logger = LoggerFactory
-			.getLogger("cilia.runtime.dependency");
+			.getLogger(Const.LOGGER_RUNTIME);
 
 	/**
 	 * Dependency state : BROKEN. A broken dependency cannot be fulfilled

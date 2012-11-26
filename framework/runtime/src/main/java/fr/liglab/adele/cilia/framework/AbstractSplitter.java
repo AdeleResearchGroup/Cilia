@@ -8,11 +8,12 @@ import org.slf4j.LoggerFactory;
 
 import fr.liglab.adele.cilia.Data;
 import fr.liglab.adele.cilia.exceptions.CiliaException;
+import fr.liglab.adele.cilia.util.Const;
 
 
 public abstract class AbstractSplitter implements IProcessor {
 
-    Logger logger = LoggerFactory.getLogger("cilia.framework.compendium.mediators");
+    Logger logger = LoggerFactory.getLogger(Const.LOGGER_APPLICATION);
     
     public List process(List receivedDataSet) {
         List splittedDataSet = null;

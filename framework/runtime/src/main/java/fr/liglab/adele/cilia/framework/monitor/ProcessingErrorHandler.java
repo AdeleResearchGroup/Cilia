@@ -19,12 +19,12 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import fr.liglab.adele.cilia.Data;
 import fr.liglab.adele.cilia.exceptions.CiliaException;
+import fr.liglab.adele.cilia.util.Const;
 
 /**
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project Team</a>
@@ -34,38 +34,28 @@ public class ProcessingErrorHandler extends AbstractMonitor {
 	/**
 	 * Rules in the form <Exception, <list of ports to send>>.
 	 */
-	private Map rules;
+	private Map<String, String> rules;
 	/**
 	 * OSGi Bundle Context.
 	 */
-	private BundleContext bcontext;
 
+	protected static Logger log = LoggerFactory.getLogger(Const.LOGGER_APPLICATION);
 
-	protected static Logger log = LoggerFactory.getLogger("cilia.ipojo.compendium.error-handling");
-
-	/**
-	 * Constructor
-	 * @param bc OSGi Bundle Context
-	 */
-	public ProcessingErrorHandler (BundleContext bc) {
-		bcontext = bc;
-	}
 
 	/**
 	 * 
 	 * @param ex
 	 * @return
 	 */
-	private List getPorts(String ex){
-		List inports = null;
+	private List<String> getPorts(String ex){
+		List<String> inports = null;
 		String rawports = null;
 		if (rules ==null || rules.isEmpty()) {
 			inports = Collections.singletonList("error");
 		} else if (rules.containsKey(ex)) {
-			rawports = String.class.cast((rules.get(ex)));
+			rawports = rules.get(ex);
 			inports = Arrays.asList(rawports.split(","));
 		}
-		log.debug("chosen ports " + inports.toString());
 		return inports;
 	}
 
@@ -73,13 +63,15 @@ public class ProcessingErrorHandler extends AbstractMonitor {
 	/**
 	 * Method called when an exception occurs on the processing.
 	 */
+	
 	public void onProcessError(List data, Exception ex) {
-		log.error("Error Handler Monitor:" + data.size());
+		log.debug("[Error Handler] conflicted data size:" + data.size());
 		//iterate, get data causing exception
 		for (int i = 0; i < data.size(); i ++) {
 			Data d = Data.class.cast(data.get(i));
 			d.setProperty("error.handler.exception", ex);
-			List ports = getPorts(ex.getClass().getName());
+			log.debug("[Error Handler] exception :" + ex.getMessage());
+			List<String> ports = getPorts(ex.getClass().getName());
 			sendException(ports, d);
 		}
 	}
@@ -88,16 +80,15 @@ public class ProcessingErrorHandler extends AbstractMonitor {
 	 * @param ports the list of ports.
 	 * @param data The data causing the exception.
 	 */
-	private void sendException(List ports, Data data) {
+	private void sendException(List<String> ports, Data data) {
 		for (int i = 0; i < ports.size(); i++) {
 			String port = String.valueOf(ports.get(i));
 			try {
 				this.getDispatcher().send(port, data);
+				log.warn("[Error handler] sending confict data to: " + port);
 			} catch (CiliaException e) {
-				log.error("Unable to send via port: " + port, e);
+				log.error("[Error handler] Unable to send via port: " + port, e);
 			}
 		}
 	}
-
-
 }

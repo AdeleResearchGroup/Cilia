@@ -98,7 +98,6 @@ public class DispatcherInstanceManager extends ConstituentInstanceManager {
 		try {
 			mediatorInstance.waitToProcessing(5000);
 		} catch (CiliaRuntimeException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		

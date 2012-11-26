@@ -36,6 +36,8 @@ import org.osgi.framework.ServiceReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import fr.liglab.adele.cilia.util.Const;
+
 /**
  * This class wraps a Pojo object, their instance and their factory.
  * 
@@ -57,8 +59,8 @@ public class CiliaInstanceWrapper extends Observable implements CiliaInstance,
 
 	Tracker factoryTracker;
 
-	private static final Logger log = LoggerFactory
-			.getLogger("cilia.ipojo.runtime");
+	private static Logger runtimeLogger = LoggerFactory.getLogger(Const.LOGGER_RUNTIME);
+
 
 	/**
 	 * Create an iPOJO wrap instance.
@@ -156,7 +158,7 @@ public class CiliaInstanceWrapper extends Observable implements CiliaInstance,
 			}
 		}
 		if (object == null) {
-			log.error("Component {} is not valid {}", getName());
+			runtimeLogger.warn("{} is invalid", getName());
 		}
 		return object;
 	}
@@ -167,7 +169,7 @@ public class CiliaInstanceWrapper extends Observable implements CiliaInstance,
 	public int getState() {
 		synchronized (lockObject) {
 			if (componentInstance == null) {
-				log.debug("Component Instance is null: " + getName());
+				runtimeLogger.warn("[{}] Instance is invalid: ", getName());
 				return CiliaInstance.INVALID;
 			}
 			return componentInstance.getState();
@@ -261,7 +263,7 @@ public class CiliaInstanceWrapper extends Observable implements CiliaInstance,
 
 	public void stateChanged(ComponentInstance instance, int newState) {
 		refresh();
-		log.debug("state changed " + getName());
+		runtimeLogger.debug("[{}] state changed to {}", componentInstance.getInstanceName(), getStateAsString());
 	}
 
 	public ComponentInstance getInstanceManager() {
@@ -275,6 +277,9 @@ public class CiliaInstanceWrapper extends Observable implements CiliaInstance,
 	 * Registring the factory tracker.
 	 */
 	private void registerTracker() {
+		if (!factoryIsAvailable()) {
+			runtimeLogger.warn("Factory for {} is not available. It will wait...", getName());
+		}
 		if (factoryTracker == null) {
 			try {
 				factoryTracker = new Tracker(m_context, m_context.createFilter(m_filter),
@@ -286,6 +291,20 @@ public class CiliaInstanceWrapper extends Observable implements CiliaInstance,
 		}
 	}
 
+	
+	private boolean factoryIsAvailable(){
+		ServiceReference sr[] = null;
+		try {
+			sr = m_context.getServiceReferences(null, m_filter);
+		} catch (InvalidSyntaxException e) {
+			runtimeLogger.error("Invalid filter when accessing factory", e);
+			sr = null;
+		}
+		if (sr != null && sr.length > 0) {
+			return true;
+		}
+		return false;
+	}
 	/**
 	 * Unregistering the factory tracker.
 	 */

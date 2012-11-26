@@ -47,9 +47,9 @@ import org.osgi.framework.Filter;
 import org.osgi.framework.ServiceReference;
 
 import fr.liglab.adele.cilia.dependency.ServiceUsage.Usage;
-import fr.liglab.adele.cilia.framework.monitor.IFieldMonitor;
 import fr.liglab.adele.cilia.framework.monitor.IServiceMonitor;
-import fr.liglab.adele.cilia.runtime.Const;
+import fr.liglab.adele.cilia.util.Const;
+
 
 /**
  * Represent a service dependency of the component instance.

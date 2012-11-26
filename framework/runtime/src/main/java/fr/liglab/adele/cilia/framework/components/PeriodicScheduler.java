@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 
 import fr.liglab.adele.cilia.Data;
 import fr.liglab.adele.cilia.framework.AbstractScheduler;
+import fr.liglab.adele.cilia.util.Const;
 
 public class PeriodicScheduler extends AbstractScheduler  implements Runnable {
 
@@ -32,7 +33,7 @@ public class PeriodicScheduler extends AbstractScheduler  implements Runnable {
 	 */
 	private static final int POOL_SIZE = 5;
 
-	protected static Logger logger = LoggerFactory.getLogger("cilia.ipojo.compendium");
+	protected static Logger logger = LoggerFactory.getLogger(Const.LOGGER_APPLICATION);
 
 	/**
 	 * Pool of scheduler threads.

@@ -33,7 +33,7 @@ import fr.liglab.adele.cilia.framework.monitor.IMonitor;
 import fr.liglab.adele.cilia.framework.monitor.IProcessorMonitor;
 import fr.liglab.adele.cilia.framework.monitor.IServiceMonitor;
 import fr.liglab.adele.cilia.framework.monitor.ProcessorNotifier;
-import fr.liglab.adele.cilia.runtime.Const;
+import fr.liglab.adele.cilia.util.Const;
 import fr.liglab.adele.cilia.util.concurrent.CopyOnWriteArrayList;
 
 /**

@@ -14,8 +14,6 @@
  */
 package fr.liglab.adele.cilia.builder;
 
-import java.util.Hashtable;
-
 import fr.liglab.adele.cilia.exceptions.BuilderConfigurationException;
 
 /**

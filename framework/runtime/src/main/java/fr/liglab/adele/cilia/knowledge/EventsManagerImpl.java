@@ -42,6 +42,7 @@ import fr.liglab.adele.cilia.exceptions.CiliaIllegalParameterException;
 import fr.liglab.adele.cilia.exceptions.CiliaInvalidSyntaxException;
 import fr.liglab.adele.cilia.runtime.ConstRuntime;
 import fr.liglab.adele.cilia.runtime.FirerEvents;
+import fr.liglab.adele.cilia.util.Const;
 import fr.liglab.adele.cilia.util.SwingWorker;
 import fr.liglab.adele.cilia.util.concurrent.ConcurrentReaderHashMap;
 
@@ -59,7 +60,7 @@ public class EventsManagerImpl implements TrackerCustomizer, EventsConfiguration
 										 * second
 										 */
 
-	private final Logger logger = LoggerFactory.getLogger(ConstRuntime.LOGGER_KNOWLEDGE);
+	private final Logger logger = LoggerFactory.getLogger(Const.LOGGER_RUNTIME);
 
 	private static final String NODE_APPLICATION_LISTENER = "cilia.application.node";
 	private static final String CHAIN_APPLICATION_LISTENER = "cilia.application.chain";

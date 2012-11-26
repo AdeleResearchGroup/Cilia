@@ -14,10 +14,6 @@
  */
 package fr.liglab.adele.cilia.runtime.impl;
 
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-
 import org.osgi.framework.BundleContext;
 
 import fr.liglab.adele.cilia.framework.AbstractScheduler;
@@ -25,7 +21,6 @@ import fr.liglab.adele.cilia.framework.ICollector;
 import fr.liglab.adele.cilia.framework.IScheduler;
 import fr.liglab.adele.cilia.internals.factories.MediatorComponentManager;
 import fr.liglab.adele.cilia.model.Component;
-import fr.liglab.adele.cilia.runtime.CiliaInstance;
 import fr.liglab.adele.cilia.runtime.CiliaInstanceWrapper;
 import fr.liglab.adele.cilia.runtime.ISchedulerHandler;
 
@@ -87,15 +82,14 @@ public class SchedulerInstanceManager extends ConstituentInstanceManager {
 	
 	private void updateSchedulerReference() {
 		if (constituant == null) {
-			logger.debug("Scheduler is not valid, waiting to be valid");
+			logger.warn("Scheduler is not valid, waiting to be valid");
 			return;
 		}
 		IScheduler ref = getScheduler();
 		if (ref == null) {
-			logger.debug("Scheduler is not valid, waiting to be valid");
+			logger.warn("Scheduler is not valid, waiting to be valid");
 			return;
 		}
-		logger.debug("Scheduler is now valid, updating references");
 		AbstractScheduler im = (AbstractScheduler) ref; // all schedulers must extends AbstractScheduler
 		im.setConnectedScheduler(handler);
 	}
@@ -108,7 +102,7 @@ public class SchedulerInstanceManager extends ConstituentInstanceManager {
 			if (sched != null) {
 				Object col = instance.getObject();
 				if (col instanceof ICollector) {
-					((ICollector) col).setScheduler(sched);
+					((ICollector) col).setScheduler(handler);
 				}
 			}
 		}

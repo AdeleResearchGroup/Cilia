@@ -38,10 +38,10 @@ import fr.liglab.adele.cilia.model.impl.PatternType;
 
 import fr.liglab.adele.cilia.util.ChainParser;
 import fr.liglab.adele.cilia.util.CiliaExtenderParser;
+import fr.liglab.adele.cilia.util.Const;
 
 public class CiliaChainInstanceParser implements ChainParser {
 
-	private final static String CHAIN_TYPE = "CiliaChainParser";
 
 	protected String ROOT_FILE = "cilia";
 	protected String ROOT_CHAIN = "chain";
@@ -63,9 +63,9 @@ public class CiliaChainInstanceParser implements ChainParser {
 	protected String BINDING_TYPE = "linker";
 	protected String BINDING_TYPE2 = "protocol";
 
-	protected static Logger log = LoggerFactory.getLogger("cilia.chain.parser");
+	protected static Logger coreLogger = LoggerFactory.getLogger(Const.LOGGER_CORE);
 
-	private Set customParsers = new HashSet();
+	private Set<CiliaExtenderParser> customParsers = new HashSet<CiliaExtenderParser>();
 
 	protected volatile static int mediatorNumbers = 0;
 
@@ -94,7 +94,7 @@ public class CiliaChainInstanceParser implements ChainParser {
 		try {
 			fis = xmlFile.openStream();
 		} catch (IOException e) {
-			e.printStackTrace();
+			coreLogger.error("Error when trying to open {} File", xmlFile.getPath(), e);
 			throw new CiliaException("Error when trying to open " + xmlFile.getPath()
 					+ " File.");
 		}
@@ -103,29 +103,32 @@ public class CiliaChainInstanceParser implements ChainParser {
 		try {
 			fis.close();
 		} catch (IOException e) {
-			e.printStackTrace();
+			coreLogger.error("Error when closing {} File", xmlFile.getPath(), e);
 		}
 		return parseChains(node);
 	}
 
 	public Builder[] parseChains(Object nodeobject) throws CiliaIllegalParameterException, BuilderException, BuilderPerformerException, BuilderConfigurationException{
-		List listChains = new ArrayList();
+		List<Builder> listChains = new ArrayList<Builder>();
 		Node node = (Node)nodeobject;
 		String rootName = node.getNodeName();
 		if (rootName.compareTo(ROOT_FILE) != 0) {
-			throw new CiliaIllegalParameterException(" Root element must be <"
+			coreLogger.error("Root element must be <"
+					+ ROOT_FILE + "> and is <" + rootName + ">");
+			throw new CiliaIllegalParameterException("Root element must be <"
 					+ ROOT_FILE + "> and is <" + rootName + ">");
 		}
-		log.debug("Found cilia tag");
+		
 		Node possibleChain = node.getFirstChild();
 		while (possibleChain != null) {
 			String nodeName = possibleChain.getNodeName();
 			if (nodeName.compareTo(ROOT_CHAIN) == 0) {
-				log.debug("Found chain in file: ");
+				coreLogger.debug("Found chain in file");
 				Builder newChain = parseChain(possibleChain);
 				if (newChain == null) {
-					log.warn("Found chain in file but is null: ");
+					coreLogger.warn("A chain exists in file but is null: ");
 				} else {
+					coreLogger.debug("Chain {} has been parsed", newChain.current());
 					listChains.add(newChain);
 				}
 			}
@@ -142,7 +145,7 @@ public class CiliaChainInstanceParser implements ChainParser {
 	}
 	
 	/**
-	 * It will convert a Chain in a Node to a chain model. TODO: Use JAXB.
+	 * It will convert a Chain in a Node to a chain model. 
 	 * @throws CiliaIllegalParameterException 
 	 * @throws BuilderConfigurationException 
 	 */
@@ -156,14 +159,13 @@ public class CiliaChainInstanceParser implements ChainParser {
 		}
 		
 		if (nchain.getNodeName().compareTo(ROOT_CHAIN) != 0) {
-			log.debug(nchain.getNodeName() + "Node is not a chain");
+			coreLogger.error(nchain.getNodeName() + "Node is not a chain");
 			throw new CiliaIllegalParameterException("Node is not a chain. It must start with <chain>. It is: " + nchain.getNodeName());
 		}
 		// It must add mediators at first.
 		String id = getId(nchain);
-		String type = getType(nchain);
 		String extentions = getAttributeValue(nchain, "extension");
-		Properties props = getProperties(nchain);
+		//TODO: Having chain type and chain properties
 		Builder builder = ccontext.getBuilder();
 		if (extentions != null && extentions.compareToIgnoreCase("true") == 0) {
 			chain = builder.get(id);
@@ -231,12 +233,11 @@ public class CiliaChainInstanceParser implements ChainParser {
 		String targetMediatorId;
 		String targetMediatorPort;
 
-		String bindingId = getId(bindingNode);
 		String bindingType = getAttributeValue(bindingNode, BINDING_TYPE); //Use linker as reserved word.
 		if (bindingType==null) {
 			bindingType = getAttributeValue(bindingNode, BINDING_TYPE2); //try with protocol (deprecated)
 			if (bindingType != null) {
-				log.warn(BINDING_TYPE2 + " is deprecated as reserved word. Use " + BINDING_TYPE + " instead");
+				coreLogger.warn(BINDING_TYPE2 + " is deprecated as reserved word. Use " + BINDING_TYPE + " instead");
 			}
 		}
 		Properties bindingProperties = getProperties(bindingNode);
@@ -247,6 +248,7 @@ public class CiliaChainInstanceParser implements ChainParser {
 		
 		if ((colport == null && sendport != null)
 				|| (colport != null && sendport == null)) {
+			coreLogger.error("Unexpected configuration in binding on the chain {}", chain);
 			throw new BuilderConfigurationException("Unexpected configuration in binding");
 			//computeHalfBinding(chain, bindingNode, bindingModel);
 		} else {
@@ -281,19 +283,19 @@ public class CiliaChainInstanceParser implements ChainParser {
 	protected boolean analizeBindingData(String sourceMediatorId,
 			String sourceMediatorPort, String targetMediatorId, String targetMediatorPort) {
 		if (sourceMediatorId == null) {
-			log.error("source Mediator is null in binding, unable to bind");
+			coreLogger.error("source Mediator is null in binding, unable to bind");
 			return false;
 		}
 		if (sourceMediatorPort == null) {
-			log.error("source Mediator with outport, unable to bind");
+			coreLogger.error("source Mediator with outport, unable to bind");
 			return false;
 		}
 		if (targetMediatorId == null) {
-			log.error("target Mediator is null in binding, unable to bind");
+			coreLogger.error("target Mediator is null in binding, unable to bind");
 			return false;
 		}
 		if (targetMediatorPort == null) {
-			log.error("target Mediator without port, unable to bind");
+			coreLogger.error("target Mediator without port, unable to bind");
 			return false;
 		}
 		return true;
@@ -316,13 +318,14 @@ public class CiliaChainInstanceParser implements ChainParser {
 		do {
 			if (mediatorNode.getNodeName().compareTo(MEDIATOR) == 0) {
 				getMediator(mediatorNode, chain);
+				iterator ++;
 			} else if (mediatorNode.getNodeName().compareTo(MODIFY_MEDIATOR) == 0) {
 				modifyMediator(mediatorNode, chain);
+				iterator ++;
 			}
 			mediatorNode = mediatorNode.getNextSibling();
-			iterator ++;
 		} while (mediatorNode != null);
-		log.debug("Number of mediators found:" + iterator);
+		coreLogger.debug("Number of mediators found in chain :" + iterator);
 
 	}
 
@@ -344,13 +347,14 @@ public class CiliaChainInstanceParser implements ChainParser {
 		do {
 			if (mediatorNode.getNodeName().compareTo(ADAPTER) == 0) {
 				getAdapter(mediatorNode, chain);
+				iterator ++;
 			} else if (mediatorNode.getNodeName().compareTo(MODIFY_ADAPTER) == 0){
 				modifyAdapter(mediatorNode, chain);
+				iterator ++;
 			}
 			mediatorNode = mediatorNode.getNextSibling();
-			iterator ++;
 		} while (mediatorNode != null);
-		log.debug("Number of adapters found:" + iterator);
+		coreLogger.debug("Number of adapters found:" + iterator);
 	}
 
 	/**
@@ -367,22 +371,29 @@ public class CiliaChainInstanceParser implements ChainParser {
 		Mediator mediator = null;
 		String mediatorId = getId(nmediator);
 		String mediatorType = getType(nmediator);
+		String namespace = getAttributeValue(nmediator, "namespace");
 		Hashtable mediatorProperties = getMediatorProperties(nmediator);
 
-		if (mediatorType == null) {
-			log.error("Type not found in Mediator XML Node");
-			throw new BuilderConfigurationException("Mediator must have an type");
-		}
 		if (mediatorId == null) {
-			log.error("ID not found in Mediator XML Node");
-			throw new BuilderConfigurationException("Mediator must have an ID");
+			coreLogger.error("Mediator in {} must have an id", chain);
+			throw new BuilderConfigurationException("Mediator must have an id");
 		}
 
-		chain.create().mediator().type(mediatorType).id(mediatorId);
+		if (mediatorType == null) {
+			coreLogger.error("Type not found in mediator {} in the chain {}", mediatorId, String.valueOf(chain));
+			throw new BuilderConfigurationException("Mediator must have an type");
+		}
+
+		if (namespace == null){
+			coreLogger.warn("[{}] does not have a namespace. It will use a default namespace {}", mediatorId, Const.CILIA_NAMESPACE);
+			namespace = Const.CILIA_NAMESPACE;
+		}
+		
 		/*TODO: This code is temporal, Extender parser must be change to use new Builder Pattern*/
 		mediator = new MediatorImpl(mediatorId, mediatorType, null,null,null, mediatorProperties, null);
 		mediator = (Mediator)extendersParsers(nmediator, mediator);
-		chain.configure().mediator().id(mediatorId).set(mediator.getProperties());
+		coreLogger.debug("[{}] model created with properties:{}", mediatorId, mediator.getProperties());
+		chain.create().mediator().type(mediatorType).namespace(namespace).id(mediatorId).configure().set(mediator.getProperties());
 	}
 
 	/**
@@ -400,13 +411,14 @@ public class CiliaChainInstanceParser implements ChainParser {
 		String mediatorId = getId(nmediator);
 		Hashtable mediatorProperties = getMediatorProperties(nmediator);
 		if (mediatorId == null) {
-			log.error("ID not found in Mediator XML Node");
+			coreLogger.error("ID not found in Mediator XML Node");
 			throw new BuilderConfigurationException("Mediator must have an ID");
 		}
 		/*TODO: This code is temporal, Extender parser must be change to use new Builder Pattern*/
 		mediator = new MediatorImpl(mediatorId, "tmp", null,null,null, mediatorProperties, null);
 		mediator = (Mediator)extendersParsers(nmediator, mediator);
 		chain.configure().mediator().id(mediatorId).set(mediator.getProperties()).set(mediatorProperties);
+		coreLogger.debug("[{}] model modified with properties: {}", mediatorId, mediator.getProperties());
 	}
 	
 	/**
@@ -424,22 +436,25 @@ public class CiliaChainInstanceParser implements ChainParser {
 		PatternType pt = getPattern(nadapter);
 		String adapterId = getId(nadapter);
 		String adapterType = getType(nadapter);
-
+		String namespace = getAttributeValue(nadapter, "namespace");
 		Properties adapterProperties = getProperties(nadapter);
 		if (adapterType == null) {
-			log.error("Type not found in Adapter XML Node");
+			coreLogger.error("Type not found in Adapter XML Node");
 			throw new BuilderConfigurationException("Adapter must have an type");
 		}
 		if (adapterId == null) {
-			log.error("ID not found in Adapter XML Node");
+			coreLogger.error("ID not found in Adapter XML Node");
 			throw new BuilderConfigurationException("Adapter must have an ID");		
 		}
-		chain.create().adapter().type(adapterType).id(adapterId);
+		if (namespace == null){
+			coreLogger.warn("[{}] does not have a namespace. It will use a default namespace {}", adapterId, Const.CILIA_NAMESPACE);
+			namespace = Const.CILIA_NAMESPACE;
+		}
 		/*TODO: This code is temporal, Extender parser must be change to use new Builder Pattern*/
 		adapter = new AdapterImpl(adapterId, adapterType, null,null, adapterProperties, null, pt);
 		adapter = (Adapter)extendersParsers(nadapter, adapter);
-		chain.configure().adapter().id(adapterId).set(adapter.getProperties());
-
+		coreLogger.debug("[{}] model created with properties: {}", adapterId, adapter.getProperties());
+		chain.create().adapter().type(adapterType).namespace(namespace).id(adapterId).configure().set(adapter.getProperties());
 	}
 
 	/**
@@ -460,14 +475,14 @@ public class CiliaChainInstanceParser implements ChainParser {
 		Properties adapterProperties = getProperties(nadapter);
 
 		if (adapterId == null) {
-			log.error("ID not found in Adapter XML Node");
+			coreLogger.error("ID not found in Adapter XML Node");
 			throw new BuilderConfigurationException("Adapter must have an ID");		
 		}
 		/*TODO: This code is temporal, Extender parser must be change to use new Builder Pattern*/
 		adapter = new AdapterImpl(adapterId, "tmp", null,null, adapterProperties, null, pt);
 		adapter = (Adapter)extendersParsers(nadapter, adapter);
+		coreLogger.debug("[{}] model modified with properties: {}", adapterId, adapter.getProperties());
 		chain.configure().adapter().id(adapterId).set(adapter.getProperties()).set(adapterProperties);
-
 	}
 	
 	private PatternType getPattern(Node nadapter) {
@@ -560,8 +575,6 @@ public class CiliaChainInstanceParser implements ChainParser {
 
 					break;
 				}
-				log.debug("properties in " + child.getNodeName() + "  in "
-						+ componentNode.getNodeName());
 			}
 		} else { // without preambule.
 			preambuleNode = componentNode;
@@ -616,7 +629,6 @@ public class CiliaChainInstanceParser implements ChainParser {
 		PropertyType ptype = PropertyType.STRING;
 		// This method only acept Map/Array
 		Node node = propertyNode.getFirstChild();
-		log.debug("Obtaining  property value" + node.getNodeName());
 		while (node != null) {
 			if (node != null && node.getNodeName().compareToIgnoreCase("item") == 0) {
 				if (getAttributeValue(node, "key") != null) {
@@ -631,12 +643,10 @@ public class CiliaChainInstanceParser implements ChainParser {
 		}
 		if (ptype == PropertyType.MAP) {
 			returnValue = getPropertyMap(propertyNode);
-			log.debug("Obtaining Map property value");
 		} else if (ptype == PropertyType.ARRAY) {
-			log.debug("Obtaining array property value");
 			returnValue = getPropertyArray(propertyNode);
 		} else {
-			log.error("Unsuported property value for " + propertyNode.getNodeName());
+			coreLogger.error("Unsuported property value for " + propertyNode.getNodeName());
 		}
 		return returnValue;
 	}
@@ -651,7 +661,7 @@ public class CiliaChainInstanceParser implements ChainParser {
 			if (value != null) {
 				resultValue[i] = value;
 			} else {
-				log.error("Unable to obtain Array property" + arrayNode.getNodeName());
+				coreLogger.error("Unable to obtain Array property" + arrayNode.getNodeName());
 				return null;
 			}
 		}
@@ -669,7 +679,7 @@ public class CiliaChainInstanceParser implements ChainParser {
 				if (key != null && value != null) {
 					map.put(key, value);
 				} else {
-					log.error("Unable to obtain Map property" + mapProperty.getNodeName());
+					coreLogger.error("Unable to obtain Map property" + mapProperty.getNodeName());
 					return null;
 				}
 			}
@@ -731,26 +741,26 @@ public class CiliaChainInstanceParser implements ChainParser {
 		return value;
 	}
 
-	private void bindExtenderParsers(CiliaExtenderParser parser) {
+	protected void bindExtenderParsers(CiliaExtenderParser parser) {
 		synchronized (customParsers) {
 			customParsers.add(parser);
 		}
 	}
 
-	private void unbindExtenderParser(CiliaExtenderParser parser) {
+	protected void unbindExtenderParser(CiliaExtenderParser parser) {
 		synchronized (customParsers) {
 			customParsers.remove(parser);
 		}
 	}
 
 	private Component extendersParsers(Node node, Component component) {
-		Set currentParsers = null;
+		Set<CiliaExtenderParser> currentParsers = null;
 		synchronized (customParsers) {
-			currentParsers = new HashSet(customParsers);
+			currentParsers = new HashSet<CiliaExtenderParser>(customParsers);
 		}
-		Iterator it = currentParsers.iterator();
+		Iterator<CiliaExtenderParser> it = currentParsers.iterator();
 		while (it.hasNext()) {
-			CiliaExtenderParser cep = (CiliaExtenderParser) it.next();
+			CiliaExtenderParser cep =  it.next();
 			if (cep.canHandle(node)) {
 				try {
 					component =  cep.getComponent(node, component);

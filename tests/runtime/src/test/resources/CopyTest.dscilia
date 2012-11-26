@@ -7,8 +7,8 @@
 				</property>
 			</mediator-instance>
 			<!-- firstMediator and lastMediator used to connect to helper --> 
-			<mediator-instance id="firstMediator" type="Mock" />
-			<mediator-instance id="lastMediator" type="Mock" />
+			<mediator-instance id="firstMediator" type="Mock" namespace="fr.liglab.adele.cilia.test"/>
+			<mediator-instance id="lastMediator" type="Mock" namespace="fr.liglab.adele.cilia.test"/>
 		</mediators>
 		<!-- Bindings will be created by code in tests -->
 	</chain>

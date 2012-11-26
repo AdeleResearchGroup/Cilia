@@ -17,10 +17,13 @@ import org.apache.felix.ipojo.UnacceptableConfiguration;
 import org.apache.felix.ipojo.metadata.Attribute;
 import org.apache.felix.ipojo.metadata.Element;
 import org.osgi.framework.BundleContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import fr.liglab.adele.cilia.framework.AbstractBindingService;
 import fr.liglab.adele.cilia.framework.CiliaBindingService;
 import fr.liglab.adele.cilia.framework.GenericBindingService;
+import fr.liglab.adele.cilia.util.Const;
 /**
  * This class defines the binding factory.
  * @author torito
@@ -56,6 +59,8 @@ public class BindingFactory extends CiliaComponentFactory implements FactoryStat
     private String collectorNS;
 
     private Dictionary configuration = new Hashtable();
+
+	private static final Logger logger = LoggerFactory.getLogger(Const.LOGGER_RUNTIME);
 
 
     /**
@@ -132,11 +137,11 @@ public class BindingFactory extends CiliaComponentFactory implements FactoryStat
 
         //Only one sender and collector is valid.
         if (colls != null && colls.length > 1) {
-            log.error("Incorrect Binding specification, only one collector must be defined in" + getComponentName());
+            logger.error("Incorrect Binding specification, only one collector must be defined in" + getComponentName());
             throw new ConfigurationException("Incorrect Binding specification, only one collector must be defined in" + getComponentName());
         }
         if (sendss != null && sendss.length > 1) {
-            log.error("Incorrect Binding specification, only one sender must be defined in" + getComponentName());
+        	logger.error("Incorrect Binding specification, only one sender must be defined in" + getComponentName());
             throw new ConfigurationException("Incorrect Binding specification, only one sender must be defined in" + getComponentName());            
         }
         //get collector name.
@@ -362,18 +367,18 @@ public class BindingFactory extends CiliaComponentFactory implements FactoryStat
     public void stateChanged(Factory factory, int newState) {
         switch(newState) {
             case INVALID: {
-                log.debug("removing binding specification" + this.getComponentName());
+            	logger.debug("removing binding specification" + this.getComponentName());
                 removingSpecification();
                 break;
             }
             case VALID: {
-                log.debug("adding binding specification" + this.getComponentName());
+            	logger.debug("adding binding specification" + this.getComponentName());
                 try {
                     startingSpecification();
                 } catch (UnacceptableConfiguration e) {
-                    log.error("invalid configuration",e.getStackTrace());
+                	logger.error("invalid configuration",e.getStackTrace());
                 } catch (MissingHandlerException e) {
-                    log.error("MissingHandler",e.getStackTrace());
+                	logger.error("MissingHandler",e.getStackTrace());
                 }
                 break;
             }

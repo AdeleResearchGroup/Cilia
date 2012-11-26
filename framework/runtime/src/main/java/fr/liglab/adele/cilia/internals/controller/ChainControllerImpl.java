@@ -41,6 +41,7 @@ import fr.liglab.adele.cilia.model.impl.UpdateEvent;
 import fr.liglab.adele.cilia.runtime.CiliaInstance;
 import fr.liglab.adele.cilia.runtime.CiliaInstanceWrapper;
 import fr.liglab.adele.cilia.runtime.FirerEvents;
+import fr.liglab.adele.cilia.util.Const;
 import fr.liglab.adele.cilia.util.concurrent.ReadWriteLock;
 import fr.liglab.adele.cilia.util.concurrent.ReentrantWriterPreferenceReadWriteLock;
 
@@ -83,7 +84,9 @@ public class ChainControllerImpl implements Observer {
 
 	private FirerEvents eventFirer;
 
-	private static final Logger log = LoggerFactory.getLogger("cilia.ipojo.runtime");
+	private static final Logger runtimeLog = LoggerFactory.getLogger(Const.LOGGER_RUNTIME);
+	
+	private static final Logger coreLog = LoggerFactory.getLogger(Const.LOGGER_CORE);
 
 	private final ReadWriteLock mutex;	
 	/**
@@ -347,8 +350,7 @@ public class ChainControllerImpl implements Observer {
 				Iterator it = mediators.iterator();
 				while (it.hasNext()) {
 					Mediator mediatorModel = (Mediator) it.next();
-					if (log.isDebugEnabled())
-						log.debug("creating mediator " + mediatorModel.getId());
+					runtimeLog.debug("[{}] creating controller ", mediatorModel.getId());
 					createMediatorController(mediatorModel);
 				}
 			}
@@ -371,8 +373,7 @@ public class ChainControllerImpl implements Observer {
 				Iterator it = adapters.iterator();
 				while (it.hasNext()) {
 					Adapter adapterModel = (Adapter) it.next();
-					if (log.isDebugEnabled())
-						log.debug("creating mediator " + adapterModel.getId());
+					runtimeLog.debug("[{}] creating controller ", adapterModel.getId());
 					createAdapterController(adapterModel);
 				}
 			}
@@ -393,8 +394,6 @@ public class ChainControllerImpl implements Observer {
 			Set bindings = modelChain.getBindings();
 			if (bindings != null) {
 				Iterator it = bindings.iterator();
-				if (log.isDebugEnabled())
-					log.debug(" Total bindings " + bindings.size());
 				while (it.hasNext()) {
 					Binding binding = (Binding) it.next();
 					createBindingController(binding);
@@ -415,13 +414,13 @@ public class ChainControllerImpl implements Observer {
 		}
 
 		mutex.readLock().release();			
-
 		BindingControllerImpl bindingController = new BindingControllerImpl(bcontext,
 				binding);
 		MediatorComponent smediator = binding.getSourceMediator();
 		MediatorComponent tmediator = binding.getTargetMediator();
 		MediatorControllerImpl targetController = null;
 		MediatorControllerImpl sourceController = null;
+		runtimeLog.debug("Creating binding controller from {} to {}", smediator.getId(), tmediator.getId());
 		try {
 			mutex.readLock().acquire();
 		} catch (InterruptedException e) {
@@ -447,6 +446,7 @@ public class ChainControllerImpl implements Observer {
 		bindingController.setTargetController(targetController);
 		bindingController.setSourceController(sourceController);
 		if (isStarted) {
+			runtimeLog.debug("Starting binding controller from {} to {}", smediator.getId(), tmediator.getId());
 			bindingController.start();
 		}
 		mutex.readLock().release();
@@ -615,21 +615,18 @@ public class ChainControllerImpl implements Observer {
 
 	public void update(Observable o, Object arg) {
 		UpdateEvent event = (UpdateEvent) arg;
-		log.debug("update");
 		if (o instanceof Chain) {
-			log.debug(" update, OK");
 			Chain md = ((Chain) o);
 			if (event != null) {
 				int action = event.getUpdateAction();
 				switch (action) {
 				case UpdateActions.UPDATE_PROPERTIES: {
-					log.debug(" update instance property");
 					updateInstanceProperties(md.getProperties());
 				}
 				break;
 				case UpdateActions.ADD_MEDIATOR: {
 					Mediator mediator = (Mediator) event.getSource();
-					log.debug(" add mediator");
+					coreLog.debug("[{}] add mediator {}", modelChain.getId(), mediator.getId());
 					if (mediator != null) {
 						createMediatorController(mediator);
 					}
@@ -637,7 +634,7 @@ public class ChainControllerImpl implements Observer {
 				break;
 				case UpdateActions.ADD_ADAPTER: {
 					Adapter adapter = (Adapter) event.getSource();
-					log.debug(" add mediator");
+					coreLog.debug("[{}] add adapter {}", modelChain.getId(), adapter.getId());
 					if (adapter != null) {
 						createAdapterController(adapter);
 					}
@@ -646,7 +643,7 @@ public class ChainControllerImpl implements Observer {
 				break;
 				case UpdateActions.REMOVE_MEDIATOR: {
 					Mediator mediator = (Mediator) event.getSource();
-					log.debug(" remove mediator");
+					coreLog.debug("[{}] remove mediator {}", modelChain.getId(), mediator.getId());
 					if (mediator != null) {
 						removeMediator(mediator);
 					}
@@ -654,21 +651,29 @@ public class ChainControllerImpl implements Observer {
 				break;
 				case UpdateActions.REMOVE_ADAPTER: {
 					Adapter adapter = (Adapter) event.getSource();
-					log.debug(" remove adapter");
+					coreLog.debug("[{}] remove adapter {}", modelChain.getId(), adapter.getId());
 					if (adapter != null) {
 						removeAdapter(adapter);
 					}
 				}
 				break;
 				case UpdateActions.ADD_BINDING: {
-					log.debug(" Add binding");
 					Binding binding = (Binding) event.getSource();
+					StringBuffer msg = new StringBuffer("[");
+					msg.append(modelChain.getId()).append("]").append(" add binding from ").
+						append(binding.getSourceMediator().getId()).append(" to ").
+						append(binding.getTargetMediator().getId());
+					coreLog.debug(msg.toString());
 					createBindingController(binding);
 				}
 				break;
 				case UpdateActions.REMOVE_BINDING: {
-					log.debug(" Remove binding");
 					Binding binding = (Binding) event.getSource();
+					StringBuffer msg = new StringBuffer("[");
+					msg.append(modelChain.getId()).append("]").append(" remove binding from ").
+						append(binding.getSourceMediator().getId()).append(" to ").
+						append(binding.getTargetMediator().getId());
+					coreLog.debug(msg.toString());
 					removeBinding(binding);
 				}
 				break;

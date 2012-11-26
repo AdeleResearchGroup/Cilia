@@ -33,16 +33,15 @@ import fr.liglab.adele.cilia.exceptions.CiliaRuntimeException;
 import fr.liglab.adele.cilia.model.Component;
 import fr.liglab.adele.cilia.model.MediatorComponent;
 import fr.liglab.adele.cilia.model.Port;
-import fr.liglab.adele.cilia.model.impl.ConstModel;
 import fr.liglab.adele.cilia.model.impl.Dispatcher;
 import fr.liglab.adele.cilia.model.impl.Scheduler;
-import fr.liglab.adele.cilia.runtime.Const;
 import fr.liglab.adele.cilia.runtime.MediatorDescriptionEntry;
 import fr.liglab.adele.cilia.runtime.impl.DispatcherHandler;
 import fr.liglab.adele.cilia.runtime.impl.DispatcherInstanceManager;
 import fr.liglab.adele.cilia.runtime.impl.MonitorHandler;
 import fr.liglab.adele.cilia.runtime.impl.SchedulerHandler;
 import fr.liglab.adele.cilia.runtime.impl.SchedulerInstanceManager;
+import fr.liglab.adele.cilia.util.Const;
 import fr.liglab.adele.cilia.util.concurrent.ReadWriteLock;
 import fr.liglab.adele.cilia.util.concurrent.ReentrantWriterPreferenceReadWriteLock;
 
@@ -369,9 +368,9 @@ public abstract class MediatorComponentManager extends InstanceManager {
 	
 	private void addDescriptionEntry(){
 		Hashtable props = new Hashtable();
-		props.put(ConstModel.PROPERTY_INSTANCE_TYPE, configuration.get(ConstModel.PROPERTY_INSTANCE_TYPE));
-		props.put(ConstModel.PROPERTY_CHAIN_ID, configuration.get(ConstModel.PROPERTY_CHAIN_ID));
-		props.put(ConstModel.PROPERTY_COMPONENT_ID, configuration.get(ConstModel.PROPERTY_COMPONENT_ID));
+		props.put(Const.PROPERTY_INSTANCE_TYPE, configuration.get(Const.PROPERTY_INSTANCE_TYPE));
+		props.put(Const.PROPERTY_CHAIN_ID, configuration.get(Const.PROPERTY_CHAIN_ID));
+		props.put(Const.PROPERTY_COMPONENT_ID, configuration.get(Const.PROPERTY_COMPONENT_ID));
 		MediatorDescriptionEntry mde = new MediatorDescriptionEntry() {	};
 		entryRegistry = getContext().registerService(MediatorDescriptionEntry.class.getName(), mde, props);
 	}

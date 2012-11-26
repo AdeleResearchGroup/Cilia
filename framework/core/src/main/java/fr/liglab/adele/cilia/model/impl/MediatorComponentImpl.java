@@ -29,6 +29,7 @@ import fr.liglab.adele.cilia.model.Chain;
 import fr.liglab.adele.cilia.model.MediatorComponent;
 import fr.liglab.adele.cilia.model.ModelExtension;
 import fr.liglab.adele.cilia.model.Port;
+import fr.liglab.adele.cilia.util.Const;
 import fr.liglab.adele.cilia.util.FrameworkUtils;
 import fr.liglab.adele.cilia.util.Uuid;
 import fr.liglab.adele.cilia.util.Watch;
@@ -379,19 +380,19 @@ MediatorComponent {
 	}
 
 	public void lockRuntime() {
-		this.setProperty(ConstModel.PROPERTY_LOCK_UNLOCK, ConstModel.SET_LOCK);
+		this.setProperty(Const.PROPERTY_LOCK_UNLOCK, Const.SET_LOCK);
 
 	}
 
 	public void unLockRuntime() {
-		this.setProperty(ConstModel.PROPERTY_LOCK_UNLOCK, ConstModel.SET_UNLOCK);
+		this.setProperty(Const.PROPERTY_LOCK_UNLOCK, Const.SET_UNLOCK);
 	}
 
 	public synchronized boolean isLocked() {
 		boolean isLocked = false;
-		String lock = (String) this.getProperty(ConstModel.PROPERTY_LOCK_UNLOCK);
+		String lock = (String) this.getProperty(Const.PROPERTY_LOCK_UNLOCK);
 		if (lock != null) {
-			isLocked = lock.equals(ConstModel.SET_LOCK);
+			isLocked = lock.equals(Const.SET_LOCK);
 		}
 		return isLocked;
 	}
@@ -453,6 +454,7 @@ MediatorComponent {
 		StringBuffer sb = new StringBuffer("{\n");
 		sb.append("UUID : ").append(FrameworkUtils.makeQualifiedId(chainId(), nodeId(), uuid())).append(",\n");
 		sb.append("Type : ").append(getType()).append(",\n");
+		sb.append("Namespace : ").append(getNamespace()).append(",\n");
 		sb.append("ID : ").append(getId()).append(",\n");
 		sb.append("State : ").append(getState()).append(",\n");
 		sb.append("Creation date :"+Watch.formatDateIso8601(creationTimeStamp)).append(",\n");

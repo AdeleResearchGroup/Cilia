@@ -33,6 +33,7 @@ import org.slf4j.LoggerFactory;
 
 import fr.liglab.adele.cilia.runtime.CiliaInstance;
 import fr.liglab.adele.cilia.runtime.CiliaInstanceWrapper;
+import fr.liglab.adele.cilia.util.Const;
 
 
 /**
@@ -51,7 +52,7 @@ public abstract class CiliaInstanceManagerSet implements Observer{
 
 	protected final Object lockObject = new Object();
 	
-	protected Logger logger = LoggerFactory.getLogger("cilia.ipojo.runtime"); 
+	protected Logger logger = LoggerFactory.getLogger(Const.LOGGER_RUNTIME); 
 
 	public CiliaInstanceManagerSet(){
 		instances = Collections.synchronizedMap(new HashMap()) ;

@@ -27,6 +27,7 @@ import fr.liglab.adele.cilia.model.Port;
 import fr.liglab.adele.cilia.model.impl.ComponentImpl;
 import fr.liglab.adele.cilia.model.impl.PortImpl;
 import fr.liglab.adele.cilia.model.impl.PortType;
+import fr.liglab.adele.cilia.util.Const;
 
 /**
  *
@@ -36,8 +37,7 @@ import fr.liglab.adele.cilia.model.impl.PortType;
 public abstract class MediatorComponentFactory extends CiliaComponentFactory {
 
 
-	protected static final Logger logger = LoggerFactory
-			.getLogger("cilia.ipojo.runtime");
+	protected static final Logger logger = LoggerFactory.getLogger(Const.LOGGER_RUNTIME);
 	
 	private Hashtable inPorts;
 	private Hashtable outPorts;

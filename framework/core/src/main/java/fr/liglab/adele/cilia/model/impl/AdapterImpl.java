@@ -80,6 +80,7 @@ public class AdapterImpl  extends MediatorComponentImpl implements Adapter{
 		StringBuffer sb = new StringBuffer("{\n");
 		sb.append("UUID : ").append(FrameworkUtils.makeQualifiedId(chainId(), nodeId(), uuid())).append(",\n");
 		sb.append("Type : ").append(getType()).append(",\n");
+		sb.append("Namespace : ").append(getNamespace()).append(",\n");
 		sb.append("Pattern : ").append(getPattern().getName()).append(",\n");
 		sb.append("ID : ").append(getId()).append(",\n");
 		sb.append("State : ").append(getState()).append(",\n");

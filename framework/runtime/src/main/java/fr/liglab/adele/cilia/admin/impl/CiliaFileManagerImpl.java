@@ -32,10 +32,10 @@ import fr.liglab.adele.cilia.CiliaContext;
 import fr.liglab.adele.cilia.builder.Architecture;
 import fr.liglab.adele.cilia.builder.Builder;
 import fr.liglab.adele.cilia.exceptions.BuilderException;
-import fr.liglab.adele.cilia.exceptions.BuilderPerformerException;
 import fr.liglab.adele.cilia.exceptions.CiliaException;
 import fr.liglab.adele.cilia.util.ChainParser;
 import fr.liglab.adele.cilia.util.CiliaFileManager;
+import fr.liglab.adele.cilia.util.Const;
 
 
 /**
@@ -49,36 +49,31 @@ public class CiliaFileManagerImpl implements CiliaFileManager {
 	 */
 	BundleContext bcontext;
 	/**
-	 * Cilia Cotnext Service.
+	 * Cilia Context Service.
 	 */
 	CiliaContext ccontext;
 	/**
 	 * The Cilia logger.
 	 */
-	protected static Logger logger=LoggerFactory.getLogger("cilia.chain.parser");
+	protected static Logger logger=LoggerFactory.getLogger(Const.LOGGER_CORE);
 	/**
 	 * 
 	 */
-	private Map handledChains;
+	private Map<File, List<String>> handledChains; //It map a file with a list of chain id
 
 	/**
 	 * 
 	 * Queue to handle bundle arrivals.
 	 */
 	private CreatorThread creatorThread;
-	
+
 	private ChainParser parser;
 
-	//private Map currentParsers = new HashMap();
-
-	//private Map handleWith = new HashMap();
-
-	private Map /*<Key, File>*/ fileHandled = new HashMap();
 
 
 	public CiliaFileManagerImpl (BundleContext context) {
 		bcontext = context;
-		handledChains = Collections.synchronizedMap(new HashMap());
+		handledChains = Collections.synchronizedMap(new HashMap<File, List<String>>());
 		creatorThread = new CreatorThread();
 	}
 
@@ -88,9 +83,8 @@ public class CiliaFileManagerImpl implements CiliaFileManager {
 
 	public void stop() {
 		creatorThread.stop();
-		Set files = handledChains.keySet();
+		Set<File> files = handledChains.keySet();
 		File filesArray[];
-		Object [] objectArray = files.toArray();
 		filesArray = (File[])files.toArray(new File[files.size()]);
 		for (int i = 0; i < filesArray.length; i++) {
 			stopManagementFor(filesArray[i]);
@@ -110,48 +104,45 @@ public class CiliaFileManagerImpl implements CiliaFileManager {
 	 * @param chainId The chain identifier to start.
 	 */
 	public void unloadChain(File chains) {
-        creatorThread.removeFile(chains);
-        stopManagementFor(chains);
+		creatorThread.removeFile(chains);
+		stopManagementFor(chains);
 	}
 
 
 	private void startManagementFor(File file) throws CiliaException {
-		List chainsList = new ArrayList();
+		List<String> chainsList = new ArrayList<String>();
 		Builder builders[] = null;
 		logger.debug("Processing file: " + file.getName());
 		try {
 			builders = parser.obtainChains(file.toURI().toURL());
 		} catch (FileNotFoundException e) {
+			logger.error("File not found" + file.getAbsolutePath());
 			throw new BuilderException("File not found: " + file.getAbsolutePath());
 		} catch (MalformedURLException e) {
+			logger.error("Unable to open file: " + file.getAbsolutePath());
 			throw new BuilderException("Unable to open file: " + file.getAbsolutePath());
 		} 
 		if (builders != null && builders.length >=1) {
 			for (int i = 0; i < builders.length; i++) {
-				if (builders[i] == null) {
-					logger.error("Chain in chain list is null in bundle: " + file.getName());
-				} else {
-					builders[i].done();
-					Architecture arch = builders[i].get(builders[i].current());
-					if(arch.toCreate()){
-						ccontext.getApplicationRuntime().startChain(builders[i].current());
-						chainsList.add(builders[i].current());
-					}
-					logger.debug("Handling Cilia Chain : " + builders[i].current());
+				builders[i].done();
+				Architecture arch = builders[i].get(builders[i].current());
+				if(arch.toCreate()){
+					ccontext.getApplicationRuntime().startChain(builders[i].current());
+					chainsList.add(builders[i].current());
 				}
 			}
 			synchronized (handledChains) {
 				handledChains.put(file, chainsList);
 			}
 		} else {
-			logger.debug("File ["+file.getName() +"] Doesn't have any chain to handle");
+			logger.warn("File ["+file.getName() +"] Doesn't have any chain to handle");
 		}
 	}
 
 	private void stopManagementFor(File bundle) {
-		List chainList = null;
+		List<String> chainList = null;
 		synchronized (handledChains) {
-			chainList = (List)handledChains.remove(bundle);
+			chainList = handledChains.remove(bundle);
 		}
 		if (chainList != null) {
 			Object[] obs = chainList.toArray();
@@ -162,14 +153,8 @@ public class CiliaFileManagerImpl implements CiliaFileManager {
 					if (ccontext != null) { //CiliaContext could disappear and this service is stopping also.
 						try{
 							ccontext.getApplicationRuntime().stopChain(chains[i]);
+							ccontext.getBuilder().remove(chains[i]).done();
 						}catch(Exception ex) {} //Exception when stoping iPOJO runtime.
-					}
-					try {
-						ccontext.getBuilder().remove(chains[i]).done();
-					} catch (BuilderException e) {
-						e.printStackTrace();
-					} catch (BuilderPerformerException e) {
-						e.printStackTrace();
 					}
 				}
 				chainList.clear();
@@ -191,7 +176,7 @@ public class CiliaFileManagerImpl implements CiliaFileManager {
 		/**
 		 * The list of bundle that are going to be analyzed.
 		 */
-		private List chainFiles = new ArrayList();
+		private List<File> chainFiles = new ArrayList<File>();
 
 		/**
 		 * A bundle is arriving.
@@ -201,7 +186,6 @@ public class CiliaFileManagerImpl implements CiliaFileManager {
 		public synchronized void addFile(File file) {
 			chainFiles.add(file);
 			notifyAll(); // Notify the thread to force the process.
-			logger.debug("Creator thread is going to analyze the file " + file.getName() + " List : " + chainFiles);
 		}
 
 		/**
@@ -224,7 +208,6 @@ public class CiliaFileManagerImpl implements CiliaFileManager {
 		}
 
 		public void run() {
-			logger.debug("Creator thread is starting");
 			boolean started;
 			synchronized (this) {
 				started = m_started;
@@ -252,12 +235,10 @@ public class CiliaFileManagerImpl implements CiliaFileManager {
 					}
 				}
 				// Process ...
-				logger.debug("Creator thread is processing " + file.getName());
 				try {
 					startManagementFor(file);
 				} catch (Throwable e) {
 					// To be sure to not kill the thread, we catch all exceptions and errors
-					e.printStackTrace();
 					logger.error("An error occurs when analyzing the content or starting the management of " + file.getName(), e.getStackTrace());
 				}
 				synchronized (this) {

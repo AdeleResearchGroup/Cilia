@@ -45,7 +45,7 @@ import org.osgi.framework.ServiceReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import fr.liglab.adele.cilia.runtime.Const;
+import fr.liglab.adele.cilia.util.Const;
 
 /**
  * The dependency handler manages a list of service dependencies.
@@ -55,7 +55,7 @@ import fr.liglab.adele.cilia.runtime.Const;
 public class DependencyHandler extends PrimitiveHandler implements
 		DependencyStateListener {
 	public static Logger logger = LoggerFactory
-			.getLogger("cilia.runtime.dependency");
+			.getLogger(Const.LOGGER_RUNTIME);
 
 	/**
 	 * This filter Id is used when no id has been defined

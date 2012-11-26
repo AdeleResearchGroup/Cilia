@@ -15,10 +15,9 @@ import org.osgi.framework.InvalidSyntaxException;
 import fr.liglab.adele.cilia.Node;
 import fr.liglab.adele.cilia.exceptions.CiliaIllegalParameterException;
 import fr.liglab.adele.cilia.exceptions.CiliaInvalidSyntaxException;
+import fr.liglab.adele.cilia.util.Const;
 
 public class ConstRuntime extends Const {
-	
-	public static final String LOGGER_KNOWLEDGE = "cilia.runtime.knowledge"; 
 	
 	/* ---- Runtime ---- */
 	/*

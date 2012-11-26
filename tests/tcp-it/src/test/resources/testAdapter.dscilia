@@ -1,7 +1,7 @@
 <cilia>
 	<chain id="toto">
 		<mediators>
-			<mediator-instance type="Mock" id="m1"/>
+			<mediator-instance type="Mock" id="m1" namespace="fr.liglab.adele.cilia.test"/>
 		</mediators>
 		<adapters>
 			<adapter-instance id="a1" type="tcp-in-adapter" >

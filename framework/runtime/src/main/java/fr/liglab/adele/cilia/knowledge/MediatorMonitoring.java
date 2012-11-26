@@ -31,6 +31,7 @@ import fr.liglab.adele.cilia.model.MediatorComponent;
 import fr.liglab.adele.cilia.model.ModelExtension;
 import fr.liglab.adele.cilia.runtime.ConstRuntime;
 import fr.liglab.adele.cilia.runtime.FirerEvents;
+import fr.liglab.adele.cilia.util.Const;
 import fr.liglab.adele.cilia.util.concurrent.ReentrantWriterPreferenceReadWriteLock;
 import fr.liglab.adele.cilia.util.concurrent.SyncList;
 import fr.liglab.adele.cilia.util.concurrent.SyncMap;
@@ -46,7 +47,7 @@ import fr.liglab.adele.cilia.util.concurrent.SyncMap;
 public class MediatorMonitoring implements ModelExtension {
 
 	private static final int DEFAULT_QUEUE_SIZE = 1 ;
-	private final Logger logger = LoggerFactory.getLogger(ConstRuntime.LOGGER_KNOWLEDGE);
+	private final Logger logger = LoggerFactory.getLogger(Const.LOGGER_RUNTIME);
 
 	public static final String NAME = "monitoring";
 

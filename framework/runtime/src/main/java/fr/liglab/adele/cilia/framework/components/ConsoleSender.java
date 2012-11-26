@@ -22,6 +22,7 @@ import org.slf4j.LoggerFactory;
 
 import fr.liglab.adele.cilia.Data;
 import fr.liglab.adele.cilia.framework.ISender;
+import fr.liglab.adele.cilia.util.Const;
 
 
 public class ConsoleSender implements ISender {
@@ -30,7 +31,7 @@ public class ConsoleSender implements ISender {
 	
 	String header ;
 	
-	private static Logger log =LoggerFactory.getLogger("cilia.ipojo.compendium");
+	private static Logger log =LoggerFactory.getLogger(Const.LOGGER_APPLICATION);
 	public ConsoleSender(BundleContext context) {
 	}
 	

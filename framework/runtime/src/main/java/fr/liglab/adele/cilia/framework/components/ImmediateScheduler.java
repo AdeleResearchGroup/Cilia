@@ -40,22 +40,18 @@ public class ImmediateScheduler extends AbstractScheduler {
 	public WorkQueue wq ;
 	protected Map dataMap = new HashMap();
 
-	protected static Logger logger = LoggerFactory.getLogger("cilia.ipojo.runtime");
 
 	public void setConnectedScheduler(IScheduler sched) {
 		scheduler = sched;
 	}
 
 	public void notifyData(Data data) {
-		if (logger.isTraceEnabled()) {
-			logger.trace("notify data " + data);
-		}
 		process(Collections.singletonList(data));
 	}
 
 	public void process(List dataSet) {
 		if (scheduler == null) {
-			logger.error("Unable to process data, Scheduler reference is not valid.");
+			appLogger.error("Unable to process data, Scheduler reference is not valid.");
 			return;
 		}
 		testAudit =" testScheduler"+System.currentTimeMillis() ;
@@ -67,7 +63,7 @@ public class ImmediateScheduler extends AbstractScheduler {
 	}
 
 	public void fireEvent(Map map) {
-		logger.info("fireEvent " + map);
+		appLogger.info("fireEvent " + map);
 		if (scheduler != null)
 			scheduler.fireEvent(map);
 	}

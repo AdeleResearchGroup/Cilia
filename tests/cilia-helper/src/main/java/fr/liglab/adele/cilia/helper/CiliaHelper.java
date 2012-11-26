@@ -46,6 +46,7 @@ import fr.liglab.adele.cilia.model.Mediator;
 import fr.liglab.adele.cilia.runtime.CiliaInstance;
 import fr.liglab.adele.cilia.runtime.CiliaInstanceWrapper;
 import fr.liglab.adele.cilia.util.CiliaFileManager;
+import fr.liglab.adele.cilia.util.Const;
 
 /**
  * 
@@ -55,7 +56,7 @@ import fr.liglab.adele.cilia.util.CiliaFileManager;
  */
 public class CiliaHelper {
 
-	private static final Logger logger = LoggerFactory.getLogger("cilia.debug");
+	private static final Logger logger = LoggerFactory.getLogger(Const.LOGGER_CORE);
 
 	protected OSGiHelper ohelper;
 	
@@ -149,14 +150,14 @@ public class CiliaHelper {
 		Architecture arch = null;
 		try {
 			arch = builder.get(chainId);
-			logger.info("Getting chain {}", chainId);
+			logger.debug("Getting chain {}", chainId);
 			arch.create().adapter().type("cilia-adapter-helper")
 			.namespace(NAMESPACE).id(id).configure().key("identifier").value(id);
 			arch.bind().from(id+":unique").to(firstMediatorWithPort);
 			arch.bind().from(lastMediatorWithPort).to(id+":unique");
-			logger.info("Chain will be modified");
+			logger.debug("Chain will be modified");
 			builder.done();
-			logger.info("Chain is ready");
+			logger.debug("Chain is ready");
 		} catch (CiliaException e) {
 			e.printStackTrace();
 			return null;

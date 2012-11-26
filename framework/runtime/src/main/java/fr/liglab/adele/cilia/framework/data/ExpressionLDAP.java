@@ -31,6 +31,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import fr.liglab.adele.cilia.Data;
+import fr.liglab.adele.cilia.util.Const;
 
 /**
  * LDAP Cilia expression parser to be used in data
@@ -63,7 +64,7 @@ public class ExpressionLDAP implements CiliaExpression {
 	 *            OSGi BundleContext.
 	 */
 	private static Logger logger = LoggerFactory
-			.getLogger("cilia.framework.ipojo.compendium");
+			.getLogger(Const.LOGGER_APPLICATION);
 
 	public ExpressionLDAP(BundleContext bc) {
 		this.bcontext = bc;

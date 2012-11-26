@@ -14,7 +14,6 @@
  */
 package fr.liglab.adele.cilia.framework;
 
-import java.util.Dictionary;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -25,6 +24,7 @@ import org.slf4j.LoggerFactory;
 
 import fr.liglab.adele.cilia.Data;
 import fr.liglab.adele.cilia.exceptions.CiliaException;
+import fr.liglab.adele.cilia.util.Const;
 /**
  * 
  *
@@ -34,10 +34,10 @@ import fr.liglab.adele.cilia.exceptions.CiliaException;
 public abstract class AbstractDispatcher implements IDispatcher{
 
 	IDispatcher dispatcher;
-
+	
 	protected BundleContext bcontext;
 
-	protected static Logger log= LoggerFactory.getLogger("cilia.ipojo.runtime");
+	protected static Logger log= LoggerFactory.getLogger(Const.LOGGER_APPLICATION);
 
 	public AbstractDispatcher(BundleContext context) {
 		bcontext = context;
@@ -47,12 +47,6 @@ public abstract class AbstractDispatcher implements IDispatcher{
 		dispatcher = hdispatcher;
 	}
 
-//	public void addSender(String senderName, String senderId, Dictionary props) {
-//		if (log.isTraceEnabled()) {
-//			log.trace("Add sender '" + senderName + "'");
-//		}
-//		dispatcher.addSender(senderName, senderId, props);
-//	}
 
 	public abstract void dispatch(Data data) throws CiliaException  ;
 
@@ -60,26 +54,18 @@ public abstract class AbstractDispatcher implements IDispatcher{
 		return dispatcher.getSendersIds();
 	}
 
-//	public void removeSender(String portname, String senderName) {
-//		log.debug("remove sender '" + senderName + "'");
-//		dispatcher.removeSender(portname, senderName);
-//	}
 
 	public void send(String portname, Data data) throws CiliaException {
-		if (log.isTraceEnabled())
-			log.trace("send " + data);
 		dispatcher.send(portname, data);
 	}
 
 	public void send(String portname, Properties properties, Data data)
 			throws CiliaException {
-		if (log.isTraceEnabled())
-			log.trace("send " + data);
 		dispatcher.send(portname, properties, data);
 	}
 
 	public void fireEvent(Map info) {
-		log.info("fireEvent " + info);
+		log.debug("fireEvent " + info);
 		if (dispatcher != null)
 			dispatcher.fireEvent(info);
 	}

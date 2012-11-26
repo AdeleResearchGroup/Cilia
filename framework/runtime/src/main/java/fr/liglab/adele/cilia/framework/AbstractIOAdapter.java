@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import fr.liglab.adele.cilia.Data;
+import fr.liglab.adele.cilia.util.Const;
 import fr.liglab.adele.cilia.util.TimeoutException;
 
 public abstract class AbstractIOAdapter {
@@ -28,7 +29,7 @@ public abstract class AbstractIOAdapter {
 	 * The Cilia logger.
 	 */
 	protected static Logger logger = LoggerFactory
-			.getLogger("cilia.ipojo.runtime");
+			.getLogger(Const.LOGGER_APPLICATION);
 
 	public AbstractIOAdapter(BundleContext context) {
 		bcontext = context;

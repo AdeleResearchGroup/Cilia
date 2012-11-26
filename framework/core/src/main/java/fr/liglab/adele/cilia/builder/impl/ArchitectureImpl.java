@@ -236,6 +236,9 @@ public class ArchitectureImpl implements Architecture {
 		return false;
 	}
 
+	public String toString(){
+		return this.chainId;
+	}
 
 
 }

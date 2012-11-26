@@ -22,6 +22,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import fr.liglab.adele.cilia.Data;
+import fr.liglab.adele.cilia.util.Const;
 /**
  * 
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project
@@ -34,7 +35,7 @@ public class LocalSemanticTranslatorProcessor {
 	 */
 	private Map<String, String> dictionary;
 	
-	private static final Logger logger = LoggerFactory.getLogger("cilia.components");
+	private static final Logger logger = LoggerFactory.getLogger(Const.LOGGER_APPLICATION);
 	/**
 	 * Will translate words on the content of a data.
 	 * @param dataSet The data to be modified.

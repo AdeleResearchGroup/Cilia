@@ -39,9 +39,6 @@ public abstract class ConstituentInstanceManager extends CiliaInstanceManagerSet
 
 	Component constituantInfo;
 
-	private boolean validConstituant = true;
-
-	private boolean validElements = true;
 
 	protected MediatorComponentManager mediatorInstance;
 
@@ -101,40 +98,19 @@ public abstract class ConstituentInstanceManager extends CiliaInstanceManagerSet
 		Integer state = (Integer)arg;
 		//Some component instance state has change scheduler/dispatcher or collector/sender
 		//fire an event.
-		int addition = 0;
 		synchronized (lockObject) {
 			if (instance.equals(constituant)) { // Its the constituant
 				if (state == CiliaInstance.VALID) {
-					validConstituant = true;
 					mediatorInstance.stateChanged(null, ComponentInstance.VALID);// try to make it valid
 					
 				} else {
 					mediatorInstance.stateChanged(null, ComponentInstance.INVALID);// try to make it invalid
-					validConstituant = false;
 				}
 			} else {
-				validElements = this.checkAvailability();
+				this.checkAvailability();
 			}
 		}
 		organizeReferences(instance);
-	}
-
-
-	private void printConstituants(){
-		System.out.println("Printing constituants");
-		synchronized (lockObject) {
-			Iterator it = getKeys().iterator();
-			while (it.hasNext()) {
-				List instanceList = (List) getPojo((String)it.next());
-				Iterator componentsInstances = instanceList.iterator();
-				while(componentsInstances.hasNext()) {
-					CiliaInstanceWrapper component = (CiliaInstanceWrapper) componentsInstances.next();
-					System.out.println("Constituent:" + component.getName());
-					System.out.println("Type:" + component.getStateAsString());
-					System.out.println("State:" + component.getState());
-				}
-			}
-		}
 	}
 	
 	protected MediatorComponentManager getMediatorComponentManager(){

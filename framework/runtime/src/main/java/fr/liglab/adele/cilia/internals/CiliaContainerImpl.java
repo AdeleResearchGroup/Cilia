@@ -25,19 +25,19 @@ import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import fr.liglab.adele.cilia.ChainListener;
 import fr.liglab.adele.cilia.ApplicationRuntime;
+import fr.liglab.adele.cilia.ChainListener;
 import fr.liglab.adele.cilia.internals.controller.ChainControllerImpl;
 import fr.liglab.adele.cilia.internals.controller.CreatorThread;
 import fr.liglab.adele.cilia.model.Chain;
 import fr.liglab.adele.cilia.model.CiliaContainer;
 import fr.liglab.adele.cilia.model.impl.ChainImpl;
 import fr.liglab.adele.cilia.model.impl.ChainRuntime;
-import fr.liglab.adele.cilia.runtime.Const;
 import fr.liglab.adele.cilia.runtime.FirerEvents;
 import fr.liglab.adele.cilia.runtime.MediatorRuntimeSpecification;
 import fr.liglab.adele.cilia.runtime.impl.ChainRuntimeImpl;
 import fr.liglab.adele.cilia.specification.MediatorSpecification;
+import fr.liglab.adele.cilia.util.Const;
 import fr.liglab.adele.cilia.util.concurrent.ReadWriteLock;
 import fr.liglab.adele.cilia.util.concurrent.ReentrantWriterPreferenceReadWriteLock;
 
@@ -50,22 +50,22 @@ import fr.liglab.adele.cilia.util.concurrent.ReentrantWriterPreferenceReadWriteL
  * 
  */
 public class CiliaContainerImpl implements CiliaContainer {
-	private static final Logger logger = LoggerFactory.getLogger(Const.LOGGER_CORE);
+	//private static final Logger coreLogger = LoggerFactory.getLogger(Const.LOGGER_CORE);
 	/**
 	 * The creatorThread creates pojo instances using a given model.
 	 */
 	private final CreatorThread creator;
 
 	/* Model */
-	private final Map /* <ChainInstance> */chainInstances;
+	private final Map<String, ChainControllerImpl> chainControllers;
 	/* Run time information */
-	private final Map chainRuntime;
+	private final Map<String, ChainRuntimeImpl> chainRuntime;
 
 	private final BundleContext bcontext;
 
-	private static final Logger log = LoggerFactory.getLogger("cilia.ipojo.runtime");
+	private static final Logger runtimeLogger = LoggerFactory.getLogger(Const.LOGGER_RUNTIME);
 
-	private final Map listeners;
+	private final Map<String, Set<ChainListener>> listeners;
 
 	private final Object lockObject = new Object();
 
@@ -83,9 +83,9 @@ public class CiliaContainerImpl implements CiliaContainer {
 	public CiliaContainerImpl(BundleContext context,FirerEvents notifier) {
 		bcontext = context;
 		creator = new CreatorThread();
-		chainInstances = new Hashtable();
-		listeners = new Hashtable();
-		chainRuntime = new Hashtable();
+		chainControllers = new Hashtable<String, ChainControllerImpl>();
+		listeners = new Hashtable<String, Set<ChainListener>>();
+		chainRuntime = new Hashtable<String, ChainRuntimeImpl>();
 		mutex = new ReentrantWriterPreferenceReadWriteLock();
 		eventFirer = notifier ;
 
@@ -101,32 +101,28 @@ public class CiliaContainerImpl implements CiliaContainer {
 	public Chain addChain(Chain chain) {
 		String chainName;
 		String msg;
-		boolean state = false;
-
 		if (chain == null) {
 			msg = "Chain must not be Null";
-			log.error(msg);
+			runtimeLogger.error(msg);
 			throw new NullPointerException(msg);
 		}
 		chainName = chain.getId();
 		synchronized (lockObject) {
-			if (!chainInstances.containsKey(chain.getId())) {
+			if (!chainControllers.containsKey(chain.getId())) {
 				ChainControllerImpl chainInstance = new ChainControllerImpl(bcontext,
 						chain, creator,eventFirer);
-				chainInstances.put(chainName, chainInstance);
+				chainControllers.put(chainName, chainInstance);
 				chainRuntime.put(chainName, new ChainRuntimeImpl());
 				eventFirer.fireEventChain(FirerEvents.EVT_ARRIVAL,chainName) ;
-				logger.info("Chain [{}] added", chainName);
+				runtimeLogger.debug("Chain {} added to Cilia Framework", chainName);
 
 			} else {
-				msg = "Chain with the same id already in the CiliaContext";
-				log.error(msg);
+				msg = "Chain with the same id already in Cilia Framework";
+				runtimeLogger.error("[{}] conflict ID, another chain in Cilia Framework", chainName);
 				throw new IllegalArgumentException(msg);
 			}
 		}
-		System.out.println("CiliaContainer: Chain Added OK");
 		notifyAdd(chain);
-		log.debug("chain [" + chainName + "] created OK");
 		return chain;
 	}
 
@@ -140,7 +136,7 @@ public class CiliaContainerImpl implements CiliaContainer {
 	public Chain getChain(String chainId) {
 		Chain returningChain = null;
 		synchronized (lockObject) {
-			if (chainInstances.containsKey(chainId)) {
+			if (chainControllers.containsKey(chainId)) {
 				ChainControllerImpl chaininstance = getChainInstance(chainId);
 				returningChain = chaininstance.getChain();
 			}
@@ -157,7 +153,7 @@ public class CiliaContainerImpl implements CiliaContainer {
 	private ChainControllerImpl getChainInstance(String chainId) {
 		synchronized (lockObject) {
 			ChainControllerImpl chi = null;
-			chi = (ChainControllerImpl) chainInstances.get(chainId);
+			chi = (ChainControllerImpl) chainControllers.get(chainId);
 			return chi;
 		}
 	}
@@ -167,14 +163,14 @@ public class CiliaContainerImpl implements CiliaContainer {
 	 * 
 	 * @return the Set of chains.
 	 */
-	public Set getAllChains() {
-		Set chainModels = null;
-		Set tchainInstances = null;
+	public Set<Chain> getAllChains() {
+		Set<Chain> chainModels = null;
+		Set<String> tchainInstances = null;
 		synchronized (lockObject) {
-			chainModels = new HashSet(chainInstances.size());
-			tchainInstances = chainInstances.keySet();
+			chainModels = new HashSet<Chain>(chainControllers.size());
+			tchainInstances = chainControllers.keySet();
 		}
-		Iterator it = tchainInstances.iterator();
+		Iterator<String> it = tchainInstances.iterator();
 		while (it != null && it.hasNext()) {
 			String chid = (String) it.next();
 			chainModels.add(getChain(chid));
@@ -206,8 +202,8 @@ public class CiliaContainerImpl implements CiliaContainer {
 	public void startChain(String chainId) {
 		ChainControllerImpl cinstance = null;
 		synchronized (lockObject) {
-			if (chainInstances.containsKey(chainId)) {
-				cinstance = (ChainControllerImpl) chainInstances.get(chainId);
+			if (chainControllers.containsKey(chainId)) {
+				cinstance = (ChainControllerImpl) chainControllers.get(chainId);
 			}
 		}
 		if (cinstance != null) {
@@ -216,7 +212,7 @@ public class CiliaContainerImpl implements CiliaContainer {
 			chainRt.setState(ApplicationRuntime.CHAIN_STATE_STARTED);
 			chainRt.setLastDate();
 			eventFirer.fireEventChain(FirerEvents.EVT_STARTED, chainId);
-			logger.info("Chain [{}] started", chainId);
+			runtimeLogger.info("Chain [{}] started", chainId);
 		}
 
 	}
@@ -245,8 +241,8 @@ public class CiliaContainerImpl implements CiliaContainer {
 		Chain chain = null;
 		if (chainId != null) {
 			synchronized (lockObject) {
-				if (chainInstances.containsKey(chainId)) {
-					toBeRemoved = (ChainControllerImpl) chainInstances.remove(chainId);
+				if (chainControllers.containsKey(chainId)) {
+					toBeRemoved = (ChainControllerImpl) chainControllers.remove(chainId);
 				}
 			}
 			if (toBeRemoved != null) {
@@ -257,10 +253,10 @@ public class CiliaContainerImpl implements CiliaContainer {
 				ChainImpl.class.cast(chain).dispose();
 				chain = null;
 				eventFirer.fireEventChain(FirerEvents.EVT_DEPARTURE, chainId);
-				logger.info("Chain [{}] removed", chainId);
+				runtimeLogger.debug("Chain [{}] removed", chainId);
 			}
 		} else {
-			log.error("remove chain", new NullPointerException(
+			runtimeLogger.error("remove chain", new NullPointerException(
 					"ChainId must not be null."));
 		}
 	}
@@ -289,8 +285,8 @@ public class CiliaContainerImpl implements CiliaContainer {
 		ChainControllerImpl ci = null;
 		if (chainId != null) {
 			synchronized (lockObject) {
-				if (chainInstances.containsKey(chainId)) {
-					ci = (ChainControllerImpl) chainInstances.get(chainId);
+				if (chainControllers.containsKey(chainId)) {
+					ci = (ChainControllerImpl) chainControllers.get(chainId);
 				}
 			}
 			if (ci != null) {
@@ -299,15 +295,15 @@ public class CiliaContainerImpl implements CiliaContainer {
 				chainRt.setState(ApplicationRuntime.CHAIN_STATE_STOPPED);
 				chainRt.setLastDate();
 				eventFirer.fireEventChain(FirerEvents.EVT_STOPPED, chainId) ;
-				logger.info("Chain [{}] stopped", chainId);
+				runtimeLogger.info("Chain [{}] stopped", chainId);
 			} else {
 				msg = "There is any chain with the given id " + chainId;
-				log.error(msg);
+				runtimeLogger.error(msg);
 				throw new NullPointerException(msg);
 			}
 		} else {
 			msg = "ChainId must not be null";
-			log.error(msg);
+			runtimeLogger.error(msg);
 			throw new NullPointerException(msg);
 		}
 	}
@@ -324,13 +320,13 @@ public class CiliaContainerImpl implements CiliaContainer {
 	}
 
 	private void disposeChains() {
-		Set tchainInstances = null;
+		Set<String> tchainInstances = null;
 		synchronized (lockObject) {
 			// this method is called when the ciliaContext is stoped, so there
 			// is not possible to add chains.
-			tchainInstances = new HashSet(chainInstances.keySet());
+			tchainInstances = new HashSet<String>(chainControllers.keySet());
 		}
-		Iterator it = tchainInstances.iterator();
+		Iterator<String> it = tchainInstances.iterator();
 		while (it != null && it.hasNext()) {
 			String chid = (String) it.next();
 			ChainControllerImpl cc = getChainInstance(chid);
@@ -355,13 +351,13 @@ public class CiliaContainerImpl implements CiliaContainer {
 		if (listener == null) {
 			return;
 		}
-		Set listListeners = null;
+		Set<ChainListener> listListeners = null;
 		synchronized (lockObject) {
 			chain = getChain(chainId);
 			if (listeners.containsKey(chainId)) {
-				listListeners = (Set) listeners.get(chainId);
+				listListeners = listeners.get(chainId);
 			} else {
-				listListeners = new HashSet();
+				listListeners = new HashSet<ChainListener>();
 				listeners.put(chainId, listListeners);
 			}
 			listListeners.add(listener);
@@ -375,47 +371,47 @@ public class CiliaContainerImpl implements CiliaContainer {
 		if (listener == null) {
 			return;
 		}
-		Set listListeners = null;
+		Set<ChainListener> listListeners = null;
 		synchronized (lockObject) {
 			if (listeners.containsKey(chainId)) {
-				listListeners = (Set) listeners.get(chainId);
+				listListeners = listeners.get(chainId);
 				listListeners.remove(listener);
 			}
 		}
 	}
 
-	private Set getSetListener(String chainId) {
-		Set copyListeners = null;
-		Set listListeners = null;
+	private Set<ChainListener> getSetListener(String chainId) {
+		Set<ChainListener> copyListeners = null;
+		Set<ChainListener> listListeners = null;
 		// Obtain the list of listeners.
 		synchronized (lockObject) {
 			if (listeners.containsKey(chainId)) {
-				listListeners = (Set) listeners.get(chainId);
-				copyListeners = new HashSet(listListeners);
+				listListeners = listeners.get(chainId);
+				copyListeners = new HashSet<ChainListener>(listListeners);
 			}
 		}
 		return copyListeners;
 	}
 
 	private void notifyAdd(Chain chain) {
-		Set list = getSetListener(chain.getId());
+		Set<ChainListener> list = getSetListener(chain.getId());
 		if (list != null) {
-			Iterator it = list.iterator();
+			Iterator<ChainListener> it = list.iterator();
 			while (it.hasNext()) {
-				ChainListener listener = (ChainListener) it.next();
+				ChainListener listener = it.next();
 				listener.onAddingChain(chain);
 			}
 		}
 	}
 
 	private void notifyRemove(Chain chain) {
-		Set list = getSetListener(chain.getId());
+		Set<ChainListener> list = getSetListener(chain.getId());
 		if (list == null) {
 			return;
 		}
-		Iterator it = list.iterator();
+		Iterator<ChainListener> it = list.iterator();
 		while (it.hasNext()) {
-			ChainListener listener = (ChainListener) it.next();
+			ChainListener listener = it.next();
 			listener.onRemovingChain(chain);
 		}
 	}

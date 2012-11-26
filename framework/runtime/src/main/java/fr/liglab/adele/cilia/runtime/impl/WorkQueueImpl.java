@@ -22,8 +22,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import fr.liglab.adele.cilia.exceptions.CiliaIllegalParameterException;
-import fr.liglab.adele.cilia.runtime.Const;
 import fr.liglab.adele.cilia.runtime.WorkQueue;
+import fr.liglab.adele.cilia.util.Const;
 
 /**
  * 
@@ -42,7 +42,7 @@ public class WorkQueueImpl implements WorkQueue {
 	private int m_size;
 	private int m_priority;
 
-	private static final Logger logger = LoggerFactory.getLogger(Const.LOGGER_CORE);
+	private static final Logger logger = LoggerFactory.getLogger(Const.LOGGER_RUNTIME);
 
 	/*
 	 * (non-Javadoc)
@@ -56,7 +56,6 @@ public class WorkQueueImpl implements WorkQueue {
 		for (int i = 0; i < m_size; i++) {
 			addThread(i);
 		}
-		logger.debug("Work queue size =" + this.m_size);
 	}
 
 	/*
@@ -110,9 +109,7 @@ public class WorkQueueImpl implements WorkQueue {
 		for (int i = 0; i < threads.size(); i++) {
 			((Worker) threads.get(i)).setPriority(newPriority);
 		}
-		if (logger.isDebugEnabled()) {
-			logger.debug(this.m_name + " priority =" + newPriority);
-		}
+		logger.debug(this.m_name + " priority =" + newPriority);
 	}
 
 	/*
@@ -153,10 +150,6 @@ public class WorkQueueImpl implements WorkQueue {
 				}
 			}
 		}
-		if (logger.isDebugEnabled()) {
-			logger.debug(this.m_name + " size =" + newSize);
-		}
-
 		return threads.size();
 	}
 

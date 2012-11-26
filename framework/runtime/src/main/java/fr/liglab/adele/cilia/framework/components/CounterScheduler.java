@@ -41,8 +41,8 @@ public class CounterScheduler extends AbstractCorrelationScheduler{
 		Dictionary variables = new Properties();
 		count = dataset.size();
 		
-		if (m_counter==null) logger.error("m_counter==null" );
-		else if (m_counter.keySet() ==null) logger.error("m_counter.keySet==null") ;
+		if (m_counter==null) appLogger.error("m_counter==null" );
+		else if (m_counter.keySet() ==null) appLogger.error("m_counter.keySet==null") ;
 		
 		Iterator keys = (m_counter.keySet()).iterator();
 
@@ -60,7 +60,7 @@ public class CounterScheduler extends AbstractCorrelationScheduler{
 		completness = expreParser.evaluateBooleanExpression(m_condition, dataVariables);
 
 
-		logger.debug(" count = " + count);
+		appLogger.debug(" count = " + count);
 
 		return completness;
 	}
