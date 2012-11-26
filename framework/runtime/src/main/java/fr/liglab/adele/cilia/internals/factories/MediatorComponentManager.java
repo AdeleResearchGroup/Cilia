@@ -336,10 +336,16 @@ public abstract class MediatorComponentManager extends InstanceManager {
 	}
 
 	public void stopProcessing(){
+		try {
+			mutex.writeLock().acquire();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 		processing--;
 		if (processing<0){
 			processing = 0;
 		}
+		mutex.writeLock().release();
 	}
 
 	public synchronized void waitToProcessing(long maxtime) throws CiliaRuntimeException {
