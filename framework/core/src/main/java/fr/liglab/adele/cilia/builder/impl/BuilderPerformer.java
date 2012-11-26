@@ -100,7 +100,7 @@ public class BuilderPerformer {
 			}
 			if (architecture.getChainId().compareToIgnoreCase("cilia")==0){
 				throw new BuilderPerformerException(
-						"Chain with the 'cilia' as ID is not forbiden");
+						"Chain with the 'cilia' as ID is forbiden");
 			}
 			chain = new ChainImpl(architecture.getChainId(), null, null, null);
 		} else {
@@ -538,6 +538,7 @@ public class BuilderPerformer {
 		}
 
 		public void onArrival(Node node) {
+			System.out.println("[Builder Performer] Node arrival, it will be modified" + node.nodeId());
 			try {
 				MediatorComponent mc = ccontext.getApplicationRuntime().getModel(node);
 				mc.setProperties(properties);
@@ -553,6 +554,15 @@ public class BuilderPerformer {
 
 
 		public void onDeparture(Node node) {
+//			System.out.println("[Builder Performer] Node departure, wait to be modified" + node.nodeId());
+//			String filter = "(&(node="+node.nodeId()+")(chain="+node.chainId()+"))";
+//			try {
+//				ccontext.getApplicationRuntime().addListener(filter,  this);
+//			} catch (CiliaIllegalParameterException e) {
+//				e.printStackTrace();
+//			} catch (CiliaInvalidSyntaxException e) {
+//				e.printStackTrace();
+//			}
 		}
 
 

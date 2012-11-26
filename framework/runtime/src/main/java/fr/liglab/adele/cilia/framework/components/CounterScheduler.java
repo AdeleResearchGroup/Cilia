@@ -58,10 +58,7 @@ public class CounterScheduler extends AbstractCorrelationScheduler{
 		}
 		Data dataVariables = new Data("","variables",variables);
 		completness = expreParser.evaluateBooleanExpression(m_condition, dataVariables);
-
-
 		appLogger.debug(" count = " + count);
-
 		return completness;
 	}
 

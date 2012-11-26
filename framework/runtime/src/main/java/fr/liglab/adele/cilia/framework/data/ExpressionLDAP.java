@@ -149,12 +149,15 @@ public class ExpressionLDAP implements CiliaExpression {
 	 * TODO: move the next code to another class.
 	 */
 	public String resolveVariables(String expression, Data data) {
-		if (logger.isDebugEnabled())
-			logger.debug("Will resolve variables:" + expression + data);
+		if (logger.isDebugEnabled()) {
+			logger.debug("[ExpressionLDAP] Expression:" + expression);
+			logger.debug("[ExpressionLDAP] Dictionary to use:" + data);
+		}
 		Vector variables = getVariables(expression);
 		String resultExpression = replaceVariables(variables, expression, data);
-		if (logger.isDebugEnabled())
-			logger.debug("Original:" + expression + "Replaced:" + resultExpression);
+		if (logger.isDebugEnabled()) {
+			logger.debug("[ExpressionLDAP] Result:" + resultExpression);
+		}
 		return resultExpression;
 	}
 

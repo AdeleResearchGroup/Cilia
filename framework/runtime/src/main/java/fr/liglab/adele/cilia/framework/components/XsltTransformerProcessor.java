@@ -16,7 +16,6 @@ public class XsltTransformerProcessor {
     Logger log = LoggerFactory.getLogger(Const.LOGGER_APPLICATION);
     
     public Data process(Data data) {
-        log.debug("[XSLTTransformer] messages will be processed");
         if (filepath == null) {
             log.error( "There is any xslt file set");
             return null;

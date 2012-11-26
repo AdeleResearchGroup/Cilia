@@ -16,7 +16,7 @@ public class CorrelationScheduler extends AbstractCorrelationScheduler {
 
 
 	public boolean checkCompletness(List dataset) {
-		appLogger.debug("will check completness");
+		appLogger.debug("[CorrelationScheduler] checking data set completness");
 		boolean completness = false;
 		int count = 0;
 		int splitTotal = 0;
@@ -29,8 +29,8 @@ public class CorrelationScheduler extends AbstractCorrelationScheduler {
 		if (splitTotal == count) {
 			completness = true;
 		}
-		appLogger.debug("count = " + count);
-		appLogger.debug("split Total = " + splitTotal);
+		appLogger.debug("[CorrelationScheduler] count = {}", count);
+		appLogger.debug("[CorrelationScheduler] Split Total = {}", splitTotal);
 		return completness;
 	}
 }
