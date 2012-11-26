@@ -213,7 +213,7 @@ public class DispatcherHandler extends PrimitiveHandler implements IDispatcherHa
 
 	public void onExit(Object pojo, Method method, Object returnedObj) {
 		StringBuffer msg;
-
+		logger.debug("[{}] has finish to process", componentId);
 		if (method.getName().compareTo(m_methodProcessMetadata.getMethodName()) == 0) {
 			List list = null;
 			Data ndata = null;
@@ -236,6 +236,7 @@ public class DispatcherHandler extends PrimitiveHandler implements IDispatcherHa
 			}
 			final List rList = list;
 			notifyOnProcessExit(list);
+			logger.debug("[{}] Will dispatch data", componentId);
 			try {
 				if (isList) {
 					dispatch(rList);
@@ -248,8 +249,6 @@ public class DispatcherHandler extends PrimitiveHandler implements IDispatcherHa
 			}
 			notifyOnDispatch(rList);
 		}
-		//We notify that it stop processing and sending.
-		dispatcherManager.getMediatorComponentManager().stopProcessing();
 	}
 
 
@@ -344,7 +343,6 @@ public class DispatcherHandler extends PrimitiveHandler implements IDispatcherHa
 	}
 
 	protected void notifyOnProcessExit(List data) {
-		logger.debug("[{}] has finish to process", componentId);
 		if (monitor == null) {
 			monitor = getMonitor();
 		}
@@ -364,7 +362,7 @@ public class DispatcherHandler extends PrimitiveHandler implements IDispatcherHa
 	}
 
 	protected void notifyOnDispatch(List data) {
-		logger.debug("[{}] will dispatch data", componentId);
+		logger.debug("[{}] Monitor notify on dispatch", componentId);
 		if (monitor == null) {
 			monitor = getMonitor();
 		}

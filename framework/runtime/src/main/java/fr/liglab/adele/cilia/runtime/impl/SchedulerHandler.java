@@ -220,6 +220,8 @@ public class SchedulerHandler extends PrimitiveHandler implements ISchedulerHand
 			} catch (Exception e) {
 				appLogger.error("[{}] unable to process", componentId, e);
 			}
+			//We notify that it stop processing and sending.
+			schedulerManager.getMediatorComponentManager().stopProcessing();
 		} else {
 			appLogger.error("[{}] Trying to process but processor is not valid",componentId );
 		}
