@@ -568,7 +568,7 @@ public class ChainImpl extends ComponentImpl implements Chain {
 		}
 
 		if (sourceB != null && targetB != null) {
-			bindings = Arrays.asList(sourceB);
+			bindings.addAll(Arrays.asList(sourceB));
 			bindings.addAll(Arrays.asList(targetB));
 			// See if the bindings are connected (the same binding to both
 			// mediators)
