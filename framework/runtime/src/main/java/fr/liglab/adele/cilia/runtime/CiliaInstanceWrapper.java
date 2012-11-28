@@ -97,7 +97,6 @@ public class CiliaInstanceWrapper extends Observable implements CiliaInstance,
 	 */
 	protected void createInstance(Factory ipojoFactory) {
 		boolean created = false;
-		synchronized (lockObject) {
 			try {
 				Hashtable prs = new Hashtable(properties);
 				componentInstance = ipojoFactory.createComponentInstance(prs);
@@ -120,7 +119,6 @@ public class CiliaInstanceWrapper extends Observable implements CiliaInstance,
 				refresh();
 				e.printStackTrace();
 			}
-		}
 		if (created) {
 			stateChanged(componentInstance, getState());
 		}
@@ -242,13 +240,11 @@ public class CiliaInstanceWrapper extends Observable implements CiliaInstance,
 	 * Dispose the ipojo instance.
 	 */
 	private void disposeInstance() {
-		synchronized (lockObject) {
-			if (componentInstance != null) {
-				componentInstance.removeInstanceStateListener(this);
-				componentInstance.stop();
-				componentInstance.dispose();
-				componentInstance = null;
-			}
+		if (componentInstance != null) {
+			componentInstance.removeInstanceStateListener(this);
+			componentInstance.stop();
+			componentInstance.dispose();
+			componentInstance = null;
 		}
 	}
 
