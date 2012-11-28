@@ -30,6 +30,7 @@ import org.slf4j.LoggerFactory;
 
 import fr.liglab.adele.cilia.Data;
 import fr.liglab.adele.cilia.framework.AbstractCollector;
+import fr.liglab.adele.cilia.util.Const;
 
 
 /**
@@ -46,7 +47,7 @@ public class EventAdminCollector extends AbstractCollector implements EventHandl
 
     private EventHandler m_eventHandler;
 
-    private static final Logger log = LoggerFactory.getLogger("cilia.component.eventadmin");
+    private static final Logger log = LoggerFactory.getLogger(Const.LOGGER_APPLICATION);
     /**
      * Configurable property that holds the Event Topics
      */
@@ -141,7 +142,7 @@ public class EventAdminCollector extends AbstractCollector implements EventHandl
         String[] keys = event.getPropertyNames();
         if (keys != null) {
             for (int i = 0; i < keys.length; i++) {
-               log.debug("received value:" + event.getProperty(keys[i]));
+               log.trace("received value:" + event.getProperty(keys[i]));
                 if (!keys[i].equalsIgnoreCase("event.topics")) {
                     dico.put(keys[i], event.getProperty(keys[i]));
                 }

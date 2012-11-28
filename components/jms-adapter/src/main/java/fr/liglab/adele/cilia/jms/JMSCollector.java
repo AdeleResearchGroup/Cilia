@@ -29,8 +29,12 @@ import javax.jms.TopicConnectionFactory;
 import javax.jms.TopicSession;
 import javax.jms.TopicSubscriber;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import fr.liglab.adele.cilia.Data;
 import fr.liglab.adele.cilia.framework.AbstractCollector;
+import fr.liglab.adele.cilia.util.Const;
 
 /**
  * A JMS sender publishing messages to a given topic. 
@@ -54,9 +58,9 @@ public class JMSCollector extends AbstractCollector implements MessageListener {
 	private TopicConnection cnx = null;
 	private TopicSubscriber subscriber = null;
 
+	private static final Logger log = LoggerFactory.getLogger(Const.LOGGER_APPLICATION);
 
 	private void start() {
-		
 		try {
 			cnx = CiliaJoramTool.createTopicConnection(login, password, hostname, port);
 			TopicSession tss = cnx.createTopicSession(false,
@@ -68,7 +72,9 @@ public class JMSCollector extends AbstractCollector implements MessageListener {
 			subscriber = tss.createSubscriber(topic);
 			subscriber.setMessageListener(this);
 			cnx.start();
+			log.debug("[JMSCollector] started");
 		} catch (JMSException e) {
+			log.error("[JMSCollector] unable to start", e);
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -78,6 +84,7 @@ public class JMSCollector extends AbstractCollector implements MessageListener {
 		try {
 			cnx.close();
 		} catch (JMSException e) {
+			log.error("[JMSCollector] Unable to stop", e);
 			e.printStackTrace();
 		}
 	}
@@ -89,7 +96,7 @@ public class JMSCollector extends AbstractCollector implements MessageListener {
 	 * @see javax.jms.MessageListener#onMessage(javax.jms.Message)
 	 */
 	public void onMessage(Message msg) {
-		
+		log.trace("[JMSCollector] message arrive");
 		Enumeration enume = null;
 		try {
 			enume = msg.getPropertyNames();
@@ -116,6 +123,7 @@ public class JMSCollector extends AbstractCollector implements MessageListener {
 				}
 			}
 			Data ndata = new Data(content, name, dico);
+			log.trace("[JMSCollector] message content", ndata);
 			notifyDataArrival(ndata);
 			
 		} catch (JMSException e) {

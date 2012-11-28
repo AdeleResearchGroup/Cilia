@@ -28,8 +28,12 @@ import java.net.Socket;
 
 import javax.net.ServerSocketFactory;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import fr.liglab.adele.cilia.Data;
 import fr.liglab.adele.cilia.framework.AbstractCollector;
+import fr.liglab.adele.cilia.util.Const;
 
 /**
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project
@@ -43,6 +47,8 @@ public class TCPCollector extends AbstractCollector implements Runnable {
 	private ServerSocket socket;
 
 	private Thread thread;
+	
+	private static final Logger log = LoggerFactory.getLogger(Const.LOGGER_APPLICATION);
 	
 	private void setPort(int port) throws Exception{
 		this.port = port;
@@ -66,9 +72,11 @@ public class TCPCollector extends AbstractCollector implements Runnable {
 		started = true;
 		thread = new Thread(this);
 		thread.start();
+		log.debug("[TCPCollector] started");
 	}
 
 	public void stop() throws Exception {
+		log.debug("[TCPCollector] started");
 		started = false;
 		socket.close();
 	}
@@ -79,10 +87,13 @@ public class TCPCollector extends AbstractCollector implements Runnable {
 				Socket s = socket.accept();
 				Object obj = readObject(new BufferedInputStream(s.getInputStream()));
 				Data data = new Data(obj, "tcp-object");
+				log.trace("[TCPCollector] message arrive ");
 				notifyDataArrival(data);
 			} catch (IOException e) {
+				log.error("[TCPCollector] message arrive error", e);
 				e.printStackTrace();
 			} catch (ClassNotFoundException e) {
+				log.error("[TCPCollector] message arrive error", e);
 				e.printStackTrace();
 			}
 

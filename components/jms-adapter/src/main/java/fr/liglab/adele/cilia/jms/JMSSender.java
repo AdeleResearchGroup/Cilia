@@ -28,9 +28,12 @@ import javax.jms.TopicPublisher;
 import javax.jms.TopicSession;
 
 import org.objectweb.joram.client.jms.tcp.TcpConnectionFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import fr.liglab.adele.cilia.Data;
 import fr.liglab.adele.cilia.framework.ISender;
+import fr.liglab.adele.cilia.util.Const;
 
 
 public class JMSSender implements ISender{
@@ -51,44 +54,36 @@ public class JMSSender implements ISender{
 
 	private TopicPublisher publisher;
 	
-	private Topic topic = null; 
+	private Topic topic = null;
+	
+	private static final Logger log = LoggerFactory.getLogger(Const.LOGGER_APPLICATION);
 	
 	public void start() {
+		
 		try {
 			// creates the connection
 			cnx = CiliaJoramTool.createTopicConnection(login, password, hostname, port);
 			// creates a session object
 			session = cnx.createTopicSession(false, Session.AUTO_ACKNOWLEDGE);
 			// creates a topic object
-			System.out.println("TOPIC" + stopic);
 			topic = session.createTopic(stopic);
 			publisher = session.createPublisher(topic);
 			cnx.start();
-			
+			log.debug("[JMSSender] started with topic:{}", stopic);
 		} catch (JMSException e) {
+			log.error("[JMSSender] Unable to start", e);
 			e.printStackTrace();
 		}
 	}
 
 	public void stop() {
 		try {
-			System.out.println("Stoping JMS Sender");
 			cnx.close();
 		} catch (JMSException e) {
+			log.error("[JMSSender] Unable to stop", e);
 			e.printStackTrace();
 		}
 
-	}
-	
-	public void send2(Data data){
-		TextMessage msg;
-		try {
-			msg = session.createTextMessage();
-			msg.setText(String.valueOf(data.getContent()));
-			publisher.publish(msg);
-		} catch (JMSException e) {
-			e.printStackTrace();
-		}
 	}
 	
 	public boolean send(Data data) {
@@ -107,8 +102,10 @@ public class JMSSender implements ISender{
 					message.setObject(key, dobj.getTime());
 				}
 			}
+			log.trace("[JMSSender] Sending message {}", data);
 			publisher.publish(message);
 		} catch (JMSException e) {
+			log.error("[JMSSender] unable to send message {}", data);
 			e.printStackTrace();
 			return false;
 		}

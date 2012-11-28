@@ -22,8 +22,12 @@ import java.net.Socket;
 
 import javax.net.SocketFactory;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import fr.liglab.adele.cilia.Data;
 import fr.liglab.adele.cilia.framework.ISender;
+import fr.liglab.adele.cilia.util.Const;
 
 /**
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project
@@ -37,6 +41,8 @@ public class TCPSender implements ISender {
 	private String hostname;
 
 	private Socket socket;
+
+	private static final Logger log = LoggerFactory.getLogger(Const.LOGGER_APPLICATION);
 
 
 	private void setPort(int port) throws Exception{
@@ -78,14 +84,17 @@ public class TCPSender implements ISender {
 					OutputStream os = socket.getOutputStream();
 					os.write(serialized);
 					os.flush();
+					log.trace("[TCPSender] Sending message {}", data);
 					return true;
 				} catch (IOException e) {
+					log.error("[TCPSender] Error Sending message", e);
 					e.printStackTrace();
 				}
 			}
 			return false;
 		} catch (Exception e1) {
 			e1.printStackTrace();
+			log.error("[TCPSender] Error Sending message", e1);
 			return false;
 		} finally{
 			stopSocket();
