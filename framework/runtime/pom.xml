@@ -6,7 +6,8 @@
 	OR CONDITIONS OF ANY KIND, either express or implied. See the License for 
 	the specific language governing permissions and limitations under the License. -->
 
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
@@ -68,15 +69,35 @@
 							fr.liglab.adele.cilia.runtime,
 							fr.liglab.adele.cilia.dependency,
 							fr.liglab.adele.cilia.knowledge,
-							fr.liglab.adele.cilia.knowledge.configuration		
+							fr.liglab.adele.cilia.knowledge.configuration
 						</Export-Package>
 						<Private-Package>
 							fr.liglab.adele.cilia.internals,
 							fr.liglab.adele.cilia.admin.impl,
 							fr.liglab.adele.cilia.internals.controller,
 							fr.liglab.adele.cilia.internals.factories,
-							fr.liglab.adele.cilia.runtime.impl,							
+							fr.liglab.adele.cilia.runtime.impl,
+							org.objectweb.asm
 						</Private-Package>
+						<Import-Package>
+							fr.liglab.adele.cilia,
+							fr.liglab.adele.cilia.builder,
+							fr.liglab.adele.cilia.builder.impl,
+							fr.liglab.adele.cilia.exceptions,
+							fr.liglab.adele.cilia.model,
+							fr.liglab.adele.cilia.specification,
+							fr.liglab.adele.cilia.util,
+							fr.liglab.adele.cilia.util.concurrent,fr.liglab.adele.cilia.ext,
+							fr.liglab.adele.cilia.model.impl, javax.xml.namespace,
+							javax.xml.parsers, javax.xml.transform, javax.xml.transform.dom,
+							javax.xml.transform.stream, javax.xml.xpath,
+							org.apache.felix.fileinstall, org.apache.felix.ipojo,
+							org.apache.felix.ipojo.architecture,
+							org.apache.felix.ipojo.context, org.apache.felix.ipojo.metadata,
+							org.apache.felix.ipojo.parser, org.apache.felix.ipojo.util,
+							org.osgi.framework, org.osgi.service.event,
+							org.osgi.util.measurement, org.slf4j, org.w3c.dom, org.xml.sax
+						</Import-Package>
 						<IPOJO-Extension>
 							mediator-component:fr.liglab.adele.cilia.internals.factories.MediatorFactory,
 							scheduler:fr.liglab.adele.cilia.internals.factories.SchedulerFactory,
