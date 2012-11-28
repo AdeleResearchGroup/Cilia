@@ -117,7 +117,7 @@ public class ProcessorHelperImpl implements ProcessorHelper {
 		String id = "chain_"+mediatorType;
 		Builder b = cilia.getBuilder();
 		Architecture chain = b.create(id);
-		chain.create().mediator().type(mediatorType).id(mediatorType).configure().key("identifier").value(mediatorType);
+		chain.create().mediator().type(mediatorType).namespace(TESTNAMESPACE).id(mediatorType).configure().key("identifier").value(mediatorType);
 		if (properties != null) {
 			chain.configure().mediator().id(mediatorType).set(new Hashtable(properties));
 		}

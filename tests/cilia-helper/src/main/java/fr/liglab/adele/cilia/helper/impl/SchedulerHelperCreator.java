@@ -94,7 +94,7 @@ public class SchedulerHelperCreator {
 		Builder b = cilia.getBuilder();
 		Architecture chain = b.create(id);
 		//We create the new mediator to inspect scheduler behavior 
-		chain.create().mediator().type(mediatorType).id(mediatorType);
+		chain.create().mediator().type(mediatorType).namespace(TESTNAMESPACE).id(mediatorType);
 		if (properties != null) {
 			chain.configure().mediator().id(mediatorType).set(new Hashtable(properties));
 		}
