@@ -9,6 +9,7 @@ import fr.liglab.adele.cilia.model.impl.ComponentImpl;
 import fr.liglab.adele.cilia.model.impl.MediatorImpl;
 import fr.liglab.adele.cilia.model.impl.PortImpl;
 import fr.liglab.adele.cilia.model.impl.PortType;
+import fr.liglab.adele.cilia.util.Const;
 
 public abstract class AbstractMediatorSpecification implements MediatorSpecification {
 
@@ -28,7 +29,6 @@ public abstract class AbstractMediatorSpecification implements MediatorSpecifica
 	
 	private static final String DEFAULT_CAT = "generic";
 	
-	private static final String DEFAULT_NS = "fr.liglab.adele.cilia";
 	
 	public AbstractMediatorSpecification(String name, String namespace, String category){
 		mediatorSpec = new MediatorImpl(name, name, namespace, category, null, null, null);
@@ -66,9 +66,6 @@ public abstract class AbstractMediatorSpecification implements MediatorSpecifica
 	 * @return the mediator namespace.
 	 */
 	public String getNamespace(){
-		if (mediatorSpec.getNamespace() == null) {
-			return DEFAULT_NS;
-		}
 		return mediatorSpec.getNamespace();
 	}
 	
@@ -109,7 +106,7 @@ public abstract class AbstractMediatorSpecification implements MediatorSpecifica
 			return null;
 		}
 		if (schedulerDef.getNamespace() == null) {
-			return DEFAULT_NS;
+			return Const.CILIA_NAMESPACE;
 		}
 		return schedulerDef.getNamespace();
 	}
@@ -143,7 +140,7 @@ public abstract class AbstractMediatorSpecification implements MediatorSpecifica
 			return null;
 		}
 		if (processorDef.getNamespace() == null) {
-			return DEFAULT_NS;
+			return Const.CILIA_NAMESPACE;
 		}
 		return processorDef.getNamespace();
 	}
@@ -177,7 +174,7 @@ public abstract class AbstractMediatorSpecification implements MediatorSpecifica
 			return null;
 		}
 		if (dispatcherDef.getNamespace() == null) {
-			return DEFAULT_NS;
+			return Const.CILIA_NAMESPACE;
 		}
 		return dispatcherDef.getNamespace();
 	}
