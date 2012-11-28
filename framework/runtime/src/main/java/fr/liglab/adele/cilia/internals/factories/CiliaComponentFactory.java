@@ -77,9 +77,13 @@ public abstract class CiliaComponentFactory extends ComponentFactory {
         }
 
         String nspace = element.getAttribute("namespace");
+        if (nspace!=null && nspace.length()<1) {
+        	throw new ConfigurationException("An "+getComponentType()+" needs a valid namespace");
+        }
         if (nspace != null) {
             namespace = nspace.toLowerCase();
-        } else {
+        }
+        else {
             namespace = DEFAULT_NAMESPACE;
         }
 
