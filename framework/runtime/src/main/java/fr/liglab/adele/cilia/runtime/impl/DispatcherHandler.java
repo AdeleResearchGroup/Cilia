@@ -14,6 +14,7 @@
  */
 package fr.liglab.adele.cilia.runtime.impl;
 
+import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -52,7 +53,7 @@ import fr.liglab.adele.cilia.util.concurrent.WriterPreferenceReadWriteLock;
  *
  */
 @SuppressWarnings({"unchecked","rawtypes"})
-public class DispatcherHandler extends PrimitiveHandler implements IDispatcherHandler {
+public class DispatcherHandler extends PrimitiveHandler implements IDispatcherHandler{
 
 	private String componentId = null;
 
@@ -69,12 +70,6 @@ public class DispatcherHandler extends PrimitiveHandler implements IDispatcherHa
 	private Logger logger = LoggerFactory.getLogger(Const.LOGGER_APPLICATION);
 
 	private Logger rtlogger = LoggerFactory.getLogger(Const.LOGGER_RUNTIME);
-
-	private ReadWriteLock m_lock = new WriterPreferenceReadWriteLock();
-
-	/**
-	 * Cilia namespace.
-	 */
 
 	private final static String CILIA_DISPATCHER_HANDLERNAME = "dispatcher";
 
@@ -183,8 +178,7 @@ public class DispatcherHandler extends PrimitiveHandler implements IDispatcherHa
 				dm.getParameterDataType());
 		getInstanceManager().register(m_methodProcessMetadata, this);
 	}
-
-	public void onError(Object pojo, Method method, Throwable throwable) {
+	public void onError(Object pojo, Member method, Throwable throwable) {
 		Exception ex = null;
 		if (Exception.class.isAssignableFrom(throwable.getClass())) {
 			ex = Exception.class.cast(throwable);
@@ -195,9 +189,12 @@ public class DispatcherHandler extends PrimitiveHandler implements IDispatcherHa
 		throwable.printStackTrace();
 	}
 
-	public void onEntry(Object pojo, Method method, Object[] args) {
+	public void onError(Object pojo, Method method, Throwable throwable){
+		this.onError(pojo, (Member)method, throwable);
+	}
+	
+	public void onEntry(Object pojo, Member method, Object[] args) {
 		List list = null;
-
 		if ((args != null) && (args.length > 0)) {
 			if (args[0] instanceof List) {
 				list = new ArrayList((List) args[0]);
@@ -210,8 +207,10 @@ public class DispatcherHandler extends PrimitiveHandler implements IDispatcherHa
 		thLProcessor.set(list);
 		notifyOnProcessEntry(list);
 	}
-
-	public void onExit(Object pojo, Method method, Object returnedObj) {
+	public void onEntry(Object pojo, Method method, Object[] args) {
+		this.onEntry(pojo, (Member)method, args);
+	}
+	public void onExit(Object pojo, Member method, Object returnedObj) {
 		StringBuffer msg;
 		logger.debug("[{}] has finish to process", componentId);
 		if (method.getName().compareTo(m_methodProcessMetadata.getMethodName()) == 0) {
@@ -251,6 +250,9 @@ public class DispatcherHandler extends PrimitiveHandler implements IDispatcherHa
 		}
 	}
 
+	public void onExit(Object pojo, Method method, Object returnedObj) {
+		this.onExit(pojo, (Member)method, returnedObj);
+	}
 
 	/**
 	 * Send the specified data to the sender specified by their name.
