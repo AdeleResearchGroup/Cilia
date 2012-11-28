@@ -106,6 +106,9 @@ MediatorComponent {
 		super(id, type, nspace, properties);
 		this.category = catego;
 		this.version = version;
+		if (getNamespace() == null){
+			setNamespace(Const.CILIA_NAMESPACE);
+		}
 		setChain(chain);
 		createInitialOutPorts();
 	}
