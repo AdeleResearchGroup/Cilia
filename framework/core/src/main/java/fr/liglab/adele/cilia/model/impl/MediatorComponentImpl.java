@@ -20,6 +20,7 @@ import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Hashtable;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -466,6 +467,17 @@ MediatorComponent {
 		return sb.toString();
 	}
 
+	public Map toMap() {
+		Map result = new LinkedHashMap();
+		result.put("UUID", FrameworkUtils.makeQualifiedId(chainId(), nodeId(), uuid()));
+		result.put("Type", getType());
+		result.put("Namespace", getNamespace());
+		result.put("ID", getId());
+		result.put("State", getState());
+		result.put("Creation date", Watch.formatDateIso8601(creationTimeStamp));
+		result.put("Properties", super.getProperties());
+		return result;
+	}
 
 	public String[] extendedModelName() {
 		final Set keys = additionnalModel.keySet();

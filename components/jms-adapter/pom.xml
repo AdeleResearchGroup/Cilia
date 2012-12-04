@@ -18,7 +18,7 @@
 	</parent>
 
 	<artifactId>jms-adapter</artifactId>
-	<name>CILIA::JMS (Joram 5.7.0) Adapter/Binding</name>
+	<name>${productName} :: JMS (Joram 5.7.0) Adapter/Binding</name>
 	<packaging>bundle</packaging>
 
 	<dependencies>
@@ -54,13 +54,11 @@
 		<dependency>
 			<groupId>javax.jms</groupId>
 			<artifactId>com.springsource.javax.jms</artifactId>
-			<version>1.1.0</version>
 			<type>jar</type>
 		</dependency>
 		<dependency>
 			<groupId>org.objectweb.joram</groupId>
 			<artifactId>joram-client-jms</artifactId>
-			<version>5.7.0</version>
 		</dependency>
 	</dependencies>
 

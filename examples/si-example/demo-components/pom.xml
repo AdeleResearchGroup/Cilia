@@ -9,7 +9,7 @@
 	<packaging>bundle</packaging>
 	<groupId>fr.liglab.adele.cilia.si-demo</groupId>
 	<artifactId>chain-components</artifactId>
-	<name>Split/Aggregate Demo - chain components</name>
+	<name>${productName} :: SI Example - Components</name>
 	<dependencies>
 		<dependency>
 			<groupId>fr.liglab.adele.cilia</groupId>

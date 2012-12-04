@@ -24,7 +24,7 @@
 	</parent>
 
 	<artifactId>cilia-parent-reactor</artifactId>
-	<name>Cilia Reactor</name>
+	<name>${productName} :: Reactor</name>
 	<packaging>pom</packaging>
 	<profiles>
 		<profile>

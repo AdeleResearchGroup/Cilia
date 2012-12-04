@@ -15,6 +15,7 @@
 
 package fr.liglab.adele.cilia.model;
 
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -36,7 +37,7 @@ public interface Chain extends Component{
 	 * Get all the mediators models added to the chain model.
 	 * @return
 	 */
-	Set getMediators();
+	Set<Mediator> getMediators();
 
 	/**
 	 * Obtain the adaptor model which has the given identificator.
@@ -49,13 +50,13 @@ public interface Chain extends Component{
 	 * Get all the mediators models added to the chain model.
 	 * @return
 	 */
-	Set getAdapters();
+	Set<Adapter> getAdapters();
 
 	/**
 	 * Get all the bindings added to the chain model.
 	 * @return the added bindings.
 	 */
-	Set getBindings();
+	Set<Binding> getBindings();
 
 	/**
 	 * Obtain an array of all the bindings asociated to the given mediators.
@@ -64,5 +65,7 @@ public interface Chain extends Component{
 	 * @return the array of bindings.
 	 */
 	Binding[] getBindings(MediatorComponent source, MediatorComponent target);
+	
+	Map toMap();
 
 }

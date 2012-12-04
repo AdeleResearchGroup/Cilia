@@ -84,7 +84,7 @@ public interface AdminComponent {
 	 * @param properties The new properties
 	 * @throws CiliaException. If the chain or the component does not exist.
 	 */
-	void updateMediator(String chainId, String componentId, Map<String, Object> properties) throws CiliaException;
+	void updateMediator(String chainId, String componentId, Map properties) throws CiliaException;
 	
 	/**
 	 * Update an adapter component instance.
@@ -93,7 +93,7 @@ public interface AdminComponent {
 	 * @param properties The new properties
 	 * @throws CiliaException. If the chain or the component does not exist.
 	 */
-	void updateAdapter(String chainId, String componentId, Map<String, Object> properties) throws CiliaException;
+	void updateAdapter(String chainId, String componentId, Map properties) throws CiliaException;
 	/**
 	 *Delete a mediator component. 
 	 * @param chainId The chain where the component is.

@@ -24,8 +24,8 @@
 	<packaging>pom</packaging>
 
 	<!-- Project description -->
-	<name>Cilia Simple Distribution</name>
- 
+	<name>${productName} :: Distribution</name>
+
   <!-- Project dependencies -->
   <dependencies>
 	<dependency>
@@ -60,7 +60,7 @@
 				<artifactItem>
 					<groupId>org.apache.felix</groupId>
 					<artifactId>org.apache.felix.main</artifactId>
-					<version>4.0.3</version>
+					<version>${felix.version}</version>
 					<destFileName>felix.jar</destFileName>
 				</artifactItem>
               </artifactItems>
@@ -103,34 +103,28 @@
 				<artifactItem>
 					<groupId>org.apache.felix</groupId>
 					<artifactId>org.apache.felix.log</artifactId>
-					<version>1.0.1</version>
 				</artifactItem>
 				<artifactItem>
 					<groupId>org.osgi</groupId>
 					<artifactId>org.osgi.compendium</artifactId>
-					<version>4.2.0</version>
 				</artifactItem>
 				<!--GOGO-->
 				<artifactItem>
 					<groupId>org.apache.felix</groupId>
 					<artifactId>org.apache.felix.gogo.command</artifactId>
-					<version>0.12.0</version>
 				</artifactItem>
 				<artifactItem>
 					<groupId>org.apache.felix</groupId>
 					<artifactId>org.apache.felix.gogo.runtime</artifactId>
-					<version>0.10.0</version>
 				</artifactItem>
 				<artifactItem>
 					<groupId>org.apache.felix</groupId>
 					<artifactId>org.apache.felix.gogo.shell</artifactId>
-					<version>0.10.0</version>
 				</artifactItem>
 				<!-- iPOJO-->
 				<artifactItem>
 					<groupId>org.apache.felix</groupId>
 					<artifactId>org.apache.felix.ipojo.arch.gogo</artifactId>
-					<version>1.0.1</version>
 				</artifactItem>
 				<artifactItem>
 					<groupId>org.apache.felix</groupId>
@@ -140,24 +134,20 @@
 				<artifactItem>
 					<groupId>org.apache.felix</groupId>
 					<artifactId>org.apache.felix.eventadmin</artifactId>
-					<version>1.2.14</version>
 				</artifactItem>
 								
 				<!-- Logger -->
 				<artifactItem>
 					<groupId>org.apache.log4j</groupId>
 					<artifactId>com.springsource.org.apache.log4j</artifactId>
-					<version>1.2.16</version>
 				</artifactItem>
 				<artifactItem>
 					<groupId>org.slf4j</groupId>
 					<artifactId>slf4j-api</artifactId>
-					<version>1.6.4</version>
 				</artifactItem>
 				<artifactItem>
 					<groupId>org.slf4j</groupId>
 					<artifactId>slf4j-log4j12</artifactId>
-					<version>1.6.4</version>
 				</artifactItem>
               </artifactItems>
               <outputDirectory>${basedir}/bundle</outputDirectory>
@@ -191,7 +181,7 @@
 				<configuration>
 					<includeGroupIds>fr.liglab.adele.cilia</includeGroupIds>
 					<includeArtifactIds>config.base</includeArtifactIds>
-					<includeVersion>1.5.0-SNAPSHOT</includeVersion>
+					<includeVersion>${project.version}</includeVersion>
 					<outputDirectory>
 						${project.build.directory}/distrib-temp/
 					</outputDirectory>

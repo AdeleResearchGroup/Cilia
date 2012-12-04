@@ -9,7 +9,7 @@
 	</parent>
 
 	<artifactId>cilia-remote</artifactId>
-	<name>Cilia Remote Admin</name>
+	<name>${productName} :: Remote</name>
 	<packaging>bundle</packaging>
 
 	<dependencies>

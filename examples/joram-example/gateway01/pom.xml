@@ -26,7 +26,8 @@
 	<packaging>pom</packaging>
 
 	<!-- Project description -->
-	<name>Cilia Distribution With Joram</name>
+	<name>${productName} :: JMS Example - Distribution 1</name>
+
 	<!-- Project dependencies -->
 	<dependencies>
 		<!-- Demo Components-->

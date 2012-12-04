@@ -9,7 +9,7 @@
 		<relativePath>../../parent</relativePath>
 	</parent>
 	<artifactId>ea-test</artifactId>
-	<name>CILIA::Event Admin Adapter/Binding Tests</name>
+	<name>${productName} :: Event Admin Adapter/Binding Tests</name>
 	<packaging>jar</packaging>
 
 	<dependencies>

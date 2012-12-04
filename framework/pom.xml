@@ -24,7 +24,7 @@
 	</parent>
 
 	<artifactId>cilia-framework</artifactId>
-	<name>Cilia Framework Reactor</name>
+	<name>${productName} :: Framework Reactor</name>
 	<packaging>pom</packaging>
 
 	<modules>

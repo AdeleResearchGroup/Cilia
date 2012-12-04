@@ -15,6 +15,8 @@
 
 package fr.liglab.adele.cilia.model;
 
+import java.util.Map;
+
 
 public interface Binding extends Component {
 
@@ -47,36 +49,9 @@ public interface Binding extends Component {
 	 * @return the target mediator model.
 	 */
 	MediatorComponent getTargetMediator();
-
-	/**
-	 * @param sourcePort
-	 */
-	//void setSourcePort(Port sourcePort);
-
-	/**
-	 * @param targetPort
-	 */
-	//void setTargetPort(Port targetPort);
-
-	/**
-	 * @return
-	 */
-	//Component getCollector();
 	
-	/**
-	 * @return
-	 */
-	//Component getSender();
+	Map toMap();
 
-	/**
-	 * @param senderm
-	 */
-	//boolean addSender(Component senderm);
-	
-	/**
-	 * @param collectorm
-	 */
-	//boolean addCollector(Component collectorm);
-	
+
 
 }

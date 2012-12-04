@@ -11,7 +11,7 @@
 	<groupId>fr.liglab.adele.cilia.si-demo</groupId>
 	<artifactId>demo-servlet</artifactId>
 	<packaging>bundle</packaging>
-	<name>Split/Aggregate Demo - Demo Servlet</name>
+	<name>${productName} :: SI Example - Servlet</name>
 
 	<dependencies>
 		<dependency>

@@ -18,7 +18,7 @@
 	</parent>
 
 	<artifactId>cilia-runtime</artifactId>
-	<name>Cilia Runtime</name>
+	<name>${productName} :: Runtime</name>
 	<packaging>bundle</packaging>
 
 	<dependencies>

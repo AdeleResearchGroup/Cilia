@@ -18,7 +18,7 @@
 	</parent>
 
 	<artifactId>cilia-core</artifactId>
-	<name>Cilia Core</name>
+	<name>${productName} :: Core</name>
 	<packaging>bundle</packaging>
 
 	<dependencies>

@@ -19,7 +19,7 @@
 	</parent>
 
 	<artifactId>jms-it</artifactId>
-	<name>CILIA::JMS (Joram 5.7.0) Adapter/Binding Tests</name>
+	<name>${productName} :: JMS (Joram 5.7.0) Adapter/Binding Tests</name>
 	<packaging>jar</packaging>
 
 	<dependencies>
@@ -81,7 +81,7 @@
 		<dependency>
 			<groupId>fr.liglab.adele.cilia</groupId>
 			<artifactId>cilia-helper</artifactId>
-			<version>1.2.2-SNAPSHOT</version>
+			<version>${project.version}</version>
 		</dependency>
 		<!-- Project Test dependencies -->
 		<dependency>

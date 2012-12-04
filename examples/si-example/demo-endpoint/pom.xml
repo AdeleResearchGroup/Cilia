@@ -9,7 +9,8 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>fr.liglab.adele.cilia.si-demo</groupId>
 	<artifactId>demo-endpoint</artifactId>
-	<name>Split/Aggregate Demo - Demo Endpoint</name>
+	<name>${productName} :: SI Example - IO Adapter</name>
+
 	<packaging>bundle</packaging>
 	<dependencies>
 		<dependency>

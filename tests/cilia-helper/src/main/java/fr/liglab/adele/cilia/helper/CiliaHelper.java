@@ -221,6 +221,10 @@ public class CiliaHelper {
 		return helper;
 	}
 	
+	public void loadFileFromResource(String filename){
+		URL url = ohelper.getContext().getBundle().getResource("remoteTest.dscilia");
+		load(url);
+	}
 	
 	public void load(URL url) {
 		InputStream fis = null;

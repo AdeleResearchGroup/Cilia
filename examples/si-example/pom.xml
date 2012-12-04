@@ -26,7 +26,8 @@
 
 	<groupId>fr.liglab.adele.cilia.si-demo</groupId>
 	<artifactId>cilia-demo-reactor</artifactId>
-	<name>Cilia SI Demo Reactor</name>
+	<name>${productName} :: SI Example - Reactor</name>
+
 	<packaging>pom</packaging>
 
 	<modules>

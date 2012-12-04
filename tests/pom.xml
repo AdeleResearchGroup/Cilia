@@ -22,7 +22,7 @@
 		<relativePath>../parent/</relativePath>
 	</parent>
 	<artifactId>cilia-tests-reactor</artifactId>
-	<name>Cilia Tests Reactor</name>
+	<name>${productName} :: Reactor Tests</name>
 	<packaging>pom</packaging>
   <profiles>
     <profile>

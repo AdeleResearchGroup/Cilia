@@ -10,7 +10,7 @@
 	<groupId>fr.liglab.adele.cilia.joram-demo</groupId>
 	<artifactId>jms-demo.mediators</artifactId>
 	<packaging>bundle</packaging>
-	<name>Cilia:JMS:Demo mediators</name>
+	<name>${productName} :: JMS Example - Mediators</name>
 	<build>
 		<plugins>
 			<plugin>

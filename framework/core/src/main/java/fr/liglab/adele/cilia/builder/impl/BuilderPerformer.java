@@ -361,6 +361,9 @@ public class BuilderPerformer {
 				throw new BuilderPerformerException(
 						"Impossible to create a component without ID");
 			}
+			if (creat.getType() == null || creat.getType().length()<1) {
+				throw new BuilderPerformerException("Components must have a valid type");
+			}
 			if ((chain.getMediator(id) != null) || chain.getAdapter(id) != null) { //
 				switch (creat.getInstanceType()) {
 				case Architecture.ADAPTER:

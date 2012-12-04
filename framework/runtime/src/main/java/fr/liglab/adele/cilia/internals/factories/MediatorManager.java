@@ -157,6 +157,7 @@ public class MediatorManager extends MediatorComponentManager implements Compone
 
 
 	public void createProcessor(Dictionary config) throws UnacceptableConfiguration, MissingHandlerException, ConfigurationException {
+		
 		pinstance = pfactory.createComponentInstance(config);
 
 	}

@@ -8,7 +8,8 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>fr.liglab.adele.cilia.si-demo</groupId>
 	<artifactId>demo-services-implementation</artifactId>
-	<name>Split/Aggregate Demo - chain services</name>
+	<name>${productName} :: SI Example - Services Implems</name>
+
 	<packaging>bundle</packaging>
 
 	<dependencies>

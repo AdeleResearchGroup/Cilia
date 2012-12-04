@@ -25,7 +25,7 @@
 	<groupId>fr.liglab.adele.cilia</groupId>
 	<artifactId>cilia-JMS-demo-reactor</artifactId>
 	<packaging>pom</packaging>
-	<name>Cilia JMS Demo Reactor</name>
+	<name>${productName} :: JMS Example - Reactor</name>
 
 	<modules>
 		<module>demo-mediators</module>

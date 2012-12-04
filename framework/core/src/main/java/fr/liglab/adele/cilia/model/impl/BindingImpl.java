@@ -16,10 +16,11 @@
 package fr.liglab.adele.cilia.model.impl;
 
 import java.util.Dictionary;
+import java.util.Hashtable;
+import java.util.Map;
 
 import fr.liglab.adele.cilia.model.Binding;
 import fr.liglab.adele.cilia.model.Chain;
-import fr.liglab.adele.cilia.model.Component;
 import fr.liglab.adele.cilia.model.MediatorComponent;
 import fr.liglab.adele.cilia.model.Port;
 
@@ -222,6 +223,13 @@ public class BindingImpl extends ComponentImpl implements Binding{
 		}
 		toShow.append("}");
 		return toShow.toString();
+	}
+	
+	public Map toMap(){
+		Map result = new Hashtable();
+		result.put("from", getSourceMediator().getId() + ":" + getSourcePort().getName());
+		result.put("to", getTargetMediator().getId() + ":" + getTargetPort().getName());
+		return result;
 	}
     
 }

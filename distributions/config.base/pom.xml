@@ -25,12 +25,11 @@
   <!-- Project coordinates -->
   <groupId>fr.liglab.adele.cilia</groupId>
   <artifactId>config.base</artifactId>
-  <version>1.5.3-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <!-- Project description -->
-  <name>Cilia :: Config Base</name>
-  
+  <name>${productName} :: Config Base</name>
+    
   <!-- Project dependencies -->
   <dependencies>
 

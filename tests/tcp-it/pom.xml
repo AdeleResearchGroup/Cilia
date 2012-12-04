@@ -9,7 +9,7 @@
 		<relativePath>../../parent</relativePath>
 	</parent>
 	<artifactId>tcp-test</artifactId>
-	<name>CILIA::TCP Adapter Tests</name>
+	<name>${productName} :: TCP Adapter Tests</name>
 	<packaging>jar</packaging>
 
 	<dependencies>

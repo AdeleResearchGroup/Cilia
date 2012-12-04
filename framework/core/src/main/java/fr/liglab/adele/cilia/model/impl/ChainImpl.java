@@ -21,7 +21,9 @@ import java.util.Dictionary;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import fr.liglab.adele.cilia.exceptions.CiliaException;
@@ -44,16 +46,16 @@ public class ChainImpl extends ComponentImpl implements Chain {
 	/**
 	 * List of mediators contained in the chain model.
 	 */
-	private Hashtable /* <MediatorImpl> */mediators = new Hashtable();
+	private Hashtable<String, Mediator> /* <MediatorImpl> */mediators = new Hashtable<String, Mediator>();
 
 	/**
 	 * List of adapters contained in the chain model.
 	 */
-	private Hashtable /* <Adapters> */adapters = new Hashtable();
+	private Hashtable<String, Adapter> /* <Adapters> */adapters = new Hashtable<String, Adapter>();
 	/**
 	 * List of bindings contained in the chain model.
 	 */
-	private Set /* <BindingImpl> */bindings = new HashSet();
+	private Set<Binding> /* <BindingImpl> */bindings = new HashSet<Binding>();
 
 	/**
 	 * Constructor.
@@ -188,7 +190,7 @@ public class ChainImpl extends ComponentImpl implements Chain {
 			mutex.readLock().acquire();
 		} catch (InterruptedException e) {
 		}
-		med = (Mediator) mediators.get(mediatorId);
+		med = mediators.get(mediatorId);
 		mutex.readLock().release();
 		return med;
 	}
@@ -238,12 +240,12 @@ public class ChainImpl extends ComponentImpl implements Chain {
 	 * 
 	 * @return
 	 */
-	public Set getMediators() {
+	public Set<Mediator> getMediators() {
 		try {
 			mutex.readLock().acquire();
 		} catch (InterruptedException e) {
 		}
-		Set ns = new HashSet(mediators.values());
+		Set<Mediator> ns = new HashSet<Mediator>(mediators.values());
 		mutex.readLock().release();
 		return ns;
 	}
@@ -261,7 +263,7 @@ public class ChainImpl extends ComponentImpl implements Chain {
 			mutex.readLock().acquire();
 		} catch (InterruptedException e) {
 		}
-		adap = (Adapter) adapters.get(adapterId);
+		adap = adapters.get(adapterId);
 		mutex.readLock().release();
 		return adap;
 	}
@@ -271,12 +273,12 @@ public class ChainImpl extends ComponentImpl implements Chain {
 	 * 
 	 * @return
 	 */
-	public Set getAdapters() {
+	public Set<Adapter> getAdapters() {
 		try {
 			mutex.readLock().acquire();
 		} catch (InterruptedException e) {
 		}
-		Set ns = new HashSet(adapters.values());
+		Set<Adapter> ns = new HashSet<Adapter>(adapters.values());
 		mutex.readLock().release();
 		return ns;
 	}
@@ -329,12 +331,12 @@ public class ChainImpl extends ComponentImpl implements Chain {
 	 * 
 	 * @return the added bindings.
 	 */
-	public Set getBindings() {
+	public Set<Binding> getBindings() {
 		try {
 			mutex.readLock().acquire();
 		} catch (InterruptedException e) {
 		}
-		Set ns = new HashSet(bindings);
+		Set<Binding> ns = new HashSet<Binding>(bindings);
 		mutex.readLock().release();
 		return ns;
 	}
@@ -373,8 +375,8 @@ public class ChainImpl extends ComponentImpl implements Chain {
 		if (sourcePort.getMediator().getChain() != this
 				|| targetPort.getMediator().getChain() != this) {
 			System.err
-					.println("Mediators in bind doesn't belong to the same chain "
-							+ this + " " + sourcePort.getMediator().getChain());
+			.println("Mediators in bind doesn't belong to the same chain "
+					+ this + " " + sourcePort.getMediator().getChain());
 			return null;
 		}
 		if (!sourcePort.getPortType().equals(PortType.OUTPUT)) {
@@ -460,9 +462,9 @@ public class ChainImpl extends ComponentImpl implements Chain {
 	}
 
 	private void unlinkBindingsFromChain(Binding[] bindingsToUnlink) { // called
-																		// in a
-																		// synchronized
-																		// block.
+		// in a
+		// synchronized
+		// block.
 		if (bindingsToUnlink != null) {
 			try {
 				mutex.writeLock().acquire();
@@ -492,7 +494,7 @@ public class ChainImpl extends ComponentImpl implements Chain {
 		bindingsToRemove = getBindings(sourceMediator, targetMediator);
 		unlinkBindingsFromChain(bindingsToRemove);
 		if (bindingsToRemove != null) {// Notify to the mediators to remove
-										// bindings.
+			// bindings.
 			unbind(bindingsToRemove);
 			result = true;
 		}
@@ -555,25 +557,20 @@ public class ChainImpl extends ComponentImpl implements Chain {
 	 */
 	public Binding[] getBindings(MediatorComponent source,
 			MediatorComponent target) {
-		List result = new ArrayList();
-		List bindings = new ArrayList();
+		List<Binding> result = new ArrayList<Binding>();
+		List<Binding> bindings = new ArrayList<Binding>();
 		Binding[] sourceB = null;
-		Binding[] targetB = null;
 		Binding[] allBindings = null;
 		if (source != null) {
 			sourceB = source.getOutBindings();
 		}
-		if (target != null) {
-			targetB = target.getInBindings();
-		}
 
-		if (sourceB != null && targetB != null) {
+		if (sourceB != null ) {
 			bindings.addAll(Arrays.asList(sourceB));
-			bindings.addAll(Arrays.asList(targetB));
 			// See if the bindings are connected (the same binding to both
 			// mediators)
 			if (bindings != null) {
-				Iterator it = bindings.iterator();
+				Iterator<Binding> it = bindings.iterator();
 				while (it.hasNext()) {
 					BindingImpl c = (BindingImpl) it.next();
 					if ((c.getSourceMediator().getId()
@@ -585,7 +582,7 @@ public class ChainImpl extends ComponentImpl implements Chain {
 				}
 			}
 			allBindings = (BindingImpl[]) result.toArray(new BindingImpl[result
-					.size()]);
+			                                                             .size()]);
 			// } else {
 
 			// if (sourceB !=null && targetB == null) {
@@ -613,27 +610,97 @@ public class ChainImpl extends ComponentImpl implements Chain {
 
 	public String toString() {
 		StringBuffer toShow = new StringBuffer("{ ").append("\n");
-		toShow.append("Chain : ").append(getId()).append(",").append("\n");
-		Set mediators = getMediators();
-		Set adapters = getAdapters();
-		Set bindings = getBindings();
-		Iterator itm = mediators.iterator();
-		Iterator ita = adapters.iterator();
-		Iterator itb = bindings.iterator();
-		// Add the mediator id's to the StringBuffer.
-		if (itm.hasNext()) {
-			toShow.append("Mediators : [\n");
-			while (itm.hasNext()) {
-				MediatorImpl mediator = (MediatorImpl) itm.next();
-				toShow.append(mediator.getId());
-				toShow.append(",\n");
+		try {
+			mutex.readLock().acquire();
+
+			toShow.append("ID : ").append(getId()).append(",").append("\n");
+			Set<Mediator> mediators = getMediators();
+			Set<Adapter> adapters = getAdapters();
+			Set<Binding> bindings = getBindings();
+			Iterator<Mediator> itm = mediators.iterator();
+			Iterator<Adapter> ita = adapters.iterator();
+			Iterator<Binding> itb = bindings.iterator();
+			// Add the mediator id's to the StringBuffer.
+			if (itm.hasNext()) {
+				toShow.append("Mediators : [\n");
+				while (itm.hasNext()) {
+					MediatorImpl mediator = (MediatorImpl) itm.next();
+					toShow.append(mediator.getId());
+					toShow.append(",\n");
+				}
+				toShow.delete(toShow.length() - 2, toShow.length() - 1);
+				toShow.append("],\n");
+			}
+			// Add the AdapterImpl id's to the StringBuffer.
+			if (ita.hasNext()) {
+				toShow.append("Adapters : {\n");
+				List<String> inonly = new ArrayList<String>();
+				List<String> outonly = new ArrayList<String>();
+				List<String> inout = new ArrayList<String>();
+				List<String> unassigned = new ArrayList<String>();
+				while (ita.hasNext()) {
+					AdapterImpl adapter = (AdapterImpl) ita.next();
+					if (adapter.getPattern() == PatternType.IN_ONLY) {
+						inonly.add(adapter.getId());
+					} else if (adapter.getPattern() == PatternType.OUT_ONLY) {
+						outonly.add(adapter.getId());
+					} else if (adapter.getPattern() == PatternType.IN_OUT) {
+						inout.add(adapter.getId());
+					} else {
+						unassigned.add(adapter.getId());
+					}
+				}
+
+				toShow.append("\"in-only\" : ").append(inonly).append(",\n");
+
+				toShow.append("\"out-only\" : ").append(outonly).append(",\n");
+
+				toShow.append("\"in-out\" : ").append(inout).append(",\n");
+
+				if (!unassigned.isEmpty()) {
+					toShow.append("\"unknown\" : ").append(unassigned)
+					.append(",\n");
+				}
+				toShow.delete(toShow.length() - 2, toShow.length() - 1);
+				toShow.append("},\n");
+			}
+			if (itb.hasNext()) {
+				toShow.append("Bindings : [\n");
+				while (itb.hasNext()) {
+					BindingImpl binding = (BindingImpl) itb.next();
+					toShow.append(binding);
+					toShow.append(",\n");
+				}
+				toShow.delete(toShow.length() - 2, toShow.length() - 1);
+				toShow.append("],\n");
 			}
 			toShow.delete(toShow.length() - 2, toShow.length() - 1);
-			toShow.append("],\n");
+			toShow.append("}");
+		} catch (InterruptedException e) {
+		}finally{
+			mutex.readLock().release();
 		}
-		// Add the AdapterImpl id's to the StringBuffer.
+		return toShow.toString();
+	}
+
+	public Map toMap(){
+		Map result = new LinkedHashMap();
+		try {
+			mutex.readLock().acquire();
+
+		result.put("ID", getId());
+		Iterator<Mediator> itm = getMediators().iterator();
+		List mediators = new ArrayList(getMediators().size());
+		if (itm.hasNext()) {
+			while (itm.hasNext()) {
+				mediators.add((itm.next().getId()));
+			}
+		}
+
+		result.put("Mediators", mediators);
+		Map adapters = new Hashtable();
+		Iterator<Adapter> ita = getAdapters().iterator();
 		if (ita.hasNext()) {
-			toShow.append("Adapters : {\n");
 			List<String> inonly = new ArrayList<String>();
 			List<String> outonly = new ArrayList<String>();
 			List<String> inout = new ArrayList<String>();
@@ -650,33 +717,27 @@ public class ChainImpl extends ComponentImpl implements Chain {
 					unassigned.add(adapter.getId());
 				}
 			}
-
-			toShow.append("\"in-only\" : ").append(inonly).append(",\n");
-
-			toShow.append("\"out-only\" : ").append(outonly).append(",\n");
-
-			toShow.append("\"in-out\" : ").append(inout).append(",\n");
-
+			adapters.put("in-only", inonly);
+			adapters.put("out-only", outonly);
+			adapters.put("in-out", inout);
 			if (!unassigned.isEmpty()) {
-				toShow.append("\"unknown\" : ").append(unassigned)
-						.append(",\n");
+				adapters.put("unknown", unassigned);
 			}
-			toShow.delete(toShow.length() - 2, toShow.length() - 1);
-			toShow.append("},\n");
+			result.put("Adapters", adapters);
 		}
-		if (itb.hasNext()) {
-			toShow.append("Bindings : [\n");
-			while (itb.hasNext()) {
-				BindingImpl binding = (BindingImpl) itb.next();
-				toShow.append(binding);
-				toShow.append(",\n");
-			}
-			toShow.delete(toShow.length() - 2, toShow.length() - 1);
-			toShow.append("],\n");
+		List bindings = new ArrayList(getBindings().size());
+		Iterator<Binding> bit = getBindings().iterator();
+		
+		while(bit.hasNext()) {
+			bindings.add(bit.next().toMap());
 		}
-		toShow.delete(toShow.length() - 2, toShow.length() - 1);
-		toShow.append("}");
-		return toShow.toString();
+		result.put("Bindings", bindings);
+		} catch (InterruptedException e){}
+		finally{
+			mutex.readLock().release();
+		}
+		//List adapters = new ArrayList(getAdapters());
+		return result;
 	}
 
 }

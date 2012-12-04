@@ -24,7 +24,7 @@
 
 	<artifactId>cilia-examples-reactor</artifactId>
 	<packaging>pom</packaging>
-	<name>Cilia Examples Reactor</name>
+	<name>${productName} :: Examples - Reactor</name>
 
 	<modules>
 		<module>si-example</module>

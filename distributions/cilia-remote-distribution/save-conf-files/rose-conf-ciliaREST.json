@@ -1,12 +1,13 @@
 {
 	"machine" : {
-		"id" : "server1",
+		"id" : "ciliamachine",
 		"host" : "localhost",
 
 		"connection" : [
 				{
 				"out" : {
-					"service_filter" : "(|(&(objectClass=fr.liglab.adele.cilia.remote.impl.AdminChainREST)(instance.name=remote-admin-chain-0))(&(objectClass=fr.liglab.adele.cilia.remote.impl.MonitorREST)(instance.name=remote-monitor-chain-0)))"
+					"service_filter" : "(|(&(objectClass=fr.liglab.adele.cilia.remote.impl.AdminChainREST)(instance.name=remote-admin-chain-0))(&(objectClass=fr.liglab.adele.cilia.remote.impl.MonitorREST)(instance.name=remote-monitor-chain-0)))",
+					"protocol" : ["jax-rs"]
 					}
 				}
 		],

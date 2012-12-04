@@ -9,7 +9,7 @@
 	</parent>	
 	<artifactId>tcp-adapter</artifactId>
 	<packaging>bundle</packaging>
-	<name>Cilia :: TCP Adapter</name>
+	<name>${productName} :: TCP Adapters</name>
 
 	<dependencies>
 		<dependency>

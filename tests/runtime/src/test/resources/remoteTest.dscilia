@@ -1,0 +1,14 @@
+<cilia>
+	<chain id="remote">
+		<mediators>
+			<mediator-instance id="toto" type="Mock" namespace="fr.liglab.adele.cilia.test"/>
+			<mediator-instance id="validToto" type="Mock" namespace="fr.liglab.adele.cilia.test" />
+		</mediators>
+		<adapters>
+			<adapter-instance id="adapter1" type="console-adapter" />
+		</adapters>
+		<bindings>
+			<binding from="validToto:unique" to="toto:unique"/>
+		</bindings>
+	</chain>
+</cilia>

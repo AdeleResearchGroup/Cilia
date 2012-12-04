@@ -253,7 +253,7 @@ public class CiliaAdminServiceImpl implements CiliaAdminService, AdminChain, Adm
 	 * @param properties The new properties
 	 * @throws CiliaException. If the chain or the component does not exist.
 	 */
-	public void updateMediator(String chainId, String componentId,Map<String, Object> properties) throws CiliaException {
+	public void updateMediator(String chainId, String componentId,Map properties) throws CiliaException {
 		Builder builder = ccontext.getBuilder();
 		Architecture  chain = null;
 		chain = builder.get(chainId);
@@ -267,7 +267,7 @@ public class CiliaAdminServiceImpl implements CiliaAdminService, AdminChain, Adm
 	 * @param properties The new properties
 	 * @throws CiliaException. If the chain or the component does not exist.
 	 */
-	public void updateAdapter(String chainId, String componentId, Map<String, Object> properties) throws CiliaException {
+	public void updateAdapter(String chainId, String componentId, Map properties) throws CiliaException {
 		Builder builder = ccontext.getBuilder();
 		Architecture  chain = null;
 		chain = builder.get(chainId);

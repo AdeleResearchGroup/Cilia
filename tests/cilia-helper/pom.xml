@@ -18,7 +18,8 @@
 	</parent>
 
 	<artifactId>cilia-helper</artifactId>
-	<name>Cilia Helper</name>
+	<name>${productName} :: Tests Helper</name>
+
 	<packaging>bundle</packaging>
 
 	<dependencies>

@@ -15,6 +15,9 @@
 package fr.liglab.adele.cilia.model.impl;
 
 import java.util.Dictionary;
+import java.util.Hashtable;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 import fr.liglab.adele.cilia.model.Adapter;
 import fr.liglab.adele.cilia.model.Chain;
@@ -88,5 +91,17 @@ public class AdapterImpl  extends MediatorComponentImpl implements Adapter{
 		sb.append("Properties:").append(super.getProperties());
 		sb.append("\n}");
 		return sb.toString();
+	}
+	public Map toMap() {
+		Map result = new LinkedHashMap();
+		result.put("UUID", FrameworkUtils.makeQualifiedId(chainId(), nodeId(), uuid()));
+		result.put("Type", getType());
+		result.put("Pattern", getPattern().getName());
+		result.put("Namespace", getNamespace());
+		result.put("ID", getId());
+		result.put("State", getState());
+		result.put("Creation date", Watch.formatDateIso8601(timeStamp()));
+		result.put("Properties", super.getProperties());
+		return result;
 	}
 }

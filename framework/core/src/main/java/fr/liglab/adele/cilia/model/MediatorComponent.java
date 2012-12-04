@@ -14,6 +14,8 @@
  */
 package fr.liglab.adele.cilia.model;
 
+import java.util.Map;
+
 import fr.liglab.adele.cilia.Node;
 
 /**
@@ -101,6 +103,8 @@ public interface MediatorComponent extends Node,Component {
 	int getState();
 	
 	String getVersion();
+	
+	Map toMap();
 	
 	boolean isRunning();
 }
