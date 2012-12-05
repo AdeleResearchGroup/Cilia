@@ -14,6 +14,9 @@
  */
 package fr.liglab.adele.cilia.builder.impl;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import fr.liglab.adele.cilia.ChainCallback;
 import fr.liglab.adele.cilia.CiliaContext;
 import fr.liglab.adele.cilia.builder.Architecture;
@@ -22,6 +25,7 @@ import fr.liglab.adele.cilia.exceptions.BuilderException;
 import fr.liglab.adele.cilia.exceptions.BuilderPerformerException;
 import fr.liglab.adele.cilia.exceptions.CiliaException;
 import fr.liglab.adele.cilia.model.CiliaContainer;
+import fr.liglab.adele.cilia.util.Const;
 
 /**
  *
@@ -35,6 +39,8 @@ public class BuilderImpl implements Builder {
 	CiliaContext context;
 
 	ArchitectureImpl architecture = null;
+	
+	private static Logger log = LoggerFactory.getLogger(Const.LOGGER_CORE);
 
 	public BuilderImpl(CiliaContext context, CiliaContainer container) {
 		this.container = container;
@@ -80,7 +86,7 @@ public class BuilderImpl implements Builder {
 		setInvalid();//So it is impossible to modify again this builder.
 		if(!architecture.toCreate() && container.getChain(architecture.getChainId()) == null){
 			try {
-				System.out.println("Will wait until chain is ready: " + architecture.getChainId());
+				log.warn("Will wait until chain is ready: " + architecture.getChainId());
 				context.getApplicationRuntime().addListener("(chain="+architecture.getChainId()+")", new ChainListenerImpl());
 			} catch (CiliaException e) {
 				e.printStackTrace();

@@ -48,8 +48,6 @@ import fr.liglab.adele.cilia.runtime.CiliaInstance;
 public class CiliaJMSTest {
 
 
-	private final static String CURRENT_VERSION="1.2.2-SNAPSHOT"; 
-
 	@Inject
 	private BundleContext context;
 
@@ -77,21 +75,20 @@ public class CiliaJMSTest {
 
 		Option[] bundles = options(
 				provision(
-						mavenBundle().groupId("org.apache.felix").artifactId("org.apache.felix.ipojo").version("1.8.0"),
-						mavenBundle().groupId("org.apache.felix").artifactId("org.apache.felix.ipojo.test.helpers").version("1.5.0-SNAPSHOT"),
-						mavenBundle().groupId("org.osgi").artifactId("org.osgi.compendium").version("4.2.0"),
-						mavenBundle().groupId("org.apache.felix").artifactId("org.apache.felix.gogo.runtime").version("0.6.1"),
-						mavenBundle().groupId("org.apache.felix").artifactId("org.apache.felix.fileinstall").version("3.2.0"),
-						mavenBundle().groupId("org.slf4j").artifactId("slf4j-api").version("1.6.1"),
-						mavenBundle().groupId("org.slf4j").artifactId("slf4j-simple").version("1.6.1"),
-						mavenBundle().groupId("javax.jms").artifactId("com.springsource.javax.jms").version("1.1.0"),
-						mavenBundle().groupId("org.objectweb.joram").artifactId("joram-client-jms").version("5.7.0"),
-						mavenBundle().groupId("org.objectweb.joram").artifactId("a3-common").version("5.7.0"),
-						mavenBundle().groupId("org.objectweb.joram").artifactId("jndi-client").version("5.7.0"),
-						mavenBundle().groupId("org.objectweb.joram").artifactId("jndi-shared").version("5.7.0"),
-						mavenBundle().groupId("org.objectweb.joram").artifactId("joram-shared").version("5.7.0"),
-						mavenBundle().groupId("org.objectweb.joram").artifactId("jcup").version("5.3.1"),
-						mavenBundle().groupId("org.ow2.jonas.osgi").artifactId("monolog").version("5.2.0"),
+						mavenBundle().groupId("org.apache.felix").artifactId("org.apache.felix.ipojo").versionAsInProject(),
+						mavenBundle().groupId("org.apache.felix").artifactId("org.apache.felix.ipojo.test.helpers").versionAsInProject(),
+						mavenBundle().groupId("org.osgi").artifactId("org.osgi.compendium").versionAsInProject(),
+						mavenBundle().groupId("org.apache.felix").artifactId("org.apache.felix.fileinstall").versionAsInProject(),
+						mavenBundle().groupId("org.slf4j").artifactId("slf4j-api").versionAsInProject(),
+						mavenBundle().groupId("org.slf4j").artifactId("slf4j-simple").versionAsInProject(),
+						mavenBundle().groupId("javax.jms").artifactId("com.springsource.javax.jms").versionAsInProject(),
+						mavenBundle().groupId("org.objectweb.joram").artifactId("joram-client-jms").versionAsInProject(),
+						mavenBundle().groupId("org.objectweb.joram").artifactId("a3-common").versionAsInProject(),
+						mavenBundle().groupId("org.objectweb.joram").artifactId("jndi-client").versionAsInProject(),
+						mavenBundle().groupId("org.objectweb.joram").artifactId("jndi-shared").versionAsInProject(),
+						mavenBundle().groupId("org.objectweb.joram").artifactId("joram-shared").versionAsInProject(),
+						mavenBundle().groupId("org.objectweb.joram").artifactId("jcup").versionAsInProject(),
+						mavenBundle().groupId("org.ow2.jonas.osgi").artifactId("monolog").versionAsInProject(),
 						mavenBundle().groupId("fr.liglab.adele.cilia").artifactId("cilia-core").versionAsInProject(),
 						mavenBundle().groupId("fr.liglab.adele.cilia").artifactId("cilia-runtime").versionAsInProject(),
 						mavenBundle().groupId("fr.liglab.adele.cilia").artifactId("cilia-helper").versionAsInProject(),

@@ -102,16 +102,15 @@ public class TestTCPAdapters  {
 
 		Option[] bundles = options(
 				provision(
-						mavenBundle().groupId("org.apache.felix").artifactId("org.apache.felix.ipojo").version("1.8.0"),
-						mavenBundle().groupId("org.apache.felix").artifactId("org.apache.felix.ipojo.test.helpers").version("1.5.0-SNAPSHOT"),
-						mavenBundle().groupId("org.osgi").artifactId("org.osgi.compendium").version("4.2.0"),
-						mavenBundle().groupId("org.apache.felix").artifactId("org.apache.felix.gogo.runtime").version("0.6.1"),
-						mavenBundle().groupId("org.apache.felix").artifactId("org.apache.felix.fileinstall").version("3.2.0"),
-						mavenBundle().groupId("org.slf4j").artifactId("slf4j-api").version("1.6.1"),
-						mavenBundle().groupId("org.slf4j").artifactId("slf4j-simple").version("1.6.1"),
+						mavenBundle().groupId("org.apache.felix").artifactId("org.apache.felix.ipojo").versionAsInProject(),
+						mavenBundle().groupId("org.apache.felix").artifactId("org.apache.felix.ipojo.test.helpers").versionAsInProject(),
+						mavenBundle().groupId("org.osgi").artifactId("org.osgi.compendium").versionAsInProject(),
+						mavenBundle().groupId("org.apache.felix").artifactId("org.apache.felix.fileinstall").versionAsInProject(),
+						mavenBundle().groupId("org.slf4j").artifactId("slf4j-api").versionAsInProject(),
+						mavenBundle().groupId("org.slf4j").artifactId("slf4j-simple").versionAsInProject(),
 						mavenBundle().groupId("fr.liglab.adele.cilia").artifactId("cilia-core").versionAsInProject(),
 						mavenBundle().groupId("fr.liglab.adele.cilia").artifactId("cilia-runtime").versionAsInProject(),
-						mavenBundle().groupId("org.apache.felix").artifactId("org.apache.felix.eventadmin").version("1.2.14"),
+						mavenBundle().groupId("org.apache.felix").artifactId("org.apache.felix.eventadmin").versionAsInProject(),
 						mavenBundle().groupId("fr.liglab.adele.cilia").artifactId("tcp-adapter").versionAsInProject(),
 						mavenBundle().groupId("fr.liglab.adele.cilia").artifactId("cilia-helper").versionAsInProject()
 						)); // The target

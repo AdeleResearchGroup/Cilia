@@ -86,6 +86,7 @@ public class AdminChainREST {
 	private JSONService jsonservice; //JsonService, in order to parse
 
 	protected static Logger coreLogger = LoggerFactory.getLogger(Const.LOGGER_CORE);
+	
 
 	/*****************************************/
 	/**          GET METHODS                **/
@@ -262,9 +263,6 @@ public class AdminChainREST {
 		if (component != null) {
 			Map map = component.toMap();
 			String tojson = jsonservice.toJSON(map);
-			System.out.println(component);
-			System.out.println(map);
-			System.out.println(tojson);
 			reponse =  Response.ok(tojson).build();
 		} else { // Maybe it is an uuid
 			try {
@@ -450,8 +448,6 @@ public class AdminChainREST {
 	@Path("{chainid}/components/{componentId}")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response updateComponentPUT(@PathParam("chainid")String chainId, @PathParam("componentId")String componentId, @FormParam("properties")String properties) {
-		System.out.println("Will update component " + componentId);
-		System.out.println("Properties " + properties);
 		if (properties == null || properties.length()<1){
 			return Response.status(Status.BAD_REQUEST).build();
 		}
@@ -529,8 +525,6 @@ public class AdminChainREST {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response createMediator(@PathParam("chainid")String chainId, @FormParam("type")String componentType, @PathParam("componentId")String componentID, @FormParam("properties")String  properties) {
 		Map<String, Object> prop = null;
-		System.out.println("Creating mediator");
-		System.out.println(properties);
 		StringBuilder result = new StringBuilder();
 		Response response;
 		if (properties != null && properties.length()>2){
@@ -618,7 +612,6 @@ public class AdminChainREST {
 	@Path("{chainid}/bindings")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response createBinding(@PathParam("chainid")String chainId, @FormParam("from")String from, @FormParam("to")String to, @FormParam("linker")String linker, @FormParam("properties")String properties) {
-		System.out.println("Will create binding");
 		Map<String, Object> prop = null;
 		Response response;
 		StringBuilder result = new StringBuilder("{");
@@ -755,7 +748,6 @@ public class AdminChainREST {
 	@DELETE
 	@Path("{chainid}/bindings")
 	public Response deleteBinding(@PathParam("chainid")String chainId, @QueryParam("from")String from, @QueryParam("to")String to) {
-		System.out.println("Remove binding" + from);
 		try {
 			abinding.deleteBinding(chainId, from, to);
 		} catch (CiliaException e) {

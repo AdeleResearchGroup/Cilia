@@ -1,5 +1,19 @@
 =======================================================================================
-CILIA 2.0.0 (next release)
+CILIA 1.6.0
+=======================================================================================
+!+ Namespace is always used, if any namespace is given, the framework will use fr.liglab.adele.cilia
++  API REST is changed and improved
++  Some bugs are fixed
+!+ First implementation of the Remote REST API for monitoring 
++  Add some tests to improve quality
++  Improved the log messages, there are three logs:
+	* cilia.core for log messages when manipulating chain models
+	* cilia.runtime for log messages when manipulating instances and modifications due to dynamism
+	* cilia.application for log messages when executing a mediation application, to track messages.
+	
+
+=======================================================================================
+CILIA 1.5.2 
 =======================================================================================
 + Added cilia.forcebindings property to skip port validation
 + Added a Builder pattern to build mediation chains at runtime

@@ -85,7 +85,7 @@ public class BuilderTest {
 						mavenBundle().groupId("org.osgi").artifactId("org.osgi.compendium").versionAsInProject(),
 						mavenBundle().groupId("org.apache.felix").artifactId("org.apache.felix.fileinstall").versionAsInProject(),
 						mavenBundle().groupId("org.slf4j").artifactId("slf4j-api").versionAsInProject(),
-						mavenBundle().groupId("org.slf4j").artifactId("slf4j-simple").version("1.6.1"),
+						mavenBundle().groupId("org.slf4j").artifactId("slf4j-simple").versionAsInProject(),
 						mavenBundle().groupId("fr.liglab.adele.cilia").artifactId("cilia-core").versionAsInProject(),
 						mavenBundle().groupId("fr.liglab.adele.cilia").artifactId("cilia-runtime").versionAsInProject(),
 						mavenBundle().groupId("fr.liglab.adele.cilia").artifactId("cilia-helper").versionAsInProject()
@@ -229,7 +229,7 @@ public class BuilderTest {
 		CiliaHelper.waitSomeTime(2000);
 		try {
 			Builder builder = getBuilder();
-			Architecture arch = builder.create("firstChain");
+			builder.create("firstChain");
 			builder.get("secondChain");
 			Assert.fail("We can't use a builder for two different chains");
 		} catch (CiliaException e) {}	
@@ -374,7 +374,7 @@ public class BuilderTest {
 			arch.create().mediator().type("rere").id("dsds");
 			arch.create().mediator().type("dsds").namespace("dsds").id("dsds");
 
-			arch.bind().using("ea").from("mediator1:titi").to("mediator2:tito").configure(new Hashtable());
+			arch.bind().using("ea").from("mediator1:titi").to("mediator2:tito").configure(new Hashtable<String, String>());
 
 			arch.bind().from("mediator:toto").to("mediator2:end");
 			arch.configure().mediator().id("toto").key("tata").value("value")
@@ -382,7 +382,7 @@ public class BuilderTest {
 			.key("isi").value("rere").key("tata").value("value")
 			.key("isi").value("rere").key("tata").value("value")
 			.key("isi").value("rere").key("tata").value("value")
-			.key("isi").value("rere").set(new Hashtable());
+			.key("isi").value("rere").set(new Hashtable<String, String>());
 
 			// ContentBasedRouting cb = new ContentBasedRouting();
 			// cb.evaluator("ldap").condition("(toto)").to("portX");

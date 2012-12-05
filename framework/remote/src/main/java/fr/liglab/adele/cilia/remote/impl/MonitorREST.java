@@ -251,11 +251,7 @@ public class MonitorREST {
 	@Path("{chainid}/component/{id}/setup/{variable}/{concept}")
 	@Produces("application/json")
 	public Response modifySetup(@PathParam("chainid") String chainid,@PathParam("id") String id,@PathParam("variable") String variable,@PathParam("concept") String concept, @FormParam("value") String value){
-		System.out.println("chain" + chainid);
-		System.out.println("component" + id);
-		System.out.println("variable" + variable);
-		System.out.println("concept" + concept);
-		System.out.println("value" + value);
+
 		return Response.ok().build();
 	}
 	
@@ -263,11 +259,7 @@ public class MonitorREST {
 	@Path("{chainid}/component/{id}/threshold/{variable}/{concept}")
 	@Produces("application/json")
 	public Response modifyThreshold(@PathParam("chainid") String chainid,@PathParam("id") String id,@PathParam("variable") String variable,@PathParam("concept") String concept, @FormParam("value") String value){
-		System.out.println("chain" + chainid);
-		System.out.println("component" + id);
-		System.out.println("variable" + variable);
-		System.out.println("concept" + concept);
-		System.out.println("value" + value);
+
 		return Response.ok().build();
 	}
 	

@@ -58,13 +58,12 @@ public class CiliaHelperTest {
 						"org.apache.felix").artifactId("org.apache.felix.ipojo").versionAsInProject(), 
 						mavenBundle().groupId("org.apache.felix").artifactId("org.apache.felix.ipojo.test.helpers").versionAsInProject(),
 						mavenBundle().groupId("org.osgi").artifactId("org.osgi.compendium").versionAsInProject(),
-						mavenBundle().groupId("org.apache.felix").artifactId("org.apache.felix.gogo.runtime").version("0.6.1"),
-						mavenBundle().groupId("org.apache.felix").artifactId("org.apache.felix.fileinstall").version("3.2.0"),
+						mavenBundle().groupId("org.apache.felix").artifactId("org.apache.felix.fileinstall").versionAsInProject(),
 						mavenBundle().groupId("org.slf4j").artifactId("slf4j-api").versionAsInProject(),
-						mavenBundle().groupId("org.slf4j").artifactId("slf4j-simple").version("1.6.1"),
+						mavenBundle().groupId("org.slf4j").artifactId("slf4j-simple").versionAsInProject(),
 						mavenBundle().groupId("fr.liglab.adele.cilia").artifactId("cilia-core").versionAsInProject(),
 						mavenBundle().groupId("fr.liglab.adele.cilia").artifactId("cilia-runtime").versionAsInProject(),
-						mavenBundle().groupId("fr.liglab.adele.cilia").artifactId("cilia-helper").version("1.5.2-SNAPSHOT")
+						mavenBundle().groupId("fr.liglab.adele.cilia").artifactId("cilia-helper").version("1.5.3-SNAPSHOT")
 						)); // The target
 		Option[] r = OptionUtils.combine(platform, bundles);
 		return r;

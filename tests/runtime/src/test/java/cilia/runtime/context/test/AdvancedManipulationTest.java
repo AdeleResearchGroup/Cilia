@@ -87,7 +87,7 @@ public class AdvancedManipulationTest {
 						mavenBundle().groupId("org.apache.felix").artifactId("org.apache.felix.fileinstall").versionAsInProject(),
 						mavenBundle().groupId("org.osgi").artifactId("org.osgi.compendium").versionAsInProject(),
 						mavenBundle().groupId("org.slf4j").artifactId("slf4j-api").versionAsInProject(),
-						mavenBundle().groupId("org.slf4j").artifactId("slf4j-simple").version("1.6.1"),
+						mavenBundle().groupId("org.slf4j").artifactId("slf4j-simple").versionAsInProject(),
 						mavenBundle().groupId("fr.liglab.adele.cilia").artifactId("cilia-core").versionAsInProject(),
 						mavenBundle().groupId("fr.liglab.adele.cilia").artifactId("cilia-runtime").versionAsInProject(),
 						mavenBundle().groupId("fr.liglab.adele.cilia").artifactId("cilia-helper").versionAsInProject()
@@ -114,7 +114,7 @@ public class AdvancedManipulationTest {
 		URL url = context.getBundle().getResource("ReplacerTest.dscilia");
 		cilia.load(url);
 		System.out.println("will wait");
-		boolean found = cilia.waitToChain("replacerExample",6000);
+		cilia.waitToChain("replacerExample",6000);
 		CiliaHelper.waitSomeTime(2000);
 		//get the helper to inject and retrieve result.
 		MediatorTestHelper tester = cilia.instrumentChain("replacerExample","firstMediator:unique", "lastMediator:unique");

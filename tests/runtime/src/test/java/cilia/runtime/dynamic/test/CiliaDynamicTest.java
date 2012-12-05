@@ -96,7 +96,7 @@ public class CiliaDynamicTest {
 				mavenBundle().groupId("org.slf4j").artifactId("slf4j-api")
 				.versionAsInProject(),
 				mavenBundle().groupId("org.slf4j").artifactId("slf4j-simple")
-				.version("1.6.1"),
+				.versionAsInProject(),
 				mavenBundle().groupId("fr.liglab.adele.cilia")
 				.artifactId("cilia-core").versionAsInProject(),
 				mavenBundle().groupId("fr.liglab.adele.cilia")

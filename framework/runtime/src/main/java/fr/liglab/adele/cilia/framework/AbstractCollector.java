@@ -15,7 +15,11 @@
 
 package fr.liglab.adele.cilia.framework;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import fr.liglab.adele.cilia.Data;
+import fr.liglab.adele.cilia.util.Const;
 /**
  * This is the abstract collector.
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project Team</a>
@@ -32,6 +36,8 @@ public abstract class AbstractCollector implements ICollector {
 	 * Set the scheduler to call when collect data.
 	 * @param scheduler Cilia Scheduler.
 	 */
+	private static Logger log = LoggerFactory.getLogger(Const.LOGGER_APPLICATION);
+
 	public void setScheduler(IScheduler scheduler) {
 		m_scheduler = scheduler;
 	}
@@ -46,7 +52,7 @@ public abstract class AbstractCollector implements ICollector {
 		if (m_scheduler != null) {
 		    m_scheduler.notifyData(data);
 		} else {
-			//System.out.println("Scheduler is null " + this.getClass().getName());
+			log.error("Unable to notify data arriva, Scheduler is not available");
 		}
 		return data;
 	}

@@ -30,7 +30,7 @@
 		<jersey.version>1.9</jersey.version>
 		<jsonservice.version>0.4.0</jsonservice.version>
 		<fileinstall.version>3.2.4</fileinstall.version>
-		<rose.version>1.0.1-SNAPSHOT</rose.version>
+		<rose.version>1.0.2</rose.version>
 		<jms.version>1.1.0</jms.version>
 		<ea.version>1.2.14</ea.version>
 		<joram.version>5.7.0</joram.version>

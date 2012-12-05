@@ -91,8 +91,8 @@ public class ReliabilityTest {
 						mavenBundle().groupId("org.osgi").artifactId("org.osgi.compendium").versionAsInProject(),
 						mavenBundle().groupId("org.apache.felix").artifactId("org.apache.felix.fileinstall").versionAsInProject(),
 						mavenBundle().groupId("org.slf4j").artifactId("slf4j-api").versionAsInProject(),
-						mavenBundle().groupId("org.slf4j").artifactId("slf4j-simple").version("1.6.1"),
-						mavenBundle().groupId("org.apache.felix").artifactId("org.apache.felix.eventadmin").version("1.2.14"),
+						mavenBundle().groupId("org.slf4j").artifactId("slf4j-simple").versionAsInProject(),
+						mavenBundle().groupId("org.apache.felix").artifactId("org.apache.felix.eventadmin").versionAsInProject(),
 						mavenBundle().groupId("fr.liglab.adele.cilia").artifactId("cilia-core").versionAsInProject(),
 						mavenBundle().groupId("fr.liglab.adele.cilia").artifactId("cilia-runtime").versionAsInProject(),
 						mavenBundle().groupId("fr.liglab.adele.cilia").artifactId("cilia-helper").versionAsInProject(),
@@ -122,7 +122,7 @@ public class ReliabilityTest {
 		
 		//wait to be added.
 		logger.info("will wait");
-		boolean found = cilia.waitToChain(chainID,6000);
+		cilia.waitToChain(chainID,6000);
 		logger.info("Chain Ready");
 		MediatorTestHelper qd = cilia.instrumentChain(chainID, "firstMediator:unique", "lastMediator:unique");
 		//chain must exist, and helper should be well constructed.
@@ -181,7 +181,7 @@ public class ReliabilityTest {
 		cilia.load(url);
 		//wait to be added.
 		logger.info("will wait");
-		boolean found = cilia.waitToChain("reliableTest",6000);
+		cilia.waitToChain("reliableTest",6000);
 		logger.info("Chain is ready");
 		MediatorTestHelper qd = cilia.instrumentChain("reliableTest", "firstMediator:unique", "lastMediator:unique");
 		logger.info("Chain has been instrumented");

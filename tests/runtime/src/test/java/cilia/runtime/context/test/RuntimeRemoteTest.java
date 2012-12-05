@@ -15,13 +15,11 @@
 package cilia.runtime.context.test;
 
 import static org.ops4j.pax.exam.CoreOptions.felix;
-import static org.ops4j.pax.exam.CoreOptions.maven;
 import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
 import static org.ops4j.pax.exam.CoreOptions.options;
 import static org.ops4j.pax.exam.CoreOptions.provision;
 import static org.ops4j.pax.exam.CoreOptions.systemProperty;
 import static org.ops4j.pax.exam.CoreOptions.when;
-import static org.ops4j.pax.exam.CoreOptions.wrappedBundle;
 import static org.ops4j.pax.exam.container.def.PaxRunnerOptions.vmOption;
 
 import java.lang.management.ManagementFactory;
@@ -51,8 +49,6 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.InvalidSyntaxException;
 import org.ow2.chameleon.json.JSONService;
 import org.ow2.chameleon.rose.api.Machine;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.WebResource;
@@ -84,7 +80,6 @@ public class RuntimeRemoteTest {
 
 	private static String ROOT_SITE = "http://localhost:"+HTTP_PORT+"/cilia/"; 
 
-	private static final Logger logger = LoggerFactory.getLogger("cilia.test");
 
 	@Before
 	public void setUp() {
@@ -104,14 +99,13 @@ public class RuntimeRemoteTest {
 		Option[] platform = options(felix(), systemProperty( "org.osgi.service.http.port" ).value( HTTP_PORT ));
 
 		Option[] bundles = options(
-				provision(mavenBundle().groupId(
-						"org.apache.felix").artifactId("org.apache.felix.ipojo").version("1.9.0-SNAPSHOT"), 
-						//"org.apache.felix").artifactId("org.apache.felix.ipojo").versionAsInProject(),
+				provision(
+						mavenBundle().groupId("org.apache.felix").artifactId("org.apache.felix.ipojo").versionAsInProject(),
 						mavenBundle().groupId("org.apache.felix").artifactId("org.apache.felix.ipojo.test.helpers").versionAsInProject(),
 						mavenBundle().groupId("org.osgi").artifactId("org.osgi.compendium").versionAsInProject(),
 						mavenBundle().groupId("org.apache.felix").artifactId("org.apache.felix.fileinstall").versionAsInProject(),
 						mavenBundle().groupId("org.slf4j").artifactId("slf4j-api").versionAsInProject(),
-						mavenBundle().groupId("org.slf4j").artifactId("slf4j-simple").version("1.6.1"),
+						mavenBundle().groupId("org.slf4j").artifactId("slf4j-simple").versionAsInProject(),
 						mavenBundle().groupId("fr.liglab.adele.cilia").artifactId("cilia-core").versionAsInProject(),
 						mavenBundle().groupId("fr.liglab.adele.cilia").artifactId("cilia-runtime").versionAsInProject(),
 						mavenBundle().groupId("fr.liglab.adele.cilia").artifactId("cilia-remote").versionAsInProject(),

@@ -19,6 +19,9 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import fr.liglab.adele.cilia.CiliaContext;
 import fr.liglab.adele.cilia.Node;
 import fr.liglab.adele.cilia.NodeCallback;
@@ -53,6 +56,8 @@ public class BuilderPerformer {
 	private CiliaContext ccontext;
 	private ArchitectureImpl architecture;
 	private ChainImpl chain;
+
+	private static Logger log = LoggerFactory.getLogger(Const.LOGGER_CORE);
 
 	/**
 	 * @param architectureImpl
@@ -541,7 +546,7 @@ public class BuilderPerformer {
 		}
 
 		public void onArrival(Node node) {
-			System.out.println("[Builder Performer] Node arrival, it will be modified" + node.nodeId());
+			log.warn("[Builder Performer] Node arrival, it will be modified" + node.nodeId());
 			try {
 				MediatorComponent mc = ccontext.getApplicationRuntime().getModel(node);
 				mc.setProperties(properties);
@@ -557,15 +562,6 @@ public class BuilderPerformer {
 
 
 		public void onDeparture(Node node) {
-//			System.out.println("[Builder Performer] Node departure, wait to be modified" + node.nodeId());
-//			String filter = "(&(node="+node.nodeId()+")(chain="+node.chainId()+"))";
-//			try {
-//				ccontext.getApplicationRuntime().addListener(filter,  this);
-//			} catch (CiliaIllegalParameterException e) {
-//				e.printStackTrace();
-//			} catch (CiliaInvalidSyntaxException e) {
-//				e.printStackTrace();
-//			}
 		}
 
 

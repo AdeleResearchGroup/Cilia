@@ -99,16 +99,15 @@ public class TestEA  {
 
 		Option[] bundles = options(
 				provision(
-						mavenBundle().groupId("org.apache.felix").artifactId("org.apache.felix.ipojo").version("1.8.0"),
-						mavenBundle().groupId("org.apache.felix").artifactId("org.apache.felix.ipojo.test.helpers").version("1.5.0-SNAPSHOT"),
-						mavenBundle().groupId("org.osgi").artifactId("org.osgi.compendium").version("4.2.0"),
-						mavenBundle().groupId("org.apache.felix").artifactId("org.apache.felix.gogo.runtime").version("0.6.1"),
-						mavenBundle().groupId("org.apache.felix").artifactId("org.apache.felix.fileinstall").version("3.2.0"),
-						mavenBundle().groupId("org.slf4j").artifactId("slf4j-api").version("1.6.1"),
-						mavenBundle().groupId("org.slf4j").artifactId("slf4j-simple").version("1.6.1"),
+						mavenBundle().groupId("org.apache.felix").artifactId("org.apache.felix.ipojo").versionAsInProject(),
+						mavenBundle().groupId("org.apache.felix").artifactId("org.apache.felix.ipojo.test.helpers").versionAsInProject(),
+						mavenBundle().groupId("org.osgi").artifactId("org.osgi.compendium").versionAsInProject(),
+						mavenBundle().groupId("org.apache.felix").artifactId("org.apache.felix.fileinstall").versionAsInProject(),
+						mavenBundle().groupId("org.slf4j").artifactId("slf4j-api").versionAsInProject(),
+						mavenBundle().groupId("org.slf4j").artifactId("slf4j-simple").versionAsInProject(),
 						mavenBundle().groupId("fr.liglab.adele.cilia").artifactId("cilia-core").versionAsInProject(),
 						mavenBundle().groupId("fr.liglab.adele.cilia").artifactId("cilia-runtime").versionAsInProject(),
-						mavenBundle().groupId("org.apache.felix").artifactId("org.apache.felix.eventadmin").version("1.2.14"),
+						mavenBundle().groupId("org.apache.felix").artifactId("org.apache.felix.eventadmin").versionAsInProject(),
 						mavenBundle().groupId("fr.liglab.adele.cilia").artifactId("ea-adapter").versionAsInProject(),
 						mavenBundle().groupId("fr.liglab.adele.cilia").artifactId("cilia-helper").versionAsInProject()
 						)); // The target
@@ -127,7 +126,7 @@ public class TestEA  {
 
 	
 
-	public CollectorHelper createCollectorHelper(Hashtable props){
+	public CollectorHelper createCollectorHelper(Hashtable<String, String> props){
 		CiliaInstance ci = cilia.createInstance(COLLECTOR, props);
 		ci.start();
 		Assert.assertEquals(ComponentInstance.VALID,ci.getState());
@@ -137,7 +136,7 @@ public class TestEA  {
 		return ch;
 	}
 
-	public ISender createSender(Hashtable props){
+	public ISender createSender(Hashtable<String, String> props){
 		CiliaInstance si = cilia.createInstance(SENDER, props);
 		si.start();
 		Assert.assertEquals(ComponentInstance.VALID,si.getState());
