@@ -14,7 +14,7 @@
 	<parent>
 		<groupId>fr.liglab.adele.cilia</groupId>
 		<artifactId>cilia-remote-distribution</artifactId>
-		<version>1.6.0</version>
+		<version>1.6.1-SNAPSHOT</version>
 		<relativePath>../cilia-remote-distribution</relativePath>
 	</parent>
 
