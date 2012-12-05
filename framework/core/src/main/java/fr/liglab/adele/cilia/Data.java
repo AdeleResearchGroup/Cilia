@@ -29,7 +29,8 @@ import fr.liglab.adele.cilia.util.concurrent.ReentrantWriterPreferenceReadWriteL
  * 
  * The values of the metadata cannot be <code>null</code>.
  * 
- * @author <a href="mailto:chameleon-dev@ow2.org">Chameleon Project Team</a>
+ * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project
+ *         Team</a>
  */
 
 //@SuppressWarnings({"rawtypes", "unchecked"})
