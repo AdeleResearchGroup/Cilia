@@ -22,7 +22,10 @@
 	<packaging>pom</packaging>
 	<name>${productName} :: Distribution </name>
 
-
+	<properties>
+		<!-- flag to flatten deployment packages -->
+		<flattenDP>true</flattenDP>
+	</properties>
 	<!-- Project dependencies -->
 	<dependencies>
 		<dependency>
