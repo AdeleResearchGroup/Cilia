@@ -1,0 +1,21 @@
+{
+	"machine" : {
+		"id" : "server1",
+		"host" : "localhost",
+
+		"connection" : [
+				{
+				"out" : {
+					"service_filter" : "(|(&(objectClass=fr.liglab.adele.cilia.remote.impl.AdminChainREST)(instance.name=remote-admin-chain-0))(&(objectClass=fr.liglab.adele.cilia.remote.impl.MonitorREST)(instance.name=remote-monitor-chain-0)))"
+					}
+				}
+		],
+
+		"component" : [
+			{ 
+			  "factory" : "RoSe_exporter.jersey",
+			  "properties" : { "jersey.servlet.name" : "/cilia" }
+			}
+		],
+	}
+}
