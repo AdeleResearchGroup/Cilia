@@ -29,10 +29,34 @@ public interface Thresholds extends Node {
 
 	/**
 	 * 
-	 * @return list of state variable enabled
+	 * @return Categories of state variables variables
 	 */
-	String[] getEnabledVariable() throws CiliaIllegalStateException;
+	String[] getCategories() ;
 
+	/**
+	 * 
+	 * @param category
+	 *          
+	 * @return list of variable per category of all state variable name if
+	 *         category is null
+	 */
+	String[] getVariableNameByCategory(String category) ;
+	
+	/**
+
+	 *          
+	 * @return all variable name  
+	 */
+	String[] getAllVariablesName()  ;
+	/** 
+	 * @param variableId 
+	 * @return true if state enable , false disable
+	 * @throws CiliaIllegalStateException
+	 * @throws CiliaIllegalParameterException
+	 */
+	boolean getStateVariableState(String variableId) throws CiliaIllegalStateException,
+			CiliaIllegalParameterException;
+	
 	/**
 	 * Set threshols low on numerical variable only
 	 * 

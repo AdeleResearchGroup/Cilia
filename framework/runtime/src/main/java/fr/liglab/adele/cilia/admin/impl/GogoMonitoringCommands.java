@@ -240,23 +240,23 @@ public class GogoMonitoringCommands {
 			System.out.println(FrameworkUtils.makeQualifiedId(nodes[i]));
 			System.out.println("| Categories");
 			System.out.println("|    SystemCall variables :");
-			variables = ((SetUp) nodes[i]).variablesByCategory("SystemCall");
+			variables = ((SetUp) nodes[i]).getVariableNameByCategory("SystemCall");
 			for (int j = 0; j < variables.length; j++) {
 				System.out.println("|      " + variables[j]);
 
 			}
 			System.out.println("|    Dependency variables :");
-			variables = ((SetUp) nodes[i]).variablesByCategory("DependencyCall");
+			variables = ((SetUp) nodes[i]).getVariableNameByCategory("DependencyCall");
 			for (int j = 0; j < variables.length; j++) {
 				System.out.println("|      " + variables[j]);
 			}
 			System.out.println("|    Eventing variables :");
-			variables = ((SetUp) nodes[i]).variablesByCategory("EventingCall");
+			variables = ((SetUp) nodes[i]).getVariableNameByCategory("EventingCall");
 			for (int j = 0; j < variables.length; j++) {
 				System.out.println("|      " + variables[j]);
 			}
 			System.out.println("|    Functionnal variables :");
-			variables = ((SetUp) nodes[i]).variablesByCategory("FunctionnalCall");
+			variables = ((SetUp) nodes[i]).getVariableNameByCategory("FunctionnalCall");
 			for (int j = 0; j < variables.length; j++) {
 				System.out.println("|      " + variables[j]);
 			}

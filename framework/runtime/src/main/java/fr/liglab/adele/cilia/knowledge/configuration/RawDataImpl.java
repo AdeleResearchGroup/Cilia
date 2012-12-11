@@ -16,6 +16,7 @@ package fr.liglab.adele.cilia.knowledge.configuration;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import fr.liglab.adele.cilia.Measure;
 import fr.liglab.adele.cilia.Node;
@@ -33,6 +34,7 @@ import fr.liglab.adele.cilia.knowledge.NodeImpl;
  *         Team</a>
  * 
  */
+@SuppressWarnings({ "rawtypes", "unchecked" })
 public class RawDataImpl extends NodeImpl implements RawData {
 
 	private final ListNodes registry;
@@ -56,28 +58,42 @@ public class RawDataImpl extends NodeImpl implements RawData {
 	}
 
 	public Measure[] measures(String variableId) throws CiliaIllegalParameterException,
-	CiliaIllegalStateException {
+			CiliaIllegalStateException {
 		return getModel().measures(variableId);
 	}
 
-	public String[] getEnabledVariable() throws CiliaIllegalStateException {
-		return getModel().getEnabledVariable();
+	public String[] getAllEnabledVariable() throws CiliaIllegalStateException {
+		Set listEnabled ;
+		MediatorMonitoring m = registry.getAndStore(uuid);
+		Map config = ConfigurationHelper.getRootConfig(m.getModel()) ;
+		listEnabled = ConfigurationHelper.getEnabledVariable(config) ;
+		return (String[]) listEnabled.toArray(new String[listEnabled.size()]);
 	}
 
-	public Map toMap(){
+	public boolean getStateVariableState(String variableId)
+			throws CiliaIllegalStateException, CiliaIllegalParameterException {
+		Set listEnabled ;
+		ConfigurationHelper.checkStateVarId(variableId);
+		MediatorMonitoring m = registry.getAndStore(uuid);
+		Map config = ConfigurationHelper.getRootConfig(m.getModel()) ;
+		listEnabled = ConfigurationHelper.getEnabledVariable(config) ;
+		return listEnabled.contains(variableId);
+	}
+
+	public Map toMap() {
 		Map map = new HashMap();
 		String variables[] = ConfigurationHelper.variablesByCategory(null);
 		for (String variable : variables) {
 			Map variableMap = new HashMap();
-			variableMap.put("Enabled", "unknown");
 			try {
+				variableMap.put("Enabled",String.valueOf(getStateVariableState(variable)));
 				Measure measures[] = measures(variable);
 				StringBuffer buffer = new StringBuffer("[");
 				for (Measure measure : measures) {
 					buffer.append(measure.toString()).append(",");
 				}
-				if (measures.length>0){
-					buffer.delete(buffer.length()-2, buffer.length()-1);
+				if (measures.length > 0) {
+					buffer.delete(buffer.length() - 2, buffer.length() - 1);
 				}
 				buffer.append("]");
 				variableMap.put("Measures", buffer.toString());
