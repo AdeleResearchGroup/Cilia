@@ -31,8 +31,6 @@
 
 	<modules>
 		<module>packages</module>
-		<module>config.base</module>
-		<module>base</module>
 		<module>cilia-distribution</module>
 		<module>cilia-remote-distribution</module>
 		<module>cilia-joram-distribution</module>

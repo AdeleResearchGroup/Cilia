@@ -12,13 +12,14 @@
 
 	<!-- Project parent -->
 	<parent>
-		<groupId>fr.liglab.adele.cilia</groupId>
-		<artifactId>cilia-base-distribution</artifactId>
-		<version>1.6.1-SNAPSHOT</version>
-		<relativePath>../base</relativePath>
+		<groupId>fr.liglab.adele.common</groupId>
+		<artifactId>distribution.minimal.base</artifactId>
+		<version>1.0.0-SNAPSHOT</version>
+		<relativePath></relativePath>
 	</parent>
-
+	<groupId>fr.liglab.adele.cilia</groupId>
 	<artifactId>cilia-distribution</artifactId>
+	<version>1.6.1-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>${productName} :: Distribution </name>
 

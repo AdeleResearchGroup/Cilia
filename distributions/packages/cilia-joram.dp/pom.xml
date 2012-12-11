@@ -14,7 +14,7 @@
 	<artifactId>cilia-joram.dp</artifactId>
 	<packaging>deployment-package</packaging>
     <version>${ciliaVersion}</version>
-	<name>${productName} :: Joram Deployment Package</name>
+	<name>${productName} :: Joram - Deployment Package</name>
 
 	<dependencies>
 		<!--Cilia-->
@@ -68,10 +68,6 @@
 					<writeExtraData>true</writeExtraData>
 					<deploymentPackage>
 						<resources>
-                            <processedResource>
-                                <processor>org.osgi.deployment.rp.autoload</processor>
-                                <filePath>/src/main/resources/rose-conf-ciliaREST.json</filePath>
-                            </processedResource>
 						</resources>
 					</deploymentPackage>
 				</configuration>
