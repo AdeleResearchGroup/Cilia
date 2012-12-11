@@ -20,7 +20,7 @@
 
 	<artifactId>cilia-remote-distribution</artifactId>
 	<packaging>pom</packaging>
-	<name>${productName} :: Distribution with RoSe</name>
+	<name>Cilia :: Distribution with RoSe</name>
 
 
 	<!-- Project dependencies -->

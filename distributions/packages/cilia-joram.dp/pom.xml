@@ -13,7 +13,6 @@
 	<!-- Project Description -->
 	<artifactId>cilia-joram.dp</artifactId>
 	<packaging>deployment-package</packaging>
-    <version>${ciliaVersion}</version>
 	<name>${productName} :: Joram - Deployment Package</name>
 
 	<dependencies>
