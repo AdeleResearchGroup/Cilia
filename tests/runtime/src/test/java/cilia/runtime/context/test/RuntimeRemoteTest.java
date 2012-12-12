@@ -83,7 +83,7 @@ public class RuntimeRemoteTest {
 
 	@Before
 	public void setUp() {
-		CiliaHelper.waitSomeTime(3000);
+		CiliaHelper.waitSomeTime(2000);
 		osgi = new OSGiHelper(context);
 		cilia = new CiliaHelper(context);
 	}
@@ -101,6 +101,7 @@ public class RuntimeRemoteTest {
 		Option[] bundles = options(
 				provision(
 						mavenBundle().groupId("org.apache.felix").artifactId("org.apache.felix.ipojo").versionAsInProject(),
+						
 						mavenBundle().groupId("org.apache.felix").artifactId("org.apache.felix.ipojo.test.helpers").versionAsInProject(),
 						mavenBundle().groupId("org.osgi").artifactId("org.osgi.compendium").versionAsInProject(),
 						mavenBundle().groupId("org.apache.felix").artifactId("org.apache.felix.fileinstall").versionAsInProject(),
