@@ -475,9 +475,9 @@
 	<instance component="Cilia-Admin-Gogo" name="Cilia-Admin-Gogo" />
 
 	<instance component="Cilia-Deployer" name="Cilia-Deployer" />
-
+	<!--  
  	<instance component="Monitoring_Commands.gogo"
 		name="Monitoring_Commands.gogo" />
-		
+	-->
 
 </ipojo>
