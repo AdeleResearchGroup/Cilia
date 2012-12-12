@@ -1,7 +1,7 @@
 <cilia>
 	<chain id="jms-demo-2">
 		<mediators>
-			<mediator-instance type="DemoSufixMediator" id="sm">
+			<mediator-instance type="DemoSufixMediator" id="sm" namespace="fr.examples.jms" >
 				<property name="enricher.sufix" value=" World!"/>
 			</mediator-instance>
 		</mediators>

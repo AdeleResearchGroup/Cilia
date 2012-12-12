@@ -1,7 +1,7 @@
 <cilia>
 	<chain id="jms-demo-1">
 		<mediators>
-			<mediator-instance type="DemoPrefixMediator" id="pm">
+			<mediator-instance type="DemoPrefixMediator" namespace="fr.examples.jms" id="pm">
 				<property name="enricher.prefix" value="Hello "/>
 			</mediator-instance>
 		</mediators>
