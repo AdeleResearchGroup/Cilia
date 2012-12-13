@@ -230,4 +230,5 @@ public class ConfigurationHelper {
 	public static final MediatorMonitoring getModelMonitoring(MediatorComponent model) {
 		return (MediatorMonitoring) model.getModel(MediatorMonitoring.NAME);
 	}
+
 }

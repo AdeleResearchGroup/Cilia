@@ -283,12 +283,22 @@ public class MediatorMonitoring implements ModelExtension {
 		}
 	}
 
-	public String[] getEnabledVariable() {
+	public String[] getAllEnabledVariable() {
 		Hashtable props = model.getProperties();
 		Map config = (Map)props.get("monitoring.base") ;
 		Set enabled = (Set)config.get("enable") ;
 		if (enabled==null) enabled = new HashSet();
 		return (String[]) enabled.toArray(new String[enabled.size()]); 
+	}
+	
+	public boolean getVariableState(String variableId) {
+		boolean state ;
+		Hashtable props = model.getProperties();
+		Map config = (Map)props.get("monitoring.base") ;
+		Set enabled = (Set)config.get("enable") ;
+		if (enabled==null) state = false ;
+		else state = enabled.contains(variableId) ;
+		return state ;
 	}
 	
 	/**

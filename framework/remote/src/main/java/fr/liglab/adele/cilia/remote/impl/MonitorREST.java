@@ -14,9 +14,12 @@
  */
 package fr.liglab.adele.cilia.remote.impl;
 
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
@@ -38,34 +41,46 @@ import fr.liglab.adele.cilia.CiliaAdminService;
 import fr.liglab.adele.cilia.CiliaContext;
 import fr.liglab.adele.cilia.RawData;
 import fr.liglab.adele.cilia.SetUp;
+import fr.liglab.adele.cilia.Thresholds;
 import fr.liglab.adele.cilia.exceptions.CiliaIllegalParameterException;
 import fr.liglab.adele.cilia.exceptions.CiliaIllegalStateException;
+import fr.liglab.adele.cilia.exceptions.CiliaInvalidSyntaxException;
 import fr.liglab.adele.cilia.model.MediatorComponent;
 
 /**
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project
  *         Team</a>
- *
+ * 
  */
 
-@Component(name="remote-monitor-chain")
-@Instantiate(name="remote-monitor-chain-0")
-@Provides(specifications={MonitorREST.class})
-@Path(value="/runtime")
+@Component(name = "remote-monitor-chain")
+@Instantiate(name = "remote-monitor-chain-0")
+@Provides(specifications = { MonitorREST.class })
+@Path(value = "/runtime")
 public class MonitorREST {
 	@Requires
 	CiliaContext ccontext;
-	
+
 	@Requires
 	CiliaAdminService admin;
-	
+
 	@Requires
-	private JSONService jsonservice; //JsonService, in order to parse
-	
+	private JSONService jsonservice; // JsonService, in order to parse
+
+	private static final Set setConcepts;
+	static {
+		setConcepts = new HashSet();
+		setConcepts.add("queue");
+		setConcepts.add("control-flow");
+		setConcepts.add("state");
+	}
+
 	/**
 	 * Retrieve a mediation chain state.
-	 * @param id The ID of the chain  to retrieve 
-	 * @return The required Chain state, 
+	 * 
+	 * @param id
+	 *            The ID of the chain to retrieve
+	 * @return The required Chain state,
 	 */
 	@GET
 	@Path("{chainid}")
@@ -99,11 +114,13 @@ public class MonitorREST {
 		reponse.put("last command", lastcommand);
 		return Response.ok(jsonservice.toJSON(reponse)).build();
 	}
-	
+
 	/**
 	 * Initialize a mediation chain.
-	 * @param id The ID of the chain  to initialize 
-	 * @return The required Chain state, 
+	 * 
+	 * @param id
+	 *            The ID of the chain to initialize
+	 * @return The required Chain state,
 	 */
 	@PUT
 	@Path("{chainid}/start")
@@ -119,10 +136,13 @@ public class MonitorREST {
 		}
 		return Response.ok().build();
 	}
+
 	/**
 	 * Initialize a mediation chain.
-	 * @param id The ID of the chain  to initialize 
-	 * @return The required Chain state, 
+	 * 
+	 * @param id
+	 *            The ID of the chain to initialize
+	 * @return The required Chain state,
 	 */
 	@PUT
 	@Path("{chainid}/stop")
@@ -141,14 +161,18 @@ public class MonitorREST {
 
 	/**
 	 * Get the monitor setup of a mediation component
-	 * @param chainid The ID of the chain
-	 * @param  id The component Id.
+	 * 
+	 * @param chainid
+	 *            The ID of the chain
+	 * @param id
+	 *            The component Id.
 	 * @return The required Chain Setup Info
 	 */
 	@GET
 	@Path("{chainid}/component/{id}/setup")
 	@Produces("application/json")
-	public Response getSetup(@PathParam("chainid") String chainid,@PathParam("id") String id) {
+	public Response getSetup(@PathParam("chainid") String chainid,
+			@PathParam("id") String id) {
 		SetUp setup = null;
 		ApplicationRuntime runtime = ccontext.getApplicationRuntime();
 		try {
@@ -161,18 +185,23 @@ public class MonitorREST {
 		}
 		return Response.ok(jsonservice.toJSON(setup.toMap())).build();
 	}
-	
+
 	/**
 	 * Get the setup of a specific variable
-	 * @param chainid The ID of the chain
-	 * @param  id The component Id.
-	 * @param  variable The variable to inspect.
-	 * @return The variable setup of the specific mediator 
+	 * 
+	 * @param chainid
+	 *            The ID of the chain
+	 * @param id
+	 *            The component Id.
+	 * @param variable
+	 *            The variable to inspect.
+	 * @return The variable setup of the specific mediator
 	 */
 	@GET
 	@Path("{chainid}/component/{id}/setup/{variable}")
 	@Produces("application/json")
-	public Response getSetup(@PathParam("chainid") String chainid,@PathParam("id") String id,@PathParam("variable") String variable) {
+	public Response getSetup(@PathParam("chainid") String chainid,
+			@PathParam("id") String id, @PathParam("variable") String variable) {
 		SetUp setup = null;
 		Map setupMap = null;
 		Map variableMap = null;
@@ -186,23 +215,27 @@ public class MonitorREST {
 			return Response.status(404).build();
 		}
 		setupMap = setup.toMap();
-		if (!setupMap.containsKey(variable)){
+		if (!setupMap.containsKey(variable)) {
 			return Response.status(404).build();
 		}
-		variableMap = (Map)setupMap.get(variable);
+		variableMap = (Map) setupMap.get(variable);
 		return Response.ok(jsonservice.toJSON(variableMap)).build();
 	}
-	
+
 	/**
 	 * Get the monitor setup of a mediation component
-	 * @param chainid The ID of the chain
-	 * @param  id The component Id.
+	 * 
+	 * @param chainid
+	 *            The ID of the chain
+	 * @param id
+	 *            The component Id.
 	 * @return The required Chain Setup Info
 	 */
 	@GET
 	@Path("{chainid}/component/{id}/rawdata")
 	@Produces("application/json")
-	public Response getRawData(@PathParam("chainid") String chainid,@PathParam("id") String id) {
+	public Response getRawData(@PathParam("chainid") String chainid,
+			@PathParam("id") String id) {
 		RawData rawdata = null;
 		ApplicationRuntime runtime = ccontext.getApplicationRuntime();
 		try {
@@ -215,18 +248,23 @@ public class MonitorREST {
 		}
 		return Response.ok(jsonservice.toJSON(rawdata.toMap())).build();
 	}
-	
+
 	/**
 	 * Get the setup of a specific variable
-	 * @param chainid The ID of the chain
-	 * @param  id The component Id.
-	 * @param  variable The variable to inspect.
-	 * @return The variable setup of the specific mediator 
+	 * 
+	 * @param chainid
+	 *            The ID of the chain
+	 * @param id
+	 *            The component Id.
+	 * @param variable
+	 *            The variable to inspect.
+	 * @return The variable setup of the specific mediator
 	 */
 	@GET
 	@Path("{chainid}/component/{id}/rawdata/{variable}")
 	@Produces("application/json")
-	public Response getRawData(@PathParam("chainid") String chainid,@PathParam("id") String id,@PathParam("variable") String variable) {
+	public Response getRawData(@PathParam("chainid") String chainid,
+			@PathParam("id") String id, @PathParam("variable") String variable) {
 		RawData rawdata = null;
 		Map rawMap = null;
 		Map variableMap = null;
@@ -240,27 +278,107 @@ public class MonitorREST {
 			return Response.status(404).build();
 		}
 		rawMap = rawdata.toMap();
-		if (!rawMap.containsKey(variable)){
+		if (!rawMap.containsKey(variable)) {
 			return Response.status(404).build();
 		}
-		variableMap = (Map)rawMap.get(variable);
+		variableMap = (Map) rawMap.get(variable);
 		return Response.ok(jsonservice.toJSON(variableMap)).build();
 	}
-	
+
 	@PUT
 	@Path("{chainid}/component/{id}/setup/{variable}/{concept}")
 	@Produces("application/json")
-	public Response modifySetup(@PathParam("chainid") String chainid,@PathParam("id") String id,@PathParam("variable") String variable,@PathParam("concept") String concept, @FormParam("value") String value){
+	public Response modifySetup(@PathParam("chainid") String chainid,
+			@PathParam("id") String id, @PathParam("variable") String variable,
+			@PathParam("concept") String concept, @FormParam("value") String value) {
+		SetUp setup = null;
+		ApplicationRuntime runtime = ccontext.getApplicationRuntime();
+		if ((chainid == null) || (id == null) || (variable == null) || (concept == null)
+				|| (value == null))
+			return Response.status(Status.BAD_REQUEST).build();
 
+		try {
+			MediatorComponent component = admin.getComponent(chainid, id);
+			setup = runtime.nodeSetup(component);
+			String[] variablesId = setup.getAllVariablesName();
+			// Convertion Array to Set , simplification of the test
+			Set set = new HashSet();
+			Collections.addAll(set, variablesId);
+			if (!set.contains(variable)) {
+				return Response.status(Status.BAD_REQUEST).build();
+			}
+			if (concept.compareTo("queue") == 0) {
+				int queueSize = Integer.parseInt(value);
+				setup.setMonitoring(variable, queueSize);
+			}
+			if (concept.compareTo("control-flow") == 0) {
+				setup.setMonitoring(variable, value);
+			}
+			if (concept.compareTo("enable") == 0) {
+				boolean b = Boolean.valueOf(value).booleanValue();
+				setup.setMonitoring(variable, b);
+			}
+
+		} catch (NumberFormatException e) {
+			return Response.status(Status.BAD_REQUEST).build();
+		} catch (CiliaIllegalParameterException e) {
+			return Response.status(Status.BAD_REQUEST).build();
+		} catch (CiliaIllegalStateException e) {
+			return Response.status(404).build();
+		} catch (CiliaInvalidSyntaxException e) {
+			return Response.status(404).build();
+		}
 		return Response.ok().build();
 	}
-	
+
 	@PUT
 	@Path("{chainid}/component/{id}/threshold/{variable}/{concept}")
 	@Produces("application/json")
-	public Response modifyThreshold(@PathParam("chainid") String chainid,@PathParam("id") String id,@PathParam("variable") String variable,@PathParam("concept") String concept, @FormParam("value") String value){
+	public Response modifyThreshold(@PathParam("chainid") String chainid,
+			@PathParam("id") String id, @PathParam("variable") String variable,
+			@PathParam("concept") String concept, @FormParam("value") String value) {
+		Thresholds threshold = null;
+		double d ;
+		ApplicationRuntime runtime = ccontext.getApplicationRuntime();
+		if ((chainid == null) || (id == null) || (variable == null) || (concept == null)
+				|| (value == null))
+			return Response.status(Status.BAD_REQUEST).build();
 
+		try {
+			MediatorComponent component = admin.getComponent(chainid, id);
+			threshold = runtime.nodeMonitoring(component);
+			String[] variablesId = threshold.getAllVariablesName();
+			// Convertion Array to Set , simplification of the test
+			Set set = new HashSet();
+			Collections.addAll(set, variablesId);
+			if (!set.contains(variable)) {
+				return Response.status(Status.BAD_REQUEST).build();
+			}
+			if (concept.compareTo("low") == 0) {
+				d = Double.parseDouble(value);
+				threshold.setLow(variable,d);
+			}
+			if (concept.compareTo("very-low") == 0) {
+				d = Double.parseDouble(value);
+				threshold.setVeryLow(variable,d);
+			}
+			if (concept.compareTo("high") == 0) {
+				d = Double.parseDouble(value);
+				threshold.setHigh(variable,d);
+			}			
+			if (concept.compareTo("very-high") == 0) {
+				d = Double.parseDouble(value);
+				threshold.setVeryHigh(variable,d);
+			}
+
+		} catch (NumberFormatException e) {
+			return Response.status(Status.BAD_REQUEST).build();
+		} catch (CiliaIllegalParameterException e) {
+			return Response.status(Status.BAD_REQUEST).build();
+		} catch (CiliaIllegalStateException e) {
+			return Response.status(404).build();
+		} 
 		return Response.ok().build();
 	}
-	
+
 }

@@ -34,16 +34,24 @@ public interface SetUp extends Node {
 	 * 
 	 * @return Categories of state variables variables
 	 */
-	String[] getCategories() throws CiliaIllegalStateException;
+	String[] getCategories() ;
 
 	/**
 	 * 
 	 * @param category
-	 *            catory name or null
+	 *          
 	 * @return list of variable per category of all state variable name if
 	 *         category is null
 	 */
-	String[] variablesByCategory(String category) throws CiliaIllegalStateException;
+	String[] getVariableNameByCategory(String category) ;
+	
+	/**
+
+	 *          
+	 * @return all variable name  
+	 */
+	String[] getAllVariablesName()  ;
+
 
 	/**
 	 * Configure the monitoring on this object
@@ -58,10 +66,11 @@ public interface SetUp extends Node {
 	 *            , true values are published
 	 * @return true if action done , false otherwhise
 	 * @throws CiliaInvalidSyntaxException
-	 * @throws CiliaIllegalStateException 
+	 * @throws CiliaIllegalStateException
 	 */
 	void setMonitoring(String variableId, int queueSize, String LdapFilter, boolean enable)
-			throws CiliaIllegalParameterException, CiliaInvalidSyntaxException, CiliaIllegalStateException;
+			throws CiliaIllegalParameterException, CiliaInvalidSyntaxException,
+			CiliaIllegalStateException;
 
 	/**
 	 * Configure the monitoring on this object ( others parameters are not
@@ -72,7 +81,7 @@ public interface SetUp extends Node {
 	 * @param queueSize
 	 *            , number of monitored values stored ( circular queue)
 	 * @return true if action done , false otherwhise
-	 * @throws CiliaIllegalStateException 
+	 * @throws CiliaIllegalStateException
 	 */
 	void setMonitoring(String variableId, int queueSize)
 			throws CiliaIllegalParameterException, CiliaIllegalStateException;
@@ -86,10 +95,11 @@ public interface SetUp extends Node {
 	 *            , data control flow management
 	 * @return true if action done , false otherwhise
 	 * @throws CiliaInvalidSyntaxException
-	 * @throws CiliaIllegalStateException 
+	 * @throws CiliaIllegalStateException
 	 */
 	void setMonitoring(String variableId, String LdapFilter)
-			throws CiliaIllegalParameterException, CiliaInvalidSyntaxException, CiliaIllegalStateException;
+			throws CiliaIllegalParameterException, CiliaInvalidSyntaxException,
+			CiliaIllegalStateException;
 
 	/**
 	 * Enable/disable
@@ -99,32 +109,42 @@ public interface SetUp extends Node {
 	 * @param enable
 	 *            , true values are published
 	 * @return true if action done , false otherwhise
-	 * @throws CiliaIllegalStateException 
+	 * @throws CiliaIllegalStateException
 	 */
-	void setMonitoring(String variableId, boolean enable) throws CiliaIllegalParameterException, CiliaIllegalStateException;
+	void setMonitoring(String variableId, boolean enable)
+			throws CiliaIllegalParameterException, CiliaIllegalStateException;
 
 	/**
 	 * 
 	 * @param variableId
 	 * @return number of objects stored
-	 * @throws CiliaIllegalStateException 
+	 * @throws CiliaIllegalStateException
 	 */
-	int getQueueSize(String variableId) throws CiliaIllegalParameterException, CiliaIllegalStateException;
+	int getQueueSize(String variableId) throws CiliaIllegalParameterException,
+			CiliaIllegalStateException;
 
 	/**
 	 * @param variableId
 	 * @return ldap filter for the flow control
 	 * @throws CiliaIllegalParameterException
-	 * @throws CiliaIllegalStateException 
+	 * @throws CiliaIllegalStateException
 	 */
-	String getFlowControl(String variableId) throws CiliaIllegalParameterException, CiliaIllegalStateException;
+	String getFlowControl(String variableId) throws CiliaIllegalParameterException,
+			CiliaIllegalStateException;
 
 	/**
-	 * 
-	 * @return list of state variable enabled
+	 * @return list of state variables enabled
 	 */
-	String[] getEnabledVariable() throws CiliaIllegalStateException ;
-	
+	String[] getAllEnabledVariable() throws CiliaIllegalStateException;
+
+	/**
+	 * @param variableId
+	 * @return true if state enable , false disable
+	 * @throws CiliaIllegalStateException
+	 * @throws CiliaIllegalParameterException
+	 */
+	boolean getStateVariableState(String variableId) throws CiliaIllegalStateException,
+			CiliaIllegalParameterException;
+
 	Map toMap();
-	
 }
