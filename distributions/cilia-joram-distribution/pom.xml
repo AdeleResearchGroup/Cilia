@@ -24,48 +24,15 @@
 	<packaging>pom</packaging>
 
 	<!-- Project description -->
-	<name>${productName} :: Distribution with Joram</name>
+	<name>Cilia :: Distribution with Joram</name>
 
 	<!-- Project dependencies -->
 	<dependencies>
 		<dependency>
 			<groupId>fr.liglab.adele.cilia</groupId>
-			<artifactId>jms-adapter</artifactId>
+			<artifactId>cilia-joram.dp</artifactId>
+			<type>deployment-package</type>
 			<version>${project.version}</version>
-		</dependency>
-
-		<!-- JORAM 5.7.0 dependencies -->
-		<dependency>
-			<groupId>javax.jms</groupId>
-			<artifactId>com.springsource.javax.jms</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.objectweb.joram</groupId>
-			<artifactId>joram-client-jms</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.objectweb.joram</groupId>
-			<artifactId>a3-common</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.objectweb.joram</groupId>
-			<artifactId>jndi-client</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.objectweb.joram</groupId>
-			<artifactId>jndi-shared</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.objectweb.joram</groupId>
-			<artifactId>joram-shared</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.objectweb.joram</groupId>
-			<artifactId>jcup</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.ow2.jonas.osgi</groupId>
-			<artifactId>monolog</artifactId>
 		</dependency>
 	</dependencies>
 </project>

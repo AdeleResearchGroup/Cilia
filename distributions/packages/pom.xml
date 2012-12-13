@@ -22,18 +22,18 @@
 		<groupId>fr.liglab.adele.cilia</groupId>
 		<artifactId>cilia-project</artifactId>
 		<version>1.6.1-SNAPSHOT</version>
-		<relativePath>../parent</relativePath>
+		<relativePath>../../parent</relativePath>
 	</parent>
 
-	<artifactId>cilia.distributions</artifactId>
-	<name>${productName} :: Distributions Reactor</name>
+	<artifactId>cilia.packages.reactor</artifactId>
+	<name>${productName} :: Packages Reactor</name>
 	<packaging>pom</packaging>
 
 	<modules>
-		<module>packages</module>
-		<module>cilia-distribution</module>
-		<module>cilia-remote-distribution</module>
-		<module>cilia-joram-distribution</module>
+		<module>cilia.dp</module>	
+		<module>cilia-eventadmin.dp</module>
+		<module>cilia-remote.dp</module>
+		<module>cilia-joram.dp</module>
 	</modules>
   <build>
     <plugins>

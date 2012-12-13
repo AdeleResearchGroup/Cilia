@@ -1,0 +1,77 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<!-- Project parent -->
+	<parent>
+		<groupId>fr.liglab.adele.cilia</groupId>
+		<artifactId>cilia-project</artifactId>
+		<version>1.6.1-SNAPSHOT</version>
+		<relativePath>../../../parent</relativePath>
+	</parent>
+
+	<!-- Project Description -->
+	<artifactId>cilia-joram.dp</artifactId>
+	<packaging>deployment-package</packaging>
+	<name>${productName} :: Joram - Deployment Package</name>
+
+	<dependencies>
+		<!--Cilia-->
+		<dependency>
+			<groupId>fr.liglab.adele.cilia</groupId>
+			<artifactId>jms-adapter</artifactId>
+			<version>${project.version}</version>
+		</dependency>		
+		<!-- JORAM 5.7.0 dependencies -->
+		<dependency>
+			<groupId>javax.jms</groupId>
+			<artifactId>com.springsource.javax.jms</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.objectweb.joram</groupId>
+			<artifactId>joram-client-jms</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.objectweb.joram</groupId>
+			<artifactId>a3-common</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.objectweb.joram</groupId>
+			<artifactId>jndi-client</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.objectweb.joram</groupId>
+			<artifactId>jndi-shared</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.objectweb.joram</groupId>
+			<artifactId>joram-shared</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.objectweb.joram</groupId>
+			<artifactId>jcup</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.ow2.jonas.osgi</groupId>
+			<artifactId>monolog</artifactId>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>de.akquinet.gomobile</groupId>
+				<artifactId>maven-dp-plugin</artifactId>
+				<extensions>true</extensions>
+				<configuration>
+					<writeExtraData>true</writeExtraData>
+					<deploymentPackage>
+						<resources>
+						</resources>
+					</deploymentPackage>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+</project>

@@ -1,0 +1,21 @@
+<cilia>
+	<chain id="jms-demo-1">
+		<mediators>
+			<mediator-instance type="DemoPrefixMediator" namespace="fr.examples.jms" id="pm">
+				<property name="enricher.prefix" value="Hello "/>
+			</mediator-instance>
+		</mediators>
+	
+		<adapters>
+			<adapter-instance type="number-generator-adapter" id="ra"/>
+			<adapter-instance type="JMS-out-adapter" id="jms-adapter-1">
+				<property name="jms.topic" value="demo$topic"/>
+			</adapter-instance>
+		</adapters>
+
+		<bindings>	
+			<binding from="ra:unique" to="pm:unique"/>
+			<binding from="pm:unique" to="jms-adapter-1:unique"/>
+		</bindings>
+	</chain>
+</cilia>
