@@ -36,9 +36,5 @@
 			<artifactId>rose.dp</artifactId>
 			<type>deployment-package</type>
 		</dependency>
-		<dependency>
-			<groupId>org.apache.felix</groupId>
-			<artifactId>org.apache.felix.http.jetty</artifactId>
-		</dependency>
 	</dependencies>
 </project>
