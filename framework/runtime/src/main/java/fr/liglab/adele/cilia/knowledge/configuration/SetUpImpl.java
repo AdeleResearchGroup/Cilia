@@ -196,13 +196,14 @@ public class SetUpImpl extends NodeImpl implements SetUp, Thresholds {
 	private Map getVariableInfo(String variable) {
 		Map map = new HashMap();
 		try {
-			map.put("QueueSize", String.valueOf(getQueueSize(variable)));
-			map.put("FlowControl", String.valueOf(getFlowControl(variable)));
+			map.put("Name",variable);
+			map.put("Queue-size", String.valueOf(getQueueSize(variable)));
 			map.put("Enabled", String.valueOf(getStateVariableState(variable)));
+			map.put("Flow-control", String.valueOf(getFlowControl(variable)));
 			map.put("Low", String.valueOf(getLow(variable)));
-			map.put("Very Low", String.valueOf(getVeryLow(variable)));
+			map.put("Very-low", String.valueOf(getVeryLow(variable)));
 			map.put("High", String.valueOf(getHigh(variable)));
-			map.put("Very High", String.valueOf(getVeryHigh(variable)));
+			map.put("Very-high", String.valueOf(getVeryHigh(variable)));
 		} catch (Exception e) {
 			runtimeLog.error("internal error", e);
 			e.printStackTrace();

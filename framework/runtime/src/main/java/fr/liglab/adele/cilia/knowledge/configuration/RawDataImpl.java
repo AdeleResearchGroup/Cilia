@@ -86,6 +86,7 @@ public class RawDataImpl extends NodeImpl implements RawData {
 		for (String variable : variables) {
 			Map variableMap = new HashMap();
 			try {
+				variableMap.put("Name",variable);
 				variableMap.put("Enabled",String.valueOf(getStateVariableState(variable)));
 				Measure measures[] = measures(variable);
 				StringBuffer buffer = new StringBuffer("[");

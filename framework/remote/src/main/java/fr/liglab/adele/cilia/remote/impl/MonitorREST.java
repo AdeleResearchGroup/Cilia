@@ -307,14 +307,14 @@ public class MonitorREST {
 			if (!set.contains(variable)) {
 				return Response.status(Status.BAD_REQUEST).build();
 			}
-			if (concept.compareTo("queue") == 0) {
+			if (concept.compareToIgnoreCase("queue-size") == 0) {
 				int queueSize = Integer.parseInt(value);
 				setup.setMonitoring(variable, queueSize);
 			}
-			if (concept.compareTo("control-flow") == 0) {
+			if (concept.compareToIgnoreCase("control-flow") == 0) {
 				setup.setMonitoring(variable, value);
 			}
-			if (concept.compareTo("enable") == 0) {
+			if (concept.compareToIgnoreCase("enable") == 0) {
 				boolean b = Boolean.valueOf(value).booleanValue();
 				setup.setMonitoring(variable, b);
 			}
@@ -354,19 +354,19 @@ public class MonitorREST {
 			if (!set.contains(variable)) {
 				return Response.status(Status.BAD_REQUEST).build();
 			}
-			if (concept.compareTo("low") == 0) {
+			if (concept.compareToIgnoreCase("low") == 0) {
 				d = Double.parseDouble(value);
 				threshold.setLow(variable,d);
 			}
-			if (concept.compareTo("very-low") == 0) {
+			if (concept.compareToIgnoreCase("very-low") == 0) {
 				d = Double.parseDouble(value);
 				threshold.setVeryLow(variable,d);
 			}
-			if (concept.compareTo("high") == 0) {
+			if (concept.compareToIgnoreCase("high") == 0) {
 				d = Double.parseDouble(value);
 				threshold.setHigh(variable,d);
 			}			
-			if (concept.compareTo("very-high") == 0) {
+			if (concept.compareToIgnoreCase("very-high") == 0) {
 				d = Double.parseDouble(value);
 				threshold.setVeryHigh(variable,d);
 			}

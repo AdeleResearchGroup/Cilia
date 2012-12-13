@@ -41,7 +41,7 @@ public class DependencyParser extends DomExtenderParser implements CiliaExtender
 	}
 
 	public boolean canHandle(Object elementDescription) {
-		Node disp = getNode("external", elementDescription);
+		Node disp = getNode("adapter-instance", elementDescription);
 		if (disp == null) {
 			return false;
 		}
@@ -51,7 +51,7 @@ public class DependencyParser extends DomExtenderParser implements CiliaExtender
 	public Component getComponent(Object componentDescription, Component currentComponent)
 			throws CiliaParserException {
 
-		Node node = getNode("external", componentDescription);
+		Node node = getNode("adapter-instance", componentDescription);
 		if (node != null) {
 			String cardinality = getAttributeValue(node, "cardinality");
 			checkCardinality(cardinality);

@@ -26,7 +26,7 @@ import org.w3c.dom.NodeList;
  */
 public class DomExtenderParser {
 
-	protected String NAMESPACE = "fr.imag.adele.cilia.compendium";
+	protected String NAMESPACE = "http://adele.imag.fr/cilia/compendium/schema";
 
 	protected String NAME = "extender";
 
@@ -83,7 +83,8 @@ public class DomExtenderParser {
 		for (Node n = e; n != null; n = n.getNextSibling()) {
 			if (n.getNodeType() == Node.ELEMENT_NODE) {
 				node = getTagValue(sTag, (Element) n);
-				if (node !=null) return node ;
+				if (node != null)
+					return node;
 			}
 		}
 		return null;
@@ -96,7 +97,7 @@ public class DomExtenderParser {
 
 		return elem;
 	}
-	
+
 	private static Node getTagValue(String sTag, Element eElement) {
 		NodeList nList = eElement.getElementsByTagName(sTag);
 		if (nList != null) {
@@ -110,6 +111,5 @@ public class DomExtenderParser {
 		}
 		return null;
 	}
-	
-	
+
 }
