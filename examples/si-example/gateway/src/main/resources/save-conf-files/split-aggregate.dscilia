@@ -17,6 +17,7 @@
 			<adapters>
 				<adapter-instance type="SplitAggregateEndpoint" id="getPriceAdapter" >
 					<property name="endpoint.id" type="String" value="toto"/>
+					<property name="cilia.exporter.protocol" type="String" value="json-rpc"/>
 				</adapter-instance>
 			</adapters>
 			<bindings>
