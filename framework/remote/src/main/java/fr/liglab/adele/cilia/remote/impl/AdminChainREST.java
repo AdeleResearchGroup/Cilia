@@ -16,13 +16,16 @@
  * 
  */
 package fr.liglab.adele.cilia.remote.impl;
+
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 import javax.ws.rs.DELETE;
 import javax.ws.rs.FormParam;
@@ -48,6 +51,7 @@ import org.slf4j.LoggerFactory;
 import fr.liglab.adele.cilia.AdminBinding;
 import fr.liglab.adele.cilia.AdminChain;
 import fr.liglab.adele.cilia.AdminComponent;
+import fr.liglab.adele.cilia.ApplicationRuntime;
 import fr.liglab.adele.cilia.CiliaContext;
 import fr.liglab.adele.cilia.Node;
 import fr.liglab.adele.cilia.exceptions.CiliaException;
@@ -57,17 +61,18 @@ import fr.liglab.adele.cilia.model.Adapter;
 import fr.liglab.adele.cilia.model.Chain;
 import fr.liglab.adele.cilia.model.Mediator;
 import fr.liglab.adele.cilia.model.MediatorComponent;
+import fr.liglab.adele.cilia.model.impl.PatternType;
 import fr.liglab.adele.cilia.util.Const;
 
 /**
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project
  *         Team</a>
- *
+ * 
  */
-@Component(name="remote-admin-chain")
-@Instantiate(name="remote-admin-chain-0")
-@Provides(specifications={AdminChainREST.class})
-@Path(value="/")
+@Component(name = "remote-admin-chain")
+@Instantiate(name = "remote-admin-chain-0")
+@Provides(specifications = { AdminChainREST.class })
+@Path(value = "/")
 public class AdminChainREST {
 
 	@Requires
@@ -83,16 +88,15 @@ public class AdminChainREST {
 	AdminBinding abinding;
 
 	@Requires
-	private JSONService jsonservice; //JsonService, in order to parse
+	private JSONService jsonservice; // JsonService, in order to parse
 
-	protected static Logger coreLogger = LoggerFactory.getLogger(Const.LOGGER_CORE);
-	
+	protected static Logger coreLogger = LoggerFactory
+			.getLogger(Const.LOGGER_CORE);
 
 	/*****************************************/
-	/**          GET METHODS                **/
+	/** GET METHODS **/
 	/*****************************************/
 
-	
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	public String getChainNames() {
@@ -105,7 +109,7 @@ public class AdminChainREST {
 			atLeastOne = true;
 		}
 		if (atLeastOne) {
-			chainsIds.delete(chainsIds.length()-2,chainsIds.length());
+			chainsIds.delete(chainsIds.length() - 2, chainsIds.length());
 		}
 		chainsIds.append("]\n}");
 		return chainsIds.toString();
@@ -113,16 +117,19 @@ public class AdminChainREST {
 
 	/**
 	 * Retrieve a mediation chain.
-	 * @param id The ID of the chain  to retrieve 
-	 * @return The required Chain, 
-	 * return <code>null<code> if chain does not exist.
-	 * @throws ParseException 
+	 * 
+	 * @param id
+	 *            The ID of the chain to retrieve
+	 * @return The required Chain, return
+	 *         <code>null<code> if chain does not exist.
+	 * @throws ParseException
 	 */
 	@GET
 	@Path("{chainid}")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response chain(@PathParam("chainid") String chainid) {
-		if (chainid == null || chainid.length()<1 || chainid.compareToIgnoreCase("cilia")==0){
+		if (chainid == null || chainid.length() < 1
+				|| chainid.compareToIgnoreCase("cilia") == 0) {
 			return Response.ok(getChainNames()).build();
 		}
 		Chain chain;
@@ -139,13 +146,14 @@ public class AdminChainREST {
 
 	}
 
-
 	/**
 	 * Retrieve the list of mediation components
-	 * @param id The ID of the chain  to retrieve 
-	 * @return The list of mediation components, 
-	 * return <code>null<code> if chain does not exist.
-	 * @throws ParseException 
+	 * 
+	 * @param id
+	 *            The ID of the chain to retrieve
+	 * @return The list of mediation components, return
+	 *         <code>null<code> if chain does not exist.
+	 * @throws ParseException
 	 */
 	@GET
 	@Path("{chainid}/components")
@@ -169,10 +177,12 @@ public class AdminChainREST {
 
 	/**
 	 * Retrieve the list of mediators
-	 * @param id The ID of the chain  to retrieve 
-	 * @return The list of mediation components, 
-	 * return <code>null<code> if chain does not exist.
-	 * @throws ParseException 
+	 * 
+	 * @param id
+	 *            The ID of the chain to retrieve
+	 * @return The list of mediation components, return
+	 *         <code>null<code> if chain does not exist.
+	 * @throws ParseException
 	 */
 	@GET
 	@Path("{chainid}/mediators")
@@ -194,18 +204,23 @@ public class AdminChainREST {
 
 	/**
 	 * Retrieve the list of mediators
-	 * @param id The ID of the chain  to retrieve 
-	 * @return The list of mediation components, 
-	 * return <code>null<code> if chain does not exist.
-	 * @throws ParseException 
+	 * 
+	 * @param id
+	 *            The ID of the chain to retrieve optionnal filter pattern =
+	 *            "in-only", "out-only", "in-out"
+	 * @return The list of mediation components, return
+	 *         <code>null<code> if chain does not exist
+	 * @throws ParseException
 	 */
 	@GET
 	@Path("{chainid}/adapters")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response getAllAdapters(@PathParam("chainid") String chainid) {
+	public Response getAllAdapters(@PathParam("chainid") String chainid,
+			@FormParam("pattern") String pattern) {
 		Chain chain;
 		try {
 			chain = admin.getChain(chainid);
+
 		} catch (CiliaIllegalParameterException e) {
 			chain = null;
 		}
@@ -213,22 +228,42 @@ public class AdminChainREST {
 			return Response.status(404).build();
 		}
 		Map result = new Hashtable();
-		result.put("Adapters", getSetId(chain.getAdapters()));
+		Set set;
+		if (pattern == null) {
+			set = chain.getAdapters();
+		} else {
+			Iterator it = chain.getAdapters().iterator();
+			Adapter adapter;
+			PatternType p;
+			set = new HashSet();
+			while (it.hasNext()) {
+				adapter = (Adapter) ((it.next()));
+				p = adapter.getPattern();
+				if (p.getName().compareToIgnoreCase(pattern) == 0) {
+					set.add(it.next());
+				}
+			}
+		}
+		result.put("Adapters", getSetId(set));
 		return Response.ok(String.valueOf(jsonservice.toJSON(result))).build();
 	}
 
 	/**
 	 * Retrieve the list of mediators
-	 * @param id The ID of the chain  to retrieve 
-	 * @return The list of mediation components, 
-	 * return <code>null<code> if chain does not exist.
-	 * @throws ParseException 
+	 * 
+	 * @param id
+	 *            The ID of the chain to retrieve
+	 * @return The list of mediation components, return
+	 *         <code>null<code> if chain does not exist.
+	 * @throws ParseException
 	 */
 	@GET
 	@Path("{chainid}/bindings")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response getAllBindings(@PathParam("chainid") String chainid) {
+	public Response getAllBindings(@PathParam("chainid") String chainid,
+			@FormParam("from") String mediator) {
 		Chain chain;
+		Set setBinding;
 		StringBuilder sb = new StringBuilder("{");
 		try {
 			chain = admin.getChain(chainid);
@@ -238,21 +273,43 @@ public class AdminChainREST {
 		if (chain == null) {
 			return Response.status(404).build();
 		}
-		sb.append("\"Bindings\" : ").append(chain.getBindings()).append("}");
-
+		if (mediator == null) {
+			setBinding = chain.getBindings();
+		} else {
+			setBinding = new HashSet();
+			ApplicationRuntime runtime = ccontext.getApplicationRuntime();
+			try {
+				Node[] nodes = runtime.connectedTo("&((chain=" + chainid
+						+ ")(node=" + mediator + "))");
+				for (int i = 0; i < nodes.length; i++) {
+					setBinding.add(nodes[i].nodeId());
+				}
+			} catch (CiliaIllegalParameterException e) {
+				/* should never happen */
+				return Response.status(404).build();
+			} catch (CiliaInvalidSyntaxException e) {
+				/* should never happen */
+				return Response.status(404).build();
+			}
+		}
+		sb.append("\"Bindings\" : ").append(setBinding).append("}");
 		return Response.ok(String.valueOf(sb)).build();
 	}
 
 	/**
 	 * Retrieve a mediation component.
-	 * @param chainid The chain where the component is.
-	 * @param componentId The id of the component
+	 * 
+	 * @param chainid
+	 *            The chain where the component is.
+	 * @param componentId
+	 *            The id of the component
 	 * @return The required component, null if it does not exist.
 	 */
 	@GET
 	@Path("{chainid}/components/{componentId}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response getComponent(@PathParam("chainid")String chainid, @PathParam("componentId")String componentId) {
+	public Response getComponent(@PathParam("chainid") String chainid,
+			@PathParam("componentId") String componentId) {
 		Response reponse;
 		MediatorComponent component;
 		try {
@@ -263,12 +320,15 @@ public class AdminChainREST {
 		if (component != null) {
 			Map map = component.toMap();
 			String tojson = jsonservice.toJSON(map);
-			reponse =  Response.ok(tojson).build();
+			reponse = Response.ok(tojson).build();
 		} else { // Maybe it is an uuid
 			try {
-				Node []nodes = ccontext.getApplicationRuntime().findNodeByFilter("(uuid=" + componentId+")");
+				Node[] nodes = ccontext.getApplicationRuntime()
+						.findNodeByFilter("(uuid=" + componentId + ")");
 				if (nodes.length > 0) {
-					reponse =  Response.ok(jsonservice.toJSON(((MediatorComponent)(nodes[0])).toMap())).build();
+					reponse = Response.ok(
+							jsonservice.toJSON(((MediatorComponent) (nodes[0]))
+									.toMap())).build();
 				} else {
 					reponse = Response.status(404).build();
 				}
@@ -283,14 +343,18 @@ public class AdminChainREST {
 
 	/**
 	 * Retrieve a mediation component.
-	 * @param chainid The chain where the component is.
-	 * @param componentId The id of the component
+	 * 
+	 * @param chainid
+	 *            The chain where the component is.
+	 * @param componentId
+	 *            The id of the component
 	 * @return The required component, null if it does not exist.
 	 */
 	@GET
 	@Path("{chainid}/mediators/{componentId}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response getMediator(@PathParam("chainid")String chainid, @PathParam("componentId")String componentId) {
+	public Response getMediator(@PathParam("chainid") String chainid,
+			@PathParam("componentId") String componentId) {
 		Response reponse;
 		Mediator component;
 		try {
@@ -299,15 +363,27 @@ public class AdminChainREST {
 			component = null;
 		}
 		if (component != null) {
-			reponse =  Response.ok(jsonservice.toJSON(component.toMap())).build();
+			reponse = Response.ok(jsonservice.toJSON(component.toMap()))
+					.build();
 		} else { // Maybe it is an uuid
 			try {
-				Node []nodes = ccontext.getApplicationRuntime().findNodeByFilter("(uuid=" + componentId+")");
+				Node[] nodes = ccontext.getApplicationRuntime()
+						.findNodeByFilter("(uuid=" + componentId + ")");
 				if (nodes.length > 0) {
-					if (admin.getChain(chainid).getMediator(nodes[0].nodeId()) != null) { //See if the uuid node is an adapter
-						reponse =  Response.ok(jsonservice.toJSON(((MediatorComponent)(nodes[0])).toMap())).build();
+					if (admin.getChain(chainid).getMediator(nodes[0].nodeId()) != null) { // See
+																							// if
+																							// the
+																							// uuid
+																							// node
+																							// is
+																							// an
+																							// adapter
+						reponse = Response
+								.ok(jsonservice
+										.toJSON(((MediatorComponent) (nodes[0]))
+												.toMap())).build();
 					} else {
-						reponse = Response.status(404).build();	
+						reponse = Response.status(404).build();
 					}
 				} else {
 					reponse = Response.status(404).build();
@@ -323,14 +399,18 @@ public class AdminChainREST {
 
 	/**
 	 * Retrieve a mediation component.
-	 * @param chainid The chain where the component is.
-	 * @param componentId The id of the component
+	 * 
+	 * @param chainid
+	 *            The chain where the component is.
+	 * @param componentId
+	 *            The id of the component
 	 * @return The required component, null if it does not exist.
 	 */
 	@GET
 	@Path("{chainid}/adapters/{componentId}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response getAdapter(@PathParam("chainid")String chainid, @PathParam("componentId")String componentId) {
+	public Response getAdapter(@PathParam("chainid") String chainid,
+			@PathParam("componentId") String componentId) {
 		Response reponse;
 		Adapter component;
 		try {
@@ -339,15 +419,27 @@ public class AdminChainREST {
 			component = null;
 		}
 		if (component != null) {
-			reponse =  Response.ok(jsonservice.toJSON(component.toMap())).build();
+			reponse = Response.ok(jsonservice.toJSON(component.toMap()))
+					.build();
 		} else { // Maybe it is an uuid
 			try {
-				Node []nodes = ccontext.getApplicationRuntime().findNodeByFilter("(uuid=" + componentId+")");
+				Node[] nodes = ccontext.getApplicationRuntime()
+						.findNodeByFilter("(uuid=" + componentId + ")");
 				if (nodes.length > 0) {
-					if (admin.getChain(chainid).getAdapter(nodes[0].nodeId()) != null) { //See if the uuid node is an adapter
-						reponse =  Response.ok(jsonservice.toJSON(((MediatorComponent)(nodes[0])).toMap())).build();
+					if (admin.getChain(chainid).getAdapter(nodes[0].nodeId()) != null) { // See
+																							// if
+																							// the
+																							// uuid
+																							// node
+																							// is
+																							// an
+																							// adapter
+						reponse = Response
+								.ok(jsonservice
+										.toJSON(((MediatorComponent) (nodes[0]))
+												.toMap())).build();
 					} else {
-						reponse = Response.status(404).build();	
+						reponse = Response.status(404).build();
 					}
 				} else {
 					reponse = Response.status(404).build();
@@ -362,63 +454,73 @@ public class AdminChainREST {
 	}
 
 	/*****************************************/
-	/**          PUT METHODS                **/
+	/** PUT METHODS **/
 	/*****************************************/
 
-	
 	/**
 	 * Copy the information of an existing component to another one.
-	 * @param chainId The chain Identification.
-	 * @param source The id of the component source.
-	 * @param destination The id of the component destination.
+	 * 
+	 * @param chainId
+	 *            The chain Identification.
+	 * @param source
+	 *            The id of the component source.
+	 * @param destination
+	 *            The id of the component destination.
 	 */
 	@PUT
 	@Path("{chainid}/copy")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Deprecated
-	public String copyComponentPUT(@PathParam("chainid")String chainId, @FormParam("from")String source, @FormParam("to")String destination) {
+	public String copyComponentPUT(@PathParam("chainid") String chainId,
+			@FormParam("from") String source,
+			@FormParam("to") String destination) {
 		coreLogger.warn("Using a deprecated RESOURCE");
-		coreLogger.warn("use URL/cilia/<Chain>/components/ with command=copy, from=<mediatorId> and to=<mediatorId> as parameters instead");
+		coreLogger
+				.warn("use URL/cilia/<Chain>/components/ with command=copy, from=<mediatorId> and to=<mediatorId> as parameters instead");
 		try {
 			admin.copyComponent(chainId, source, destination);
 		} catch (CiliaException e) {
 			e.printStackTrace();
-			return "{ return : false, " +
-			"exception : " + e.getMessage() +
-			"}";
+			return "{ return : false, " + "exception : " + e.getMessage() + "}";
 		}
 		return "{ return : true}";
 	}
 
 	/**
 	 * Replace one component for another and copy his data.
-	 * @param chainId The chain to modify.
-	 * @param from the original component.
-	 * @param to The destination component
+	 * 
+	 * @param chainId
+	 *            The chain to modify.
+	 * @param from
+	 *            the original component.
+	 * @param to
+	 *            The destination component
 	 * @throws CiliaException
 	 */
 	@PUT
 	@Path("{chainid}/replace")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Deprecated
-	public String replaceComponentPUT(@PathParam("chainid")String chainId, @FormParam("from")String from, @FormParam("to")String to) {
+	public String replaceComponentPUT(@PathParam("chainid") String chainId,
+			@FormParam("from") String from, @FormParam("to") String to) {
 		coreLogger.warn("Using a deprecated RESOURCE");
-		coreLogger.warn("use URL/cilia/<Chain>/components/ with command=replace, from=<mediatorId> and to=<mediatorId> as parameters instead");
+		coreLogger
+				.warn("use URL/cilia/<Chain>/components/ with command=replace, from=<mediatorId> and to=<mediatorId> as parameters instead");
 		try {
 			admin.replaceComponent(chainId, from, to);
 		} catch (CiliaException e) {
 			e.printStackTrace();
-			return "{ return : false, " +
-			"exception : " + e.getMessage() +
-			"}";
+			return "{ return : false, " + "exception : " + e.getMessage() + "}";
 		}
-		return "{ return : true }";	
+		return "{ return : true }";
 	}
 
 	@PUT
 	@Path("{chainid}/components")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response PUTCommand(@PathParam("chainid")String chainId, @FormParam("command")String command, @FormParam("from")String from, @FormParam("to")String to) {
+	public Response PUTCommand(@PathParam("chainid") String chainId,
+			@FormParam("command") String command,
+			@FormParam("from") String from, @FormParam("to") String to) {
 
 		if (command != null && command.compareToIgnoreCase("copy") == 0) {
 			try {
@@ -426,7 +528,8 @@ public class AdminChainREST {
 			} catch (CiliaException e) {
 				return Response.status(Status.INTERNAL_SERVER_ERROR).build();
 			}
-		} else if (command != null && command.compareToIgnoreCase("replace") == 0) {
+		} else if (command != null
+				&& command.compareToIgnoreCase("replace") == 0) {
 			try {
 				admin.replaceComponent(chainId, from, to);
 			} catch (CiliaException e) {
@@ -440,15 +543,21 @@ public class AdminChainREST {
 
 	/**
 	 * Update a mediator component instance.
-	 * @param chainId The chain id where the component is located.
-	 * @param componentId The ID of the component to reconfigure.
-	 * @param properties The new properties
+	 * 
+	 * @param chainId
+	 *            The chain id where the component is located.
+	 * @param componentId
+	 *            The ID of the component to reconfigure.
+	 * @param properties
+	 *            The new properties
 	 */
 	@PUT
 	@Path("{chainid}/components/{componentId}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response updateComponentPUT(@PathParam("chainid")String chainId, @PathParam("componentId")String componentId, @FormParam("properties")String properties) {
-		if (properties == null || properties.length()<1){
+	public Response updateComponentPUT(@PathParam("chainid") String chainId,
+			@PathParam("componentId") String componentId,
+			@FormParam("properties") String properties) {
+		if (properties == null || properties.length() < 1) {
 			return Response.status(Status.BAD_REQUEST).build();
 		}
 		Map props = null;
@@ -462,7 +571,7 @@ public class AdminChainREST {
 		try {
 			if (acomponent.isMediator(chainId, componentId) == true) {
 				acomponent.updateMediator(chainId, componentId, props);
-			} else if (acomponent.isAdapter(chainId, componentId) == true){
+			} else if (acomponent.isAdapter(chainId, componentId) == true) {
 				acomponent.updateAdapter(chainId, componentId, props);
 			} else {
 				return Response.status(Status.NOT_FOUND).build();
@@ -470,23 +579,25 @@ public class AdminChainREST {
 		} catch (CiliaException e) {
 			return Response.status(Status.INTERNAL_SERVER_ERROR).build();
 		}
-		return Response.ok().build();	
+		return Response.ok().build();
 	}
-	
+
 	/*****************************************/
-	/**          POST METHODS               **/
+	/** POST METHODS **/
 	/*****************************************/
 
-	
 	/**
 	 * Create a new initial empty chain chain/
-	 * @param id The ID of the new mediation chain.
-	 * @throws CiliaException if the given chain id already exist.
+	 * 
+	 * @param id
+	 *            The ID of the new mediation chain.
+	 * @throws CiliaException
+	 *             if the given chain id already exist.
 	 */
 	@POST
 	@Path("{chainid}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response emptyChain(@PathParam("chainid")String id) {
+	public Response emptyChain(@PathParam("chainid") String id) {
 		Chain chain = null;
 		try {
 			chain = admin.getChain(id);
@@ -494,12 +605,15 @@ public class AdminChainREST {
 			return Response.status(400).build();
 		}
 		if (chain != null) {
-			return Response.status(Status.CONFLICT).entity("{result : \"chain with the same id exist w\"}").build();
-		} 
+			return Response.status(Status.CONFLICT)
+					.entity("{result : \"chain with the same id exist w\"}")
+					.build();
+		}
 		try {
 			admin.createEmptyChain(id);
 		} catch (CiliaException e) {
-			return Response.status(Status.BAD_REQUEST).entity("{result : \"Unable to create chain \"}").build();
+			return Response.status(Status.BAD_REQUEST)
+					.entity("{result : \"Unable to create chain \"}").build();
 		}
 		try {
 			chain = admin.getChain(id);
@@ -508,43 +622,57 @@ public class AdminChainREST {
 		return Response.ok(String.valueOf(chain)).build();
 	}
 
-
-
-
 	/**
 	 * Create a new mediator component
-	 * @param chainId The chain where the mediator will be created.
-	 * @param componentType The mediator type.
-	 * @param componentID The id of the mediator.
-	 * @param properties The initial properties.
-	 * @throws CiliaIllegalParameterException If the chain does not exist or if the mediator with the same ID already exist.
+	 * 
+	 * @param chainId
+	 *            The chain where the mediator will be created.
+	 * @param componentType
+	 *            The mediator type.
+	 * @param componentID
+	 *            The id of the mediator.
+	 * @param properties
+	 *            The initial properties.
+	 * @throws CiliaIllegalParameterException
+	 *             If the chain does not exist or if the mediator with the same
+	 *             ID already exist.
 	 */
 	@SuppressWarnings("unchecked")
 	@POST
 	@Path("{chainid}/mediators/{componentId}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response createMediator(@PathParam("chainid")String chainId, @FormParam("type")String componentType, @PathParam("componentId")String componentID, @FormParam("properties")String  properties) {
+	public Response createMediator(@PathParam("chainid") String chainId,
+			@FormParam("type") String componentType,
+			@PathParam("componentId") String componentID,
+			@FormParam("properties") String properties) {
 		Map<String, Object> prop = null;
 		StringBuilder result = new StringBuilder();
 		Response response;
-		if (properties != null && properties.length()>2){
+		if (properties != null && properties.length() > 2) {
 			try {
 				prop = jsonservice.fromJSON(properties);
 			} catch (Exception e) {
 				e.printStackTrace();
-				result.append(createMessage(chainId, componentID, "Unable to create mediator"));
-				result.append("{ \"exception\" : \"").append(e.getMessage()).append("\"}");
-				response = Response.status(Status.BAD_REQUEST).entity(result.toString()).build();
+				result.append(createMessage(chainId, componentID,
+						"Unable to create mediator"));
+				result.append("{ \"exception\" : \"").append(e.getMessage())
+						.append("\"}");
+				response = Response.status(Status.BAD_REQUEST)
+						.entity(result.toString()).build();
 				return response;
 			}
-		} 
+		}
 		try {
-			acomponent.createMediator(chainId, componentType, componentID, prop);
+			acomponent
+					.createMediator(chainId, componentType, componentID, prop);
 		} catch (CiliaException e) {
 			e.printStackTrace();
-			result.append(createMessage(chainId, componentID, "Unable to create mediator"));
-			result.append("{ \"exception\" : \"").append(e.getMessage()).append("\"}");
-			response = Response.status(Status.BAD_REQUEST).entity(result.toString()).build();
+			result.append(createMessage(chainId, componentID,
+					"Unable to create mediator"));
+			result.append("{ \"exception\" : \"").append(e.getMessage())
+					.append("\"}");
+			response = Response.status(Status.BAD_REQUEST)
+					.entity(result.toString()).build();
 			return response;
 		}
 		result.append("{ \"result\" : \"Mediator created successfully\"}");
@@ -554,29 +682,42 @@ public class AdminChainREST {
 
 	/**
 	 * Create a new adapter component
-	 * @param chainId The chain where the adapter will be created.
-	 * @param componentType The adapter type.
-	 * @param componentID The id of the adaper.
-	 * @param properties The initial properties.
-	 * @throws CiliaIllegalParameterException If the chain does not exist or if the adapter with the same ID already exist.
+	 * 
+	 * @param chainId
+	 *            The chain where the adapter will be created.
+	 * @param componentType
+	 *            The adapter type.
+	 * @param componentID
+	 *            The id of the adaper.
+	 * @param properties
+	 *            The initial properties.
+	 * @throws CiliaIllegalParameterException
+	 *             If the chain does not exist or if the adapter with the same
+	 *             ID already exist.
 	 */
 	@SuppressWarnings("unchecked")
 	@POST
 	@Path("{chainid}/adapters/{componentId}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response createAdapter(@PathParam("chainid")String chainId, @FormParam("type")String componentType, @PathParam("componentId")String componentID, @FormParam("properties")String  properties) {
+	public Response createAdapter(@PathParam("chainid") String chainId,
+			@FormParam("type") String componentType,
+			@PathParam("componentId") String componentID,
+			@FormParam("properties") String properties) {
 		Map<String, Object> prop = null;
 		StringBuilder result = new StringBuilder();
 		Response response;
-		
-		if (properties != null && properties.length()>2){
+
+		if (properties != null && properties.length() > 2) {
 			try {
 				prop = jsonservice.fromJSON(properties);
-			}catch(Exception e){
+			} catch (Exception e) {
 				e.printStackTrace();
-				result.append(createMessage(chainId, componentID, "Unable to create adapter"));
-				result.append("{ \"exception\" : \"").append(e.getMessage()).append("\"}");
-				response = Response.status(Status.BAD_REQUEST).entity(result.toString()).build();
+				result.append(createMessage(chainId, componentID,
+						"Unable to create adapter"));
+				result.append("{ \"exception\" : \"").append(e.getMessage())
+						.append("\"}");
+				response = Response.status(Status.BAD_REQUEST)
+						.entity(result.toString()).build();
 				return response;
 			}
 
@@ -585,9 +726,12 @@ public class AdminChainREST {
 			acomponent.createAdapter(chainId, componentType, componentID, prop);
 		} catch (CiliaException e) {
 			e.printStackTrace();
-			result.append(createMessage(chainId, componentID, "Unable to create adapter"));
-			result.append("{ \"exception\" : \"").append(e.getMessage()).append("\"}");
-			response = Response.status(Status.BAD_REQUEST).entity(result.toString()).build();
+			result.append(createMessage(chainId, componentID,
+					"Unable to create adapter"));
+			result.append("{ \"exception\" : \"").append(e.getMessage())
+					.append("\"}");
+			response = Response.status(Status.BAD_REQUEST)
+					.entity(result.toString()).build();
 			return response;
 		}
 		result.append("{ \"result\" : \"Adapter created successfully\"}");
@@ -595,36 +739,42 @@ public class AdminChainREST {
 		return response;
 	}
 
-
-
-
-
 	/**
 	 * Create a new binding between two components.
-	 * @param chainId The chain Id where the binding will be created.
-	 * @param from The component which will deliver data. Parameter format must be 
-	 * 			<componentID>:<portName>
-	 * @param to The component which will obtain the data. Parameter format must be 
-	 * 			<componentID>:<portName>
-	 * @param properties The properties if needed to create the binding.
+	 * 
+	 * @param chainId
+	 *            The chain Id where the binding will be created.
+	 * @param from
+	 *            The component which will deliver data. Parameter format must
+	 *            be <componentID>:<portName>
+	 * @param to
+	 *            The component which will obtain the data. Parameter format
+	 *            must be <componentID>:<portName>
+	 * @param properties
+	 *            The properties if needed to create the binding.
 	 */
 	@POST
 	@Path("{chainid}/bindings")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response createBinding(@PathParam("chainid")String chainId, @FormParam("from")String from, @FormParam("to")String to, @FormParam("linker")String linker, @FormParam("properties")String properties) {
+	public Response createBinding(@PathParam("chainid") String chainId,
+			@FormParam("from") String from, @FormParam("to") String to,
+			@FormParam("linker") String linker,
+			@FormParam("properties") String properties) {
 		Map<String, Object> prop = null;
 		Response response;
 		StringBuilder result = new StringBuilder("{");
 
-		if (properties != null && properties.length()>2){
+		if (properties != null && properties.length() > 2) {
 			try {
 				prop = jsonservice.fromJSON(properties);
 			} catch (ParseException e) {
 				e.printStackTrace();
-				result.append(createMessage(chainId, from, "Unable to parse properties"));
+				result.append(createMessage(chainId, from,
+						"Unable to parse properties"));
 				result.append("exception :").append(e.getMessage());
 				result.append("}");
-				response = Response.status(Status.BAD_REQUEST).entity(result.toString()).build();
+				response = Response.status(Status.BAD_REQUEST)
+						.entity(result.toString()).build();
 				return response;
 			}
 		}
@@ -632,31 +782,36 @@ public class AdminChainREST {
 			abinding.createBinding(chainId, from, to, linker, prop);
 		} catch (CiliaException e) {
 			e.printStackTrace();
-			result.append(createMessage(chainId, from, "Unable to bind components"));
+			result.append(createMessage(chainId, from,
+					"Unable to bind components"));
 			result.append("exception :").append(e.getMessage());
 			result.append("}");
-			response = Response.status(Status.BAD_REQUEST).entity(result.toString()).build();
+			response = Response.status(Status.BAD_REQUEST)
+					.entity(result.toString()).build();
 			return response;
 		}
-		result.append(createMessage(chainId, from, "Binding successful")).append("}");
-		
+		result.append(createMessage(chainId, from, "Binding successful"))
+				.append("}");
+
 		response = Response.ok(result.toString()).build();
 		return response;
 	}
 
 	/*****************************************/
-	/**          DELETE METHODS             **/
+	/** DELETE METHODS **/
 	/*****************************************/
 
 	/**
-	 * Delete a mediation chain. 
-	 * @param id The ID of the chain to be deleted
+	 * Delete a mediation chain.
+	 * 
+	 * @param id
+	 *            The ID of the chain to be deleted
 	 * @return true if chain is successful deleted, false if it does not exist.
 	 */
 	@DELETE
 	@Path("{chainid}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response deleteChain(@PathParam("chainid")String id) {
+	public Response deleteChain(@PathParam("chainid") String id) {
 		boolean res = false;
 		try {
 			if (admin.getChain(id) == null) {
@@ -664,26 +819,28 @@ public class AdminChainREST {
 			}
 			res = admin.deleteChain(id);
 		} catch (CiliaException e) {
-			return Response.status(Status.INTERNAL_SERVER_ERROR).build(); 
+			return Response.status(Status.INTERNAL_SERVER_ERROR).build();
 		}
-		if (res){
+		if (res) {
 			return Response.ok().build();
 		}
 		return Response.status(Status.INTERNAL_SERVER_ERROR).build();
 	}
 
-
-
 	/**
-	 *Delete a mediator component. 
-	 * @param chainId The chain where the component is.
-	 * @param componentId The id to the component to delete.
+	 * Delete a mediator component.
+	 * 
+	 * @param chainId
+	 *            The chain where the component is.
+	 * @param componentId
+	 *            The id to the component to delete.
 	 * @return true if component is deleted, false if not.
 	 */
 	@DELETE
 	@Path("{chainid}/components/{componentId}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response deleteComponent(@PathParam("chainid")String chainId, @PathParam("componentId")String componentId){
+	public Response deleteComponent(@PathParam("chainid") String chainId,
+			@PathParam("componentId") String componentId) {
 		Response response = null;
 		if (acomponent.isMediator(chainId, componentId) == true) {
 			acomponent.deleteMediator(chainId, componentId);
@@ -697,18 +854,20 @@ public class AdminChainREST {
 		return response;
 	}
 
-
-
 	/**
-	 *Delete a mediator component. 
-	 * @param chainId The chain where the component is.
-	 * @param componentId The id to the component to delete.
+	 * Delete a mediator component.
+	 * 
+	 * @param chainId
+	 *            The chain where the component is.
+	 * @param componentId
+	 *            The id to the component to delete.
 	 * @return true if component is deleted, false if not.
 	 */
 	@DELETE
 	@Path("{chainid}/mediators/{componentId}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response deleteMediator(@PathParam("chainid")String chainId, @PathParam("componentId")String componentId){
+	public Response deleteMediator(@PathParam("chainid") String chainId,
+			@PathParam("componentId") String componentId) {
 		Response response = null;
 		if (acomponent.isMediator(chainId, componentId) == true) {
 			acomponent.deleteMediator(chainId, componentId);
@@ -718,16 +877,20 @@ public class AdminChainREST {
 		}
 		return response;
 	}
-	
+
 	/**
-	 *Delete a mediator component. 
-	 * @param chainId The chain where the component is.
-	 * @param componentId The id to the component to delete.
+	 * Delete a mediator component.
+	 * 
+	 * @param chainId
+	 *            The chain where the component is.
+	 * @param componentId
+	 *            The id to the component to delete.
 	 * @return true if component is deleted, false if not.
 	 */
 	@DELETE
 	@Path("{chainid}/adapters/{componentId}")
-	public Response deleteAdapter(@PathParam("chainid")String chainId, @PathParam("componentId")String componentId){
+	public Response deleteAdapter(@PathParam("chainid") String chainId,
+			@PathParam("componentId") String componentId) {
 		Response response = null;
 		if (acomponent.isAdapter(chainId, componentId) == true) {
 			acomponent.deleteAdapter(chainId, componentId);
@@ -737,27 +900,34 @@ public class AdminChainREST {
 		}
 		return response;
 	}
+
 	/**
 	 * Delete a binding from two mediators.
-	 * @param chainID The chain where mediators are.
-	 * @param from The component which deliver data. Parameter format must be 
-	 * 			<componentID>:<portName>
-	 * @param to The component which receives data. Parameter format must be 
-	 * 			<componentID>:<portName>
+	 * 
+	 * @param chainID
+	 *            The chain where mediators are.
+	 * @param from
+	 *            The component which deliver data. Parameter format must be
+	 *            <componentID>:<portName>
+	 * @param to
+	 *            The component which receives data. Parameter format must be
+	 *            <componentID>:<portName>
 	 */
 	@DELETE
 	@Path("{chainid}/bindings")
-	public Response deleteBinding(@PathParam("chainid")String chainId, @QueryParam("from")String from, @QueryParam("to")String to) {
+	public Response deleteBinding(@PathParam("chainid") String chainId,
+			@QueryParam("from") String from, @QueryParam("to") String to) {
 		try {
 			abinding.deleteBinding(chainId, from, to);
 		} catch (CiliaException e) {
 			e.printStackTrace();
-			return  Response.status(Status.NOT_FOUND).build();
+			return Response.status(Status.NOT_FOUND).build();
 		}
 		return Response.ok().build();
 	}
 
-	public String createMessage(String chainId, String componentId, String result){
+	public String createMessage(String chainId, String componentId,
+			String result) {
 		StringBuilder resultString = new StringBuilder();
 		resultString.append("\"chain\" : \"").append(chainId).append("\",\n");
 		resultString.append("\"ID\" : \"").append(componentId).append("\",\n");
@@ -765,11 +935,10 @@ public class AdminChainREST {
 		return resultString.toString();
 	}
 
-
-	private List getSetId(Set set ){
+	private List getSetId(Set set) {
 		List<String> ids = new ArrayList<String>();
 		Iterator<MediatorComponent> it = set.iterator();
-		while(it.hasNext()){
+		while (it.hasNext()) {
 			ids.add(it.next().getId());
 		}
 		return ids;
