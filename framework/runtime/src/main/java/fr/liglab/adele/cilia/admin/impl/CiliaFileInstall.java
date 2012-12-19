@@ -21,11 +21,8 @@ import java.util.Set;
 
 import org.apache.felix.fileinstall.ArtifactInstaller;
 import org.osgi.framework.BundleContext;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import fr.liglab.adele.cilia.util.CiliaFileManager;
-import fr.liglab.adele.cilia.util.Const;
 
 /**
  * This class will listen all deployed files using fileinstall,
