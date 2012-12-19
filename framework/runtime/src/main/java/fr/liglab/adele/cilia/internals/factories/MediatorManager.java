@@ -74,7 +74,6 @@ public class MediatorManager extends MediatorComponentManager implements Compone
 		if (pinstance != null) {
 			pinstance.addInstanceStateListener(this);
 		}
-
 	}
 
 
