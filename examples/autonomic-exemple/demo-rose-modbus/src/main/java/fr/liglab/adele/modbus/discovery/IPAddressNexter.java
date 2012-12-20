@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-package fr.liglab.adele.protocol.modbus.discovery;
+package fr.liglab.adele.modbus.discovery;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;

@@ -1,4 +1,4 @@
-package fr.liglab.adele.protocol.modbus.discovery;
+package fr.liglab.adele.modbus.discovery;
 
 import java.io.IOException;
 import java.io.InputStream;

@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-package fr.liglab.adele.protocol.modbus.proxy;
+package fr.liglab.adele.modbus.proxy;
 
 import org.apache.felix.ipojo.ComponentInstance;
 import org.apache.felix.ipojo.Factory;

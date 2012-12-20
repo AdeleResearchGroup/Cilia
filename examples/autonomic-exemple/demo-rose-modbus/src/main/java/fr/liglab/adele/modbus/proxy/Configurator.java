@@ -1,4 +1,4 @@
-package fr.liglab.adele.protocol.modbus.proxy;
+package fr.liglab.adele.modbus.proxy;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.InvalidSyntaxException;

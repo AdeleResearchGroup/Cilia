@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-package fr.liglab.adele.protocol.modbus.discovery;
+package fr.liglab.adele.modbus.discovery;
 
 /**
  * Modbus Frame <br>

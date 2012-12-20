@@ -11,7 +11,7 @@
 -->
 <ipojo>
 	<!-- Proxy Importer for 'Modbus Devices' -->
-	<component classname="fr.liglab.adele.protocol.modbus.proxy.ModbusProxyImporter"
+	<component classname="fr.liglab.adele.modbus.proxy.ModbusProxyImporter"
 		name="Modbus/TCP.importer">
 		<provides specifications="org.ow2.chameleon.rose.ImporterService">
 			<property type="java.lang.String[]" name="endpoint.config"
@@ -23,7 +23,7 @@
 	</component>
 	
 	<!-- Modbus/TCP Protocol stack Schneider = (Modbus + identification) -->
-	<component classname="fr.liglab.adele.protocol.modbus.impl.ModbusProtocolImpl"
+	<component classname="fr.liglab.adele.modbus.impl.ModbusProtocolImpl"
 		name="Modbus/TCP" immediate="true" architecture="true" >
 		<provides specification="fr.liglab.adele.protocol.modbus.ModbusProtocol">
 			<property name="fca.injected" field="m_fca" type="java.lang.String" />
@@ -45,7 +45,7 @@
 	</component>
 	
 	<!-- Component Modbus/TCP Discovery  -->
-	<component classname="fr.liglab.adele.protocol.modbus.discovery.ModbusTCPScanner"
+	<component classname="fr.liglab.adele.modbus.discovery.ModbusTCPScanner"
 		name="Modbus/TCP.discovery">
 		<properties>
 			<property name="start.address" type="java.lang.String"
@@ -70,7 +70,7 @@
 	</component>
 	
 	<!--  Configure the rose Machine   -->
-	<component classname="fr.liglab.adele.protocol.modbus.proxy.Configurator"
+	<component classname="fr.liglab.adele.modbus.proxy.Configurator"
 		name="Demo_RoseImporterModbus.configurator">
 		<callback transition="validate" method="start" />
 		<callback transition="invalidate" method="stop" />

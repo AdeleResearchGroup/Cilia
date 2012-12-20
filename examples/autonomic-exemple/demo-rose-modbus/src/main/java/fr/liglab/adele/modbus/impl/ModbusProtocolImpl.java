@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-package fr.liglab.adele.protocol.modbus.impl;
+package fr.liglab.adele.modbus.impl;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -22,7 +22,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
 import net.wimpi.modbus.ModbusException;
 import net.wimpi.modbus.ModbusIOException;

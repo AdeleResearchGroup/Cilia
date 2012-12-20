@@ -31,7 +31,11 @@
 		</dependency>
 	
    	     <!-- Demo Maven Projects-->
-
+		<dependency>
+			<groupId>fr.liglab.adele.cilia.autonomic-demo</groupId>
+			<artifactId>modbus-api</artifactId>
+			<version>1.0.0</version>
+		</dependency>		
 		<!-- Rose Projects-->
 		<dependency>
 			<groupId>org.ow2.chameleon.rose.jsonrpc</groupId>
@@ -69,7 +73,8 @@
 				<configuration>
 					<instructions>
 						<Private-Package>
-						    fr.liglab.adele.protocol.modbus.*
+						    fr.liglab.adele.modbus.*;
+						    net.wimpi.*
 						</Private-Package>
 
 					</instructions>
