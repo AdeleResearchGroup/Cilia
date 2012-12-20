@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <!--
  Copyright Adele Team LIG
  Licensed under the Apache License, Version 2.0 (the "License");
@@ -11,8 +12,7 @@
  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  See the License for the specific language governing permissions and
  limitations under the License.
--->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+--><project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
 	<modelVersion>4.0.0</modelVersion>
 
@@ -20,20 +20,22 @@
 		<groupId>fr.liglab.adele.cilia</groupId>
 		<artifactId>cilia-project</artifactId>
 		<version>1.6.1-SNAPSHOT</version>
-		<relativePath>../parent</relativePath>
+		<relativePath>../../parent/</relativePath>
 	</parent>
 
-	<artifactId>cilia-components</artifactId>
-	<packaging>pom</packaging>
-	<name>${productName} :: Components Reactor</name>
+	<groupId>fr.liglab.adele.cilia.autonomic-demo</groupId>
+	<artifactId>cilia-autonomic-demo-reactor</artifactId>
+	<name>${productName} :: Autonomic Example - Reactor</name>
 
+	<packaging>pom</packaging>
 
 	<modules>
-		<module>jms-adapter</module>
-		<module>ea-adapter</module>
-		<module>tcp-adapter</module>
-		<module>modbus-adapter</module>
+		<module>demo-rose-modbus</module>
+		<module>gateway</module>
 	</modules>
+	
+		<!-- Project dependencies -->
+	
   <build>
     <plugins>
       <plugin>
@@ -45,4 +47,5 @@
       </plugin>
     </plugins>
   </build>
+  
 </project>

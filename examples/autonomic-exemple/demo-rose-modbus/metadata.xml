@@ -1,0 +1,80 @@
+<?xml version="1.0"?>
+<!-- 
+    Copyright Adele Team LIG Licensed under the Apache License, Version 
+	2.0 (the "License"); you may not use this file except in compliance with 
+	the License. You may obtain a copy of the License at    
+	http://www.apache.org/licenses/LICENSE-2.0 
+	Unless required by applicable law or agreed to in writing, software distributed 
+	under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES 
+	OR CONDITIONS OF ANY KIND, either express or implied. See the License for 
+	the specific language governing permissions and limitations under the License. 
+-->
+<ipojo>
+	<!-- Proxy Importer for 'Modbus Devices' -->
+	<component classname="fr.liglab.adele.protocol.modbus.proxy.ModbusProxyImporter"
+		name="Modbus/TCP.importer">
+		<provides specifications="org.ow2.chameleon.rose.ImporterService">
+			<property type="java.lang.String[]" name="endpoint.config"
+				value="{Modbus/TCP}" />
+		</provides>		
+		<requires field="roseMachine" id = "rose.machine"/>
+		<callback transition="validate" method="start" />
+		<callback transition="invalidate" method="stop" />
+	</component>
+	
+	<!-- Modbus/TCP Protocol stack Schneider = (Modbus + identification) -->
+	<component classname="fr.liglab.adele.protocol.modbus.impl.ModbusProtocolImpl"
+		name="Modbus/TCP" immediate="true" architecture="true" >
+		<provides specification="fr.liglab.adele.protocol.modbus.ModbusProtocol">
+			<property name="fca.injected" field="m_fca" type="java.lang.String" />
+			<property name="domain.id" type="java.lang.String" field="m_domain"/>
+		</provides>
+		<properties propagation="true">
+			<property name="fca.injected" field="m_fca" type="java.lang.String" value="false " />
+			<property name="fca.attributes" field="m_attributes" type="java.util.HashSet" />
+			<property name="domain.id" type="java.lang.String" field="m_domain"/>
+			<property name="device.ip.address" method="setHost" type="java.lang.String"
+				mandatory="true" />
+			<property name="rank.value" type="java.lang.String" field="m_rank" />
+ 			<property name="device.ip.port" method="setPort" value="502" />
+			<property name="device.identification" method="setIdentification"
+				type="java.util.Map" />
+		</properties>
+		<callback transition="validate" method="start" />
+		<callback transition="invalidate" method="stop" />
+	</component>
+	
+	<!-- Component Modbus/TCP Discovery  -->
+	<component classname="fr.liglab.adele.protocol.modbus.discovery.ModbusTCPScanner"
+		name="Modbus/TCP.discovery">
+		<properties>
+			<property name="start.address" type="java.lang.String"
+				method="setStartAddress" mandatory="true" />
+			<property name="end.address" type="java.lang.String" method="setEndAddress"
+				mandatory="true" />
+			<property name="domain.id" field="m_domainID" type="java.lang.String" />
+			<property name="scan.period" type="java.lang.String" field="m_period"
+				value="1000" />
+			<property name="ranking.file" type="java.lang.String"
+				field="m_urlProperties"  />
+			<property name="fca.xml.file" type="java.lang.String"
+				field="m_urlfca" />
+			<property name="scan.delay" field="m_delay" value="100" />
+			<property name="ping.time.out" field="m_timeout" value="2000" />
+			<property name="modbus.port.number" field="m_port" value="502" />
+		</properties>
+		<requires field="roseMachine" id = "rose.machine" />
+		<requires field="adminService" />
+		<callback transition="validate" method="runScan" />
+		<callback transition="invalidate" method="cancelScan" />
+	</component>
+	
+	<!--  Configure the rose Machine   -->
+	<component classname="fr.liglab.adele.protocol.modbus.proxy.Configurator"
+		name="Demo_RoseImporterModbus.configurator">
+		<callback transition="validate" method="start" />
+		<callback transition="invalidate" method="stop" />
+	</component>
+    <instance component="Demo_RoseImporterModbus.configurator"/>
+    
+</ipojo>

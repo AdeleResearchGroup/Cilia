@@ -1,0 +1,45 @@
+<!-- Copyright Adele Team LIG Licensed under the Apache License, Version 
+	2.0 (the "License"); you may not use this file except in compliance with 
+	the License. You may obtain a copy of the License at    http://www.apache.org/licenses/LICENSE-2.0 
+	Unless required by applicable law or agreed to in writing, software distributed 
+	under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES 
+	OR CONDITIONS OF ANY KIND, either express or implied. See the License for 
+	the specific language governing permissions and limitations under the License. 
+-->
+<ipojo xmlns:cilia="fr.liglab.adele.cilia">
+
+	<collector
+		classname="fr.liglab.adele.cilia.modbus.ModbusCollector"
+		name="modbus-in-collector" namespace="fr.liglab.adele.cilia">
+		<cilia:dependency field="m_ModbusServices" >
+			<callback type="bind" method="bindService" />
+			<callback type="unbind" method="unbindService" />
+		</cilia:dependency>
+		<properties>
+			<property name="pool.period" method="period" value="1000"
+				type="long" />
+			<property name="pool.delay" method="delay" value="3000"
+				type="long" />
+			<property name="modbus.slave.address" method="setUnitID"
+				value="0" type="int" />
+			<property name="read.holding.registers" method="setReadHoldingRegisters"
+				type="java.util.Map" />
+			<property name="read.discrete.inputs" method="setReadDiscreteInputs"
+				type="java.util.Map" />
+			<property name="read.input.registers" method="setReadInputRegisters"
+				type="java.util.Map" />
+			<property name="read.coils" method="setReadCoils" type="java.util.Map" />
+			<property name="data.type" method="setDataType" type="java.lang.String" />
+		</properties>
+		<callback transition="validate" method="start" />
+		<callback transition="invalidate" method="stop" />
+	</collector>
+
+	<adapter name="modbus-in-adapter" pattern="in-only" >
+		<collector type="modbus-in-collector" />
+		<ports>
+			<out-port name="unique" type="*" />
+		</ports>
+	</adapter>
+
+</ipojo>
