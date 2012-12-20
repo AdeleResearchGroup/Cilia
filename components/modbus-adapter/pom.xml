@@ -13,7 +13,7 @@
 	<parent>
 		<groupId>fr.liglab.adele.cilia</groupId>
 		<artifactId>cilia-project</artifactId>
-		<version>1.6.1-SNAPSHOT</version>
+		<version>1.6.3-SNAPSHOT</version>
 		<relativePath>../../parent</relativePath>
 	</parent>
 
@@ -42,18 +42,18 @@
 			<artifactId>cilia-runtime</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-		
+
+		<dependency>
+			<groupId>fr.liglab.adele.cilia.autonomic-demo</groupId>
+			<artifactId>modbus-api</artifactId>
+			<version>1.0.0</version>
+		</dependency>
+				
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
 		</dependency>
-
-		<dependency>
-			<groupId>fr.liglab.adele.cilia</groupId>
-			<artifactId>modbus-api</artifactId>
-			<version>1.0.0</version>
-		</dependency>
-		
+	
 	</dependencies>
 	<build>
 		<plugins>
