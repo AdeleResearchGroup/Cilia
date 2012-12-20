@@ -19,7 +19,7 @@
 	</parent>
 	<groupId>fr.liglab.adele.cilia</groupId>
 	<artifactId>cilia-distribution</artifactId>
-	<version>1.6.2</version>
+	<version>1.6.3-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>Cilia :: Distribution </name>
 
