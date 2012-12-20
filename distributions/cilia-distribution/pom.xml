@@ -55,4 +55,11 @@
 			<url>http://repository-icasa.forge.cloudbees.com/release/</url>
 		</repository>
 	</repositories>
+	<distributionManagement>
+		<repository>
+			<id>cloudbees-release</id>
+			<name>Cloudbees Private Repository</name>
+			<url>dav:https://repository-cilia.forge.cloudbees.com/release</url>
+		</repository>
+	</distributionManagement>
 </project>
