@@ -15,11 +15,11 @@
 		<groupId>fr.liglab.adele.common</groupId>
 		<artifactId>distribution.minimal.base</artifactId>
 		<version>1.0.0-SNAPSHOT</version>
-		<relativePath></relativePath>
+		<relativePath />
 	</parent>
 	<groupId>fr.liglab.adele.cilia</groupId>
 	<artifactId>cilia-distribution</artifactId>
-	<version>1.6.1-SNAPSHOT</version>
+	<version>1.6.3-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>Cilia :: Distribution </name>
 
@@ -55,4 +55,11 @@
 			<url>http://repository-icasa.forge.cloudbees.com/release/</url>
 		</repository>
 	</repositories>
+	<distributionManagement>
+		<repository>
+			<id>cloudbees-release</id>
+			<name>Cloudbees Private Repository</name>
+			<url>dav:https://repository-cilia.forge.cloudbees.com/release</url>
+		</repository>
+	</distributionManagement>
 </project>

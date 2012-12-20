@@ -99,13 +99,11 @@ public abstract class MediatorComponentManager extends InstanceManager {
 		updateSchedulerManager();
 		updateDispatcherManager();
 		configureHandlersMonitoring();
-		addDescriptionEntry();
 	}
 
 	public void stopManagers() {
 		stopSchedulerManager();
 		stopDispatcherManager();
-		removeDescriptionEntry();
 	}
 
 	private void configureHandlerMonitoring(InstanceManager im,
@@ -372,17 +370,6 @@ public abstract class MediatorComponentManager extends InstanceManager {
 		super.configure(metadata, config);
 	}
 	
-	private void addDescriptionEntry(){
-		Hashtable props = new Hashtable();
-		props.put(Const.PROPERTY_INSTANCE_TYPE, configuration.get(Const.PROPERTY_INSTANCE_TYPE));
-		props.put(Const.PROPERTY_CHAIN_ID, configuration.get(Const.PROPERTY_CHAIN_ID));
-		props.put(Const.PROPERTY_COMPONENT_ID, configuration.get(Const.PROPERTY_COMPONENT_ID));
-		MediatorDescriptionEntry mde = new MediatorDescriptionEntry() {	};
-		entryRegistry = getContext().registerService(MediatorDescriptionEntry.class.getName(), mde, props);
-	}
-	
-	private void removeDescriptionEntry(){
-		entryRegistry.unregister();
-	}
+
 	
 }

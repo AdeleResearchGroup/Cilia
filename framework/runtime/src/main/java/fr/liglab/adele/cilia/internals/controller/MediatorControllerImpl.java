@@ -22,6 +22,7 @@ import java.util.Observer;
 
 import org.apache.felix.ipojo.ComponentInstance;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceRegistration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,6 +40,7 @@ import fr.liglab.adele.cilia.model.impl.UpdateEvent;
 import fr.liglab.adele.cilia.runtime.CiliaInstance;
 import fr.liglab.adele.cilia.runtime.CiliaInstanceWrapper;
 import fr.liglab.adele.cilia.runtime.FirerEvents;
+import fr.liglab.adele.cilia.runtime.MediatorDescriptionEntry;
 import fr.liglab.adele.cilia.util.Const;
 import fr.liglab.adele.cilia.util.FrameworkUtils;
 
@@ -79,6 +81,7 @@ public class MediatorControllerImpl implements Observer {
 	protected final String filter;
 
 	private FirerEvents eventFirer;
+	private ServiceRegistration entryRegistry;
 
 	/**
 	 * Create a mediator model controller.
@@ -383,12 +386,14 @@ public class MediatorControllerImpl implements Observer {
 			switch (state) {
 			case CiliaInstance.VALID: {
 				updateMediationComponentInstance();
+				registerServiceDescription();
 			}
 				break;
 			case CiliaInstance.DISPOSED:
 			case CiliaInstance.STOPPED:
 			case CiliaInstance.INVALID: {
 				cleanInstances();
+				unregisterServiceDescription();
 			}
 				break;
 			}
@@ -406,6 +411,21 @@ public class MediatorControllerImpl implements Observer {
 
 	}
 
+	private void registerServiceDescription() {
+		Hashtable props = new Hashtable();
+		props.put(Const.PROPERTY_INSTANCE_TYPE, mediatorModel.getType());
+		props.put(Const.PROPERTY_CHAIN_ID, mediatorModel.chainId());
+		props.put(Const.PROPERTY_COMPONENT_ID, mediatorModel.getId());
+		MediatorDescriptionEntry mde = new MediatorDescriptionEntry() {	};
+		entryRegistry = bcontext.registerService(MediatorDescriptionEntry.class.getName(), mde, props);
+	}
+	
+	private void unregisterServiceDescription(){
+		if (entryRegistry != null) {
+			entryRegistry.unregister();
+		}
+	}
+	
 	private void cleanInstances() {
 		synchronized (lockObject) {
 			addedCollectors.clear();

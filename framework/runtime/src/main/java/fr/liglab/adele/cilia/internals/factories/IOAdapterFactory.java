@@ -51,7 +51,8 @@ public class IOAdapterFactory extends MediatorComponentFactory implements Adapte
 		Element dispatcher = null;
 		Class clazz = null;
 		if (!m_componentMetadata
-				.containsElement("scheduler", DEFAULT_NAMESPACE)) {
+				.containsElement("scheduler", DEFAULT_NAMESPACE) && !m_componentMetadata
+				.containsElement("scheduler")) {
 			scheduler = new Element("scheduler", DEFAULT_NAMESPACE);
 		} else {
 			scheduler = m_componentMetadata.getElements("scheduler",
@@ -64,7 +65,7 @@ public class IOAdapterFactory extends MediatorComponentFactory implements Adapte
 		}
 
 		if (!m_componentMetadata.containsElement("dispatcher",
-				DEFAULT_NAMESPACE)) {
+				DEFAULT_NAMESPACE) && !m_componentMetadata.containsElement("dispatcher")) {
 			dispatcher = new Element("dispatcher", DEFAULT_NAMESPACE);
 		} else {
 			dispatcher = m_componentMetadata.getElements("dispatcher",
@@ -94,9 +95,13 @@ public class IOAdapterFactory extends MediatorComponentFactory implements Adapte
 			scheduler.addAttribute(new Attribute("in.data.type", Data.class
 					.getName()));
 		}
-
-		m_componentMetadata.addElement(dispatcher);
-		m_componentMetadata.addElement(scheduler);
+		if (!m_componentMetadata.containsElement("scheduler", DEFAULT_NAMESPACE) && !m_componentMetadata.containsElement("scheduler")) {
+			m_componentMetadata.addElement(scheduler);
+		}
+		if (!m_componentMetadata.containsElement("dispatcher",
+				DEFAULT_NAMESPACE) && !m_componentMetadata.containsElement("dispatcher")) {
+			m_componentMetadata.addElement(dispatcher);
+		}
 	}
 
 	/**

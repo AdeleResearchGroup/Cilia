@@ -62,6 +62,7 @@ public class BindingControllerImpl implements TrackerCustomizer {
 	private final static byte RECEIVING_SERVICE = 0x2;
 	private final static byte SENDING_SERVICE = 0x4;
 
+
 	public void setSourceController(MediatorControllerImpl sourceController) {
 		this.sourceController = sourceController;
 	}
@@ -211,6 +212,10 @@ public class BindingControllerImpl implements TrackerCustomizer {
 	 */
 	public void stop() {
 		unregisterTracker();
+		removeModels();
+	}
+	
+	private void removeModels(){
 		if (sourceController != null) {
 			SenderImpl s = modelBinding.getSender();
 			modelBinding.addSender(null);
@@ -222,7 +227,7 @@ public class BindingControllerImpl implements TrackerCustomizer {
 			targetController.removeCollector(c);
 		}
 	}
-
+	
 	/**
 	 * Update binding properties.
 	 * 
@@ -338,7 +343,6 @@ public class BindingControllerImpl implements TrackerCustomizer {
 			toAdd = true;
 		}
 		return toAdd;
-
 	}
 
 	public void modifiedService(ServiceReference reference, Object service) {
@@ -365,6 +369,7 @@ public class BindingControllerImpl implements TrackerCustomizer {
 		if (targetController != null) {
 			targetController.removeCollector(modelBinding.getCollector());
 		}
+		removeModels();
 	}
 
 	private boolean validatePort(Port exitPort, Port entryPort) {
