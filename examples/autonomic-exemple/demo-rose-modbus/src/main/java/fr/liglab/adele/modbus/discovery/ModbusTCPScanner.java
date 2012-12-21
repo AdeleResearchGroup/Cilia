@@ -23,6 +23,7 @@ import java.net.URL;
 import java.net.UnknownHostException;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Properties;
@@ -40,6 +41,8 @@ import org.ow2.chameleon.rose.RoseMachine;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import fr.liglab.adele.cilia.util.Const;
+
 /**
  * Periodic scan devices between 2 IP V4:port <br>
  * 
@@ -47,7 +50,7 @@ import org.slf4j.LoggerFactory;
  * 
  */
 public class ModbusTCPScanner extends TimerTask {
-	private static final Logger logger = LoggerFactory.getLogger("modbus.discovery");
+	private static final Logger logger = LoggerFactory.getLogger(Const.LOGGER_APPLICATION);
 
 	private RoseMachine roseMachine;
 	private RemoteServiceAdmin adminService;
@@ -58,11 +61,14 @@ public class ModbusTCPScanner extends TimerTask {
 	private String m_urlProperties, m_urlfca;
 	private Properties m_devicesRankingProps;
 	private Map m_fcaAttributes;
+	private Set listEndpointsImported ;
 
 	public ModbusTCPScanner(BundleContext bc) {
+		logger.info("Modbus TCP Scanner started");
 		m_timer = new Timer();
 		m_devicesRankingProps = new Properties();
 		m_fcaAttributes = new HashMap();
+		listEndpointsImported = new HashSet() ;
 	}
 
 	public void setStartAddress(String addr) {
@@ -108,7 +114,8 @@ public class ModbusTCPScanner extends TimerTask {
 				socket.getPort());
 
 		/* Checks if that ID is already in registry */
-		if (!isEndPointRegistered(deviceID)) {
+		//if (!isEndPointRegistered(deviceID)) {
+		if (!listEndpointsImported.contains(deviceID)){
 			Map deviceProperties = setDeviceEndPoint(socket.getInetAddress()
 					.getHostAddress(), socket.getPort());
 			if (socket != null) {
@@ -124,13 +131,14 @@ public class ModbusTCPScanner extends TimerTask {
 			try {
 				roseMachine
 						.putRemote(deviceID, new EndpointDescription(deviceProperties));
+				listEndpointsImported.add(deviceID) ;
 			} catch (Exception e) {
 				e.printStackTrace();
 				roseMachine.removeRemote(deviceID);
 				logger.error("The proxy has not imported the service !");
 			}
 		} else {
-			logger.trace("Device already registered "
+			logger.debug("Device already registered "
 					+ socket.getRemoteSocketAddress().toString());
 		}
 	}
@@ -138,7 +146,9 @@ public class ModbusTCPScanner extends TimerTask {
 	private void resetRemoteDevice(InetAddress addr, int port) {
 		EndpointDescription epd = roseMachine.removeRemote(generateID(addr
 				.getHostAddress().toString(), port));
+		
 		if (epd != null) {
+			listEndpointsImported.remove(epd.getId());
 			logger.debug("Device removed:" + epd.getProperties().toString());
 		}
 	}
@@ -185,7 +195,7 @@ public class ModbusTCPScanner extends TimerTask {
 		address = startAddress;
 		do {
 			if (ping(address, m_timeout)) {
-				logger.trace("Device present at :" + address.getHostAddress());
+				logger.debug("Device present at :" + address.getHostAddress());
 				socket = tcpConnect(address, m_port);
 				if (socket != null) {
 					setRemoteDevice(socket);
@@ -196,7 +206,7 @@ public class ModbusTCPScanner extends TimerTask {
 				}
 
 			} else {
-				logger.trace("Device absent at :" + address.getHostAddress());
+				logger.debug("Device absent at :" + address.getHostAddress());
 				resetRemoteDevice(address, m_port);
 			}
 
@@ -218,6 +228,7 @@ public class ModbusTCPScanner extends TimerTask {
 
 	private boolean isEndPointRegistered(String id) {
 		Collection registry = adminService.getImportedEndpoints();
+		logger.debug("Endpoint registerd "+registry);
 		if (registry != null) {
 			ImportReference reference;
 			EndpointDescription epd;
@@ -252,7 +263,7 @@ public class ModbusTCPScanner extends TimerTask {
 		/*
 		 * Factory name , service reified locally
 		 */
-		m_props.put("service.factory", "Modbus/TCP");
+		m_props.put("service.factory", "Modbus/TCP.stack");
 
 		score = getScore(hostAddr);
 		if (score != null) {

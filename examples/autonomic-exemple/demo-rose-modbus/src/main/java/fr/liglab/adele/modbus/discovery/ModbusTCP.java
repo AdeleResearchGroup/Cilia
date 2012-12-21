@@ -21,6 +21,8 @@ import java.net.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import fr.liglab.adele.cilia.util.Const;
+
 /**
  * Minimal layer Transport Modbus/TCP 
  * 
@@ -28,7 +30,7 @@ import org.slf4j.LoggerFactory;
  * 
  */
 public class ModbusTCP {
-	private static final Logger logger = LoggerFactory.getLogger("modbus.discovery");
+	private static final Logger logger = LoggerFactory.getLogger(Const.LOGGER_APPLICATION);
 
 	public static final int MBAP_LENGTH = 6;
 	public static final int LENGTH_MODBUS_FRAME = 255;

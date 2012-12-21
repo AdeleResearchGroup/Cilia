@@ -36,6 +36,11 @@
 			<artifactId>demo-rose-modbus</artifactId>
 			<version>${project.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>fr.liglab.adele.cilia.autonomic-demo</groupId>
+			<artifactId>modbus-api</artifactId>
+			<version>1.0.0</version>
+		</dependency>
 		<!-- Rose Projects-->
 		<dependency>
 			<groupId>org.ow2.chameleon.rose.jsonrpc</groupId>

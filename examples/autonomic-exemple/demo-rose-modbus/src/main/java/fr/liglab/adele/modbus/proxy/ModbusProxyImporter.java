@@ -29,6 +29,8 @@ import org.ow2.chameleon.rose.RoseMachine;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import fr.liglab.adele.cilia.util.Const;
+
 import java.util.*;
 
 import static org.apache.felix.ipojo.Factory.VALID;
@@ -41,7 +43,7 @@ import static org.osgi.framework.Constants.OBJECTCLASS;
  * @author Denis Morand
  */
 public class ModbusProxyImporter extends AbstractImporterComponent implements ImporterService{
-	private static final Logger logger = LoggerFactory.getLogger("cilia.rose.modbus");
+	private static final Logger logger = LoggerFactory.getLogger(Const.LOGGER_APPLICATION);
 
 	private static final String FACTORY_FILTER = "(" + OBJECTCLASS + "="
 			+ Factory.class.getName() + ")(factory.state=" + VALID + ")";
@@ -51,6 +53,7 @@ public class ModbusProxyImporter extends AbstractImporterComponent implements Im
 
 	public ModbusProxyImporter(BundleContext context) throws InvalidSyntaxException {
 		super();
+		logger.debug("Proxy importer created");
 		m_bundleContext = context;
 	}
 
@@ -85,6 +88,7 @@ public class ModbusProxyImporter extends AbstractImporterComponent implements Im
 				if (instance != null) {
 					ServiceRegistration sr = new DeviceService(instance);
 					sr.setProperties(props);
+					logger.debug("proxy stack instancied "+instance.getInstanceName());
 					return sr;
 				} else {
 					logger.error("Proxy creation error");

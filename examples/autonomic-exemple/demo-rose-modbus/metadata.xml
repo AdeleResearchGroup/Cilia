@@ -24,7 +24,7 @@
 	
 	<!-- Modbus/TCP Protocol stack Schneider = (Modbus + identification) -->
 	<component classname="fr.liglab.adele.modbus.impl.ModbusProtocolImpl"
-		name="Modbus/TCP" immediate="true" architecture="true" >
+		name="Modbus/TCP.stack" immediate="true" architecture="true" >
 		<provides specification="fr.liglab.adele.protocol.modbus.ModbusProtocol">
 			<property name="fca.injected" field="m_fca" type="java.lang.String" />
 			<property name="domain.id" type="java.lang.String" field="m_domain"/>
@@ -49,9 +49,9 @@
 		name="Modbus/TCP.discovery">
 		<properties>
 			<property name="start.address" type="java.lang.String"
-				method="setStartAddress" mandatory="true" />
+				method="setStartAddress" mandatory="true" value="10.10.7.20" />
 			<property name="end.address" type="java.lang.String" method="setEndAddress"
-				mandatory="true" />
+				mandatory="true" value="10.10.7.22" />
 			<property name="domain.id" field="m_domainID" type="java.lang.String" />
 			<property name="scan.period" type="java.lang.String" field="m_period"
 				value="1000" />
@@ -64,7 +64,6 @@
 			<property name="modbus.port.number" field="m_port" value="502" />
 		</properties>
 		<requires field="roseMachine" id = "rose.machine" />
-		<requires field="adminService" />
 		<callback transition="validate" method="runScan" />
 		<callback transition="invalidate" method="cancelScan" />
 	</component>
@@ -75,6 +74,6 @@
 		<callback transition="validate" method="start" />
 		<callback transition="invalidate" method="stop" />
 	</component>
-    <instance component="Demo_RoseImporterModbus.configurator"/>
+      <instance component="Demo_RoseImporterModbus.configurator"/> 
     
 </ipojo>

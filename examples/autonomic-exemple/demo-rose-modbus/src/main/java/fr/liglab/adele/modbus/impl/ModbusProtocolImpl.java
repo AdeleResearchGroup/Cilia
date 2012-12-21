@@ -44,6 +44,7 @@ import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import fr.liglab.adele.cilia.util.Const;
 import fr.liglab.adele.protocol.modbus.ModbusProcotol;
 import fr.liglab.adele.protocol.modbus.SlaveException;
 
@@ -59,7 +60,7 @@ public class ModbusProtocolImpl implements ModbusProcotol {
 
 	private Map m_identification;
 
-	private static final Logger logger = LoggerFactory.getLogger("modbus.protocol");
+	private static final Logger logger = LoggerFactory.getLogger(Const.LOGGER_APPLICATION);
 
 	private InetAddress m_host;
 	protected String m_hostAddress;
@@ -74,6 +75,7 @@ public class ModbusProtocolImpl implements ModbusProcotol {
 	public ModbusProtocolImpl(BundleContext bc) {
 		m_identification = Collections.EMPTY_MAP;
 		m_infoDebug = new HashMap();
+		logger.debug("Modbus stack instancied");
 	}
 
 	private void setIdentification(Map ident) {
