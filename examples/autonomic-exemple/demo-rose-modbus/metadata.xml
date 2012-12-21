@@ -12,13 +12,13 @@
 <ipojo>
 	<!-- Proxy Importer for 'Modbus Devices' -->
 	<component classname="fr.liglab.adele.modbus.proxy.ModbusProxyImporter"
-		name="Modbus/TCP.importer">
+		name="Modbus.TCP.importer">
 		<provides specifications="org.ow2.chameleon.rose.ImporterService">
 			<property type="java.lang.String[]" name="endpoint.config"
 				value="{Modbus/TCP}" />
 		</provides>	
 		<properties >
-			<property name ="protocol.factory" field="m_factory" value="Modbus/TCP.stack" />
+			<property name ="protocol.factory" field="m_factory" value="Modbus.TCP.stack" />
 		</properties>	
 		<requires field="roseMachine" id = "rose.machine"/>
 		<callback transition="validate" method="start" />
@@ -27,7 +27,7 @@
 	
 	<!-- Modbus/TCP Protocol stack Schneider = (Modbus + identification) -->
 	<component classname="fr.liglab.adele.modbus.impl.ModbusProtocolImpl"
-		name="Modbus/TCP.stack" immediate="true" architecture="true" >
+		name="Modbus.TCP.stack" immediate="true" architecture="true" >
 		<provides specification="fr.liglab.adele.protocol.modbus.ModbusProtocol">
 			<property name="fca.injected" field="m_fca" type="java.lang.String" />
 			<property name="domain.id" type="java.lang.String" field="m_domain"/>
@@ -49,12 +49,12 @@
 	
 	<!-- Component Modbus/TCP Discovery  -->
 	<component classname="fr.liglab.adele.modbus.discovery.ModbusTCPScanner"
-		name="Modbus/TCP.discovery">
+		name="Modbus.TCP.discovery">
 		<properties>
 			<property name="start.address" type="java.lang.String"
-				method="setStartAddress" mandatory="true" value="10.10.7.20" />
+				method="setStartAddress" mandatory="true" />
 			<property name="end.address" type="java.lang.String" method="setEndAddress"
-				mandatory="true" value="10.10.7.22" />
+				mandatory="true"  />
 			<property name="domain.id" field="m_domainID" type="java.lang.String" />
 			<property name="scan.period" type="java.lang.String" field="m_period"
 				value="1000" />

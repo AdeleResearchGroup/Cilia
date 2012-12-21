@@ -21,10 +21,10 @@ public class Configurator {
 	public Configurator(BundleContext context) throws InvalidSyntaxException {
 		rose = machine(context, "rose-modbus").create();
 		// Discovery
-		rose.instance("Modbus/TCP.discovery").create();
+		rose.instance("Modbus.TCP.discovery").withProperty("instance.name","modbus.discovery").create();
 
 		// Importer
-		rose.importer("Modbus/TCP.importer").create();
+		rose.importer("Modbus.TCP.importer").create();
 
 		// Connections
 		rose.in("(service.imported=true)").protocol(getProtocolDevice()).add();
@@ -43,6 +43,8 @@ public class Configurator {
 	protected void start() {
 		logger.debug("Rose Machine started");
 		rose.start();
+		
+		
 	}
 
 	protected void stop() {
