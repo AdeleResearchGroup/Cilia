@@ -16,7 +16,10 @@
 		<provides specifications="org.ow2.chameleon.rose.ImporterService">
 			<property type="java.lang.String[]" name="endpoint.config"
 				value="{Modbus/TCP}" />
-		</provides>		
+		</provides>	
+		<properties >
+			<property name ="protocol.factory" field="m_factory" value="Modbus/TCP.stack" />
+		</properties>	
 		<requires field="roseMachine" id = "rose.machine"/>
 		<callback transition="validate" method="start" />
 		<callback transition="invalidate" method="stop" />

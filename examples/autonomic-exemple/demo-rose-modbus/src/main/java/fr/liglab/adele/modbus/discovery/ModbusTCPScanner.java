@@ -53,7 +53,6 @@ public class ModbusTCPScanner extends TimerTask {
 	private static final Logger logger = LoggerFactory.getLogger(Const.LOGGER_APPLICATION);
 
 	private RoseMachine roseMachine;
-	private RemoteServiceAdmin adminService;
 	private InetAddress startAddress, endAddress;
 	private int m_delay, m_period, m_timeout, m_port;
 	private String m_domainID;
@@ -114,7 +113,6 @@ public class ModbusTCPScanner extends TimerTask {
 				socket.getPort());
 
 		/* Checks if that ID is already in registry */
-		//if (!isEndPointRegistered(deviceID)) {
 		if (!listEndpointsImported.contains(deviceID)){
 			Map deviceProperties = setDeviceEndPoint(socket.getInetAddress()
 					.getHostAddress(), socket.getPort());
@@ -222,28 +220,9 @@ public class ModbusTCPScanner extends TimerTask {
 		try {
 			pong = InetAddress.getByName(addr.getHostName().toString()).isReachable(to);
 		} catch (IOException e) {
+			return false ;
 		}
 		return pong;
-	}
-
-	private boolean isEndPointRegistered(String id) {
-		Collection registry = adminService.getImportedEndpoints();
-		logger.debug("Endpoint registerd "+registry);
-		if (registry != null) {
-			ImportReference reference;
-			EndpointDescription epd;
-			Iterator it = registry.iterator();
-			while (it.hasNext()) {
-				reference = ((ImportReference) it.next());
-				epd = reference.getImportedEndpoint();
-				if (epd != null) {
-					if (epd.getId().equals(id)) {
-						return true;
-					}
-				}
-			}
-		}
-		return false;
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
@@ -260,10 +239,6 @@ public class ModbusTCPScanner extends TimerTask {
 		 * up on proxy device.
 		 */
 		m_props.put(RemoteConstants.SERVICE_IMPORTED, "true");
-		/*
-		 * Factory name , service reified locally
-		 */
-		m_props.put("service.factory", "Modbus/TCP.stack");
 
 		score = getScore(hostAddr);
 		if (score != null) {

@@ -49,8 +49,9 @@ public class ModbusProxyImporter extends AbstractImporterComponent implements Im
 			+ Factory.class.getName() + ")(factory.state=" + VALID + ")";
 
 	private RoseMachine roseMachine;
-	BundleContext m_bundleContext;
-
+	private BundleContext m_bundleContext;
+	private String m_factory ;
+	
 	public ModbusProxyImporter(BundleContext context) throws InvalidSyntaxException {
 		super();
 		logger.debug("Proxy importer created");
@@ -71,11 +72,9 @@ public class ModbusProxyImporter extends AbstractImporterComponent implements Im
 
 		Hashtable props = new Hashtable(description.getProperties());
 		props.putAll(extraProperties);
-		/* Retreive the factory name */
-		String factoryName = (String) props.get("service.factory");
 		StringBuilder sb = new StringBuilder("(&");
 		sb.append(FACTORY_FILTER);
-		sb.append("(factory.name=").append(factoryName).append("))");
+		sb.append("(factory.name=").append(m_factory).append("))");
 
 		try {
 			/* Look for a ipojo Factory */
