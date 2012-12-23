@@ -1,5 +1,9 @@
 package fr.liglab.adele.modbus.proxy;
 
+import static org.ow2.chameleon.rose.api.Machine.MachineBuilder.machine;
+
+import java.util.Arrays;
+
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.InvalidSyntaxException;
 import org.ow2.chameleon.rose.api.Machine;
@@ -8,11 +12,6 @@ import org.slf4j.LoggerFactory;
 
 import fr.liglab.adele.cilia.util.Const;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.ow2.chameleon.rose.api.Machine.MachineBuilder.machine;
-
 public class Configurator {
 	private static final Logger logger = LoggerFactory
 			.getLogger(Const.LOGGER_APPLICATION);
@@ -20,31 +19,19 @@ public class Configurator {
 
 	public Configurator(BundleContext context) throws InvalidSyntaxException {
 		rose = machine(context, "rose-modbus").create();
-		// Discovery
-		rose.instance("Modbus.TCP.discovery").withProperty("instance.name","modbus.discovery").create();
+		// Discovery 
+		rose.instance("Modbus_TCP.discovery").create();
 
 		// Importer
-		rose.importer("Modbus.TCP.importer").create();
+		rose.importer("Modbus/TCP.importer").create();
 
 		// Connections
-		rose.in("(service.imported=true)").protocol(getProtocolDevice()).add();
-	}
-
-	/**
-	 * List of protocols actually managed
-	 */
-
-	public List getProtocolDevice() {
-		List list = new ArrayList();
-		list.add("Modbus/TCP");
-		return list;
+		rose.in("(service.imported=true)").protocol(Arrays.asList("Modbus/TCP")).add();
 	}
 
 	protected void start() {
 		logger.debug("Rose Machine started");
-		rose.start();
-		
-		
+		rose.start();	
 	}
 
 	protected void stop() {

@@ -31,6 +31,9 @@ import org.slf4j.LoggerFactory;
 
 import fr.liglab.adele.cilia.util.Const;
 
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.*;
 
 import static org.apache.felix.ipojo.Factory.VALID;
@@ -42,20 +45,27 @@ import static org.osgi.framework.Constants.OBJECTCLASS;
  * 
  * @author Denis Morand
  */
-public class ModbusProxyImporter extends AbstractImporterComponent implements ImporterService{
-	private static final Logger logger = LoggerFactory.getLogger(Const.LOGGER_APPLICATION);
+@SuppressWarnings({ "rawtypes", "unchecked" })
+public class ModbusProxyImporter extends AbstractImporterComponent implements
+		ImporterService {
+	private static final Logger logger = LoggerFactory
+			.getLogger(Const.LOGGER_APPLICATION);
 
 	private static final String FACTORY_FILTER = "(" + OBJECTCLASS + "="
 			+ Factory.class.getName() + ")(factory.state=" + VALID + ")";
 
 	private RoseMachine roseMachine;
 	private BundleContext m_bundleContext;
-	private String m_factory ;
-	
-	public ModbusProxyImporter(BundleContext context) throws InvalidSyntaxException {
+	private String m_factory;
+	private String m_urldomain;
+	private Properties domainProperies;
+
+	public ModbusProxyImporter(BundleContext context)
+			throws InvalidSyntaxException {
 		super();
-		logger.debug("Proxy importer created");
+		logger.info("Proxy importer created");
 		m_bundleContext = context;
+		domainProperies = new Properties();
 	}
 
 	/*
@@ -82,12 +92,14 @@ public class ModbusProxyImporter extends AbstractImporterComponent implements Im
 					Factory.class.getName(), sb.toString());
 			if (refs != null) {
 				Factory factory = (Factory) m_bundleContext.getService(refs[0]);
-				addProperties(props,description);
-				ComponentInstance instance = factory.createComponentInstance(props);
+				addProxyProperties(props, description);
+				ComponentInstance instance = factory
+						.createComponentInstance(props);
 				if (instance != null) {
 					ServiceRegistration sr = new DeviceService(instance);
 					sr.setProperties(props);
-					logger.debug("proxy stack instancied "+instance.getInstanceName());
+					logger.debug("proxy stack instancied "
+							+ instance.getInstanceName());
 					return sr;
 				} else {
 					logger.error("Proxy creation error");
@@ -101,10 +113,14 @@ public class ModbusProxyImporter extends AbstractImporterComponent implements Im
 		return null;
 	}
 
-	
-	public  void addProperties(Map props, EndpointDescription description) {
-		props.put("managed.service.pid", description.getId()) ;
-		String value = (String) props.get("rank.value");
+	private void addProxyProperties(Map props, EndpointDescription description) {
+		props.put("managed.service.pid", description.getId());
+		/* Compute the service.ranking propertie */
+		String revision = (String) props.get("major.minor.revision");
+		String value = "150"; // Faire la convertion en String */
+		/* insert the property domain.id */
+		props.put("domain.id",
+				getDomain((String) props.get("device.ip.address")));
 		if (value != null) {
 			try {
 				Integer.parseInt(value);
@@ -113,9 +129,20 @@ public class ModbusProxyImporter extends AbstractImporterComponent implements Im
 				logger.error("Service ranking property must be an integer string format");
 			}
 		}
-		
 	}
-	
+
+	/* Retreive the property accordingthe ip address */
+	private String getDomain(String hostAddr) {
+		String domain = null;
+		if ((!domainProperies.isEmpty()) && (hostAddr != null)) {
+			/* Key = IP address, value = domain.id */
+			domain = domainProperies.getProperty(hostAddr);
+		}
+		if (domain == null)
+			domain = "none";
+		return domain;
+	}
+
 	protected void destroyProxy(EndpointDescription description,
 			ServiceRegistration registration) {
 		logger.debug("Endoint destroyed ,ID=" + description.getId());
@@ -133,11 +160,27 @@ public class ModbusProxyImporter extends AbstractImporterComponent implements Im
 	protected void start() {
 		super.start();
 		logger.debug("Proxy importer started");
+		loadProperties();
 	}
 
 	protected void stop() {
 		super.stop();
 		logger.debug("Proxy importer stopped");
+	}
+
+	private void loadProperties() {
+		/* set the property domain.id , if association file is existing */
+		if (m_urldomain != null) {
+			try {
+				domainProperies.load(new URL(m_urldomain).openStream());
+				logger.debug("Properties read {}", m_urldomain.toString());
+			} catch (MalformedURLException e) {
+				logger.error("Invalid URL");
+			} catch (IOException e) {
+				logger.error("file {} {}", m_urldomain, " not existing");
+			}
+		}
+
 	}
 
 	/**
@@ -150,14 +193,17 @@ public class ModbusProxyImporter extends AbstractImporterComponent implements Im
 		public DeviceService(ComponentInstance instance) {
 			super();
 			this.instance = instance;
-			logger.debug("Device Proxy Service create=" + instance.getInstanceName());
+			logger.debug("Device Proxy Service create="
+					+ instance.getInstanceName());
 		}
 
 		public ServiceReference getReference() {
 			try {
 				ServiceReference[] references = instance.getContext()
-						.getServiceReferences(instance.getClass().getCanonicalName(),
-								"(instance.name=" + instance.getInstanceName() + ")");
+						.getServiceReferences(
+								instance.getClass().getCanonicalName(),
+								"(instance.name=" + instance.getInstanceName()
+										+ ")");
 				if (references != null) {
 					logger.debug("Device Proxy Service , getServiceReferences[0]="
 							+ references[0].getClass().getName());
@@ -165,7 +211,8 @@ public class ModbusProxyImporter extends AbstractImporterComponent implements Im
 				} else
 					logger.error("Device proxy service, get Service reference=null");
 			} catch (InvalidSyntaxException e) {
-				logger.error("Proxy instance error" + e.getStackTrace().toString());
+				logger.error("Proxy instance error"
+						+ e.getStackTrace().toString());
 			}
 			return null;
 		}
@@ -181,7 +228,8 @@ public class ModbusProxyImporter extends AbstractImporterComponent implements Im
 		}
 
 		public void unregister() {
-			logger.debug("Device Proxy Service unregister :" + instance.getInstanceName());
+			logger.debug("Device Proxy Service unregister :"
+					+ instance.getInstanceName());
 			instance.dispose();
 		}
 	}

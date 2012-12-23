@@ -66,7 +66,6 @@ public class ModbusProtocolImpl implements ModbusProcotol {
 	protected String m_hostAddress;
 	protected int m_port;
 	private Map m_infoDebug;
-	private String m_fca,m_rank,m_domain ;
 	private HashSet m_attributes ;
 
 	private TCPMasterConnection connection = null; /* the connection */

@@ -12,13 +12,14 @@
 <ipojo>
 	<!-- Proxy Importer for 'Modbus Devices' -->
 	<component classname="fr.liglab.adele.modbus.proxy.ModbusProxyImporter"
-		name="Modbus.TCP.importer">
+		name="Modbus/TCP.importer">
 		<provides specifications="org.ow2.chameleon.rose.ImporterService">
 			<property type="java.lang.String[]" name="endpoint.config"
 				value="{Modbus/TCP}" />
 		</provides>	
 		<properties >
-			<property name ="protocol.factory" field="m_factory" value="Modbus.TCP.stack" />
+			<property name ="protocol.factory" field="m_factory" value="Modbus/TCP.proxy" />
+			<property name ="url.domain" field ="m_urldomain" type="java.lang.String" />
 		</properties>	
 		<requires field="roseMachine" id = "rose.machine"/>
 		<callback transition="validate" method="start" />
@@ -27,21 +28,17 @@
 	
 	<!-- Modbus/TCP Protocol stack Schneider = (Modbus + identification) -->
 	<component classname="fr.liglab.adele.modbus.impl.ModbusProtocolImpl"
-		name="Modbus.TCP.stack" immediate="true" architecture="true" >
-		<provides specification="fr.liglab.adele.protocol.modbus.ModbusProtocol">
-			<property name="fca.injected" field="m_fca" type="java.lang.String" />
-			<property name="domain.id" type="java.lang.String" field="m_domain"/>
+		name="Modbus/TCP.proxy" immediate="true" architecture="true" >
+		<provides specification="fr.liglab.adele.protocol.modbus.ModbusProtocol">  
+			<property name="domain.id" type="java.lang.String" />
+			<property name="product.code" type="java.lang.String"  />
+			<property name="major.minor.revision" type="java.lang.String"  />
+			<property name="vendor.name" type="java.lang.String"  />
 		</provides>
 		<properties propagation="true">
-			<property name="fca.injected" field="m_fca" type="java.lang.String" value="false " />
-			<property name="fca.attributes" field="m_attributes" type="java.util.HashSet" />
-			<property name="domain.id" type="java.lang.String" field="m_domain"/>
 			<property name="device.ip.address" method="setHost" type="java.lang.String"
 				mandatory="true" />
-			<property name="rank.value" type="java.lang.String" field="m_rank" />
  			<property name="device.ip.port" method="setPort" value="502" />
-			<property name="device.identification" method="setIdentification"
-				type="java.util.Map" />
 		</properties>
 		<callback transition="validate" method="start" />
 		<callback transition="invalidate" method="stop" />
@@ -49,10 +46,10 @@
 	
 	<!-- Component Modbus/TCP Discovery  -->
 	<component classname="fr.liglab.adele.modbus.discovery.ModbusTCPScanner"
-		name="Modbus.TCP.discovery">
+		name="Modbus_TCP.discovery" immediate="true" architecture="true">
 		<properties>
 			<property name="start.address" type="java.lang.String"
-				method="setStartAddress" mandatory="true" />
+				method="setStartAddress" mandatory="true"  />
 			<property name="end.address" type="java.lang.String" method="setEndAddress"
 				mandatory="true"  />
 			<property name="domain.id" field="m_domainID" type="java.lang.String" />
@@ -60,6 +57,8 @@
 				value="1000" />
 			<property name="ranking.file" type="java.lang.String"
 				field="m_urlProperties"  />
+			<property name="url.localization" type="java.lang.String"
+				field="m_urlLocalization"  />
 			<property name="fca.xml.file" type="java.lang.String"
 				field="m_urlfca" />
 			<property name="scan.delay" field="m_delay" value="100" />
@@ -70,13 +69,5 @@
 		<callback transition="validate" method="runScan" />
 		<callback transition="invalidate" method="cancelScan" />
 	</component>
-	
-	<!--  Configure the rose Machine   -->
-	<component classname="fr.liglab.adele.modbus.proxy.Configurator"
-		name="Demo_RoseImporterModbus.configurator">
-		<callback transition="validate" method="start" />
-		<callback transition="invalidate" method="stop" />
-	</component>
-      <instance component="Demo_RoseImporterModbus.configurator"/> 
-    
+   
 </ipojo>

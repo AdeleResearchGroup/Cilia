@@ -57,13 +57,13 @@ public class ModbusTCPScanner extends TimerTask {
 	private int m_delay, m_period, m_timeout, m_port;
 	private String m_domainID;
 	private Timer m_timer;
-	private String m_urlProperties, m_urlfca;
+	private String m_urlProperties, m_urlfca,m_urlLocalization;
 	private Properties m_devicesRankingProps;
 	private Map m_fcaAttributes;
 	private Set listEndpointsImported ;
 
 	public ModbusTCPScanner(BundleContext bc) {
-		logger.info("Modbus TCP Scanner started");
+		logger.debug("Modbus TCP Scanner started");
 		m_timer = new Timer();
 		m_devicesRankingProps = new Properties();
 		m_fcaAttributes = new HashMap();
@@ -119,7 +119,9 @@ public class ModbusTCPScanner extends TimerTask {
 			if (socket != null) {
 				Map param = readModbusIdent(socket);
 				if (param != null) {
-					deviceProperties.put("device.identification", param);
+					deviceProperties.put("product.code",param.get("product.code")) ;
+					deviceProperties.put("major.minor.revision",param.get("major.minor.revision")) ;
+					deviceProperties.put("vendor.name",param.get("vendor.name")) ;	
 				}
 			}
 			if (logger.isDebugEnabled()) {
@@ -235,11 +237,13 @@ public class ModbusTCPScanner extends TimerTask {
 		m_props.put(Constants.OBJECTCLASS, new String[] { "none" });
 		m_props.put(RemoteConstants.SERVICE_IMPORTED_CONFIGS, "none");
 		/*
-		 * property 'service.imported" used by the dynamic imported to be wake
-		 * up on proxy device.
+		 * property 'service.imported" true means imported 
 		 */
 		m_props.put(RemoteConstants.SERVICE_IMPORTED, "true");
-
+		/*
+		 * The endpoint protocol used to select the right proxyimporter
+		 */
+		m_props.put("endpoint.config", "Modbus/TCP");
 		score = getScore(hostAddr);
 		if (score != null) {
 			/*
