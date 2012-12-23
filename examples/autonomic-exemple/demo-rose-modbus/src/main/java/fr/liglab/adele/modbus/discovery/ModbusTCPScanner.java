@@ -55,18 +55,14 @@ public class ModbusTCPScanner extends TimerTask {
 	private RoseMachine roseMachine;
 	private InetAddress startAddress, endAddress;
 	private int m_delay, m_period, m_timeout, m_port;
-	private String m_domainID;
+
 	private Timer m_timer;
-	private String m_urlProperties, m_urlfca,m_urlLocalization;
-	private Properties m_devicesRankingProps;
-	private Map m_fcaAttributes;
+
 	private Set listEndpointsImported ;
 
 	public ModbusTCPScanner(BundleContext bc) {
 		logger.debug("Modbus TCP Scanner started");
 		m_timer = new Timer();
-		m_devicesRankingProps = new Properties();
-		m_fcaAttributes = new HashMap();
 		listEndpointsImported = new HashSet() ;
 	}
 
@@ -97,8 +93,7 @@ public class ModbusTCPScanner extends TimerTask {
 		if (logger.isDebugEnabled()) {
 			StringBuffer sb = new StringBuffer("Scanner modbus started [from ");
 			sb.append(startAddress.toString()).append(" to ");
-			sb.append(endAddress.toString());
-			sb.append(", domain :").append(m_domainID).append("]");
+			sb.append(endAddress.toString()).append("]");;
 			logger.debug(sb.toString());
 		}
 	}
@@ -244,52 +239,16 @@ public class ModbusTCPScanner extends TimerTask {
 		 * The endpoint protocol used to select the right proxyimporter
 		 */
 		m_props.put("endpoint.config", "Modbus/TCP");
-		score = getScore(hostAddr);
-		if (score != null) {
-			/*
-			 * property : 'service.ranking' is used by the dynamic importer
-			 * service to set the ranking value
-			 */
-			m_props.put("rank.value", score);
-		}
-
-		/* Set FCA attributes */
-		Set attributes = (Set) m_fcaAttributes.get(id);
-		if (attributes != null) {
-			m_props.put("fca.attributes", attributes);
-		}
-
 		/*
 		 * specifics
 		 */
 		m_props.put("device.ip.address", hostAddr);
 		m_props.put("device.ip.port", port);
-		m_props.put("domain.id", m_domainID);
 		return m_props;
 	}
 
-	public String getScore(String hostAddr) {
-		String score = null;
-		if (!m_devicesRankingProps.isEmpty()) {
-			/* Key = IP address, value = rank */
-			String value = m_devicesRankingProps.getProperty(hostAddr);
-			if (value != null) {
-				try {
-					Integer.parseInt(value);
-					score = value;
-					logger.debug("device=" + hostAddr + " 'service.ranking=" + value);
-				} catch (NumberFormatException e) {
-					logger.error("Malformed number in device properties file ,value ="
-							+ value);
-				}
-			}
-
-		}
-		return score;
-	}
-
 	private static String generateID(String addr, int port) {
-		StringBuffer sb = new StringBuffer("IP.");
+		StringBuffer sb = new StringBuffer("urn:");
 		sb.append(addr);
 		sb.append(":").append(Integer.toString(port));
 		return sb.toString();
@@ -313,34 +272,6 @@ public class ModbusTCPScanner extends TimerTask {
 			logger.error(str);
 			throw new IllegalArgumentException(str);
 		}
-		if (m_domainID == null) {
-			/* generate a "unique" domain name */
-			m_domainID = "domain.ip-" + startAddress.toString() + "-"
-					+ endAddress.toString() + "-" + System.currentTimeMillis();
-		}
-		if (m_urlProperties != null) {
-			try {
-				m_devicesRankingProps.load(new URL(m_urlProperties).openStream());
-				logger.debug("Properties read {}", m_devicesRankingProps.toString());
-			} catch (MalformedURLException e) {
-				logger.error("Invalid URL");
-			} catch (IOException e) {
-				logger.error("file {} {}", m_urlProperties, " not existing");
-			}
-		}
-		if (m_urlfca != null) {
-			XMLContextDescription xlmfca = new XMLContextDescription();
-			try {
-				m_fcaAttributes = xlmfca.load(new URL(m_urlfca).openStream());
-				logger.debug("FCA attributes read {}", m_fcaAttributes.toString());
-			} catch (MalformedURLException e) {
-				logger.error("Invalid URL");
-				e.printStackTrace();
-			} catch (IOException e) {
-				logger.error("file {} {}", m_urlfca, " not existing");
-			}
-			logger.debug("Functional Concept Analysis Attributs read "
-					+ m_fcaAttributes.toString());
-		}
+
 	}
 }

@@ -48,19 +48,12 @@
 	<component classname="fr.liglab.adele.modbus.discovery.ModbusTCPScanner"
 		name="Modbus/TCP.discovery" immediate="true" architecture="true">
 		<properties>
-			<property name="start.address" type="java.lang.String"
+			<property name="start.ip.address" type="java.lang.String"
 				method="setStartAddress" mandatory="true"  />
-			<property name="end.address" type="java.lang.String" method="setEndAddress"
+			<property name="end.ip.address" type="java.lang.String" method="setEndAddress"
 				mandatory="true"  />
-			<property name="domain.id" field="m_domainID" type="java.lang.String" />
 			<property name="scan.period" type="java.lang.String" field="m_period"
 				value="1000" />
-			<property name="ranking.file" type="java.lang.String"
-				field="m_urlProperties"  />
-			<property name="url.localization" type="java.lang.String"
-				field="m_urlLocalization"  />
-			<property name="fca.xml.file" type="java.lang.String"
-				field="m_urlfca" />
 			<property name="scan.delay" field="m_delay" value="100" />
 			<property name="ping.time.out" field="m_timeout" value="2000" />
 			<property name="modbus.port.number" field="m_port" value="502" />
