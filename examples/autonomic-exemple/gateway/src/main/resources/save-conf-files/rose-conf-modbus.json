@@ -19,7 +19,7 @@
            	              }
 		},
 		{ 
-           "factory" : "Modbus_TCP.discovery" ,
+           "factory" : "Modbus/TCP.discovery" ,
 		   "properties" : { 
 		                    "start.address" : "10.10.7.22",  
 		                    "end.address" : "10.10.7.24",    

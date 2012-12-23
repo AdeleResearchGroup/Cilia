@@ -46,7 +46,7 @@
 	
 	<!-- Component Modbus/TCP Discovery  -->
 	<component classname="fr.liglab.adele.modbus.discovery.ModbusTCPScanner"
-		name="Modbus_TCP.discovery" immediate="true" architecture="true">
+		name="Modbus/TCP.discovery" immediate="true" architecture="true">
 		<properties>
 			<property name="start.address" type="java.lang.String"
 				method="setStartAddress" mandatory="true"  />
