@@ -46,12 +46,11 @@
 	
 	<!-- Component Modbus/TCP Discovery  -->
 	<component classname="fr.liglab.adele.modbus.discovery.ModbusTCPScanner"
-		name="Modbus/TCP.discovery" immediate="true" architecture="true">
-		<properties>
+		name="modbus.discovery" immediate="true" architecture="true">
+		<properties propagation="true" pid="modbus.discovery"  updated="reconfiguration">
 			<property name="start.ip.address" type="java.lang.String"
-				method="setStartAddress" mandatory="true"  />
-			<property name="end.ip.address" type="java.lang.String" method="setEndAddress"
-				mandatory="true"  />
+				method="setStartAddress" />
+			<property name="end.ip.address" type="java.lang.String" method="setEndAddress" />
 			<property name="scan.period" type="java.lang.String" field="m_period"
 				value="1000" />
 			<property name="scan.delay" field="m_delay" value="100" />

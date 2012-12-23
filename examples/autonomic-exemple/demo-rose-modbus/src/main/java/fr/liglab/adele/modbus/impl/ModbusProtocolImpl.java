@@ -56,6 +56,7 @@ import fr.liglab.adele.protocol.modbus.SlaveException;
  * @author Denis Morand
  * 
  */
+ 
 public class ModbusProtocolImpl implements ModbusProcotol {
 
 	private Map m_identification;

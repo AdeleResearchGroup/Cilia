@@ -22,6 +22,7 @@ import java.net.Socket;
 import java.net.URL;
 import java.net.UnknownHostException;
 import java.util.Collection;
+import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -49,8 +50,10 @@ import fr.liglab.adele.cilia.util.Const;
  * @author Denis Morand
  * 
  */
+@SuppressWarnings({ "rawtypes", "unchecked" })
 public class ModbusTCPScanner extends TimerTask {
-	private static final Logger logger = LoggerFactory.getLogger(Const.LOGGER_APPLICATION);
+	private static final Logger logger = LoggerFactory
+			.getLogger(Const.LOGGER_APPLICATION);
 
 	private RoseMachine roseMachine;
 	private InetAddress startAddress, endAddress;
@@ -58,19 +61,20 @@ public class ModbusTCPScanner extends TimerTask {
 
 	private Timer m_timer;
 
-	private Set listEndpointsImported ;
+	private Set listEndpointsImported;
 
 	public ModbusTCPScanner(BundleContext bc) {
 		logger.debug("Modbus TCP Scanner started");
-		m_timer = new Timer();
-		listEndpointsImported = new HashSet() ;
+		listEndpointsImported = new HashSet();
 	}
 
 	public void setStartAddress(String addr) {
 		try {
 			startAddress = InetAddress.getByName(addr);
 		} catch (UnknownHostException e) {
-			String str = "Properties 'start.address' is not a valid address" + addr;
+			startAddress = null;
+			String str = "Properties 'start.address' is not a valid address"
+					+ addr;
 			logger.error(str);
 			throw new IllegalArgumentException(str);
 		}
@@ -80,7 +84,9 @@ public class ModbusTCPScanner extends TimerTask {
 		try {
 			endAddress = InetAddress.getByName(addr);
 		} catch (UnknownHostException e) {
-			String str = "Properties 'end.address' is not a valid address" + addr;
+			String str = "Properties 'end.address' is not a valid address"
+					+ addr;
+			endAddress = null;
 			logger.error(str);
 			throw new IllegalArgumentException(str);
 		}
@@ -88,18 +94,24 @@ public class ModbusTCPScanner extends TimerTask {
 
 	public void runScan() {
 		checksParam();
-		m_timer.scheduleAtFixedRate(this, m_delay, m_period);
+		if ((endAddress != null) && (startAddress != null)) {
+			m_timer = new Timer();
+			m_timer.scheduleAtFixedRate(this, m_delay, m_period);
 
-		if (logger.isDebugEnabled()) {
-			StringBuffer sb = new StringBuffer("Scanner modbus started [from ");
-			sb.append(startAddress.toString()).append(" to ");
-			sb.append(endAddress.toString()).append("]");;
-			logger.debug(sb.toString());
+			if (logger.isDebugEnabled()) {
+				StringBuffer sb = new StringBuffer(
+						"Scanner modbus started [from ");
+				sb.append(startAddress.toString()).append(" to ");
+				sb.append(endAddress.toString()).append("]");
+				;
+				logger.debug(sb.toString());
+			}
 		}
 	}
 
 	public void cancelScan() {
-		m_timer.cancel();
+		if (m_timer != null)
+			m_timer.cancel();
 	}
 
 	private void setRemoteDevice(Socket socket) {
@@ -108,15 +120,18 @@ public class ModbusTCPScanner extends TimerTask {
 				socket.getPort());
 
 		/* Checks if that ID is already in registry */
-		if (!listEndpointsImported.contains(deviceID)){
+		if (!listEndpointsImported.contains(deviceID)) {
 			Map deviceProperties = setDeviceEndPoint(socket.getInetAddress()
 					.getHostAddress(), socket.getPort());
 			if (socket != null) {
 				Map param = readModbusIdent(socket);
 				if (param != null) {
-					deviceProperties.put("product.code",param.get("product.code")) ;
-					deviceProperties.put("major.minor.revision",param.get("major.minor.revision")) ;
-					deviceProperties.put("vendor.name",param.get("vendor.name")) ;	
+					deviceProperties.put("product.code",
+							param.get("product.code"));
+					deviceProperties.put("major.minor.revision",
+							param.get("major.minor.revision"));
+					deviceProperties.put("vendor.name",
+							param.get("vendor.name"));
 				}
 			}
 			if (logger.isDebugEnabled()) {
@@ -124,9 +139,9 @@ public class ModbusTCPScanner extends TimerTask {
 				logger.debug("Device info :" + deviceProperties.toString());
 			}
 			try {
-				roseMachine
-						.putRemote(deviceID, new EndpointDescription(deviceProperties));
-				listEndpointsImported.add(deviceID) ;
+				roseMachine.putRemote(deviceID, new EndpointDescription(
+						deviceProperties));
+				listEndpointsImported.add(deviceID);
 			} catch (Exception e) {
 				e.printStackTrace();
 				roseMachine.removeRemote(deviceID);
@@ -141,7 +156,7 @@ public class ModbusTCPScanner extends TimerTask {
 	private void resetRemoteDevice(InetAddress addr, int port) {
 		EndpointDescription epd = roseMachine.removeRemote(generateID(addr
 				.getHostAddress().toString(), port));
-		
+
 		if (epd != null) {
 			listEndpointsImported.remove(epd.getId());
 			logger.debug("Device removed:" + epd.getProperties().toString());
@@ -174,6 +189,19 @@ public class ModbusTCPScanner extends TimerTask {
 			}
 		}
 		return param;
+	}
+
+	public void reconfiguration(Dictionary conf) {
+		logger.debug("Reconfiguration " + conf.toString());
+		cancelScan();
+		runScan();
+
+	}
+
+	public void reconfiguration() {
+		logger.debug("Reconfiguration ");
+		cancelScan();
+		runScan();
 	}
 
 	/**
@@ -215,14 +243,14 @@ public class ModbusTCPScanner extends TimerTask {
 	private static boolean ping(InetAddress addr, int to) {
 		boolean pong = false;
 		try {
-			pong = InetAddress.getByName(addr.getHostName().toString()).isReachable(to);
+			pong = InetAddress.getByName(addr.getHostName().toString())
+					.isReachable(to);
 		} catch (IOException e) {
-			return false ;
+			return false;
 		}
 		return pong;
 	}
 
-	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public Map setDeviceEndPoint(String hostAddr, int port) {
 		String score;
 		String id = generateID(hostAddr, port);
@@ -232,7 +260,7 @@ public class ModbusTCPScanner extends TimerTask {
 		m_props.put(Constants.OBJECTCLASS, new String[] { "none" });
 		m_props.put(RemoteConstants.SERVICE_IMPORTED_CONFIGS, "none");
 		/*
-		 * property 'service.imported" true means imported 
+		 * property 'service.imported" true means imported
 		 */
 		m_props.put(RemoteConstants.SERVICE_IMPORTED, "true");
 		/*
@@ -257,7 +285,8 @@ public class ModbusTCPScanner extends TimerTask {
 	private void checksParam() {
 
 		if (m_delay <= 0) {
-			String str = "Properties 'scan.delay' must not be a negative value" + m_delay;
+			String str = "Properties 'scan.delay' must not be a negative value"
+					+ m_delay;
 			logger.error(str);
 			throw new IllegalArgumentException(str);
 		}
@@ -268,10 +297,10 @@ public class ModbusTCPScanner extends TimerTask {
 			throw new IllegalArgumentException(str);
 		}
 		if (m_timeout <= 0) {
-			String str = "Properties 'ping.time.out' must not be less than 0" + m_timeout;
+			String str = "Properties 'ping.time.out' must not be less than 0"
+					+ m_timeout;
 			logger.error(str);
 			throw new IllegalArgumentException(str);
 		}
-
 	}
 }
