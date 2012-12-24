@@ -28,7 +28,7 @@
 	
 	<!-- Modbus/TCP Protocol stack Schneider = (Modbus + identification) -->
 	<component classname="fr.liglab.adele.modbus.impl.ModbusProtocolImpl"
-		name="Modbus/TCP.proxy" immediate="true" architecture="true" >
+		name="Modbus/TCP.proxy" immediate="true"  architecture="true" >
 		<provides specification="fr.liglab.adele.protocol.modbus.ModbusProtocol">  
 			<property name="domain.id" type="java.lang.String" />
 			<property name="product.code" type="java.lang.String"  />
@@ -47,7 +47,7 @@
 	<!-- Component Modbus/TCP Discovery  -->
 	<component classname="fr.liglab.adele.modbus.discovery.ModbusTCPScanner"
 		name="Modbus/TCP.discovery" immediate="true" architecture="true">
-		<properties propagation="true" pid="modbus.discovery"  updated="reconfiguration">
+		<properties propagation="true" updated="reconfiguration">
 			<property name="start.ip.address" type="java.lang.String"
 				method="setStartAddress" />
 			<property name="end.ip.address" type="java.lang.String" method="setEndAddress" />

@@ -20,11 +20,12 @@
 		},
 		{ 
            "factory" : "Modbus/TCP.discovery" ,
-		   "properties" : {     
+		   "properties" : { 
+		   					"managed.service.pid" :"modbus.discovery",    
 		                    "modbus.port.number" : "502",     
 							"scan.period" : "1000" ,
 							"scan.delay" : "1000" ,
-							"ping.time.out" : "2000"
+							"ping.time.out" : "1000"
 						  } 
 		},
     ]
