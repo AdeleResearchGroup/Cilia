@@ -13,21 +13,9 @@
 
 	<!-- Project dependencies -->
 	<dependencies>
-		<!-- Cilia dependencies -->
 		<dependency>
-			<groupId>fr.liglab.adele.cilia</groupId>
-			<artifactId>cilia-core</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>fr.liglab.adele.cilia</groupId>
-			<artifactId>cilia-runtime</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>fr.liglab.adele.cilia</groupId>
-			<artifactId>cilia-remote</artifactId>
-			<version>${project.version}</version>
+			<groupId>org.osgi</groupId>
+			<artifactId>org.osgi.core</artifactId>
 		</dependency>
 	
    	     <!-- Demo Maven Projects-->

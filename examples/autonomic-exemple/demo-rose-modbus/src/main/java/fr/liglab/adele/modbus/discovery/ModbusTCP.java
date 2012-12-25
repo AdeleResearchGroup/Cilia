@@ -15,13 +15,14 @@
 
 package fr.liglab.adele.modbus.discovery;
 
-import java.io.*;
-import java.net.*;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.IOException;
+import java.net.Socket;
+import java.net.SocketException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import fr.liglab.adele.cilia.util.Const;
 
 /**
  * Minimal layer Transport Modbus/TCP 
@@ -30,7 +31,7 @@ import fr.liglab.adele.cilia.util.Const;
  * 
  */
 public class ModbusTCP {
-	private static final Logger logger = LoggerFactory.getLogger(Const.LOGGER_APPLICATION);
+	private static final Logger logger = LoggerFactory.getLogger("rose.modbus");
 
 	public static final int MBAP_LENGTH = 6;
 	public static final int LENGTH_MODBUS_FRAME = 255;

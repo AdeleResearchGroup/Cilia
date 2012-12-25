@@ -29,8 +29,6 @@ import org.ow2.chameleon.rose.RoseMachine;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import fr.liglab.adele.cilia.util.Const;
-
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -48,8 +46,7 @@ import static org.osgi.framework.Constants.OBJECTCLASS;
 @SuppressWarnings({ "rawtypes", "unchecked" })
 public class ModbusProxyImporter extends AbstractImporterComponent implements
 		ImporterService {
-	private static final Logger logger = LoggerFactory
-			.getLogger(Const.LOGGER_APPLICATION);
+	private static final Logger logger = LoggerFactory.getLogger("rose.modbus");
 
 	private static final String FACTORY_FILTER = "(" + OBJECTCLASS + "="
 			+ Factory.class.getName() + ")(factory.state=" + VALID + ")";
@@ -118,7 +115,7 @@ public class ModbusProxyImporter extends AbstractImporterComponent implements
 		/* Compute the service.ranking propertie */
 		String revision = (String) props.get("major.minor.revision");
 		String value = "150"; // Faire la convertion en String */
-		/* retreive the domain  */
+		/* retreive the domain */
 		props.put("domain.id",
 				getDomain((String) props.get("device.ip.address")));
 		if (value != null) {

@@ -35,8 +35,6 @@ import org.ow2.chameleon.rose.RoseMachine;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import fr.liglab.adele.cilia.util.Const;
-
 /**
  * Periodic scan devices between 2 IP V4:port <br>
  * 
@@ -45,8 +43,7 @@ import fr.liglab.adele.cilia.util.Const;
  */
 @SuppressWarnings({ "rawtypes", "unchecked" })
 public class ModbusTCPScanner extends TimerTask {
-	private static final Logger logger = LoggerFactory
-			.getLogger(Const.LOGGER_APPLICATION);
+	private static final Logger logger = LoggerFactory.getLogger("rose.modbus");
 
 	private RoseMachine roseMachine;
 	private InetAddress startAddress, endAddress;
