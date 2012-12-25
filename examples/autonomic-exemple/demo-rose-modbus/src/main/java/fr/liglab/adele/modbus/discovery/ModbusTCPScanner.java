@@ -17,17 +17,12 @@ package fr.liglab.adele.modbus.discovery;
 
 import java.io.IOException;
 import java.net.InetAddress;
-import java.net.MalformedURLException;
 import java.net.Socket;
-import java.net.URL;
 import java.net.UnknownHostException;
-import java.util.Collection;
 import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Map;
-import java.util.Properties;
 import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -35,9 +30,7 @@ import java.util.TimerTask;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
 import org.osgi.service.remoteserviceadmin.EndpointDescription;
-import org.osgi.service.remoteserviceadmin.ImportReference;
 import org.osgi.service.remoteserviceadmin.RemoteConstants;
-import org.osgi.service.remoteserviceadmin.RemoteServiceAdmin;
 import org.ow2.chameleon.rose.RoseMachine;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -252,8 +245,6 @@ public class ModbusTCPScanner extends TimerTask {
 	}
 
 	public Map setDeviceEndPoint(String hostAddr, int port) {
-		String score;
-		String id = generateID(hostAddr, port);
 		Map m_props = new HashMap();
 		m_props.put(RemoteConstants.ENDPOINT_ID, generateID(hostAddr, port));
 

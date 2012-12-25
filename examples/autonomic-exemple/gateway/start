@@ -1,0 +1,3 @@
+#!/usr/bin/env sh
+cd /Users/denismorand/Documents/Developement/AdeleResearchGroup/Cilia/examples/autonomic-exemple/gateway/target/distrib-temp
+sh cilia-autonomic-distribution

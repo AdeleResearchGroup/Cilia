@@ -1,0 +1,3 @@
+#!/usr/bin/env sh
+cd /Users/denismorand/Documents/Developement/AdeleResearchGroup/Cilia/examples/si-example/gateway/target/distrib-temp
+sh cilia-si-distribution

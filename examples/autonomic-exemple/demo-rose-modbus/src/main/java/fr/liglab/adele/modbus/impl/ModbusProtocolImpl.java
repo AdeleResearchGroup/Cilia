@@ -20,7 +20,6 @@ import java.net.UnknownHostException;
 import java.util.BitSet;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 
 import net.wimpi.modbus.ModbusException;
@@ -56,8 +55,9 @@ import fr.liglab.adele.protocol.modbus.SlaveException;
  * @author Denis Morand
  * 
  */
- 
+@SuppressWarnings({ "rawtypes", "unchecked" })
 public class ModbusProtocolImpl implements ModbusProcotol {
+
 
 	private Map m_identification;
 
@@ -67,7 +67,6 @@ public class ModbusProtocolImpl implements ModbusProcotol {
 	protected String m_hostAddress;
 	protected int m_port;
 	private Map m_infoDebug;
-	private HashSet m_attributes ;
 
 	private TCPMasterConnection connection = null; /* the connection */
 	private ModbusTCPTransaction transaction = null; /* the transaction */
@@ -78,15 +77,12 @@ public class ModbusProtocolImpl implements ModbusProcotol {
 		logger.debug("Modbus stack instancied");
 	}
 
-	private void setIdentification(Map ident) {
-		if (ident != null)
-			m_identification = Collections.unmodifiableMap(ident);
-	}
 
 	public Map getIdentification() {
 		return m_identification;
 	}
 
+	@SuppressWarnings("unused")
 	private void setHost(String host) {
 		try {
 			m_host = InetAddress.getByName(host);
@@ -96,7 +92,7 @@ public class ModbusProtocolImpl implements ModbusProcotol {
 			m_host = null;
 		}
 	}
-
+	@SuppressWarnings("unused")
 	private void setPort(int port) {
 		m_port = port;
 	}
@@ -181,7 +177,6 @@ public class ModbusProtocolImpl implements ModbusProcotol {
 
 		if (connection != null) {
 			ReadInputRegistersRequest request = null;
-			ReadInputRegistersResponse response = null;
 			request = new ReadInputRegistersRequest(ref, count);
 			request.setUnitID(unitID);
 			try {

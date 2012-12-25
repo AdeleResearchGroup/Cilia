@@ -118,7 +118,7 @@ public class ModbusProxyImporter extends AbstractImporterComponent implements
 		/* Compute the service.ranking propertie */
 		String revision = (String) props.get("major.minor.revision");
 		String value = "150"; // Faire la convertion en String */
-		/* insert the property domain.id */
+		/* retreive the domain  */
 		props.put("domain.id",
 				getDomain((String) props.get("device.ip.address")));
 		if (value != null) {
