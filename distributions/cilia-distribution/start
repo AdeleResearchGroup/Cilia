@@ -1,3 +1,0 @@
-#!/usr/bin/env sh
-cd /Users/denismorand/Documents/Developement/AdeleResearchGroup/Cilia/distributions/cilia-distribution/target/distrib-temp
-sh cilia-distribution
