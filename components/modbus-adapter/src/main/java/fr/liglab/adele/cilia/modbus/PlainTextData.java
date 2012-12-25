@@ -26,12 +26,9 @@ import fr.liglab.adele.cilia.Data;
 import fr.liglab.adele.cilia.util.Const;
 
 /**
- * format class Data plain-text ( key, value ) 
- * key = register number, 
- * value = registrer value
+ * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project
+ *         Team</a>
  * 
- * @author Denis Morand
- *
  */
 public class PlainTextData implements DataFormater {
 	private static final Logger logger = LoggerFactory.getLogger(Const.LOGGER_APPLICATION);

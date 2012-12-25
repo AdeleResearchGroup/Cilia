@@ -17,9 +17,10 @@ package fr.liglab.adele.protocol.modbus;
 
 /**
  * Class that implements a <tt>ModbusException</tt>.
- * see Modbus Application protocol V1.1b 
  * 
- * @author Denis Morand
+ * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project
+ *         Team</a>
+ * 
  */
 public class SlaveException extends ModbusException {
 	private static final long serialVersionUID = -1302115889774869425L;

@@ -16,9 +16,8 @@
 package fr.liglab.adele.cilia.modbus;
 
 /**
- * Simple interface holding constants
- * 
- * @author Denis Morand
+ * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project
+ *         Team</a>
  * 
  */
 public interface ModbusConst {

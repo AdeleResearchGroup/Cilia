@@ -36,10 +36,9 @@ import fr.liglab.adele.cilia.Data;
 import fr.liglab.adele.cilia.util.Const;
 
 /**
+ * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project
+ *         Team</a>
  * 
- * Format data xml 
- * @author Denis Morand
- *
  */
 public class XMLData implements DataFormater {
 	private static final Logger logger = LoggerFactory.getLogger(Const.LOGGER_APPLICATION);

@@ -16,23 +16,22 @@
 package fr.liglab.adele.protocol.modbus;
 
 /**
+ * Modbus exception class
  * 
- * Root Modbus Exception class
- * @author Denis Morand 
- *
+ * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project
+ *         Team</a>
+ * 
  */
-public class ModbusException
-    extends Exception {
-	
+public class ModbusException extends Exception {
+
 	private static final long serialVersionUID = -1302115889774869425L;
 
-  public ModbusException() {
-    super();
-  }
+	public ModbusException() {
+		super();
+	}
 
-
-  public ModbusException(String message) {
-    super(message);
-  }
+	public ModbusException(String message) {
+		super(message);
+	}
 
 }

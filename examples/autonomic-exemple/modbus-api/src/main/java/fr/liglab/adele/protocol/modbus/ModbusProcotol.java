@@ -18,10 +18,12 @@ package fr.liglab.adele.protocol.modbus;
 import java.util.BitSet;
 import java.util.Map;
 
-/**
+/*
+ * Interface Modbus 
  * 
- * @author Denis Morand
- *
+ * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project
+ *         Team</a>
+ * 
  */
 public interface ModbusProcotol {
 
@@ -38,7 +40,8 @@ public interface ModbusProcotol {
 	 * @throws SlaveException
 	 *             ( see Modbus Application protocol V1.1b )
 	 */
-	public Integer[] getRegisters(int unitID, int ref, int count) throws SlaveException;
+	public Integer[] getRegisters(int unitID, int ref, int count)
+			throws SlaveException;
 
 	/**
 	 * Read Inputs registers Modbus
@@ -69,7 +72,8 @@ public interface ModbusProcotol {
 	 * @throws SlaveException
 	 *             ( see Modbus Application protocol V1.1b )
 	 */
-	public BitSet getDiscreteInput(int unitID, int ref, int count) throws SlaveException;
+	public BitSet getDiscreteInput(int unitID, int ref, int count)
+			throws SlaveException;
 
 	/**
 	 * Read Coils inputs Modbus
@@ -84,16 +88,18 @@ public interface ModbusProcotol {
 	 * @throws SlaveException
 	 *             ( see Modbus Application protocol V1.1b )
 	 */
-	public BitSet getCoils(int unitID, int ref, int count) throws SlaveException;
-		
+	public BitSet getCoils(int unitID, int ref, int count)
+			throws SlaveException;
+
 	/**
 	 * return Empty map if no remote identification
-	 * @return list of identification parameters decoded from request 43/14 
+	 * 
+	 * @return list of identification parameters decoded from request 43/14
 	 */
-	public Map getIdentification() ;
-	
-	/** 
+	public Map getIdentification();
+
+	/**
 	 * Return for Debug purpose only !
 	 */
-	public Map getDebugInfo() ;
+	public Map getDebugInfo();
 }
