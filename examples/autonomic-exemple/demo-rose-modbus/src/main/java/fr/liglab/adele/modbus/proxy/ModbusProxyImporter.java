@@ -110,25 +110,31 @@ public class ModbusProxyImporter extends AbstractImporterComponent implements
 		return null;
 	}
 
-	private void addProxyProperties(Map props, EndpointDescription description) {
-		props.put("managed.service.pid", description.getId());
-		/* Compute the service.ranking propertie */
-		String revision = (String) props.get("major.minor.revision");
-		String value = "150"; // Faire la convertion en String */
-		/* retreive the domain */
-		props.put("domain.id",
-				getDomain((String) props.get("device.ip.address")));
-		if (value != null) {
+	/*
+	 * Computes the score according the version number String Version VX.Y ->
+	 * integer score = XY
+	 */
+	private String getScore(String version) {
+		int score = 0;
+		String majorMinor;
+		if (version != null) {
+			String revision = version.toUpperCase();
+			if (revision.startsWith("V"))
+				majorMinor = revision.substring(1);
+			else
+				majorMinor = revision;
 			try {
-				Integer.parseInt(value);
-				props.put(org.osgi.framework.Constants.SERVICE_RANKING, value);
+				double d = Double.parseDouble(majorMinor);
+				score = new Double(Math.floor(d * 100)).intValue();
 			} catch (NumberFormatException e) {
-				logger.error("Service ranking property must be an integer string format");
+				logger.error("Version read  malformed");
+				return "0";
 			}
 		}
+		return Integer.toString(score);
 	}
 
-	/* Retreive the property accordingthe ip address */
+	/* Retreive the domain.property according the ip address */
 	private String getDomain(String hostAddr) {
 		String domain = null;
 		if ((!domainProperies.isEmpty()) && (hostAddr != null)) {
@@ -140,9 +146,30 @@ public class ModbusProxyImporter extends AbstractImporterComponent implements
 		return domain;
 	}
 
+	/*
+	 * Insert properties OSGi : managed.service.pid & service.ranking Service
+	 * Modbus : domain.id domain.id & score ranking
+	 */
+	private void addProxyProperties(Map props, EndpointDescription description) {
+		/* insert OSGi property */
+		String score, domain;
+		props.put("managed.service.pid", description.getId());
+		/* insert OSGi property */
+		score = getScore((String) props.get("major.minor.revision"));
+		props.put(org.osgi.framework.Constants.SERVICE_RANKING, score);
+		/* insert domain.id */
+		domain = getDomain((String) props.get("device.ip.address"));
+		props.put("domain.id", domain);
+		if (logger.isDebugEnabled()) {
+			logger.debug("Properties added to [{}] , ranking/domain ={},",
+					description.getId(), score + "/" + domain);
+		}
+
+	}
+
 	protected void destroyProxy(EndpointDescription description,
 			ServiceRegistration registration) {
-		logger.debug("Endoint destroyed ,ID=" + description.getId());
+		logger.debug("Endpoint destroyed ,ID=" + description.getId());
 		registration.unregister();
 	}
 

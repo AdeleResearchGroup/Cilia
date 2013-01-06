@@ -4,11 +4,11 @@
     "host" : "A7D468EA-1BE7-4E1A-B8AC-E246B14F3033",  
 	"connection" : [ 
 	   {
-				"in":
-						{
-						"endpoint_filter" : "(service.imported=true)",
-						"protocol" : ["Modbus/TCP"]
-						}, 
+		 "in":
+		 	{
+			 "endpoint_filter" : "(service.imported=true)",
+			 "protocol" : ["Modbus/TCP"]
+			}, 
 		}
 	],		
     "component" : [ 

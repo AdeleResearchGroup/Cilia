@@ -29,7 +29,8 @@
 	<!-- Modbus/TCP Protocol stack Schneider = (Modbus + identification) -->
 	<component classname="fr.liglab.adele.modbus.impl.ModbusProtocolImpl"
 		name="Modbus/TCP.proxy" immediate="true"  architecture="true" >
-		<provides specification="fr.liglab.adele.protocol.modbus.ModbusProtocol">  
+		<provides specification="fr.liglab.adele.protocol.modbus.ModbusProtocol"> 
+		    <!--  Device urn  -->
 			<property name="domain.id" type="java.lang.String" />
 			<property name="product.code" type="java.lang.String"  />
 			<property name="major.minor.revision" type="java.lang.String"  />
