@@ -39,6 +39,7 @@ public class PlainTextData implements DataFormater {
 	public Data data(String key, int ref, Integer[] values) {
 		Data data;
 		Map response = new HashMap();
+		response.put("Modbus.type", key);
 		int offset = ref;
 		if (values != null) {
 			for (int i = 0; i < values.length; i++) {
@@ -53,6 +54,7 @@ public class PlainTextData implements DataFormater {
 	public Data data(String key, int ref, BitSet values) {
 		Data data;
 		Map response = new HashMap();
+		response.put("Modbus.type", key);
 		int offset = ref;
 		if (values != null) {
 			for (int i = 0; i < values.length(); i++) {
