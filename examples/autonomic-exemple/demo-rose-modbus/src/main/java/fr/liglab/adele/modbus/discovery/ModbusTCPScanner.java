@@ -124,32 +124,29 @@ public class ModbusTCPScanner extends TimerTask {
 							param.get("vendor.name"));
 				}
 			}
-			if (logger.isDebugEnabled()) {
-				logger.debug("Device Present at " + deviceID);
-				logger.debug("Device info :" + deviceProperties.toString());
-			}
 			try {
 				roseMachine.putRemote(deviceID, new EndpointDescription(
 						deviceProperties));
+				logger.debug("Devices discovered "
+						+ roseMachine.getDiscoveredEndpoints());
 				listEndpointsImported.add(deviceID);
 			} catch (Exception e) {
 				e.printStackTrace();
 				roseMachine.removeRemote(deviceID);
+				listEndpointsImported.remove(deviceID);
 				logger.error("The proxy has not imported the service !");
 			}
-		} else {
-			logger.debug("Device already registered "
-					+ socket.getRemoteSocketAddress().toString());
-		}
+		} 
 	}
 
 	private void resetRemoteDevice(InetAddress addr, int port) {
-		EndpointDescription epd = roseMachine.removeRemote(generateID(addr
-				.getHostAddress().toString(), port));
-
-		if (epd != null) {
-			listEndpointsImported.remove(epd.getId());
-			logger.debug("Device removed:" + epd.getProperties().toString());
+		String id = generateID(addr.getHostAddress().toString(), port);
+		if (listEndpointsImported.contains(id)) {
+			EndpointDescription epd = roseMachine.removeRemote(id);
+			if (epd != null) {
+				logger.debug("Device removed:" + epd);
+			}
+			listEndpointsImported.remove(id);
 		}
 	}
 
@@ -208,7 +205,6 @@ public class ModbusTCPScanner extends TimerTask {
 		address = startAddress;
 		do {
 			if (ping(address, m_timeout)) {
-				logger.debug("Device present at :" + address.getHostAddress());
 				socket = tcpConnect(address, m_port);
 				if (socket != null) {
 					setRemoteDevice(socket);
@@ -219,7 +215,6 @@ public class ModbusTCPScanner extends TimerTask {
 				}
 
 			} else {
-				logger.debug("Device absent at :" + address.getHostAddress());
 				resetRemoteDevice(address, m_port);
 			}
 
@@ -246,7 +241,7 @@ public class ModbusTCPScanner extends TimerTask {
 		m_props.put(RemoteConstants.ENDPOINT_ID, generateID(hostAddr, port));
 
 		m_props.put(Constants.OBJECTCLASS, new String[] { "none" });
-		m_props.put(RemoteConstants.SERVICE_IMPORTED_CONFIGS, "none");
+		m_props.put(RemoteConstants.SERVICE_IMPORTED_CONFIGS, "Modbus");
 		/*
 		 * property 'service.imported" true means imported
 		 */
@@ -254,7 +249,7 @@ public class ModbusTCPScanner extends TimerTask {
 		/*
 		 * The endpoint protocol used to select the right proxyimporter
 		 */
-		m_props.put("endpoint.config", "Modbus/TCP");
+		// m_props.put("endpoint.config", "Modbus/TCP");
 		/*
 		 * specifics
 		 */

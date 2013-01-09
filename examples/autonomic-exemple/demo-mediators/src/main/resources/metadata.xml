@@ -12,8 +12,9 @@
 <cilia xmlns:cilia="fr.liglab.adele.cilia">
 
    <!-- Processors --> 
-   	<processor name="NormalizerMediator" 
-		classname="fr.liglab.adele.cilia.demo.components.NormalizerProcessor">
+   	<processor name="NormalizerProcessor" 
+		classname="fr.liglab.adele.cilia.demo.components.NormalizerProcessor" 
+		namespace="fr.examples.autonomic">
 		<properties>
 			<property name="scale" field="m_scale" value ="2" />
 		</properties>
@@ -27,7 +28,7 @@
 			<in-port name="unique" type="*" />
 			<out-port name="unique" type="*" />
 		</ports>
-		<cilia:processor name="NormalizerProcessor" namespace="fr.liglab.adele.cilia"/>
+		<cilia:processor name="NormalizerProcessor" namespace="fr.examples.autonomic"/>
 		<cilia:scheduler name="immediate-scheduler" namespace="fr.liglab.adele.cilia" />
 		<cilia:dispatcher name="multicast-dispatcher" namespace="fr.liglab.adele.cilia"/>
 	</mediator-component>

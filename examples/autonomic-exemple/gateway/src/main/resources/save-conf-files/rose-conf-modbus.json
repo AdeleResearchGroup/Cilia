@@ -1,31 +1,33 @@
 {
 "machine" : {
-    "id" : "modbus.protocol",
-    "host" : "A7D468EA-1BE7-4E1A-B8AC-E246B14F3033",  
+    "id" : "modbus-A7D468EA-1BE7-4E1A-B8AC-E246B14F3033",
+    "host" : "localhost",  
 	"connection" : [ 
 	   {
 		 "in":
 		 	{
-			 "endpoint_filter" : "(service.imported=true)",
+			 "endpoint_filter" : "(service.imported=*)",
 			 "protocol" : ["Modbus/TCP"]
 			}, 
 		}
 	],		
     "component" : [ 
         { 
-           "factory" : "Modbus/TCP.importer",
+           "factory" : "ModbusTCP.importer",
            "properties" : { 
            	                "url.domain" :"file:load/domain.properties" 
            	              }
 		},
 		{ 
-           "factory" : "Modbus/TCP.discovery" ,
+           "factory" : "ModbusTCP.discovery" ,
 		   "properties" : { 
 		   					"managed.service.pid" :"modbus.discovery",    
 		                    "modbus.port.number" : "502",     
 							"scan.period" : "1000" ,
 							"scan.delay" : "1000" ,
-							"ping.time.out" : "1000"
+							"ping.time.out" : "1000",
+							"start.ip.address" : "10.10.7.20",
+							"end.ip.address" :"10.10.7.25"
 						  } 
 		},
     ]
