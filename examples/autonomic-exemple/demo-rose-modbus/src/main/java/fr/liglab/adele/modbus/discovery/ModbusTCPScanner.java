@@ -247,10 +247,6 @@ public class ModbusTCPScanner extends TimerTask {
 		 */
 		m_props.put(RemoteConstants.SERVICE_IMPORTED, "true");
 		/*
-		 * The endpoint protocol used to select the right proxyimporter
-		 */
-		// m_props.put("endpoint.config", "Modbus/TCP");
-		/*
 		 * specifics
 		 */
 		m_props.put("device.ip.address", hostAddr);
