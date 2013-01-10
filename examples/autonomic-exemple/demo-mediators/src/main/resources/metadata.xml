@@ -25,8 +25,8 @@
 	<mediator-component name="NormalizerMediator" namespace="fr.examples.autonomic"
 		category="autonomic-demo">
 		<ports>
-			<in-port name="unique" type="*" />
-			<out-port name="unique" type="*" />
+			<in-port name="in" type="*" />
+			<out-port name="out" type="*" />
 		</ports>
 		<cilia:processor name="NormalizerProcessor" namespace="fr.examples.autonomic"/>
 		<cilia:scheduler name="immediate-scheduler" namespace="fr.liglab.adele.cilia" />

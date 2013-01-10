@@ -44,6 +44,11 @@
 		</dependency>
 		<dependency>
 			<groupId>fr.liglab.adele.cilia.autonomic-demo</groupId>
+			<artifactId>demo-autonomic.mediators</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>fr.liglab.adele.cilia.autonomic-demo</groupId>
 			<artifactId>modbus-api</artifactId>
 			<version>1.0.0</version>
 		</dependency>

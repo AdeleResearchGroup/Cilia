@@ -11,10 +11,13 @@
 	<collector
 		classname="fr.liglab.adele.cilia.modbus.ModbusCollector"
 		name="modbus-in-collector" namespace="fr.liglab.adele.cilia">
-		<cilia:dependency field="m_ModbusServices" >
+		<!--  
+		<cilia:dependency  field="m_ModbusServices" >
 			<callback type="bind" method="bindService" />
 			<callback type="unbind" method="unbindService" />
 		</cilia:dependency>
+		-->
+		<cilia:dependency  field="m_ModbusServices" filter="(domain.id=*)" id="runfilter"/>
 		<properties>
 			<property name="pool.period" method="period" value="1000"
 				type="long" />

@@ -185,11 +185,6 @@ public class ModbusTCPScanner extends TimerTask {
 
 	}
 
-	public void reconfiguration() {
-		logger.debug("Reconfiguration ");
-		cancelScan();
-		runScan();
-	}
 
 	/**
 	 * 
