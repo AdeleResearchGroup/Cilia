@@ -1296,17 +1296,9 @@ public class Dependency extends DependencyModel implements FieldInterceptor,
 		}
 	}
 
+	
 	public void onEntry(Object pojo, Method method, Object[] args) {
-		if (m_usage != null) {
-			Usage usage = (Usage) m_usage.get();
-			usage.incComponentStack(); // Increment the number of component
-										// access.
-			if (usage.m_stack > 0) {
-				usage.inc();
-				m_usage.set(usage); // Set the Thread local as value has been
-									// modified
-			}
-		}
+		this.onEntry(pojo, (Member)method, args);
 	}
 
 	public void onFinally(Object pojo, Method method) {
@@ -1352,7 +1344,17 @@ public class Dependency extends DependencyModel implements FieldInterceptor,
 	 * @see org.apache.felix.ipojo.MethodInterceptor#onEntry(java.lang.Object, java.lang.reflect.Member, java.lang.Object[])
 	 */
 	public void onEntry(Object arg0, Member arg1, Object[] arg2) {
-		this.onEntry(arg0, (Method)arg1, arg2);
+		if (m_usage != null) {
+			Usage usage = (Usage) m_usage.get();
+			usage.incComponentStack(); // Increment the number of component
+										// access.
+			if (usage.m_stack > 0) {
+				usage.inc();
+				m_usage.set(usage); // Set the Thread local as value has been
+									// modified
+			}
+		}
+		
 		
 	}
 
