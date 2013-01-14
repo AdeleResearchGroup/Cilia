@@ -1298,8 +1298,19 @@ public class Dependency extends DependencyModel implements FieldInterceptor,
 
 	
 	public void onEntry(Object pojo, Method method, Object[] args) {
-		this.onEntry(pojo, (Member)method, args);
+		if (m_usage != null) {
+			Usage usage = (Usage) m_usage.get();
+			usage.incComponentStack(); // Increment the number of component
+										// access.
+			if (usage.m_stack > 0) {
+				usage.inc();
+				m_usage.set(usage); // Set the Thread local as value has been
+									// modified
+			}
+		}
+		
 	}
+
 
 	public void onFinally(Object pojo, Method method) {
 		if (m_usage != null) {
