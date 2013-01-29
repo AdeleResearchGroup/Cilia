@@ -28,28 +28,6 @@ import org.apache.felix.ipojo.InstanceManager;
 @SuppressWarnings("rawtypes")
 public interface CiliaInstance {
 
-    /**
-     * Component Instance State : DISPOSED. The component instance was disposed.
-     */
-    final static int DISPOSED = -1;
-    
-    /**
-     * Component Instance State : STOPPED. The component instance is not
-     * started.
-     */
-    final static int STOPPED = 0;
-
-    /**
-     * Component Instance State : INVALID. The component instance is invalid when it
-     * starts or when a component dependency is invalid.
-     */
-    final static int INVALID = 1;
-
-    /**
-     * Component Instance State : VALID. The component instance is resolved when it is
-     * running and all its attached handlers are valid.
-     */
-    final static int VALID = 2;
 
 	/**
 	 * Start the instance
@@ -72,13 +50,6 @@ public interface CiliaInstance {
 	 * @return
 	 */
 	public int getState();
-
-	/**
-	 * Get the instance state as a string
-	 * 
-	 * @return
-	 */
-	public String getStateAsString();
 
 
 	/**

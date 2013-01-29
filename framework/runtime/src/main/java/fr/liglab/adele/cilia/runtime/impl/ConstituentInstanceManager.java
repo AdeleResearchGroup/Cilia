@@ -100,7 +100,7 @@ public abstract class ConstituentInstanceManager extends CiliaInstanceManagerSet
 		//fire an event.
 		synchronized (lockObject) {
 			if (instance.equals(constituant)) { // Its the constituant
-				if (state == CiliaInstance.VALID) {
+				if (state == ComponentInstance.VALID) {
 					mediatorInstance.stateChanged(null, ComponentInstance.VALID);// try to make it valid
 					
 				} else {
