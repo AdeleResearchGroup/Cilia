@@ -63,8 +63,6 @@ public abstract class MediatorComponentManager extends InstanceManager {
 
 	private MonitorHandler monitor;
 
-	protected volatile MediatorComponent.State ciliaState = MediatorComponent.State.INVALID;
-
 	protected Dictionary configuration;
 
 	protected volatile int processing = 0;
