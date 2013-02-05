@@ -165,6 +165,11 @@ public class IOAdapterFactory extends MediatorComponentFactory implements Adapte
 		if (!returnedList.contains(reqm)) {
 			returnedList.add(reqm);
 		}
+		RequiredHandler reqsvm = new RequiredHandler("monitor-statevar-handler",
+				DEFAULT_NAMESPACE);
+		if (!returnedList.contains(reqsvm)) {
+			returnedList.add(reqsvm);
+		}
 		return returnedList;
 	}
 
@@ -186,13 +191,13 @@ public class IOAdapterFactory extends MediatorComponentFactory implements Adapte
 			// Add subscription.
 			Handler handler = m_handlers[i];
 			// add the monitor, to listen the scheduler/dispatcher events.
-			if (handler instanceof IMonitor) {
+			if (handler instanceof IMonitor && handler != monitor) {
 				if (monitor != null) {
 					monitor.addListener((IMonitor) handler);
 				}
 			}
 			// Add the scheduler/dispatcher references to the mediator handler.
-			if (handler instanceof MediatorHandler) {
+			if (handler instanceof MediatorHandler ) {
 				MediatorHandler mh = (MediatorHandler) handler;
 				if (dsp != null) {
 					mh.setDispatcher(dsp);
