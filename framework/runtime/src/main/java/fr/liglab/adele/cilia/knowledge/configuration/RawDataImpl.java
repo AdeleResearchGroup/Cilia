@@ -14,7 +14,9 @@
 
 package fr.liglab.adele.cilia.knowledge.configuration;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -86,17 +88,13 @@ public class RawDataImpl extends NodeImpl implements RawData {
 		for (String variable : variables) {
 			Map variableMap = new HashMap();
 			try {
-				variableMap.put("Enabled",String.valueOf(getStateVariableState(variable)));
-				Measure measures[] = measures(variable);
-				StringBuffer buffer = new StringBuffer("[");
-				for (Measure measure : measures) {
-					buffer.append(measure.toString()).append(",");
+				variableMap.put("enable",String.valueOf(getStateVariableState(variable)));
+				Measure _measures[] = measures(variable);
+				List measures = new ArrayList(); 
+				for (Measure measure : _measures) {
+					measures.add(measure.toMap());
 				}
-				if (measures.length > 0) {
-					buffer.delete(buffer.length() - 2, buffer.length() - 1);
-				}
-				buffer.append("]");
-				variableMap.put("Measures", buffer.toString());
+				variableMap.put("Measures", measures);
 			} catch (CiliaIllegalParameterException e) {
 			} catch (CiliaIllegalStateException e) {
 				return new HashMap();
