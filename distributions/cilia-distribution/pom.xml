@@ -27,6 +27,7 @@
 		<!-- flag to flatten deployment packages -->
 		<flattenDP>true</flattenDP>
 		<productName>Cilia</productName>
+      <roseVersion>1.0.2</roseVersion>
 	</properties>
 	<!-- Project dependencies -->
 	<dependencies>
