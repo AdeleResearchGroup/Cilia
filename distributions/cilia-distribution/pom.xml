@@ -15,11 +15,11 @@
 		<groupId>fr.liglab.adele.common</groupId>
 		<artifactId>distribution.minimal.base</artifactId>
 		<version>1.0.3</version>
-		<relativePath/>
+		<relativePath />
 	</parent>
 	<groupId>fr.liglab.adele.cilia</groupId>
 	<artifactId>cilia-distribution</artifactId>
-	<version>1.6.3-SNAPSHOT</version>
+	<version>1.6.3</version>
 	<packaging>pom</packaging>
 	<name>Cilia :: Distribution </name>
 
@@ -63,4 +63,8 @@
 			<url>dav:https://repository-cilia.forge.cloudbees.com/release</url>
 		</repository>
 	</distributionManagement>
+
+  <scm>
+    <tag>Cilia-1.6.3</tag>
+  </scm>
 </project>
