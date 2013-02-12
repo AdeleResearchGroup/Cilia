@@ -19,7 +19,7 @@
 	</parent>
 	<groupId>fr.liglab.adele.cilia</groupId>
 	<artifactId>cilia-distribution</artifactId>
-	<version>1.6.3</version>
+	<version>1.6.4-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>Cilia :: Distribution </name>
 
@@ -63,8 +63,4 @@
 			<url>dav:https://repository-cilia.forge.cloudbees.com/release</url>
 		</repository>
 	</distributionManagement>
-
-  <scm>
-    <tag>Cilia-1.6.3</tag>
-  </scm>
 </project>
