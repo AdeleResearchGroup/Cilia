@@ -1,433 +1,346 @@
-	<!-- Copyright Adele Team LIG Licensed under the Apache License, Version 
-		2.0 (the "License"); you may not use this file except in compliance with 
-		the License. You may obtain a copy of the License at    http://www.apache.org/licenses/LICENSE-2.0 
-		Unless required by applicable law or agreed to in writing, software distributed 
-		under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES 
-		OR CONDITIONS OF ANY KIND, either express or implied. See the License for 
-		the specific language governing permissions and limitations under the License. -->
-	<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-		<modelVersion>4.0.0</modelVersion>
-		<parent>
-			<groupId>fr.liglab.adele.common</groupId>
-			<artifactId>parent</artifactId>
-			<version>1.0.0-SNAPSHOT</version>
-			<relativePath />
-		</parent>
-		<groupId>fr.liglab.adele.cilia</groupId>
-		<artifactId>cilia-project</artifactId>
-		<name>${productName} :: Parent</name>
-		<version>1.6.3-SNAPSHOT</version>
-		<packaging>pom</packaging>
-		<url>http://wikiadele.imag.fr/index.php/Cilia</url>
-		<properties>
-			<productName>Cilia</productName>
-			<productVersion>${project.version}</productVersion>
-			<projectName>${project.artifactId}</projectName>
-			<fileinstall.version>3.1.4</fileinstall.version>
-			<!-- Common dependencies -->
-			<!-- <ipojo.version>1.8.2</ipojo.version>
-			<slf4j.version>1.6.4</slf4j.version>
-			<log4j.version>1.2.16</log4j.version>
-			<osgi.version>4.2.0</osgi.version>
-			<felix.version>4.0.3</felix.version>
-			<jersey.version>1.9</jersey.version>
-			<jsonservice.version>0.4.0</jsonservice.version>
-			<fileinstall.version>3.2.4</fileinstall.version>
-			<rose.version>1.0.2</rose.version>
-			<ea.version>1.2.14</ea.version>
-			<felix.log.version>1.0.1</felix.log.version>
-			<gogo.command.version>0.12.0</gogo.command.version>
-			<gogo.version>0.10.0</gogo.version>
-			<ipojo.arch.version>1.0.1</ipojo.arch.version>
-			<jetty.version>2.2.0</jetty.version>
-			<jms.version>1.1.0</jms.version>
-			<joram.version>5.7.0</joram.version>
-			<mail.version>1.4.3</mail.version>
-			<jaxb.version>2.2.1</jaxb.version>
-			<jcup.version>5.3.1</jcup.version>
-			<monolog.version>5.2.0</monolog.version>
-			plugins
-			<bnd.plugin.version>2.3.7</bnd.plugin.version>
-			<ipojo.plugin.version>1.8.6</ipojo.plugin.version>
-			<release.plugin.version>2.3.2</release.plugin.version>
-			<surefire.plugin>2.12</surefire.plugin>
-			<javadoc.version>2.8.1</javadoc.version>
-			<webdav.version>2.2</webdav.version>
-			<compiler.version>2.5.1</compiler.version> -->
-			<!-- By default, all sources are UTF-8-encoded. -->
-			<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		</properties>
+   <!-- Copyright Adele Team LIG Licensed under the Apache License, Version 
+      2.0 (the "License"); you may not use this file except in compliance with 
+      the License. You may obtain a copy of the License at    http://www.apache.org/licenses/LICENSE-2.0 
+      Unless required by applicable law or agreed to in writing, software distributed 
+      under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES 
+      OR CONDITIONS OF ANY KIND, either express or implied. See the License for 
+      the specific language governing permissions and limitations under the License. -->
+   <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+      <modelVersion>4.0.0</modelVersion>
+      <parent>
+         <groupId>fr.liglab.adele.common</groupId>
+         <artifactId>base</artifactId>
+         <version>1.0.3</version>
+         <relativePath />
+      </parent>
+      <groupId>fr.liglab.adele.cilia</groupId>
+      <artifactId>cilia-project</artifactId>
+      <name>${productName} :: Parent</name>
+      <version>1.6.3-SNAPSHOT</version>
+      <packaging>pom</packaging>
+      <url>http://wikiadele.imag.fr/index.php/Cilia</url>
+      <properties>
+         <productName>Cilia</productName>
+         <productVersion>${project.version}</productVersion>
+         <projectName>${project.artifactId}</projectName>
+         <fileinstall.version>3.1.4</fileinstall.version>
+      </properties>
 
-		<licenses>
-			<license>
-				<name>Apache License, Version 2.0</name>
-				<url>http://www.apache.org/licenses/LICENSE-2.0.html</url>
-				<distribution>manual</distribution>
-			</license>
-		</licenses>
+      <licenses>
+         <license>
+            <name>Apache License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.html</url>
+            <distribution>manual</distribution>
+         </license>
+      </licenses>
 
-		<organization>
-			<name>Adele Team | LIG</name>
-			<url>http://adele.imag.fr</url>
-		</organization>
+      <organization>
+         <name>Adele Team | LIG</name>
+         <url>http://adele.imag.fr</url>
+      </organization>
 
-		<mailingLists>
-			<mailingList>
-				<name>cilia-commits</name>
-				<subscribe>https://ligforge.imag.fr/mail/?group_id=75</subscribe>
-				<unsubscribe>https://ligforge.imag.fr/mail/?group_id=75</unsubscribe>
-				<post>cilia-commits@lists.ligforge.imag.fr</post>
-				<archive>https://lists.ligforge.imag.fr/pipermail/cilia-commits/</archive>
-			</mailingList>
-			<mailingList>
-				<name>cilia-developer</name>
-				<subscribe>https://ligforge.imag.fr/mail/?group_id=75</subscribe>
-				<unsubscribe>https://ligforge.imag.fr/mail/?group_id=75</unsubscribe>
-				<post>cilia-devel@lists.ligforge.imag.fr</post>
-				<archive>http://lists.ligforge.imag.fr/pipermail/cilia-devel/</archive>
-			</mailingList>
-			<mailingList>
-				<name>cilia-user</name>
-				<subscribe>https://ligforge.imag.fr/mail/?group_id=75</subscribe>
-				<unsubscribe>https://ligforge.imag.fr/mail/?group_id=75</unsubscribe>
-				<post>cilia-users@lists.ligforge.imag.fr</post>
-				<archive>https://lists.ligforge.imag.fr/pipermail/cilia-users/</archive>
-			</mailingList>
-		</mailingLists>
+      <mailingLists>
+         <mailingList>
+            <name>cilia-commits</name>
+            <subscribe>https://ligforge.imag.fr/mail/?group_id=75</subscribe>
+            <unsubscribe>https://ligforge.imag.fr/mail/?group_id=75</unsubscribe>
+            <post>cilia-commits@lists.ligforge.imag.fr</post>
+            <archive>https://lists.ligforge.imag.fr/pipermail/cilia-commits/</archive>
+         </mailingList>
+         <mailingList>
+            <name>cilia-developer</name>
+            <subscribe>https://ligforge.imag.fr/mail/?group_id=75</subscribe>
+            <unsubscribe>https://ligforge.imag.fr/mail/?group_id=75</unsubscribe>
+            <post>cilia-devel@lists.ligforge.imag.fr</post>
+            <archive>http://lists.ligforge.imag.fr/pipermail/cilia-devel/</archive>
+         </mailingList>
+         <mailingList>
+            <name>cilia-user</name>
+            <subscribe>https://ligforge.imag.fr/mail/?group_id=75</subscribe>
+            <unsubscribe>https://ligforge.imag.fr/mail/?group_id=75</unsubscribe>
+            <post>cilia-users@lists.ligforge.imag.fr</post>
+            <archive>https://lists.ligforge.imag.fr/pipermail/cilia-users/</archive>
+         </mailingList>
+      </mailingLists>
 
-		<issueManagement>
-			<system>Github</system>
-			<url>https://github.com/AdeleResearchGroup/Cilia/issues</url>
-		</issueManagement>
+      <issueManagement>
+         <system>Github</system>
+         <url>https://github.com/AdeleResearchGroup/Cilia/issues</url>
+      </issueManagement>
 
-		<developers>
-			<developer>
-				<name>Philippe Lalanda</name>
-				<email> philippe.lalanda @nospam@ imag.fr	</email>
-				<roles>
-					<role>Project Manager</role>
-				</roles>
-				<organization>Adele | LIG</organization>
-				<organizationUrl>http://adele.imag.fr</organizationUrl>
-			</developer>
-			<developer>
-				<name>Catherine Hamon</name>
-				<email> Catherine.Hamon @nospam@ orange-ftgroup.com	</email>
-				<roles>
-					<role>Project Manager</role>
-				</roles>
-				<organization>Orange Labs</organization>
-				<organizationUrl>http://orange-ftgroup.com</organizationUrl>
-			</developer>
+      <developers>
+         <developer>
+            <name>Philippe Lalanda</name>
+            <email> philippe.lalanda @nospam@ imag.fr	</email>
+            <roles>
+               <role>Project Manager</role>
+            </roles>
+            <organization>Adele | LIG</organization>
+            <organizationUrl>http://adele.imag.fr</organizationUrl>
+         </developer>
+         <developer>
+            <name>Catherine Hamon</name>
+            <email> Catherine.Hamon @nospam@ orange-ftgroup.com	</email>
+            <roles>
+               <role>Project Manager</role>
+            </roles>
+            <organization>Orange Labs</organization>
+            <organizationUrl>http://orange-ftgroup.com</organizationUrl>
+         </developer>
 
-			<developer>
-				<name>Bassem Debbabi</name>
-				<email>bassem @nospam@ debbabi.net</email>
-				<roles>
-				</roles>
-				<organization>Adele | LIG</organization>
-				<organizationUrl>http://adele.imag.fr</organizationUrl>
-			</developer>
-			<developer>
-				<name>Issac Noé Garcia Garza</name>
-				<email> 	 torito @nospam@ gmail.com</email>
-				<roles>
-				</roles>
-				<organization>Adele | LIG</organization>
-				<organizationUrl>http://adele.imag.fr</organizationUrl>
-			</developer>
-			<developer>
-				<name>Gabriel Pedraza Ferreira</name>
-				<email>gabriel.pedraza-ferreira @nospam@ imag.fr</email>
-				<roles>
-				</roles>
-				<organization>Adele | LIG</organization>
-				<organizationUrl>http://adele.imag.fr</organizationUrl>
-			</developer>
-			<developer>
-				<name>Denis Morand</name>
-				<email>denis.morand @nospam@ imag.fr</email>
-				<roles>
-				</roles>
-				<organization>Adele | LIG</organization>
-				<organizationUrl>http://adele.imag.fr</organizationUrl>
-			</developer>
-			<developer>
-				<name>Clement Escoffier</name>
-				<email> clement.escoffier @nospam@ gmail.com	</email>
-				<roles>
-				</roles>
-				<organization>akquinet</organization>
-				<organizationUrl>http://www.akquinet.com</organizationUrl>
-			</developer>
-			<developer>
-				<name>Ada Diaconescu</name>
-				<email> ada.diaconescu @nospam@ gmail.com	</email>
-				<roles>
-				</roles>
-				<organization>Telecom Paris-Tech</organization>
-				<organizationUrl>http://www.telecom-paristech.fr/</organizationUrl>
-			</developer>
-		</developers>
+         <developer>
+            <name>Bassem Debbabi</name>
+            <email>bassem @nospam@ debbabi.net</email>
+            <roles>
+            </roles>
+            <organization>Adele | LIG</organization>
+            <organizationUrl>http://adele.imag.fr</organizationUrl>
+         </developer>
+         <developer>
+            <name>Issac Noé Garcia Garza</name>
+            <email> 	 torito @nospam@ gmail.com</email>
+            <roles>
+            </roles>
+            <organization>Adele | LIG</organization>
+            <organizationUrl>http://adele.imag.fr</organizationUrl>
+         </developer>
+         <developer>
+            <name>Gabriel Pedraza Ferreira</name>
+            <email>gabriel.pedraza-ferreira @nospam@ imag.fr</email>
+            <roles>
+            </roles>
+            <organization>Adele | LIG</organization>
+            <organizationUrl>http://adele.imag.fr</organizationUrl>
+         </developer>
+         <developer>
+            <name>Denis Morand</name>
+            <email>denis.morand @nospam@ imag.fr</email>
+            <roles>
+            </roles>
+            <organization>Adele | LIG</organization>
+            <organizationUrl>http://adele.imag.fr</organizationUrl>
+         </developer>
+         <developer>
+            <name>Clement Escoffier</name>
+            <email> clement.escoffier @nospam@ gmail.com	</email>
+            <roles>
+            </roles>
+            <organization>akquinet</organization>
+            <organizationUrl>http://www.akquinet.com</organizationUrl>
+         </developer>
+         <developer>
+            <name>Ada Diaconescu</name>
+            <email> ada.diaconescu @nospam@ gmail.com	</email>
+            <roles>
+            </roles>
+            <organization>Telecom Paris-Tech</organization>
+            <organizationUrl>http://www.telecom-paristech.fr/</organizationUrl>
+         </developer>
+      </developers>
 
-		<contributors>
-			<contributor>
-				<name>Elias Ricken de Medeiros</name>
-				<email>eliasrdm @nospam@ gmail.com</email>
-				<organization>Orange Labs</organization>
-				<organizationUrl>http://orange-ftgroup.com</organizationUrl>
-				<roles>
-					<role>Developer</role>
-				</roles>
-			</contributor>
-			<contributor>
-				<name>Elmehdi Damou</name>
-				<email>elmehdi.damou @nospam@ imag.fr</email>
-				<organization>Adele | LIG</organization>
-				<organizationUrl>http://adele.imag.fr</organizationUrl>
-				<roles>
-					<role>Developer</role>
-				</roles>
-			</contributor>
-			<contributor>
-				<name>Pierre Bourret</name>
-				<email> 	 bourretp @nospam@ gmail.com</email>
-				<organization>Adele | LIG</organization>
-				<organizationUrl>http://adele.imag.fr</organizationUrl>
-				<roles>
-					<role>Developer</role>
-				</roles>
-			</contributor>
-			<contributor>
-				<name>Anthony Bozon</name>
-				<email> 	 Antony.bozon @nospam@ orange-ftgroup.com</email>
-				<organization>Orange Labs</organization>
-				<organizationUrl>http://orange-ftgroup.com</organizationUrl>
-				<roles>
-					<role>Developer</role>
-				</roles>
-			</contributor>
-			<contributor>
-				<name>Jerome Bodineau</name>
-				<email> 	 bodineauj @nospam@ gmail.com</email>
-				<organization>Orange Labs</organization>
-				<organizationUrl>http://orange-ftgroup.com</organizationUrl>
-				<roles>
-					<role>Developer</role>
-				</roles>
-			</contributor>
-		</contributors>
+      <contributors>
+         <contributor>
+            <name>Elias Ricken de Medeiros</name>
+            <email>eliasrdm @nospam@ gmail.com</email>
+            <organization>Orange Labs</organization>
+            <organizationUrl>http://orange-ftgroup.com</organizationUrl>
+            <roles>
+               <role>Developer</role>
+            </roles>
+         </contributor>
+         <contributor>
+            <name>Elmehdi Damou</name>
+            <email>elmehdi.damou @nospam@ imag.fr</email>
+            <organization>Adele | LIG</organization>
+            <organizationUrl>http://adele.imag.fr</organizationUrl>
+            <roles>
+               <role>Developer</role>
+            </roles>
+         </contributor>
+         <contributor>
+            <name>Pierre Bourret</name>
+            <email> 	 bourretp @nospam@ gmail.com</email>
+            <organization>Adele | LIG</organization>
+            <organizationUrl>http://adele.imag.fr</organizationUrl>
+            <roles>
+               <role>Developer</role>
+            </roles>
+         </contributor>
+         <contributor>
+            <name>Anthony Bozon</name>
+            <email> 	 Antony.bozon @nospam@ orange-ftgroup.com</email>
+            <organization>Orange Labs</organization>
+            <organizationUrl>http://orange-ftgroup.com</organizationUrl>
+            <roles>
+               <role>Developer</role>
+            </roles>
+         </contributor>
+         <contributor>
+            <name>Jerome Bodineau</name>
+            <email> 	 bodineauj @nospam@ gmail.com</email>
+            <organization>Orange Labs</organization>
+            <organizationUrl>http://orange-ftgroup.com</organizationUrl>
+            <roles>
+               <role>Developer</role>
+            </roles>
+         </contributor>
+      </contributors>
 
 
-		<!--Project Test Repository -->
-		<repositories>
-			<repository>
-				<id>iCASA.snapshot</id>
-				<name>iCASA Snapshot Repository</name>
-				<url>http://repository-icasa.forge.cloudbees.com/snapshot/</url>
-			</repository>
-			<repository>
-				<id>iCASA.release</id>
-				<name>iCASA Release Repository</name>
-				<url>http://repository-icasa.forge.cloudbees.com/release/</url>
-			</repository>
-			<!-- <repository> <id>apache.snapshots</id> <url>http://repository.apache.org/snapshots/</url> 
-				<releases> <enabled>false</enabled> </releases> <snapshots> <enabled>true</enabled> 
-				</snapshots> </repository> -->
+      <!--Project Test Repository -->
+      <repositories>
+         <repository>
+            <id>iCASA.snapshot</id>
+            <name>iCASA Snapshot Repository</name>
+            <url>http://repository-icasa.forge.cloudbees.com/snapshot/</url>
+         </repository>
+         <repository>
+            <id>iCASA.release</id>
+            <name>iCASA Release Repository</name>
+            <url>http://repository-icasa.forge.cloudbees.com/release/</url>
+         </repository>
 
-			<!-- For JMS API -->
-			<!-- <repository> <id>repository.jboss.org-public</id> <name>JBoss repository</name> 
-				<url>https://repository.jboss.org/nexus/content/groups/public</url> </repository> -->
+      </repositories>
 
-		</repositories>
-
-		<pluginRepositories>
-			<pluginRepository>
-				<id>icasa-snapshot-repository</id>
-				<name>iCASA Snapshot repository</name>
-				<url>http://repository-icasa.forge.cloudbees.com/snapshot/</url>
-			</pluginRepository>
-		</pluginRepositories>
+      <pluginRepositories>
+         <pluginRepository>
+            <id>icasa-snapshot-repository</id>
+            <name>iCASA Snapshot repository</name>
+            <url>http://repository-icasa.forge.cloudbees.com/snapshot/</url>
+         </pluginRepository>
+      </pluginRepositories>
 
 
-		<scm>
-			<connection>scm:git:ssh://git@github.com/AdeleResearchGroup/Cilia.git</connection>
-			<url>http://github.com/AdeleResearchGroup/Cilia/tree/master</url>
-			<developerConnection>scm:git:ssh://git@github.com/AdeleResearchGroup/Cilia.git</developerConnection>
-			<tag>HEAD</tag>
-		</scm>
-		<build>
-			<plugins>
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-release-plugin</artifactId>
-					<configuration>
-						<allowTimestampedSnapshots>true</allowTimestampedSnapshots>
-						<autoVersionSubmodules>true</autoVersionSubmodules>
-						<releaseProfiles>release</releaseProfiles>
-					</configuration>
-				</plugin>
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-surefire-plugin</artifactId>
-				</plugin>
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-javadoc-plugin</artifactId>
-					<configuration>
-						<excludePackageNames>*.internal,*.internal.*,*.impl,*.impl.*</excludePackageNames>
-					</configuration>
-				</plugin>
-			</plugins>
-			<extensions>
-				<extension>
-					<groupId>org.apache.maven.wagon</groupId>
-					<artifactId>wagon-webdav-jackrabbit</artifactId>
-					<version>${webdavPluginVersion}</version>
-				</extension>
-			</extensions>
-			<pluginManagement>
-				<plugins>
-					<!--This plugin's configuration is used to store Eclipse m2e settings 
-						only. It has no influence on the Maven build itself. -->
-					<plugin>
-						<groupId>org.eclipse.m2e</groupId>
-						<artifactId>lifecycle-mapping</artifactId>
-						<version>${lifecyclePluginVersion}</version>
-						<configuration>
-							<lifecycleMappingMetadata>
-								<pluginExecutions>
-									<pluginExecution>
-										<pluginExecutionFilter>
-											<groupId>
-												org.apache.servicemix.tooling
-											</groupId>
-											<artifactId>
-												depends-maven-plugin
-											</artifactId>
-											<versionRange>
-												[1.2,)
-											</versionRange>
-											<goals>
-												<goal>
-													generate-depends-file
-												</goal>
-											</goals>
-										</pluginExecutionFilter>
-										<action>
-											<execute />
-										</action>
-									</pluginExecution>
-								</pluginExecutions>
-							</lifecycleMappingMetadata>
-						</configuration>
-					</plugin>
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-compiler-plugin</artifactId>
-						<version>${compilerPluginVersion}</version>
-						<configuration>
-							<source>1.5</source>
-							<target>1.5</target>
-						</configuration>
-					</plugin>
-					<plugin>
-						<groupId>org.apache.felix</groupId>
-						<artifactId>maven-bundle-plugin</artifactId>
-						<version>${bundlePluginVersion}</version>
-						<extensions>true</extensions>
-						<configuration>
-							<instructions>
-								<Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
-								<Include-Resource>
-									{maven-resources},
-									META-INF/LICENSE = LICENSE,
-									META-INF/NOTICE = NOTICE
-								</Include-Resource>
-							</instructions>
-						</configuration>
-					</plugin>
-					<plugin>
-						<groupId>org.apache.felix</groupId>
-						<artifactId>maven-ipojo-plugin</artifactId>
-						<version>${iPojoPluginVersion}</version>
-						<executions>
-							<execution>
-								<goals>
-									<goal>ipojo-bundle</goal>
-								</goals>
-							</execution>
-						</executions>
-					</plugin>
-				</plugins>
-			</pluginManagement>
-		</build>
+
+      <build>
+         <plugins>
+            <plugin>
+               <groupId>org.apache.maven.plugins</groupId>
+               <artifactId>maven-release-plugin</artifactId>
+               <configuration>
+                  <allowTimestampedSnapshots>true</allowTimestampedSnapshots>
+                  <autoVersionSubmodules>true</autoVersionSubmodules>
+                  <releaseProfiles>release</releaseProfiles>
+               </configuration>
+            </plugin>
+            <plugin>
+               <groupId>org.apache.maven.plugins</groupId>
+               <artifactId>maven-surefire-plugin</artifactId>
+            </plugin>
+            <plugin>
+               <groupId>org.apache.maven.plugins</groupId>
+               <artifactId>maven-javadoc-plugin</artifactId>
+               <configuration>
+                  <excludePackageNames>*.internal,*.internal.*,*.impl,*.impl.*</excludePackageNames>
+               </configuration>
+            </plugin>
+         </plugins>
+         <extensions>
+            <extension>
+               <groupId>org.apache.maven.wagon</groupId>
+               <artifactId>wagon-webdav-jackrabbit</artifactId>
+               <version>${webdavPluginVersion}</version>
+            </extension>
+         </extensions>
+         <pluginManagement>
+            <plugins>
+               <!--This plugin's configuration is used to store Eclipse m2e settings 
+                  only. It has no influence on the Maven build itself. -->
+               <plugin>
+                  <groupId>org.eclipse.m2e</groupId>
+                  <artifactId>lifecycle-mapping</artifactId>
+                  <version>${lifecyclePluginVersion}</version>
+                  <configuration>
+                     <lifecycleMappingMetadata>
+                        <pluginExecutions>
+                           <pluginExecution>
+                              <pluginExecutionFilter>
+                                 <groupId>
+                                    org.apache.servicemix.tooling
+                                 </groupId>
+                                 <artifactId>
+                                    depends-maven-plugin
+                                 </artifactId>
+                                 <versionRange>
+                                    [1.2,)
+                                 </versionRange>
+                                 <goals>
+                                    <goal>
+                                       generate-depends-file
+                                    </goal>
+                                 </goals>
+                              </pluginExecutionFilter>
+                              <action>
+                                 <execute />
+                              </action>
+                           </pluginExecution>
+                        </pluginExecutions>
+                     </lifecycleMappingMetadata>
+                  </configuration>
+               </plugin>
+               <plugin>
+                  <groupId>org.apache.maven.plugins</groupId>
+                  <artifactId>maven-compiler-plugin</artifactId>
+                  <version>${compilerPluginVersion}</version>
+                  <configuration>
+                     <source>1.5</source>
+                     <target>1.5</target>
+                  </configuration>
+               </plugin>
+               <plugin>
+                  <groupId>org.apache.felix</groupId>
+                  <artifactId>maven-bundle-plugin</artifactId>
+                  <version>${bundlePluginVersion}</version>
+                  <extensions>true</extensions>
+                  <configuration>
+                     <instructions>
+                        <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
+                        <Include-Resource>
+                           {maven-resources},
+                           META-INF/LICENSE = LICENSE,
+                           META-INF/NOTICE = NOTICE
+                        </Include-Resource>
+                     </instructions>
+                  </configuration>
+               </plugin>
+               <plugin>
+                  <groupId>org.apache.felix</groupId>
+                  <artifactId>maven-ipojo-plugin</artifactId>
+                  <version>${iPojoPluginVersion}</version>
+                  <executions>
+                     <execution>
+                        <goals>
+                           <goal>ipojo-bundle</goal>
+                        </goals>
+                     </execution>
+                  </executions>
+               </plugin>
+            </plugins>
+         </pluginManagement>
+      </build>
 
 
-		<distributionManagement>
-			<!-- <site> <id>LIGForge</id> <url>scp://cilia.ligforge.imag.fr/var/lib/gforge/chroot/home/groups/cilia/htdocs</url> 
-				</site> -->
-			<repository>
-				<id>cloudbees-release</id>
-				<name>Cloudbees Private Repository</name>
-				<url>dav:https://repository-cilia.forge.cloudbees.com/release</url>
-			</repository>
-		</distributionManagement>
+      <distributionManagement>
+         <repository>
+            <id>cloudbees-release</id>
+            <name>Cloudbees Private Repository</name>
+            <url>dav:https://repository-cilia.forge.cloudbees.com/release</url>
+         </repository>
+      </distributionManagement>
+      <scm>
+         <connection>scm:git:ssh://git@github.com/AdeleResearchGroup/Cilia.git</connection>
+         <url>http://github.com/AdeleResearchGroup/Cilia/tree/master</url>
+         <developerConnection>scm:git:ssh://git@github.com/AdeleResearchGroup/Cilia.git</developerConnection>
+         <tag>HEAD</tag>
+      </scm>
+      <dependencyManagement>
+         <dependencies>
+            <dependency> 
+               <groupId>org.apache.felix</groupId> 
+               <artifactId>org.apache.felix.fileinstall</artifactId> 
+               <version>${fileinstall.version}</version> 
+            </dependency>
 
-		<dependencyManagement>
-			<dependencies>
-				<dependency> 
-					<groupId>org.apache.felix</groupId> 
-					<artifactId>org.apache.felix.fileinstall</artifactId> 
-					<version>${fileinstall.version}</version> 
-				</dependency>
-				<!-- <dependency> <groupId>org.slf4j</groupId> <artifactId>slf4j-api</artifactId> 
-					<version>${slf4j.version}</version> </dependency> <dependency> <groupId>org.slf4j</groupId> 
-					<artifactId>slf4j-log4j12</artifactId> <version>${slf4j.version}</version> 
-					</dependency> <dependency> <groupId>org.apache.log4j</groupId> <artifactId>com.springsource.org.apache.log4j</artifactId> 
-					<version>${log4j.version}</version> </dependency> <dependency> <groupId>org.apache.felix</groupId> 
-					<artifactId>org.apache.felix.log</artifactId> <version>${felix.log.version}</version> 
-					</dependency> <dependency> <groupId>org.osgi</groupId> <artifactId>org.osgi.core</artifactId> 
-					<version>${osgi.version}</version> </dependency> <dependency> <groupId>org.osgi</groupId> 
-					<artifactId>org.osgi.compendium</artifactId> <version>${osgi.version}</version> 
-					</dependency> <dependency> <groupId>org.apache.felix</groupId> <artifactId>org.apache.felix.ipojo</artifactId> 
-					<version>${ipojo.version}</version> </dependency> <dependency> <groupId>org.apache.felix</groupId> 
-					<artifactId>org.apache.felix.ipojo.annotations</artifactId> <version>${ipojo.version}</version> 
-					</dependency> <dependency> <groupId>org.apache.felix</groupId> <artifactId>org.apache.felix.fileinstall</artifactId> 
-					<version>${fileinstall.version}</version> </dependency> <dependency> <groupId>org.apache.felix</groupId> 
-					<artifactId>org.apache.felix.gogo.command</artifactId> <version>${gogo.command.version}</version> 
-					</dependency> <dependency> <groupId>org.apache.felix</groupId> <artifactId>org.apache.felix.gogo.runtime</artifactId> 
-					<version>${gogo.version}</version> </dependency> <dependency> <groupId>org.apache.felix</groupId> 
-					<artifactId>org.apache.felix.gogo.shell</artifactId> <version>${gogo.version}</version> 
-					</dependency> <dependency> <groupId>org.apache.felix</groupId> <artifactId>org.apache.felix.ipojo.arch.gogo</artifactId> 
-					<version>${ipojo.arch.version}</version> </dependency> <dependency> <groupId>org.ow2.chameleon.json</groupId> 
-					<artifactId>json-service-json.org</artifactId> <version>${jsonservice.version}</version> 
-					</dependency> <dependency> <groupId>javax.jms</groupId> <artifactId>com.springsource.javax.jms</artifactId> 
-					<version>${jms.version}</version> </dependency> <dependency> <groupId>org.objectweb.joram</groupId> 
-					<artifactId>joram-client-jms</artifactId> <version>${joram.version}</version> 
-					</dependency> <dependency> <groupId>org.objectweb.joram</groupId> <artifactId>a3-common</artifactId> 
-					<version>${joram.version}</version> </dependency> <dependency> <groupId>org.objectweb.joram</groupId> 
-					<artifactId>jndi-client</artifactId> <version>${joram.version}</version> 
-					</dependency> <dependency> <groupId>org.objectweb.joram</groupId> <artifactId>jndi-shared</artifactId> 
-					<version>${joram.version}</version> </dependency> <dependency> <groupId>org.objectweb.joram</groupId> 
-					<artifactId>joram-shared</artifactId> <version>${joram.version}</version> 
-					</dependency> <dependency> <groupId>org.objectweb.joram</groupId> <artifactId>jcup</artifactId> 
-					<version>${jcup.version}</version> </dependency> <dependency> <groupId>org.ow2.jonas.osgi</groupId> 
-					<artifactId>monolog</artifactId> <version>${monolog.version}</version> </dependency> 
-					<dependency> <groupId>org.apache.felix</groupId> <artifactId>org.apache.felix.eventadmin</artifactId> 
-					<version>${ea.version}</version> </dependency> <dependency> <groupId>org.ow2.chameleon.rose</groupId> 
-					<artifactId>rose-core</artifactId> <version>${rose.version}</version> </dependency> 
-					<dependency> <groupId>org.ow2.chameleon.rose.rest</groupId> <artifactId>jersey-exporter</artifactId> 
-					<version>${rose.version}</version> </dependency> <dependency> <groupId>org.ow2.chameleon.rose</groupId> 
-					<artifactId>json-configurator</artifactId> <version>${rose.version}</version> 
-					</dependency> <dependency> <groupId>com.sun.jersey</groupId> <artifactId>jersey-core</artifactId> 
-					<version>${jersey.version}</version> </dependency> <dependency> <groupId>com.sun.jersey</groupId> 
-					<artifactId>jersey-server</artifactId> <version>${jersey.version}</version> 
-					</dependency> <dependency> <groupId>org.apache.felix</groupId> <artifactId>org.apache.felix.http.jetty</artifactId> 
-					<version>${jetty.version}</version> </dependency> <dependency> <groupId>javax.mail</groupId> 
-					<artifactId>mail</artifactId> <version>${mail.version}</version> </dependency> 
-					<dependency> <groupId>javax.xml.bind</groupId> <artifactId>jaxb-api-osgi</artifactId> 
-					<version>${jaxb.version}</version> </dependency> -->
-			</dependencies>
-		</dependencyManagement>
-	</project>
+         </dependencies>
+      </dependencyManagement>
+   </project>

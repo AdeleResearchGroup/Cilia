@@ -20,6 +20,7 @@ public class Const {
 
 
 	public static final String CILIA_NAMESPACE = "fr.liglab.adele.cilia";
+	
 
 	public static final String PROPERTY_INSTANCE_TYPE = "cilia.component.type";
 	public static final String PROPERTY_CHAIN_ID = "cilia.chain.name";
