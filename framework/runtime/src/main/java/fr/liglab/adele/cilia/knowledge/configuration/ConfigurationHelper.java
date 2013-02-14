@@ -185,7 +185,7 @@ public class ConfigurationHelper {
 	}
 
 	public static Set getEnabledVariable(Map props) {
-		Set set = (Set) props.get("enabled");
+		Set set = (Set) props.get("enable");
 		if (set == null)
 			set = new HashSet();
 		return set;

@@ -1,0 +1,22 @@
+<cilia>
+  <chain id="HelloWorldChain">
+
+    <!-- Adapters instances definition -->
+    <adapters>
+      <adapter-instance type="gui-adapter" id="entryAdapter" />
+    </adapters>
+
+    <!-- Mediators instances definition -->
+    <mediators>
+      <mediator-instance type="HelloMediator" id="hello">
+      </mediator-instance>
+    </mediators>
+
+    <!-- Bindings definition -->
+    <bindings>
+      <binding from="entryAdapter:out" to="hello:in" />
+      <binding from="hello:out" to="entryAdapter:in" />
+    </bindings>
+
+  </chain>
+</cilia>

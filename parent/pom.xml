@@ -329,7 +329,6 @@
 						<configuration>
 							<source>1.5</source>
 							<target>1.5</target>
-							<debug>false</debug>
 						</configuration>
 					</plugin>
 					<plugin>

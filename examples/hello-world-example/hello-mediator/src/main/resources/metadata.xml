@@ -1,0 +1,26 @@
+<cilia>
+
+   <processor name="HelloProcessor"
+      classname="fr.liglab.adele.cilia.components.mediators.HelloProcessor">
+      <method name="sayHello" data.type="fr.liglab.adele.cilia.Data" />
+   </processor>
+
+   <mediator-component name="HelloMediator" category="samples">
+      <processor name="HelloProcessor" />
+      <scheduler name="immediate-scheduler" />
+      <dispatcher name="multicast-dispatcher" />
+      <ports>
+          <in-port name="in" type="*" />
+          <out-port name="out" type="*" />
+      </ports>
+   </mediator-component>
+	<io-adapter classname="fr.liglab.adele.cilia.components.adapters.GuiAdapter"
+		name="gui-adapter">
+		<ports>
+			<in-port name="in" type="*" />
+			<out-port name="out" type="*" />
+		</ports>
+		<callback transition="validate" method="start" />
+		<callback transition="invalidate" method="stop" />
+	</io-adapter>
+</cilia>

@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+import org.apache.felix.ipojo.ComponentInstance;
 import org.apache.felix.ipojo.ConfigurationException;
 import org.apache.felix.ipojo.PrimitiveHandler;
 import org.apache.felix.ipojo.architecture.ComponentTypeDescription;
@@ -193,7 +194,7 @@ public class SchedulerHandler extends PrimitiveHandler implements ISchedulerHand
 	 * @return null.
 	 */
 	public final void process(final List /* data */dataList) {
-		if (getInstanceManager().getState() >= MediatorComponent.VALID) {
+		if (getInstanceManager().getState() >= ComponentInstance.VALID) {
 			schedulerManager.getMediatorComponentManager().startProcessing();
 			// stock triggered data to be used later (log/stats/...).
 			List list = null;

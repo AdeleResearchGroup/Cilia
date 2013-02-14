@@ -15,6 +15,9 @@
 package fr.liglab.adele.cilia.knowledge;
 
 import java.util.HashMap;
+import java.util.Hashtable;
+import java.util.Map;
+
 import fr.liglab.adele.cilia.Measure;
 import fr.liglab.adele.cilia.util.Watch;
 
@@ -55,10 +58,17 @@ public class MeasureImpl implements Measure {
 	
 	public String toString() {
 		StringBuffer sb = new StringBuffer('[');
-		sb.append("\"value\":\"").append(value().toString()).append("\"");
-		sb.append(",\"Timestamp\":\"").append(timeStampMs()).append("\"");
+		sb.append("Value: ").append(value().toString()).append("");
+		sb.append(", Timestamp:").append(timeStampMs()).append("");
 		sb.append("]");
 		return sb.toString();
+	}
+	
+	public Map toMap(){
+		Map result = new Hashtable();
+		result.put("Value", value());
+		result.put("Timestamp", timeStampMs());
+		return result;
 	}
 
 }

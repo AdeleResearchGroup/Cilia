@@ -84,7 +84,7 @@ MediatorComponent {
 
 	private Map additionnalModel = new HashMap(1);
 
-	private volatile int runningState = MediatorComponent.STOPPED;
+	private volatile State runningState = MediatorComponent.State.STOPPED;
 
 	/**
 	 * 
@@ -403,7 +403,7 @@ MediatorComponent {
 
 	public void dispose() {
 		synchronized (lockObject) {
-			runningState = MediatorComponent.DISPOSED;
+			runningState = MediatorComponent.State.DISPOSED;
 			super.dispose();
 			this.category = null;
 			this.dispatcher = null;
@@ -505,7 +505,7 @@ MediatorComponent {
 	}
 
 
-	public int getState(){
+	public State getState(){
 		synchronized (lockObject) {
 			return runningState;
 		}
@@ -513,13 +513,13 @@ MediatorComponent {
 
 
 	public boolean isRunning(){
-		if (getState() >= MediatorComponent.VALID) {
+		if (getState() == MediatorComponent.State.VALID) {
 			return true;
 		}
 		return false;
 	}
 
-	public void setRunningState(int state){
+	public void setRunningState(State state){
 		synchronized (lockObject) {
 			runningState = state;
 		}

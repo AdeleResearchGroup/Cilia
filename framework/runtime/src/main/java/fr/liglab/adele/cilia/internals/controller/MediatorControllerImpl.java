@@ -250,7 +250,7 @@ public class MediatorControllerImpl implements Observer {
 	 * Start the mediator instance.
 	 */
 	public void start() {
-		mediatorModel.setRunningState(MediatorComponent.INVALID);
+		mediatorModel.setRunningState(MediatorComponent.State.INVALID);
 		createMediatorInstance();
 
 	}
@@ -348,17 +348,38 @@ public class MediatorControllerImpl implements Observer {
 	/**
 	 * get the mediator instance state.
 	 */
-	public int getState() {
+	public MediatorComponent.State getState() {
+		MediatorComponent.State returningState = MediatorComponent.State.INVALID;
 		if (mediatorInstance != null) {
 			MediatorComponentManager mm = (MediatorComponentManager) mediatorInstance
 					.getInstanceManager();
 			if (mm != null) {
-				return mm.getState();
+				int ipojoState = mm.getState();
+				returningState = mapState(ipojoState);
 			}
 		}
-		return CiliaInstance.INVALID;
+		return returningState;
 	}
 
+	private MediatorComponent.State mapState(int ipojoState){
+		MediatorComponent.State returningState = MediatorComponent.State.INVALID;
+		switch(ipojoState) {
+		case ComponentInstance.DISPOSED:
+			returningState = MediatorComponent.State.DISPOSED;
+			break;
+		case ComponentInstance.INVALID:
+			returningState = MediatorComponent.State.INVALID;
+			break;
+		case ComponentInstance.STOPPED:
+			returningState = MediatorComponent.State.STOPPED;
+			break;
+		case ComponentInstance.VALID:
+			returningState = MediatorComponent.State.VALID;
+			break;
+		}
+		return returningState;
+	}
+	
 	/**
 	 * Method called when some event happend in the mediator model.
 	 * 
@@ -381,17 +402,17 @@ public class MediatorControllerImpl implements Observer {
 				}
 			}
 		} else if (mediator instanceof CiliaInstanceWrapper) {
-			int state = getState();
+			MediatorComponent.State state = getState();
 			mediatorModel.setRunningState(state);
 			switch (state) {
-			case CiliaInstance.VALID: {
+			case VALID: {
 				updateMediationComponentInstance();
 				registerServiceDescription();
 			}
 				break;
-			case CiliaInstance.DISPOSED:
-			case CiliaInstance.STOPPED:
-			case CiliaInstance.INVALID: {
+			case DISPOSED:
+			case STOPPED:
+			case INVALID: {
 				cleanInstances();
 				unregisterServiceDescription();
 			}

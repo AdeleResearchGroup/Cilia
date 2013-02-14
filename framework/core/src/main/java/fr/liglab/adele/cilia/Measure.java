@@ -15,6 +15,8 @@
 
 package fr.liglab.adele.cilia;
 
+import java.util.Map;
+
 /**
  * Interface data recevied from the monitoring
  * 
@@ -41,5 +43,7 @@ public interface Measure  {
 	 * @return clone this object
 	 */
 	Measure clone() ;
+	
+	Map toMap();
 
 }

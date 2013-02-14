@@ -169,7 +169,7 @@ public class MonitorREST {
 	 * @return The required Chain Setup Info
 	 */
 	@GET
-	@Path("{chainid}/component/{id}/setup")
+	@Path("{chainid}/components/{id}/setup")
 	@Produces("application/json")
 	public Response getSetup(@PathParam("chainid") String chainid,
 			@PathParam("id") String id) {
@@ -198,7 +198,7 @@ public class MonitorREST {
 	 * @return The variable setup of the specific mediator
 	 */
 	@GET
-	@Path("{chainid}/component/{id}/setup/{variable}")
+	@Path("{chainid}/components/{id}/setup/{variable}")
 	@Produces("application/json")
 	public Response getSetup(@PathParam("chainid") String chainid,
 			@PathParam("id") String id, @PathParam("variable") String variable) {
@@ -232,7 +232,7 @@ public class MonitorREST {
 	 * @return The required Chain Setup Info
 	 */
 	@GET
-	@Path("{chainid}/component/{id}/rawdata")
+	@Path("{chainid}/components/{id}/rawdata")
 	@Produces("application/json")
 	public Response getRawData(@PathParam("chainid") String chainid,
 			@PathParam("id") String id) {
@@ -261,7 +261,7 @@ public class MonitorREST {
 	 * @return The variable setup of the specific mediator
 	 */
 	@GET
-	@Path("{chainid}/component/{id}/rawdata/{variable}")
+	@Path("{chainid}/components/{id}/rawdata/{variable}")
 	@Produces("application/json")
 	public Response getRawData(@PathParam("chainid") String chainid,
 			@PathParam("id") String id, @PathParam("variable") String variable) {
@@ -286,7 +286,7 @@ public class MonitorREST {
 	}
 
 	@PUT
-	@Path("{chainid}/component/{id}/setup/{variable}/{concept}")
+	@Path("{chainid}/components/{id}/setup/{variable}/{concept}")
 	@Produces("application/json")
 	public Response modifySetup(@PathParam("chainid") String chainid,
 			@PathParam("id") String id, @PathParam("variable") String variable,
@@ -332,7 +332,7 @@ public class MonitorREST {
 	}
 
 	@PUT
-	@Path("{chainid}/component/{id}/threshold/{variable}/{concept}")
+	@Path("{chainid}/components/{id}/threshold/{variable}/{concept}")
 	@Produces("application/json")
 	public Response modifyThreshold(@PathParam("chainid") String chainid,
 			@PathParam("id") String id, @PathParam("variable") String variable,

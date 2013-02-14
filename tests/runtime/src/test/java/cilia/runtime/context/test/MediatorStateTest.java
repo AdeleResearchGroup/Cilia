@@ -122,7 +122,7 @@ public class MediatorStateTest {
 		MediatorComponent toto = cilia.getMediatorModel("toto", "toto");
 		
 		Assert.assertEquals(false,toto.isRunning());
-		Assert.assertEquals(MediatorComponent.INVALID, toto.getState());
+		Assert.assertEquals(MediatorComponent.State.INVALID, toto.getState());
 	}
 	@Test
 	public void mediatorDisposedState() {
@@ -142,7 +142,7 @@ public class MediatorStateTest {
 		MediatorComponent toto = cilia.getMediatorModel("toto", "toto");
 
 		Assert.assertEquals(false,toto.isRunning());
-		Assert.assertEquals(MediatorComponent.DISPOSED, toto.getState());
+		Assert.assertEquals(MediatorComponent.State.DISPOSED, toto.getState());
 	}
 	@Test
 	public void mediatorStopped(){
@@ -159,7 +159,7 @@ public class MediatorStateTest {
 		}
 		Assert.assertNotNull(titi);
 		Assert.assertEquals(false,titi.isRunning());
-		Assert.assertEquals(MediatorComponent.STOPPED, titi.getState());
+		Assert.assertEquals(MediatorComponent.State.STOPPED, titi.getState());
 	}
 
 	@Test
@@ -172,7 +172,7 @@ public class MediatorStateTest {
 		System.out.println("found chain "+ found);
 		MediatorComponent toto = cilia.getMediatorModel("toto", "validToto");
 		Assert.assertEquals(true,toto.isRunning());
-		Assert.assertEquals(MediatorComponent.VALID, toto.getState());
+		Assert.assertEquals(MediatorComponent.State.VALID, toto.getState());
 	}
 	@Test
 	public void mediatorInvalidSAfterCreateSpecification() {
@@ -185,12 +185,12 @@ public class MediatorStateTest {
 		MediatorComponent toto = cilia.getMediatorModel("toto", "toto");
 		System.out.println("Toto is running");
 		Assert.assertEquals(false,toto.isRunning());
-		Assert.assertEquals(MediatorComponent.INVALID, toto.getState());
+		Assert.assertEquals(MediatorComponent.State.INVALID, toto.getState());
 		//Now we create the toto mediator.
 		createTotoMediator();
 		CiliaHelper.waitSomeTime(3000);
 		Assert.assertEquals(true,toto.isRunning());
-		Assert.assertEquals(MediatorComponent.VALID, toto.getState());
+		Assert.assertEquals(MediatorComponent.State.VALID, toto.getState());
 	}
 	
 	private void createTotoMediator(){
