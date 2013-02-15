@@ -48,7 +48,8 @@ import fr.liglab.adele.cilia.util.concurrent.ConcurrentReaderHashMap;
 @SuppressWarnings({ "rawtypes", "unchecked" })
 public class MonitorHandlerStateVar extends AbstractMonitor {
 
-	private static Logger logger = LoggerFactory.getLogger(Const.LOGGER_RUNTIME);
+	private static Logger logger = LoggerFactory
+			.getLogger(Const.LOGGER_RUNTIME);
 
 	private BundleContext m_bundleContext;
 
@@ -84,7 +85,8 @@ public class MonitorHandlerStateVar extends AbstractMonitor {
 	}
 
 	private void configureStateVar(Dictionary configuration) {
-		Map configs = (Map) configuration.get(ConstRuntime.MONITORING_CONFIGURATION);
+		Map configs = (Map) configuration
+				.get(ConstRuntime.MONITORING_CONFIGURATION);
 		/* Retreive all state var enabled */
 		/* Set the data flow for all state Var */
 		if (configs != null) {
@@ -138,10 +140,12 @@ public class MonitorHandlerStateVar extends AbstractMonitor {
 		ServiceReference[] refs = null;
 		ServiceReference refEventAdmin;
 		try {
-			refs = m_bundleContext.getServiceReferences(EventAdmin.class.getName(), null);
+			refs = m_bundleContext.getServiceReferences(
+					EventAdmin.class.getName(), null);
 		} catch (InvalidSyntaxException e) {
 			logger.error("Event Admin  service lookup unrecoverable error");
-			throw new RuntimeException("Event Adminservice lookup unrecoverable error");
+			throw new RuntimeException(
+					"Event Adminservice lookup unrecoverable error");
 		}
 		if (refs != null)
 			refEventAdmin = refs[0];
@@ -177,7 +181,6 @@ public class MonitorHandlerStateVar extends AbstractMonitor {
 					firerVariableStatus(variableId, true);
 			}
 		}
-
 	}
 
 	private void stateVarConfiguration(String stateVarId, String ldapFilter) {
@@ -186,10 +189,11 @@ public class MonitorHandlerStateVar extends AbstractMonitor {
 
 		if ((ldapFilter != null) && (ldapFilter.length() > 0)) {
 			try {
-				cond = new Condition(getInstanceManager().getContext(), ldapFilter);
+				cond = new Condition(getInstanceManager().getContext(),
+						ldapFilter);
 			} catch (Exception ex) {
-				logger.error("Invalid LDAP syntax '" + ldapFilter + "' ,state variable '"
-						+ stateVarId + "'");
+				logger.error("Invalid LDAP syntax '" + ldapFilter
+						+ "' ,state variable '" + stateVarId + "'");
 				cond = null;
 			}
 		}
@@ -217,19 +221,15 @@ public class MonitorHandlerStateVar extends AbstractMonitor {
 			cond = item.condition;
 			if (cond != null) {
 				last_ticksCount = item.lastpublish.longValue();
-				fire = cond.match(
-						ticksCount,
-						Watch.fromTicksToMs(ticksCount)
-								- Watch.fromTicksToMs(last_ticksCount));
+				fire = cond.match(ticksCount, Watch.fromTicksToMs(ticksCount)
+						- Watch.fromTicksToMs(last_ticksCount));
 			} else {
 				fire = true;
 				item.lastpublish = new Long(ticksCount);
 			}
-
 		}
 		if (fire)
 			firer(stateVarId, data, ticksCount);
-
 	}
 
 	private void firer(String stateVarId, Object value, long ticksCount) {
@@ -250,13 +250,13 @@ public class MonitorHandlerStateVar extends AbstractMonitor {
 			if (item != null)
 				item.lastpublish = new Long(ticksCount);
 
-			m_eventAdmin = (EventAdmin) m_bundleContext.getService(refEventAdmin);
+			m_eventAdmin = (EventAdmin) m_bundleContext
+					.getService(refEventAdmin);
 			m_eventAdmin.postEvent(new Event(topic, data));
 			m_bundleContext.ungetService(refEventAdmin);
 			logger.debug("Node [{}] publish state variable  [{}]",
-						FrameworkUtils.makeQualifiedId(chainId, componentId, uuid) + ":"
-								+ stateVarId, value.toString());
-
+					FrameworkUtils.makeQualifiedId(chainId, componentId, uuid)
+							+ ":" + stateVarId, value.toString());
 		}
 	}
 
@@ -273,7 +273,8 @@ public class MonitorHandlerStateVar extends AbstractMonitor {
 			data.put(ConstRuntime.VARIABLE_ID, stateVarId);
 			data.put(ConstRuntime.VALUE, new Boolean(value));
 
-			m_eventAdmin = (EventAdmin) m_bundleContext.getService(refEventAdmin);
+			m_eventAdmin = (EventAdmin) m_bundleContext
+					.getService(refEventAdmin);
 			m_eventAdmin.postEvent(new Event(topic, data));
 			m_bundleContext.ungetService(refEventAdmin);
 		}
@@ -317,7 +318,8 @@ public class MonitorHandlerStateVar extends AbstractMonitor {
 			it = listData.iterator();
 			while (it.hasNext()) {
 				Data data = (Data) it.next();
-				data.setProperty(PROPERTY_MSG_HISTORY, new LinkedList(m_historyList));
+				data.setProperty(PROPERTY_MSG_HISTORY, new LinkedList(
+						m_historyList));
 				data.setProperty(PROPERTY_BINDING_TIME, watch);
 			}
 			m_historyList.clear();
@@ -332,22 +334,25 @@ public class MonitorHandlerStateVar extends AbstractMonitor {
 
 		if (isEnabled("scheduler.count")) {
 			m_counters[0]++;
-			m_systemQueue.execute(new AsynchronousExec("scheduler.count", new Long(
-					m_counters[0])));
+			m_systemQueue.execute(new AsynchronousExec("scheduler.count",
+					new Long(m_counters[0])));
 		}
 		if (isEnabled("scheduler.data")) {
-			m_systemQueue.execute(new AsynchronousExec("scheduler.data", new Data(data)));
+			m_systemQueue.execute(new AsynchronousExec("scheduler.data",
+					new Data(data)));
 		}
 		/* Computes the binding time */
 		if (isEnabled("transmission.delay")) {
 			if (data != null) {
 				synchronized (_lock) {
-					Watch watch = (Watch) data.getProperty(PROPERTY_BINDING_TIME);
+					Watch watch = (Watch) data
+							.getProperty(PROPERTY_BINDING_TIME);
 					data.removeProperty(PROPERTY_BINDING_TIME);
 					if (watch != null) {
-						long elapsedTime = Watch.fromTicksToMs(watch.getElapsedTicks());
-						m_systemQueue.execute(new AsynchronousExec("transmission.delay",
-								new Long(elapsedTime)));
+						long elapsedTime = Watch.fromTicksToMs(watch
+								.getElapsedTicks());
+						m_systemQueue.execute(new AsynchronousExec(
+								"transmission.delay", new Long(elapsedTime)));
 					}
 				}
 			}
@@ -357,8 +362,8 @@ public class MonitorHandlerStateVar extends AbstractMonitor {
 			/* Retreive history */
 			List list = (List) data.getProperty(PROPERTY_MSG_HISTORY);
 			if ((list != null) && (!list.isEmpty())) {
-				m_systemQueue.execute(new AsynchronousExec("message.history", new Data(
-						list)));
+				m_systemQueue.execute(new AsynchronousExec("message.history",
+						new Data(list)));
 			}
 		}
 	}
@@ -373,19 +378,23 @@ public class MonitorHandlerStateVar extends AbstractMonitor {
 		processTime = new Watch();
 		if (isEnabled("process.entry.count")) {
 			m_counters[1]++;
-			m_systemQueue.execute(new AsynchronousExec("process.entry.count", new Long(
-					m_counters[1])));
+			m_systemQueue.execute(new AsynchronousExec("process.entry.count",
+					new Long(m_counters[1])));
 		}
 		if (isEnabled("process.entry.data")) {
-			m_systemQueue.execute(new AsynchronousExec("process.entry.data", new Data(
-					data)));
+			Iterator it = data.iterator();
+			while (it.hasNext()) {
+				Data d = (Data) it.next();
+				m_systemQueue.execute(new AsynchronousExec(
+						"process.entry.data", new Data(d)));
+			}
 		}
 		if (isEnabled("process.msg.treated")) {
 			/* # number of messages treated */
 			if (data != null)
 				m_counters[8] = data.size();
-			m_systemQueue.execute(new AsynchronousExec("process.msg.treated", new Long(
-					m_counters[8])));
+			m_systemQueue.execute(new AsynchronousExec("process.msg.treated",
+					new Long(m_counters[8])));
 		}
 	}
 
@@ -398,15 +407,15 @@ public class MonitorHandlerStateVar extends AbstractMonitor {
 			injectTags(data);
 
 		if (isEnabled("processing.delay")) {
-			m_systemQueue.execute(new AsynchronousExec("processing.delay", new Long(Watch
-					.fromTicksToMs(processTime.getElapsedTicks()))));
+			m_systemQueue
+					.execute(new AsynchronousExec("processing.delay", new Long(
+							Watch.fromTicksToMs(processTime.getElapsedTicks()))));
 		}
 		if (isEnabled("process.exit.count")) {
 			m_counters[2]++;
-			m_systemQueue.execute(new AsynchronousExec("process.exit.count", new Long(
-					m_counters[2])));
+			m_systemQueue.execute(new AsynchronousExec("process.exit.count",
+					new Long(m_counters[2])));
 		}
-
 	}
 
 	public void onDispatch(List data) {
@@ -416,17 +425,22 @@ public class MonitorHandlerStateVar extends AbstractMonitor {
 
 		if (isEnabled("dispatch.count")) {
 			m_counters[3]++;
-			m_systemQueue.execute(new AsynchronousExec("dispatch.count", new Long(
-					m_counters[3])));
+			m_systemQueue.execute(new AsynchronousExec("dispatch.count",
+					new Long(m_counters[3])));
 		}
 		if (isEnabled("dispatch.data")) {
-			m_systemQueue.execute(new AsynchronousExec("dispatch.data", new Data(data)));
+			Iterator it = data.iterator();
+			while (it.hasNext()) {
+			 Data d = (Data)it.next();
+			m_systemQueue.execute(new AsynchronousExec("dispatch.data",
+					new Data(d)));
+			}
 		}
 		if (isEnabled("dispatch.msg.treated")) {
 			if (data != null)
 				m_counters[9] = data.size();
-			m_systemQueue.execute(new AsynchronousExec("dispatch.msg.treated", new Long(
-					m_counters[9])));
+			m_systemQueue.execute(new AsynchronousExec("dispatch.msg.treated",
+					new Long(m_counters[9])));
 		}
 
 	}
@@ -439,12 +453,12 @@ public class MonitorHandlerStateVar extends AbstractMonitor {
 		m_counters[4]++;
 		if (isEnabled("process.err.count")) {
 			m_counters[4]++;
-			m_systemQueue.execute(new AsynchronousExec("process.err.count", new Long(
-					m_counters[4])));
+			m_systemQueue.execute(new AsynchronousExec("process.err.count",
+					new Long(m_counters[4])));
 		}
 		if (isEnabled("process.err.data")) {
-			m_systemQueue
-					.execute(new AsynchronousExec("process.err.data", new Data(data)));
+			m_systemQueue.execute(new AsynchronousExec("process.err.data",
+					new Data(data)));
 		}
 	}
 
@@ -461,8 +475,8 @@ public class MonitorHandlerStateVar extends AbstractMonitor {
 		}
 		if (isEnabled("fire.event.count")) {
 			m_counters[5]++;
-			m_systemQueue.execute(new AsynchronousExec("fire.event.count", new Long(
-					m_counters[5])));
+			m_systemQueue.execute(new AsynchronousExec("fire.event.count",
+					new Long(m_counters[5])));
 		}
 	}
 
@@ -475,12 +489,13 @@ public class MonitorHandlerStateVar extends AbstractMonitor {
 			return;
 
 		if (isEnabled("service.arrival")) {
-			m_systemQueue.execute(new AsynchronousExec("service.arrival", info));
+			m_systemQueue
+					.execute(new AsynchronousExec("service.arrival", info));
 		}
 		if (isEnabled("service.arrival.count")) {
 			m_counters[6]++;
-			m_systemQueue.execute(new AsynchronousExec("service.arrival.count", new Long(
-					m_counters[6])));
+			m_systemQueue.execute(new AsynchronousExec("service.arrival.count",
+					new Long(m_counters[6])));
 		}
 	}
 
@@ -493,12 +508,13 @@ public class MonitorHandlerStateVar extends AbstractMonitor {
 			return;
 
 		if (isEnabled("service.departure")) {
-			m_systemQueue.execute(new AsynchronousExec("service.departure", info));
+			m_systemQueue.execute(new AsynchronousExec("service.departure",
+					info));
 		}
 		if (isEnabled("service.departure.count")) {
 			m_counters[7]++;
-			m_systemQueue.execute(new AsynchronousExec("service.departure.count",
-					new Long(m_counters[7])));
+			m_systemQueue.execute(new AsynchronousExec(
+					"service.departure.count", new Long(m_counters[7])));
 		}
 	}
 
@@ -513,8 +529,8 @@ public class MonitorHandlerStateVar extends AbstractMonitor {
 		}
 		if (isEnabled("field.get.count")) {
 			m_counters[10]++;
-			m_systemQueue.execute(new AsynchronousExec("field.get.count", new Long(
-					m_counters[10])));
+			m_systemQueue.execute(new AsynchronousExec("field.get.count",
+					new Long(m_counters[10])));
 		}
 
 	}
@@ -530,8 +546,8 @@ public class MonitorHandlerStateVar extends AbstractMonitor {
 		}
 		if (isEnabled("field.set.count")) {
 			m_counters[11]++;
-			m_systemQueue.execute(new AsynchronousExec("field.set.count", new Long(
-					m_counters[11])));
+			m_systemQueue.execute(new AsynchronousExec("field.set.count",
+					new Long(m_counters[11])));
 		}
 	}
 

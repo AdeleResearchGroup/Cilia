@@ -48,11 +48,19 @@
 		>
 	</handler>
 
+	<!-- A supprimer 
 	<handler
 		classname="fr.liglab.adele.cilia.framework.monitor.AuditHandler"
 		name="audit" namespace="fr.liglab.adele.cilia" >
 	</handler>
-
+	-->
+	
+	<!--  Handler to audit pojo variables (Scheduler/Processor/Dispatcher) -->
+	<handler 
+       classname ="fr.liglab.adele.cilia.handler.Audit"
+       name="audit" namespace="fr.liglab.adele.cilia.handler" >
+    </handler>
+    
 	<handler
 		classname="fr.liglab.adele.cilia.framework.monitor.statevariable.MonitorHandlerStateVar"
 		name="monitor-statevar-handler" namespace="fr.liglab.adele.cilia"

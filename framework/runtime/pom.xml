@@ -67,6 +67,7 @@
 							fr.liglab.adele.cilia.framework.monitor.statevariable,
 							fr.liglab.adele.cilia.runtime,
 							fr.liglab.adele.cilia.dependency,
+							fr.liglab.adele.cilia.handler,
 							fr.liglab.adele.cilia.knowledge,
 							fr.liglab.adele.cilia.knowledge.configuration
 						</Export-Package>
