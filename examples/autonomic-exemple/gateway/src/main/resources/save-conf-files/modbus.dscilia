@@ -1,0 +1,22 @@
+	<cilia xmlns:mon="http://adele.imag.fr/cilia/compendium/schema">
+		<chain type="simple-chain" id="SimpleChain">
+			<mediators>
+				<mediator-instance type="NormalizerMediator" 
+				     id="normalized-mediator" namespace="fr.examples.autonomic"/>
+			</mediators>
+			<adapters>
+				<adapter-instance type="console-adapter" id="console" />
+				<adapter-instance type="modbus-in-adapter" id="modbus" >
+					<property name="modbus.slave.address" value="255" />
+					<property name="read.holding.registers" >
+						<item key="2000" value="4" />
+					</property>
+				</adapter-instance >
+			</adapters>
+			<bindings>
+				<binding from="modbus:unique" to="normalized-mediator:in" />
+				<binding from="normalized-mediator:out" to="console:unique" />
+			</bindings>
+		</chain>
+	</cilia>
+
