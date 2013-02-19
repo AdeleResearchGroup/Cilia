@@ -16,7 +16,7 @@
 	<parent>
 		<groupId>fr.liglab.adele.cilia.joram-demo</groupId>
 		<artifactId>cilia-joram-distribution-1</artifactId>
-		<version>1.6.3-SNAPSHOT</version>
+		<version>1.6.4-SNAPSHOT</version>
 		<relativePath>../gateway01/</relativePath>
 	</parent>
 

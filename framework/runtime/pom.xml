@@ -94,7 +94,7 @@
 							org.apache.felix.ipojo.architecture,
 							org.apache.felix.ipojo.context, org.apache.felix.ipojo.metadata,
 							org.apache.felix.ipojo.parser, org.apache.felix.ipojo.util,
-							org.osgi.framework, org.osgi.service.event,
+							org.osgi.framework, org.osgi.service.event, org.osgi.service.packageadmin,
 							org.osgi.util.measurement, org.slf4j, org.w3c.dom, org.xml.sax
 						</Import-Package>
 						<IPOJO-Extension>
