@@ -35,7 +35,6 @@ public class RandomNumberCollector extends AbstractPullCollector  {
 		List<Data> list = new ArrayList<Data>(1);
 		long number = random.nextInt() % 100;
 		Dictionary<String, Object> metadata = new Hashtable<String, Object>();
-		metadata.put(Data.DATA_TYPE, Data.TEXT_DATA);
 		Data data = new Data(new Long(number),"random_number", metadata);
 		list.add(data);
 		return list;
