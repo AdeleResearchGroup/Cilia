@@ -1,0 +1,281 @@
+<behavior startdate="2011.10.20.00.00.00" factor="1440">
+
+	<create-person id="aurelie" type="Grandfather" />
+
+  <!--  including aurelie_apprentissage_3_jours.txt - start -->
+    <!--  including Aurelie_journee_modele_1.txt - start -->
+      <move-person-zone zoneId="bedroom"  	personId="aurelie" />	<delay value="420" />	<!-- till 7h00  -->
+      <move-person-zone zoneId="bathroom"  	personId="aurelie" />	<delay value="10" />	<!-- till 7h10  -->
+      <move-person-zone zoneId="kitchen"  	personId="aurelie" />	<delay value="50" />	<!-- till 8h00  -->
+      <move-person-zone zoneId="livingroom"  	personId="aurelie" />	<delay value="240" />	<!-- till 12h00  -->
+      <move-person-zone zoneId="kitchen"  	personId="aurelie" />	<delay value="60" />	<!-- till 13h00  -->
+      <move-person-zone zoneId="bedroom"  	personId="aurelie" />	<delay value="60" />	<!-- till 14h00  -->
+      <move-person-zone zoneId="livingroom"  	personId="aurelie" />	<delay value="280" />	<!-- till 18h40  -->
+      <move-person-zone zoneId="kitchen"  	personId="aurelie" />	<delay value="20" />	<!-- till 19h00  -->
+      <move-person-zone zoneId="livingroom"  	personId="aurelie" />	<delay value="120" />	<!-- till 21h00  -->
+      <move-person-zone zoneId="bathroom"  	personId="aurelie" />	<delay value="20" />	<!-- till 21h20  -->
+      <move-person-zone zoneId="bedroom"  	personId="aurelie" />	<delay value="60" />	<!-- till 22h20  -->
+      <move-person-zone zoneId="bedroom"  	personId="aurelie" />	<delay value="100" />	<!-- till 24h00  -->
+    <!--  including Aurelie_journee_modele_1.txt - end -->
+     
+    <!--  including Aurelie_journee_modele_1.txt - start -->
+      <move-person-zone zoneId="bedroom"  	personId="aurelie" />	<delay value="420" />	<!-- till 7h00  -->
+      <move-person-zone zoneId="bathroom"  	personId="aurelie" />	<delay value="10" />	<!-- till 7h10  -->
+      <move-person-zone zoneId="kitchen"  	personId="aurelie" />	<delay value="50" />	<!-- till 8h00  -->
+      <move-person-zone zoneId="livingroom"  	personId="aurelie" />	<delay value="240" />	<!-- till 12h00  -->
+      <move-person-zone zoneId="kitchen"  	personId="aurelie" />	<delay value="60" />	<!-- till 13h00  -->
+      <move-person-zone zoneId="bedroom"  	personId="aurelie" />	<delay value="60" />	<!-- till 14h00  -->
+      <move-person-zone zoneId="livingroom"  	personId="aurelie" />	<delay value="280" />	<!-- till 18h40  -->
+      <move-person-zone zoneId="kitchen"  	personId="aurelie" />	<delay value="20" />	<!-- till 19h00  -->
+      <move-person-zone zoneId="livingroom"  	personId="aurelie" />	<delay value="120" />	<!-- till 21h00  -->
+      <move-person-zone zoneId="bathroom"  	personId="aurelie" />	<delay value="20" />	<!-- till 21h20  -->
+      <move-person-zone zoneId="bedroom"  	personId="aurelie" />	<delay value="60" />	<!-- till 22h20  -->
+      <move-person-zone zoneId="bedroom"  	personId="aurelie" />	<delay value="100" />	<!-- till 24h00  -->
+    <!--  including Aurelie_journee_modele_1.txt - end -->
+     
+    <!--  including Aurelie_journee_modele_1.txt - start -->
+      <move-person-zone zoneId="bedroom"  	personId="aurelie" />	<delay value="420" />	<!-- till 7h00  -->
+      <move-person-zone zoneId="bathroom"  	personId="aurelie" />	<delay value="10" />	<!-- till 7h10  -->
+      <move-person-zone zoneId="kitchen"  	personId="aurelie" />	<delay value="50" />	<!-- till 8h00  -->
+      <move-person-zone zoneId="livingroom"  	personId="aurelie" />	<delay value="240" />	<!-- till 12h00  -->
+      <move-person-zone zoneId="kitchen"  	personId="aurelie" />	<delay value="60" />	<!-- till 13h00  -->
+      <move-person-zone zoneId="bedroom"  	personId="aurelie" />	<delay value="60" />	<!-- till 14h00  -->
+      <move-person-zone zoneId="livingroom"  	personId="aurelie" />	<delay value="280" />	<!-- till 18h40  -->
+      <move-person-zone zoneId="kitchen"  	personId="aurelie" />	<delay value="20" />	<!-- till 19h00  -->
+      <move-person-zone zoneId="livingroom"  	personId="aurelie" />	<delay value="120" />	<!-- till 21h00  -->
+      <move-person-zone zoneId="bathroom"  	personId="aurelie" />	<delay value="20" />	<!-- till 21h20  -->
+      <move-person-zone zoneId="bedroom"  	personId="aurelie" />	<delay value="60" />	<!-- till 22h20  -->
+      <move-person-zone zoneId="bedroom"  	personId="aurelie" />	<delay value="100" />	<!-- till 24h00  -->
+    <!--  including Aurelie_journee_modele_1.txt - end -->
+     
+  <!--  including aurelie_apprentissage_3_jours.txt - end -->
+   
+  <!--  including aurelie_habitudes_3_jours.txt - start -->
+    <!--  including aurelie_journee_normale.txt - start -->
+      <move-person-zone zoneId="bedroom"  	personId="aurelie" />	<delay value="420" />	<!-- till 7h00  -->
+      <move-person-zone zoneId="bathroom"  	personId="aurelie" />	<delay value="10" />	<!-- till 7h10  -->
+      <move-person-zone zoneId="bathroom"  	personId="aurelie" />	<delay value="10" />	<!-- till 7h20  -->
+      <move-person-zone zoneId="bedroom"  	personId="aurelie" />	<delay value="10" />	<!-- till 7h30  -->
+      <move-person-zone zoneId="kitchen"  	personId="aurelie" />	<delay value="30" />	<!-- till 8h00  -->
+      <move-person-zone zoneId="livingroom"  	personId="aurelie" />	<delay value="180" />	<!-- till 11h00  -->
+      <move-person-zone zoneId="bathroom"  	personId="aurelie" />	<delay value="10" />	<!-- till 11h10  -->
+      <move-person-zone zoneId="kitchen"  	personId="aurelie" />	<delay value="30" />	<!-- till 11h40  -->
+      <move-person-zone zoneId="livingroom"  	personId="aurelie" />	<delay value="20" />	<!-- till 12h00  -->
+      <move-person-zone zoneId="kitchen"  	personId="aurelie" />	<delay value="60" />	<!-- till 13h00  -->
+      <move-person-zone zoneId="bedroom"  	personId="aurelie" />	<delay value="60" />	<!-- till 14h00  -->
+      <move-person-zone zoneId="livingroom"  	personId="aurelie" />	<delay value="180" />	<!-- till 17h00  -->
+      <move-person-zone zoneId="kitchen"  	personId="aurelie" />	<delay value="10" />	<!-- till 17h10  -->
+      <move-person-zone zoneId="livingroom"  	personId="aurelie" />	<delay value="30" />	<!-- till 17h40  -->
+      <move-person-zone zoneId="livingroom"  	personId="aurelie" />	<delay value="60" />	<!-- till 18h40  -->
+      <move-person-zone zoneId="kitchen"  	personId="aurelie" />	<delay value="20" />	<!-- till 19h00  -->
+      <move-person-zone zoneId="livingroom"  	personId="aurelie" />	<delay value="30" />	<!-- till 19h30  -->
+      <move-person-zone zoneId="kitchen"  	personId="aurelie" />	<delay value="30" />	<!-- till 20h00  -->
+      <move-person-zone zoneId="livingroom"  	personId="aurelie" />	<delay value="120" />	<!-- till 22h00  -->
+      <move-person-zone zoneId="bathroom"  	personId="aurelie" />	<delay value="20" />	<!-- till 22h20  -->
+      <move-person-zone zoneId="bedroom"  	personId="aurelie" />	<delay value="100" />	<!-- till 24h00  -->
+    <!--  including aurelie_journee_normale.txt - end -->
+     
+    <!--  including aurelie_journee_normale.txt - start -->
+      <move-person-zone zoneId="bedroom"  	personId="aurelie" />	<delay value="420" />	<!-- till 7h00  -->
+      <move-person-zone zoneId="bathroom"  	personId="aurelie" />	<delay value="10" />	<!-- till 7h10  -->
+      <move-person-zone zoneId="bathroom"  	personId="aurelie" />	<delay value="10" />	<!-- till 7h20  -->
+      <move-person-zone zoneId="bedroom"  	personId="aurelie" />	<delay value="10" />	<!-- till 7h30  -->
+      <move-person-zone zoneId="kitchen"  	personId="aurelie" />	<delay value="30" />	<!-- till 8h00  -->
+      <move-person-zone zoneId="livingroom"  	personId="aurelie" />	<delay value="180" />	<!-- till 11h00  -->
+      <move-person-zone zoneId="bathroom"  	personId="aurelie" />	<delay value="10" />	<!-- till 11h10  -->
+      <move-person-zone zoneId="kitchen"  	personId="aurelie" />	<delay value="30" />	<!-- till 11h40  -->
+      <move-person-zone zoneId="livingroom"  	personId="aurelie" />	<delay value="20" />	<!-- till 12h00  -->
+      <move-person-zone zoneId="kitchen"  	personId="aurelie" />	<delay value="60" />	<!-- till 13h00  -->
+      <move-person-zone zoneId="bedroom"  	personId="aurelie" />	<delay value="60" />	<!-- till 14h00  -->
+      <move-person-zone zoneId="livingroom"  	personId="aurelie" />	<delay value="180" />	<!-- till 17h00  -->
+      <move-person-zone zoneId="kitchen"  	personId="aurelie" />	<delay value="10" />	<!-- till 17h10  -->
+      <move-person-zone zoneId="livingroom"  	personId="aurelie" />	<delay value="30" />	<!-- till 17h40  -->
+      <move-person-zone zoneId="livingroom"  	personId="aurelie" />	<delay value="60" />	<!-- till 18h40  -->
+      <move-person-zone zoneId="kitchen"  	personId="aurelie" />	<delay value="20" />	<!-- till 19h00  -->
+      <move-person-zone zoneId="livingroom"  	personId="aurelie" />	<delay value="30" />	<!-- till 19h30  -->
+      <move-person-zone zoneId="kitchen"  	personId="aurelie" />	<delay value="30" />	<!-- till 20h00  -->
+      <move-person-zone zoneId="livingroom"  	personId="aurelie" />	<delay value="120" />	<!-- till 22h00  -->
+      <move-person-zone zoneId="bathroom"  	personId="aurelie" />	<delay value="20" />	<!-- till 22h20  -->
+      <move-person-zone zoneId="bedroom"  	personId="aurelie" />	<delay value="100" />	<!-- till 24h00  -->
+    <!--  including aurelie_journee_normale.txt - end -->
+     
+    <!--  including aurelie_journee_normale.txt - start -->
+      <move-person-zone zoneId="bedroom"  	personId="aurelie" />	<delay value="420" />	<!-- till 7h00  -->
+      <move-person-zone zoneId="bathroom"  	personId="aurelie" />	<delay value="10" />	<!-- till 7h10  -->
+      <move-person-zone zoneId="bathroom"  	personId="aurelie" />	<delay value="10" />	<!-- till 7h20  -->
+      <move-person-zone zoneId="bedroom"  	personId="aurelie" />	<delay value="10" />	<!-- till 7h30  -->
+      <move-person-zone zoneId="kitchen"  	personId="aurelie" />	<delay value="30" />	<!-- till 8h00  -->
+      <move-person-zone zoneId="livingroom"  	personId="aurelie" />	<delay value="180" />	<!-- till 11h00  -->
+      <move-person-zone zoneId="bathroom"  	personId="aurelie" />	<delay value="10" />	<!-- till 11h10  -->
+      <move-person-zone zoneId="kitchen"  	personId="aurelie" />	<delay value="30" />	<!-- till 11h40  -->
+      <move-person-zone zoneId="livingroom"  	personId="aurelie" />	<delay value="20" />	<!-- till 12h00  -->
+      <move-person-zone zoneId="kitchen"  	personId="aurelie" />	<delay value="60" />	<!-- till 13h00  -->
+      <move-person-zone zoneId="bedroom"  	personId="aurelie" />	<delay value="60" />	<!-- till 14h00  -->
+      <move-person-zone zoneId="livingroom"  	personId="aurelie" />	<delay value="180" />	<!-- till 17h00  -->
+      <move-person-zone zoneId="kitchen"  	personId="aurelie" />	<delay value="10" />	<!-- till 17h10  -->
+      <move-person-zone zoneId="livingroom"  	personId="aurelie" />	<delay value="30" />	<!-- till 17h40  -->
+      <move-person-zone zoneId="livingroom"  	personId="aurelie" />	<delay value="60" />	<!-- till 18h40  -->
+      <move-person-zone zoneId="kitchen"  	personId="aurelie" />	<delay value="20" />	<!-- till 19h00  -->
+      <move-person-zone zoneId="livingroom"  	personId="aurelie" />	<delay value="30" />	<!-- till 19h30  -->
+      <move-person-zone zoneId="kitchen"  	personId="aurelie" />	<delay value="30" />	<!-- till 20h00  -->
+      <move-person-zone zoneId="livingroom"  	personId="aurelie" />	<delay value="120" />	<!-- till 22h00  -->
+      <move-person-zone zoneId="bathroom"  	personId="aurelie" />	<delay value="20" />	<!-- till 22h20  -->
+      <move-person-zone zoneId="bedroom"  	personId="aurelie" />	<delay value="100" />	<!-- till 24h00  -->
+    <!--  including aurelie_journee_normale.txt - end -->
+     
+  <!--  including aurelie_habitudes_3_jours.txt - end -->
+   
+  <!--  including aurelie_derive_10_jours.txt - start -->
+    <!--  including aurelie_derive_jour_1.txt - start -->
+      <move-person-zone zoneId="bedroom"  	personId="aurelie" />	<delay value="405" />	<!-- till 6h45  -->
+      <move-person-zone zoneId="bathroom"  	personId="aurelie" />	<delay value="10" />	<!-- till 6h55  -->
+      <move-person-zone zoneId="kitchen"  	personId="aurelie" />	<delay value="50" />	<!-- till 7h45  -->
+      <move-person-zone zoneId="livingroom"  	personId="aurelie" />	<delay value="240" />	<!-- till 11h45  -->
+      <move-person-zone zoneId="kitchen"  	personId="aurelie" />	<delay value="60" />	<!-- till 12h45  -->
+      <move-person-zone zoneId="bedroom"  	personId="aurelie" />	<delay value="60" />	<!-- till 13h45  -->
+      <move-person-zone zoneId="livingroom"  	personId="aurelie" />	<delay value="280" />	<!-- till 18h25  -->
+      <move-person-zone zoneId="kitchen"  	personId="aurelie" />	<delay value="20" />	<!-- till 18h45  -->
+      <move-person-zone zoneId="livingroom"  	personId="aurelie" />	<delay value="120" />	<!-- till 20h45  -->
+      <move-person-zone zoneId="bathroom"  	personId="aurelie" />	<delay value="20" />	<!-- till 21h5  -->
+      <move-person-zone zoneId="bedroom"  	personId="aurelie" />	<delay value="60" />	<!-- till 22h5  -->
+      <move-person-zone zoneId="bedroom"  	personId="aurelie" />	<delay value="115" />	<!-- till 24h00  -->
+    <!--  including aurelie_derive_jour_1.txt - end -->
+     
+    <!--  including aurelie_derive_jour_2.txt - start -->
+      <move-person-zone zoneId="bedroom"  	personId="aurelie" />	<delay value="390" />	<!-- till 6h30  -->
+      <move-person-zone zoneId="bathroom"  	personId="aurelie" />	<delay value="10" />	<!-- till 6h40  -->
+      <move-person-zone zoneId="kitchen"  	personId="aurelie" />	<delay value="50" />	<!-- till 7h30  -->
+      <move-person-zone zoneId="livingroom"  	personId="aurelie" />	<delay value="240" />	<!-- till 11h30  -->
+      <move-person-zone zoneId="kitchen"  	personId="aurelie" />	<delay value="60" />	<!-- till 12h30  -->
+      <move-person-zone zoneId="bedroom"  	personId="aurelie" />	<delay value="60" />	<!-- till 13h30  -->
+      <move-person-zone zoneId="livingroom"  	personId="aurelie" />	<delay value="280" />	<!-- till 18h10  -->
+      <move-person-zone zoneId="kitchen"  	personId="aurelie" />	<delay value="20" />	<!-- till 18h30  -->
+      <move-person-zone zoneId="livingroom"  	personId="aurelie" />	<delay value="120" />	<!-- till 20h30  -->
+      <move-person-zone zoneId="bathroom"  	personId="aurelie" />	<delay value="20" />	<!-- till 20h50  -->
+      <move-person-zone zoneId="bedroom"  	personId="aurelie" />	<delay value="60" />	<!-- till 21h50  -->
+      <move-person-zone zoneId="bedroom"  	personId="aurelie" />	<delay value="130" />	<!-- till 24h00  -->
+    <!--  including aurelie_derive_jour_2.txt - end -->
+     
+    <!--  including aurelie_derive_jour_3.txt - start -->
+      <move-person-zone zoneId="bedroom"  	personId="aurelie" />	<delay value="360" />	<!-- till 6h00  -->
+      <move-person-zone zoneId="bathroom"  	personId="aurelie" />	<delay value="10" />	<!-- till 6h10  -->
+      <move-person-zone zoneId="kitchen"  	personId="aurelie" />	<delay value="50" />	<!-- till 7h00  -->
+      <move-person-zone zoneId="livingroom"  	personId="aurelie" />	<delay value="240" />	<!-- till 11h00  -->
+      <move-person-zone zoneId="kitchen"  	personId="aurelie" />	<delay value="60" />	<!-- till 12h00  -->
+      <move-person-zone zoneId="bedroom"  	personId="aurelie" />	<delay value="60" />	<!-- till 13h00  -->
+      <move-person-zone zoneId="livingroom"  	personId="aurelie" />	<delay value="280" />	<!-- till 17h40  -->
+      <move-person-zone zoneId="kitchen"  	personId="aurelie" />	<delay value="20" />	<!-- till 18h00  -->
+      <move-person-zone zoneId="livingroom"  	personId="aurelie" />	<delay value="120" />	<!-- till 20h00  -->
+      <move-person-zone zoneId="bathroom"  	personId="aurelie" />	<delay value="20" />	<!-- till 20h20  -->
+      <move-person-zone zoneId="bedroom"  	personId="aurelie" />	<delay value="60" />	<!-- till 21h20  -->
+      <move-person-zone zoneId="bedroom"  	personId="aurelie" />	<delay value="160" />	<!-- till 24h00  -->
+    <!--  including aurelie_derive_jour_3.txt - end -->
+     
+    <!--  including aurelie_derive_jour_4.txt - start -->
+      <move-person-zone zoneId="bedroom"  	personId="aurelie" />	<delay value="330" />	<!-- till 5h30  -->
+      <move-person-zone zoneId="bathroom"  	personId="aurelie" />	<delay value="10" />	<!-- till 5h40  -->
+      <move-person-zone zoneId="kitchen"  	personId="aurelie" />	<delay value="50" />	<!-- till 6h30  -->
+      <move-person-zone zoneId="livingroom"  	personId="aurelie" />	<delay value="240" />	<!-- till 10h30  -->
+      <move-person-zone zoneId="kitchen"  	personId="aurelie" />	<delay value="60" />	<!-- till 11h30  -->
+      <move-person-zone zoneId="bedroom"  	personId="aurelie" />	<delay value="60" />	<!-- till 12h30  -->
+      <move-person-zone zoneId="livingroom"  	personId="aurelie" />	<delay value="280" />	<!-- till 17h10  -->
+      <move-person-zone zoneId="kitchen"  	personId="aurelie" />	<delay value="20" />	<!-- till 17h30  -->
+      <move-person-zone zoneId="livingroom"  	personId="aurelie" />	<delay value="120" />	<!-- till 19h30  -->
+      <move-person-zone zoneId="bathroom"  	personId="aurelie" />	<delay value="20" />	<!-- till 19h50  -->
+      <move-person-zone zoneId="bedroom"  	personId="aurelie" />	<delay value="60" />	<!-- till 20h50  -->
+      <move-person-zone zoneId="bedroom"  	personId="aurelie" />	<delay value="190" />	<!-- till 24h00  -->
+    <!--  including aurelie_derive_jour_4.txt - end -->
+     
+    <!--  including aurelie_derive_jour_5.txt - start -->
+      <move-person-zone zoneId="bedroom"  	personId="aurelie" />	<delay value="300" />	<!-- till 5h00  -->
+      <move-person-zone zoneId="bathroom"  	personId="aurelie" />	<delay value="10" />	<!-- till 5h10  -->
+      <move-person-zone zoneId="kitchen"  	personId="aurelie" />	<delay value="50" />	<!-- till 6h00  -->
+      <move-person-zone zoneId="livingroom"  	personId="aurelie" />	<delay value="240" />	<!-- till 10h00  -->
+      <move-person-zone zoneId="kitchen"  	personId="aurelie" />	<delay value="60" />	<!-- till 11h00  -->
+      <move-person-zone zoneId="bedroom"  	personId="aurelie" />	<delay value="60" />	<!-- till 12h00  -->
+      <move-person-zone zoneId="livingroom"  	personId="aurelie" />	<delay value="280" />	<!-- till 16h40  -->
+      <move-person-zone zoneId="kitchen"  	personId="aurelie" />	<delay value="20" />	<!-- till 17h00  -->
+      <move-person-zone zoneId="livingroom"  	personId="aurelie" />	<delay value="120" />	<!-- till 19h00  -->
+      <move-person-zone zoneId="bathroom"  	personId="aurelie" />	<delay value="20" />	<!-- till 19h20  -->
+      <move-person-zone zoneId="bedroom"  	personId="aurelie" />	<delay value="60" />	<!-- till 20h20  -->
+      <move-person-zone zoneId="bedroom"  	personId="aurelie" />	<delay value="220" />	<!-- till 24h00  -->
+    <!--  including aurelie_derive_jour_5.txt - end -->
+     
+    <!--  including aurelie_derive_jour_6.txt - start -->
+      <move-person-zone zoneId="bedroom"  	personId="aurelie" />	<delay value="270" />	<!-- till 4h30  -->
+      <move-person-zone zoneId="bathroom"  	personId="aurelie" />	<delay value="10" />	<!-- till 4h40  -->
+      <move-person-zone zoneId="kitchen"  	personId="aurelie" />	<delay value="50" />	<!-- till 5h30  -->
+      <move-person-zone zoneId="livingroom"  	personId="aurelie" />	<delay value="240" />	<!-- till 9h30  -->
+      <move-person-zone zoneId="kitchen"  	personId="aurelie" />	<delay value="60" />	<!-- till 10h30  -->
+      <move-person-zone zoneId="bedroom"  	personId="aurelie" />	<delay value="60" />	<!-- till 11h30  -->
+      <move-person-zone zoneId="livingroom"  	personId="aurelie" />	<delay value="280" />	<!-- till 16h10  -->
+      <move-person-zone zoneId="kitchen"  	personId="aurelie" />	<delay value="20" />	<!-- till 16h30  -->
+      <move-person-zone zoneId="livingroom"  	personId="aurelie" />	<delay value="120" />	<!-- till 18h30  -->
+      <move-person-zone zoneId="bathroom"  	personId="aurelie" />	<delay value="20" />	<!-- till 18h50  -->
+      <move-person-zone zoneId="bedroom"  	personId="aurelie" />	<delay value="60" />	<!-- till 19h50  -->
+      <move-person-zone zoneId="bedroom"  	personId="aurelie" />	<delay value="250" />	<!-- till 24h00  -->
+    <!--  including aurelie_derive_jour_6.txt - end -->
+     
+    <!--  including aurelie_derive_jour_7.txt - start -->
+      <move-person-zone zoneId="bedroom"  	personId="aurelie" />	<delay value="240" />	<!-- till 4h00  -->
+      <move-person-zone zoneId="bathroom"  	personId="aurelie" />	<delay value="10" />	<!-- till 4h10  -->
+      <move-person-zone zoneId="kitchen"  	personId="aurelie" />	<delay value="50" />	<!-- till 5h00  -->
+      <move-person-zone zoneId="livingroom"  	personId="aurelie" />	<delay value="240" />	<!-- till 9h00  -->
+      <move-person-zone zoneId="kitchen"  	personId="aurelie" />	<delay value="60" />	<!-- till 10h00  -->
+      <move-person-zone zoneId="bedroom"  	personId="aurelie" />	<delay value="60" />	<!-- till 11h00  -->
+      <move-person-zone zoneId="livingroom"  	personId="aurelie" />	<delay value="280" />	<!-- till 15h40  -->
+      <move-person-zone zoneId="kitchen"  	personId="aurelie" />	<delay value="20" />	<!-- till 16h00  -->
+      <move-person-zone zoneId="livingroom"  	personId="aurelie" />	<delay value="120" />	<!-- till 18h00  -->
+      <move-person-zone zoneId="bathroom"  	personId="aurelie" />	<delay value="20" />	<!-- till 18h20  -->
+      <move-person-zone zoneId="bedroom"  	personId="aurelie" />	<delay value="60" />	<!-- till 19h20  -->
+      <move-person-zone zoneId="bedroom"  	personId="aurelie" />	<delay value="280" />	<!-- till 24h00  -->
+    <!--  including aurelie_derive_jour_7.txt - end -->
+     
+    <!--  including aurelie_derive_jour_8.txt - start -->
+      <move-person-zone zoneId="bedroom"  	personId="aurelie" />	<delay value="210" />	<!-- till 3h30  -->
+      <move-person-zone zoneId="bathroom"  	personId="aurelie" />	<delay value="10" />	<!-- till 3h40  -->
+      <move-person-zone zoneId="kitchen"  	personId="aurelie" />	<delay value="50" />	<!-- till 4h30  -->
+      <move-person-zone zoneId="livingroom"  	personId="aurelie" />	<delay value="240" />	<!-- till 8h30  -->
+      <move-person-zone zoneId="kitchen"  	personId="aurelie" />	<delay value="60" />	<!-- till 9h30  -->
+      <move-person-zone zoneId="bedroom"  	personId="aurelie" />	<delay value="60" />	<!-- till 10h30  -->
+      <move-person-zone zoneId="livingroom"  	personId="aurelie" />	<delay value="280" />	<!-- till 15h10  -->
+      <move-person-zone zoneId="kitchen"  	personId="aurelie" />	<delay value="20" />	<!-- till 15h30  -->
+      <move-person-zone zoneId="livingroom"  	personId="aurelie" />	<delay value="120" />	<!-- till 17h30  -->
+      <move-person-zone zoneId="bathroom"  	personId="aurelie" />	<delay value="20" />	<!-- till 17h50  -->
+      <move-person-zone zoneId="bedroom"  	personId="aurelie" />	<delay value="60" />	<!-- till 18h50  -->
+      <move-person-zone zoneId="bedroom"  	personId="aurelie" />	<delay value="310" />	<!-- till 24h00  -->
+    <!--  including aurelie_derive_jour_8.txt - end -->
+     
+    <!--  including aurelie_derive_jour_9.txt - start -->
+      <move-person-zone zoneId="bedroom"  	personId="aurelie" />	<delay value="180" />	<!-- till 3h00  -->
+      <move-person-zone zoneId="bathroom"  	personId="aurelie" />	<delay value="10" />	<!-- till 3h10  -->
+      <move-person-zone zoneId="kitchen"  	personId="aurelie" />	<delay value="50" />	<!-- till 4h00  -->
+      <move-person-zone zoneId="livingroom"  	personId="aurelie" />	<delay value="240" />	<!-- till 8h00  -->
+      <move-person-zone zoneId="kitchen"  	personId="aurelie" />	<delay value="60" />	<!-- till 9h00  -->
+      <move-person-zone zoneId="bedroom"  	personId="aurelie" />	<delay value="60" />	<!-- till 10h00  -->
+      <move-person-zone zoneId="livingroom"  	personId="aurelie" />	<delay value="280" />	<!-- till 14h40  -->
+      <move-person-zone zoneId="kitchen"  	personId="aurelie" />	<delay value="20" />	<!-- till 15h00  -->
+      <move-person-zone zoneId="livingroom"  	personId="aurelie" />	<delay value="120" />	<!-- till 17h00  -->
+      <move-person-zone zoneId="bathroom"  	personId="aurelie" />	<delay value="20" />	<!-- till 17h20  -->
+      <move-person-zone zoneId="bedroom"  	personId="aurelie" />	<delay value="60" />	<!-- till 18h20  -->
+      <move-person-zone zoneId="bedroom"  	personId="aurelie" />	<delay value="340" />	<!-- till 24h00  -->
+    <!--  including aurelie_derive_jour_9.txt - end -->
+     
+    <!--  including aurelie_derive_jour_10.txt - start -->
+      <move-person-zone zoneId="bedroom"  	personId="aurelie" />	<delay value="150" />	<!-- till 2h30  -->
+      <move-person-zone zoneId="bathroom"  	personId="aurelie" />	<delay value="10" />	<!-- till 2h40  -->
+      <move-person-zone zoneId="kitchen"  	personId="aurelie" />	<delay value="50" />	<!-- till 3h30  -->
+      <move-person-zone zoneId="livingroom"  	personId="aurelie" />	<delay value="240" />	<!-- till 7h30  -->
+      <move-person-zone zoneId="kitchen"  	personId="aurelie" />	<delay value="60" />	<!-- till 8h30  -->
+      <move-person-zone zoneId="bedroom"  	personId="aurelie" />	<delay value="60" />	<!-- till 9h30  -->
+      <move-person-zone zoneId="livingroom"  	personId="aurelie" />	<delay value="280" />	<!-- till 14h10  -->
+      <move-person-zone zoneId="kitchen"  	personId="aurelie" />	<delay value="20" />	<!-- till 14h30  -->
+      <move-person-zone zoneId="livingroom"  	personId="aurelie" />	<delay value="120" />	<!-- till 16h30  -->
+      <move-person-zone zoneId="bathroom"  	personId="aurelie" />	<delay value="20" />	<!-- till 16h50  -->
+      <move-person-zone zoneId="bedroom"  	personId="aurelie" />	<delay value="60" />	<!-- till 17h50  -->
+      <move-person-zone zoneId="bedroom"  	personId="aurelie" />	<delay value="370" />	<!-- till 24h00  -->
+    <!--  including aurelie_derive_jour_10.txt - end -->
+     
+  <!--  including aurelie_derive_10_jours.txt - end -->
+   
+</behavior>

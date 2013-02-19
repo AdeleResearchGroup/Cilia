@@ -1,0 +1,34 @@
+<behavior startdate="2011.10.27.00.00.00" factor="1440">
+
+	<!-- Zone Section -->
+
+	<create-zone id="kitchen" leftX="407" topY="370" width="219" height="187" />
+
+
+	<create-zone id="bathroom" leftX="83" topY="55" width="235" height="311" />
+
+
+	<create-zone id="bedroom" leftX="93" topY="371" width="216" height="176" />
+
+
+	<create-zone id="sallon" leftX="408" topY="58" width="217" height="305" />
+
+
+	<!-- Device Section -->
+
+	<create-device id="PresenceSensor-84fd30afff" type="iCASA.PresenceSensor" />
+	<move-device-zone deviceId="PresenceSensor-84fd30afff" zoneId="kitchen" />
+
+	<create-device id="PresenceSensor-77ebda7fff" type="iCASA.PresenceSensor" />
+	<move-device-zone deviceId="PresenceSensor-77ebda7fff" zoneId="bedroom" />
+
+	<create-device id="PresenceSensor-13d06103ff" type="iCASA.PresenceSensor" />
+	<move-device-zone deviceId="PresenceSensor-13d06103ff" zoneId="sallon" />
+
+	<create-device id="PresenceSensor-12b28069ff" type="iCASA.PresenceSensor" />
+	<move-device-zone deviceId="PresenceSensor-12b28069ff" zoneId="bathroom" />
+
+
+	<!-- Person Section -->
+
+</behavior>
