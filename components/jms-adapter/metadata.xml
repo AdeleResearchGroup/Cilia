@@ -17,6 +17,7 @@
 			<property name="jms.port" method="setPort" value="16010" />
 			<property name="jms.login" method="setLogin" value="root" />
 			<property name="jms.password" method="setPassword" value="root" />
+			
 		</properties>
 		<callback transition="validate" method="start" />
 		<callback transition="invalidate" method="stop" />
@@ -30,6 +31,7 @@
 			<property name="jms.port" method="setPort" value="16010" />
 			<property name="jms.login" method="setLogin" value="root" />
 			<property name="jms.password" method="setPassword" value="root" />
+			<property name="jms.message" method="setMessageOption" value="serialized_data" />
 		</properties>
 		<callback transition="validate" method="start" />
 		<callback transition="invalidate" method="stop" />

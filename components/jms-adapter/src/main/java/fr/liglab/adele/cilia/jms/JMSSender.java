@@ -14,11 +14,15 @@
  */
 package fr.liglab.adele.cilia.jms;
 
+import java.io.IOException;
+import java.io.Serializable;
 import java.util.Date;
 import java.util.Enumeration;
 
 import javax.jms.JMSException;
 import javax.jms.MapMessage;
+import javax.jms.Message;
+import javax.jms.ObjectMessage;
 import javax.jms.Session;
 import javax.jms.TextMessage;
 import javax.jms.Topic;
@@ -33,6 +37,7 @@ import org.slf4j.LoggerFactory;
 
 import fr.liglab.adele.cilia.Data;
 import fr.liglab.adele.cilia.framework.ISender;
+import fr.liglab.adele.cilia.runtime.SerializedData;
 import fr.liglab.adele.cilia.util.Const;
 
 
@@ -48,18 +53,20 @@ public class JMSSender implements ISender{
 
 	private int port;
 
+	private Option option;
+
 	private TopicConnection cnx;
 
 	private TopicSession session;
 
 	private TopicPublisher publisher;
-	
+
 	private Topic topic = null;
-	
+
 	private static final Logger log = LoggerFactory.getLogger(Const.LOGGER_APPLICATION);
-	
+
 	public void start() {
-		
+
 		try {
 			// creates the connection
 			cnx = CiliaJoramTool.createTopicConnection(login, password, hostname, port);
@@ -76,6 +83,7 @@ public class JMSSender implements ISender{
 		}
 	}
 
+
 	public void stop() {
 		try {
 			cnx.close();
@@ -85,13 +93,50 @@ public class JMSSender implements ISender{
 		}
 
 	}
-	
+
 	public boolean send(Data data) {
+		boolean returnValue = true;
+		Message message = null;
+		/**TODO: 
+		 * Send the Data with the content as an byte array.
+		 * Send the also the classname
+		 * In the collector, locate the classloader containing the classname, and recreate it with the byte array
+		 * The classloader will be localizated using BundleCapabilities. The attribute is the package
+		 * Attribute name osgi.wiring.package 
+		*/
+		switch(option){
+		case map_elements: 
+			message =  prepareMapElements(data);
+			break;
+
+		case only_content: 
+			message = prepareOnlyContent(data);
+			break;
+
+		case serialized_data: 
+			message = prepareSerializedData(data);
+			break;
+		}
+		log.trace("[JMSSender] Sending message {}", data);
+		try {
+			if (message == null){
+				log.error("[JMSSender] unable to message, somme error happend when creating JMS message with " + data);
+			} else {
+				publisher.publish(message);
+			}
+		} catch (JMSException e) {
+			log.error("[JMSSender] unable to send message {}", data);
+			e.printStackTrace();
+			returnValue = false;
+		}
+		return returnValue;
+	}
+
+	private Message prepareMapElements(Data data) {
 		MapMessage message;
 		try {
 			message = session.createMapMessage();
 			Enumeration<String> keys = data.getAllData().keys();
-			
 			while (keys.hasMoreElements()) {
 				String key = keys.nextElement().toString();
 				Object object = data.getProperty(key);
@@ -102,49 +147,95 @@ public class JMSSender implements ISender{
 					message.setObject(key, dobj.getTime());
 				}
 			}
-			log.trace("[JMSSender] Sending message {}", data);
-			publisher.publish(message);
+			return message;
+
 		} catch (JMSException e) {
-			log.error("[JMSSender] unable to send message {}", data);
+			log.error("[JMSSender] unable to prepare map message {}", data);
 			e.printStackTrace();
-			return false;
+			return null;
 		}
-		return true;
+	}
+	private Message prepareOnlyContent(Data data){
+		ObjectMessage message = null;
+		try {
+			message = session.createObjectMessage();
+			Object object = data.getContent();
+			if (object instanceof Serializable){
+				Serializable sobject = (Serializable)object;
+				message.setObject(sobject);
+			} else {
+				log.error("[JMSSender] unable to serialize content data {}", data.getContent());
+				return null;
+			}
+			return message;
+
+		} catch (JMSException e) {
+			log.error("[JMSSender] unable to prepare data content{}", data);
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
+	private Message prepareSerializedData(Data data) {
+		ObjectMessage message = null;
+
+		try {
+			SerializedData ndata = new SerializedData(data);
+			ndata.serializeContent();
+			message = session.createObjectMessage();
+			message.setObject(ndata);
+			return message;
+		} catch (Exception e) {
+			log.error("[JMSSender] unable to prepare data {}", data);
+			e.printStackTrace();
+			return null;
+		}
 	}
 
-	
+
 	/**
 	 * @param stopic the stopic to set
 	 */
 	public void setTopic(String stopic) {
 		this.stopic = stopic;
 	}
-	
+
 	/**
 	 * @param login the login to set
 	 */
 	public void setLogin(String login) {
 		this.login = login;
 	}
-	
+
 	/**
 	 * @param password the password to set
 	 */
 	public void setPassword(String password) {
 		this.password = password;
 	}
-	
+
 	/**
 	 * @param hostname the hostname to set
 	 */
 	public void setHostname(String hostname) {
 		this.hostname = hostname;
 	}
-	
+
 	/**
 	 * @param port the port to set
 	 */
 	public void setPort(int port) {
 		this.port = port;
 	}
+	
+	public void setMessageOption(String message){
+		if (message.compareToIgnoreCase(Option.map_elements.name()) == 0){
+			option = Option.map_elements;
+		} else if (message.compareToIgnoreCase(Option.only_content.name()) == 0){
+			option = Option.only_content;
+		} else {
+			option = Option.serialized_data;
+		}
+	}
+
 }

@@ -29,11 +29,13 @@ import javax.jms.TopicConnectionFactory;
 import javax.jms.TopicSession;
 import javax.jms.TopicSubscriber;
 
+import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import fr.liglab.adele.cilia.Data;
 import fr.liglab.adele.cilia.framework.AbstractCollector;
+import fr.liglab.adele.cilia.runtime.SerializedData;
 import fr.liglab.adele.cilia.util.Const;
 
 /**
@@ -57,9 +59,15 @@ public class JMSCollector extends AbstractCollector implements MessageListener {
 	private static TopicConnectionFactory joramTopicConnectionFactory = null;
 	private TopicConnection cnx = null;
 	private TopicSubscriber subscriber = null;
+	
+	private BundleContext bcontext;
 
 	private static final Logger log = LoggerFactory.getLogger(Const.LOGGER_APPLICATION);
 
+	public JMSCollector(BundleContext context){
+		bcontext = context;
+	}
+	
 	private void start() {
 		try {
 			cnx = CiliaJoramTool.createTopicConnection(login, password, hostname, port);
@@ -97,7 +105,9 @@ public class JMSCollector extends AbstractCollector implements MessageListener {
 	 */
 	public void onMessage(Message msg) {
 		log.trace("[JMSCollector] message arrive");
+		Data ndata = null;
 		Enumeration enume = null;
+		boolean hasCiliaData = false;
 		try {
 			enume = msg.getPropertyNames();
 			Object content = null;
@@ -106,7 +116,18 @@ public class JMSCollector extends AbstractCollector implements MessageListener {
 			if (msg instanceof TextMessage) {
 				content = ((TextMessage) msg).getText();
 			} else if (msg instanceof ObjectMessage) {
-				content = ((ObjectMessage) msg).getObject();
+				//Swap class loader
+				ClassLoader oldCL = Thread.currentThread().getContextClassLoader();
+				ClassLoader thCL = this.getClass().getClassLoader();
+				Thread.currentThread().setContextClassLoader(thCL);
+				try {
+					content = ((ObjectMessage) msg).getObject();
+				} finally {
+					Thread.currentThread().setContextClassLoader(oldCL);
+				}
+				if (content instanceof Data){
+					hasCiliaData = true;
+				}
 			} else if (msg instanceof MapMessage) {
 				MapMessage message = (MapMessage)msg;
 				enume = message.getMapNames();
@@ -122,47 +143,62 @@ public class JMSCollector extends AbstractCollector implements MessageListener {
 					dico.put(propname, ob);
 				}
 			}
-			Data ndata = new Data(content, name, dico);
+			if (hasCiliaData){
+				if (content instanceof SerializedData){
+					SerializedData cdata = (SerializedData)content;
+					ndata = cdata.deserializeContent(bcontext);
+				} else {
+					ndata = new Data((Data)content);
+				}
+			} else {
+				ndata = new Data(content, name, dico);
+			}
+
 			log.trace("[JMSCollector] message content", ndata);
 			notifyDataArrival(ndata);
-			
-		} catch (JMSException e) {
+
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
-	
+
 	/**
 	 * @param stopic the stopic to set
 	 */
 	public void setTopic(String stopic) {
 		this.stopic = stopic;
 	}
-	
+
 	/**
 	 * @param login the login to set
 	 */
 	public void setLogin(String login) {
 		this.login = login;
 	}
-	
+
 	/**
 	 * @param password the password to set
 	 */
 	public void setPassword(String password) {
 		this.password = password;
 	}
-	
+
 	/**
 	 * @param hostname the hostname to set
 	 */
 	public void setHostname(String hostname) {
 		this.hostname = hostname;
 	}
-	
+
 	/**
 	 * @param port the port to set
 	 */
 	public void setPort(int port) {
 		this.port = port;
+	}
+	
+	private void switchClassLoader(){
+		
+		
 	}
 }

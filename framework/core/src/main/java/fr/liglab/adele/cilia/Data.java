@@ -15,6 +15,7 @@
 
 package fr.liglab.adele.cilia;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.Dictionary;
 import java.util.Enumeration;
@@ -34,17 +35,17 @@ import fr.liglab.adele.cilia.util.concurrent.ReentrantWriterPreferenceReadWriteL
  */
 
 //@SuppressWarnings({"rawtypes", "unchecked"})
-public class Data {
+public class Data implements Serializable {
 
 	/**
 	 * All the data will be stored in this Data dictionary.
 	 */
-	private Hashtable <String, Object> data = new Hashtable <String, Object> ();
+	protected Hashtable <String, Object> data = new Hashtable <String, Object> ();
 
 	/**
 	 * The lock used to keep data integrity.
 	 */
-	private ReadWriteLock lock = new ReentrantWriterPreferenceReadWriteLock();
+	protected transient ReadWriteLock lock = new ReentrantWriterPreferenceReadWriteLock();
 
 	/**
 	 * This name is not used as a key to obtain data content. The only purpose
@@ -101,15 +102,7 @@ public class Data {
 	/**
 	 * Data Types. // Not used actually.
 	 */
-	public static final String OBJECT_DATA = "object";
-	/**
-	 * Data Types. // Not used actually
-	 */
-	public static final String TEXT_DATA = "text";
-	/**
-	 * Data Types. // Not used actually
-	 */
-	public static final String BYTE_DATA = "byte";
+	public static final String CONTENT_CLASSNAME = "content.classname";
 
 	/**
 	 * Return address.
@@ -117,6 +110,8 @@ public class Data {
 	public static final String RETURN_ADDRESS = "data.return.address";
 
 	private static final String DATA_TARGET = "data.source";
+	
+
 
 	/**
 	 * Private verbatim copy constructor.
@@ -151,6 +146,7 @@ public class Data {
 		Date timestampF = null;
 		if (content != null) {
 			data.put(DATA_CONTENT, content);
+			data.put(CONTENT_CLASSNAME, content.getClass().getName());
 		}
 
 		if (name == null) {
@@ -258,6 +254,9 @@ public class Data {
 				lock.writeLock().acquire();
 				try {
 					this.data.put(key, value);
+					if (CONTENT_CLASSNAME.equals(key)){
+						data.put(CONTENT_CLASSNAME, value.getClass().getName());
+					}
 				} finally {
 					lock.writeLock().release();
 				}
@@ -457,5 +456,5 @@ public class Data {
 		sb.append(allData.toString());
 		return sb.toString();
 	}
-
+	
 }
