@@ -64,21 +64,26 @@ public class RawDataImpl extends NodeImpl implements RawData {
 		return getModel().measures(variableId);
 	}
 
+	public int viability(String variableId, Measure m)
+			throws CiliaIllegalParameterException, CiliaIllegalStateException {
+		return getModel().viability(variableId, m);
+	}
+
 	public String[] getAllEnabledVariable() throws CiliaIllegalStateException {
-		Set listEnabled ;
+		Set listEnabled;
 		MediatorMonitoring m = registry.getAndStore(uuid);
-		Map config = ConfigurationHelper.getRootConfig(m.getModel()) ;
-		listEnabled = ConfigurationHelper.getEnabledVariable(config) ;
+		Map config = ConfigurationHelper.getRootConfig(m.getModel());
+		listEnabled = ConfigurationHelper.getEnabledVariable(config);
 		return (String[]) listEnabled.toArray(new String[listEnabled.size()]);
 	}
 
 	public boolean getStateVariableState(String variableId)
 			throws CiliaIllegalStateException, CiliaIllegalParameterException {
-		Set listEnabled ;
+		Set listEnabled;
 		ConfigurationHelper.checkStateVarId(variableId);
 		MediatorMonitoring m = registry.getAndStore(uuid);
-		Map config = ConfigurationHelper.getRootConfig(m.getModel()) ;
-		listEnabled = ConfigurationHelper.getEnabledVariable(config) ;
+		Map config = ConfigurationHelper.getRootConfig(m.getModel());
+		listEnabled = ConfigurationHelper.getEnabledVariable(config);
 		return listEnabled.contains(variableId);
 	}
 
@@ -88,9 +93,10 @@ public class RawDataImpl extends NodeImpl implements RawData {
 		for (String variable : variables) {
 			Map variableMap = new HashMap();
 			try {
-				variableMap.put("enable",String.valueOf(getStateVariableState(variable)));
+				variableMap
+						.put("enable", String.valueOf(getStateVariableState(variable)));
 				Measure _measures[] = measures(variable);
-				List measures = new ArrayList(); 
+				List measures = new ArrayList();
 				for (Measure measure : _measures) {
 					measures.add(measure.toMap());
 				}

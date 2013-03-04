@@ -53,8 +53,7 @@ import fr.liglab.adele.cilia.util.concurrent.ConcurrentReaderHashMap;
  * 
  */
 @SuppressWarnings({ "rawtypes", "unchecked" })
-public class EventsManagerImpl implements TrackerCustomizer, EventsConfiguration,
-		FirerEvents {
+public class EventsManagerImpl implements TrackerCustomizer, Eventing{
 	private static int TIMEOUT = 1000; /*
 										 * Max time allowed per subscribers : 1
 										 * second

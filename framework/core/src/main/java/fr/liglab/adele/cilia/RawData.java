@@ -42,15 +42,15 @@ public interface RawData extends Node {
 	 * @return list of state variables enabled
 	 */
 	String[] getAllEnabledVariable() throws CiliaIllegalStateException;
-	/** 
-	 * @param variableId 
+
+	/**
+	 * @param variableId
 	 * @return true if state enable , false disable
 	 * @throws CiliaIllegalStateException
 	 * @throws CiliaIllegalParameterException
 	 */
 	boolean getStateVariableState(String variableId) throws CiliaIllegalStateException,
 			CiliaIllegalParameterException;
-
 
 	/**
 	 * @param variableId
@@ -59,6 +59,17 @@ public interface RawData extends Node {
 	 */
 	Measure[] measures(String variableId) throws CiliaIllegalParameterException,
 			CiliaIllegalStateException;
+
+	/**
+	 * checks if the measure is out of bounds
+	 * 
+	 * @return ThresholdsCallback.NONE ,
+	 *         ThresholdsCallback.VERY_LOW,ThresholdsCallback.LOW
+	 *         ThresholdsCallback.HIGH, ThresholdsCallback.VERY_HIGH
+	 * 
+	 */
+	int viability(String variableId, Measure measure)
+			throws CiliaIllegalParameterException, CiliaIllegalStateException;
 
 	Map toMap();
 

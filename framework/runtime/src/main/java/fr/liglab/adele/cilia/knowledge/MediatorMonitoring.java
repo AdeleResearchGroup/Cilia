@@ -115,6 +115,10 @@ public class MediatorMonitoring implements ModelExtension {
 		logger.info("Received variable [{},{}]", variableId, measure.toString());
 	}
 
+	public int viability(String variableId,Measure measure) {
+		return  getObservations(variableId).viability(measure);
+	}
+	
 	
 	public void setQueueSize(String variableId, int queueSize) {
 		try {
@@ -360,6 +364,20 @@ public class MediatorMonitoring implements ModelExtension {
 			}
 		}
 
+		public int viability(Measure m) {
+			if ((m != null) && (m.value() instanceof Long)) {
+				Long l = (Long) m.value();
+				if ((threshold[0] != Double.NaN) && (l.longValue() < threshold[0]))
+					return ThresholdsCallback.VERY_LOW;
+				if ((threshold[1] != Double.NaN) && (l.longValue() < threshold[1]))
+					return ThresholdsCallback.LOW;
+				if ((threshold[3] != Double.NaN) && (l.longValue() > threshold[3]))
+					return ThresholdsCallback.VERY_HIGH;
+				if ((threshold[2] != Double.NaN) && (l.longValue() > threshold[2]))
+					return ThresholdsCallback.VERY_HIGH;
+			}
+			return ThresholdsCallback.NONE;
+		}
 
 		public void setQueueSize(int queue) {
 			try {
@@ -420,20 +438,7 @@ public class MediatorMonitoring implements ModelExtension {
 			return threshold[3];
 		}
 
-		public int viability(Measure m) {
-			if ((m != null) && (m.value() instanceof Long)) {
-				Long l = (Long) m.value();
-				if ((threshold[0] != Double.NaN) && (l.longValue() < threshold[0]))
-					return ThresholdsCallback.VERY_LOW;
-				if ((threshold[1] != Double.NaN) && (l.longValue() < threshold[1]))
-					return ThresholdsCallback.LOW;
-				if ((threshold[3] != Double.NaN) && (l.longValue() > threshold[3]))
-					return ThresholdsCallback.VERY_HIGH;
-				if ((threshold[2] != Double.NaN) && (l.longValue() > threshold[2]))
-					return ThresholdsCallback.VERY_HIGH;
-			}
-			return ThresholdsCallback.NONE;
-		}
+
 	}
 
 }
