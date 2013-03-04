@@ -87,6 +87,7 @@ public class AdapterImpl  extends MediatorComponentImpl implements Adapter{
 		sb.append("Pattern : ").append(getPattern().getName()).append(",\n");
 		sb.append("ID : ").append(getId()).append(",\n");
 		sb.append("State : ").append(getState()).append(",\n");
+		sb.append("Version: ").append(getVersion()).append(",\n");
 		sb.append("Creation date :"+Watch.formatDateIso8601(timeStamp())).append(",\n");
 		sb.append("Properties:").append(super.getProperties());
 		sb.append("\n}");
@@ -100,6 +101,7 @@ public class AdapterImpl  extends MediatorComponentImpl implements Adapter{
 		result.put("Namespace", getNamespace());
 		result.put("ID", getId());
 		result.put("State", getState());
+		result.put("Version", getVersion());
 		result.put("Creation date", Watch.formatDateIso8601(timeStamp()));
 		result.put("Properties", super.getProperties());
 		return result;

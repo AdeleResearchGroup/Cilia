@@ -93,6 +93,10 @@ public abstract class MediatorComponentManager extends InstanceManager {
 		return this.mfactory.getOutPort(name);
 	}
 
+	public String getVersion(){
+		return this.mfactory.getVersion();
+	}
+	
 	public void startManagers() {
 		updateSchedulerManager();
 		updateDispatcherManager();

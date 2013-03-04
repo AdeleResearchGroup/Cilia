@@ -176,6 +176,10 @@ public class MediatorControllerImpl implements Observer {
 		if (mediatorInstance.getState() == ComponentInstance.VALID) {
 			createCollectorInstances();
 			createSenderInstances();
+			//update the mediator version in model.
+			MediatorComponentManager mcm = (MediatorComponentManager) (mediatorInstance
+					.getInstanceManager());
+			mediatorModel.setVersion(mcm.getVersion());
 		}
 	}
 

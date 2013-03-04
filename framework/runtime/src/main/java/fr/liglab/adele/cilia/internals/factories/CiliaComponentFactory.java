@@ -17,151 +17,172 @@ import fr.liglab.adele.cilia.util.Const;
 
 public abstract class CiliaComponentFactory extends ComponentFactory {
 
-    private String componentName;
+	private String componentName;
 
-    public String getComponentName() {
-        return componentName;
-    }
+	private String version;
 
-    public void setComponentName(String componentName) {
-        this.componentName = componentName;
-    }
+	public String getComponentName() {
+		return componentName;
+	}
 
-    public String getCategory() {
-        return category;
-    }
+	public void setComponentName(String componentName) {
+		this.componentName = componentName;
+	}
 
-    public void setCategory(String category) {
-        this.category = category;
-    }
+	public String getCategory() {
+		return category;
+	}
 
-    public String getNamespace() {
-        return namespace;
-    }
+	public void setCategory(String category) {
+		this.category = category;
+	}
 
-    public void setNamespace(String namespace) {
-        this.namespace = namespace;
-    }
+	public String getNamespace() {
+		return namespace;
+	}
 
-    private String category;
+	public void setNamespace(String namespace) {
+		this.namespace = namespace;
+	}
 
-    private String namespace;
+	public void setVersion(String version){
+		this.version = version;
+	}
 
-    private final  String CATEGORY = getComponentType()  + ".category";
+	public String getVersion() {
+		return version;
+	}
 
-    private final  String NAME = getComponentType()  + ".name";
+	private String category;
 
-    private final  String NAMESPACE = getComponentType()  + ".namespace";
+	private String namespace;
+	
+	private final  String VERSION = getComponentType()  + ".version";
+	
+	private final String DEFAULT_VERSION = "1.0.0";
 
-    protected final  String DEFAULT_NAMESPACE = Const.CILIA_NAMESPACE;
+	private final  String CATEGORY = getComponentType()  + ".category";
 
-    private final  String DEFAULT_CATEGORY = "generic";
-    
+	private final  String NAME = getComponentType()  + ".name";
 
-    public CiliaComponentFactory(BundleContext context, Element element)
-    throws ConfigurationException {
-        super(context, element);
-        // Get the name
-        componentName = element.getAttribute("name");
-        if (componentName == null) {
-            throw new ConfigurationException("An "+getComponentType()+" needs a name");
-        }
-        Attribute[] at = element.getAttributes();
-        // at[0].
-        // Get the category
-        String cat = element.getAttribute("category");
-        if (cat != null) {
-            category = cat;
-        } else {
-            category = DEFAULT_CATEGORY;
-        }
+	private final  String NAMESPACE = getComponentType()  + ".namespace";
 
-        String nspace = element.getAttribute("namespace");
-        if (nspace!=null && nspace.length()<1) {
-        	throw new ConfigurationException("An "+getComponentType()+" needs a valid namespace");
-        }
-        if (nspace != null) {
-            namespace = nspace.toLowerCase();
-        }
-        else {
-            namespace = DEFAULT_NAMESPACE;
-        }
+	protected final  String DEFAULT_NAMESPACE = Const.CILIA_NAMESPACE;
 
-        addRequiresHandler();
-    }
+	private final  String DEFAULT_CATEGORY = "generic";
 
-    protected void addRequiresHandler() {
-        boolean addRequires = false;
-        Element props[] = m_componentMetadata.getElements("Properties");
-        Element properties;
-        if (props != null && props.length > 0) {
-            properties = props[0];
-        } else {
-            return;
-        }
-        Element property[] = properties.getElements("Property");
-        for (int i = 0; property != null && i < property.length ; i++) {
-            if (property[i].containsAttribute("service") && property[i].getAttribute("service").compareToIgnoreCase("true") == 0) {
-                Attribute atts[] = property[i].getAttributes();
-                Element requires = new Element("Requires", null);
-                for (int j = 0; j < atts.length ; j++) {
-                    requires.addAttribute(atts[j]);
-                }
-                //see if requires uses callbacks.
-                if (property[i].containsElement("Callback")) {
-                    Element callbacks[] = property[i].getElements("Callback");
-                    for (int j = 0; j < atts.length ; j++) {
-                        requires.addElement(callbacks[j]);
-                    }
-                }
-                m_componentMetadata.addElement(requires);
-                properties.removeElement(property[i]);
-                addRequires = true;
-            } else { //is a normal property
-                String name = property[i].getAttribute("name");
-                if (! name.startsWith(getComponentType() ) && ("scheduler".compareToIgnoreCase(name) == 0 ) || ("dispatcher".compareToIgnoreCase(name) == 0 ) || ("processor".compareToIgnoreCase(name) == 0 )) {
-                    String nname = getComponentType() + "." + name; //we add the new prefix name (e.g. scheduler.period, dispatcher.language)
-                    property[i].addAttribute(new Attribute("name", nname));
-                }
-            }
-        }
-        if (addRequires) {
-            RequiredHandler reqd = new RequiredHandler("Requires",null);
-            if (!m_requiredHandlers.contains(reqd)) {
-                m_requiredHandlers.add(reqd);
-            }
-        }
-    }
 
-    public abstract String getComponentType() ;
+	public CiliaComponentFactory(BundleContext context, Element element)
+			throws ConfigurationException {
+		super(context, element);
+		// Get the name
+		componentName = element.getAttribute("name");
+		if (componentName == null) {
+			throw new ConfigurationException("An "+getComponentType()+" needs a name");
+		}
+		Attribute[] at = element.getAttributes();
+		// at[0].
+		// Get the category
+		String cat = element.getAttribute("category");
+		if (cat != null) {
+			category = cat;
+		} else {
+			category = DEFAULT_CATEGORY;
+		}
+		
+		String ver = element.getAttribute("version");
+		if (ver != null) {
+			version = ver;
+		} else {
+			version = DEFAULT_VERSION;
+		}
 
-    public ComponentTypeDescription getComponentTypeDescription() {
-        return new CiliaTypeDescription(this);
-    }
+		String nspace = element.getAttribute("namespace");
+		if (nspace!=null && nspace.length()<1) {
+			throw new ConfigurationException("An "+getComponentType()+" needs a valid namespace");
+		}
+		if (nspace != null) {
+			namespace = nspace.toLowerCase();
+		}
+		else {
+			namespace = DEFAULT_NAMESPACE;
+		}
 
-    private class CiliaTypeDescription extends ComponentTypeDescription {
+		addRequiresHandler();
+	}
 
-        public CiliaTypeDescription(IPojoFactory factory) {
-            super(factory);
-        }
+	protected void addRequiresHandler() {
+		boolean addRequires = false;
+		Element props[] = m_componentMetadata.getElements("Properties");
+		Element properties;
+		if (props != null && props.length > 0) {
+			properties = props[0];
+		} else {
+			return;
+		}
+		Element property[] = properties.getElements("Property");
+		for (int i = 0; property != null && i < property.length ; i++) {
+			if (property[i].containsAttribute("service") && property[i].getAttribute("service").compareToIgnoreCase("true") == 0) {
+				Attribute atts[] = property[i].getAttributes();
+				Element requires = new Element("Requires", null);
+				for (int j = 0; j < atts.length ; j++) {
+					requires.addAttribute(atts[j]);
+				}
+				//see if requires uses callbacks.
+				if (property[i].containsElement("Callback")) {
+					Element callbacks[] = property[i].getElements("Callback");
+					for (int j = 0; j < atts.length ; j++) {
+						requires.addElement(callbacks[j]);
+					}
+				}
+				m_componentMetadata.addElement(requires);
+				properties.removeElement(property[i]);
+				addRequires = true;
+			} else { //is a normal property
+				String name = property[i].getAttribute("name");
+				if (! name.startsWith(getComponentType() ) && ("scheduler".compareToIgnoreCase(name) == 0 ) || ("dispatcher".compareToIgnoreCase(name) == 0 ) || ("processor".compareToIgnoreCase(name) == 0 )) {
+					String nname = getComponentType() + "." + name; //we add the new prefix name (e.g. scheduler.period, dispatcher.language)
+					property[i].addAttribute(new Attribute("name", nname));
+				}
+			}
+		}
+		if (addRequires) {
+			RequiredHandler reqd = new RequiredHandler("Requires",null);
+			if (!m_requiredHandlers.contains(reqd)) {
+				m_requiredHandlers.add(reqd);
+			}
+		}
+	}
 
-        public Dictionary getPropertiesToPublish() {
-            Dictionary dict = super.getPropertiesToPublish();
-            
-            if (getClassName() != null) {
-                dict.put("component.class", getClassName());
-            }
-            dict.put(CATEGORY, category);
-            dict.put(NAMESPACE, namespace);
-            dict.put(NAME, componentName);
-            return dict;
-        }
+	public abstract String getComponentType() ;
 
-        public Element getDescription() {
-            Element elem = super.getDescription();
-            elem.addAttribute(new Attribute("Implementation-Class", getClassName()));
-            return elem;
-        }
+	public ComponentTypeDescription getComponentTypeDescription() {
+		return new CiliaTypeDescription(this);
+	}
 
-    }
+	private class CiliaTypeDescription extends ComponentTypeDescription {
+
+		public CiliaTypeDescription(IPojoFactory factory) {
+			super(factory);
+		}
+
+		public Dictionary getPropertiesToPublish() {
+			Dictionary dict = super.getPropertiesToPublish();
+
+			if (getClassName() != null) {
+				dict.put("component.class", getClassName());
+			}
+			dict.put(CATEGORY, category);
+			dict.put(NAMESPACE, namespace);
+			dict.put(NAME, componentName);
+			return dict;
+		}
+
+		public Element getDescription() {
+			Element elem = super.getDescription();
+			elem.addAttribute(new Attribute("Implementation-Class", getClassName()));
+			return elem;
+		}
+
+	}
 }

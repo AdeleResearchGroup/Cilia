@@ -461,6 +461,7 @@ MediatorComponent {
 		sb.append("Namespace : ").append(getNamespace()).append(",\n");
 		sb.append("ID : ").append(getId()).append(",\n");
 		sb.append("State : ").append(getState()).append(",\n");
+		sb.append("Version: ").append(getVersion()).append(",\n");
 		sb.append("Creation date :"+Watch.formatDateIso8601(creationTimeStamp)).append(",\n");
 		sb.append("Properties:").append(super.getProperties());
 		sb.append("\n}");
@@ -474,6 +475,7 @@ MediatorComponent {
 		result.put("Namespace", getNamespace());
 		result.put("ID", getId());
 		result.put("State", getState());
+		result.put("Version", getVersion());
 		result.put("Creation date", Watch.formatDateIso8601(creationTimeStamp));
 		result.put("Properties", super.getProperties());
 		return result;
