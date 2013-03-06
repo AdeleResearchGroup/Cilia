@@ -109,7 +109,13 @@ public class Data implements Serializable {
 	 */
 	public static final String RETURN_ADDRESS = "data.return.address";
 
-	private static final String DATA_TARGET = "data.source";
+	/**
+	 * Key to obtain the data dest .
+	 * 
+	 * <p>
+	 * Type : <code>String</code>.
+	 */
+	private static final String DATA_TARGET = "data.target";
 	
 
 
@@ -248,6 +254,10 @@ public class Data implements Serializable {
 			} else if (DATA_SOURCE.equals(key) && !(value instanceof String)) {
 				throw new IllegalArgumentException(
 						"The data.source property must be a String.");
+			}
+			else if (DATA_TARGET.equals(key) && !(value instanceof String)) {
+				throw new IllegalArgumentException(
+						"The data.target property must be a String.");
 			}
 
 			try {

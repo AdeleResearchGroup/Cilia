@@ -254,8 +254,8 @@ public class MonitorHandlerStateVar extends AbstractMonitor {
 			m_eventAdmin.postEvent(new Event(topic, data));
 			m_bundleContext.ungetService(refEventAdmin);
 			logger.debug("Node [{}] publish state variable  [{}]",
-						FrameworkUtils.makeQualifiedId(chainId, componentId, uuid) + ":"
-								+ stateVarId, value.toString());
+					FrameworkUtils.makeQualifiedId(chainId, componentId, uuid) + ":"
+							+ stateVarId, value.toString());
 
 		}
 	}
@@ -377,8 +377,10 @@ public class MonitorHandlerStateVar extends AbstractMonitor {
 					m_counters[1])));
 		}
 		if (isEnabled("process.entry.data")) {
-			m_systemQueue.execute(new AsynchronousExec("process.entry.data", new Data(
-					data)));
+			for (int i = 0; i < data.size(); i++) {
+				m_systemQueue.execute(new AsynchronousExec("process.entry.data",
+						new Data(data.get(i))));
+			}
 		}
 		if (isEnabled("process.msg.treated")) {
 			/* # number of messages treated */
@@ -420,7 +422,10 @@ public class MonitorHandlerStateVar extends AbstractMonitor {
 					m_counters[3])));
 		}
 		if (isEnabled("dispatch.data")) {
-			m_systemQueue.execute(new AsynchronousExec("dispatch.data", new Data(data)));
+			for (int i = 0; i < data.size(); i++) {
+				m_systemQueue.execute(new AsynchronousExec("dispatch.data",
+						new Data(data.get(i))));
+			}
 		}
 		if (isEnabled("dispatch.msg.treated")) {
 			if (data != null)

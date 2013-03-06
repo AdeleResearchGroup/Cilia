@@ -263,6 +263,10 @@ public class DispatcherHandler extends PrimitiveHandler implements IDispatcherHa
 	 *            Data to send.
 	 */
 	public void send(final String senderName, final Data data) throws CiliaException {
+		if (data==null) {
+			logger.warn("Sender [{}], data is null", String.valueOf(senderName));
+			return ;
+		}
 		lastSenderName = senderName;
 		data.setLastDeliveryPort(senderName);
 		lastDataSended = data;
