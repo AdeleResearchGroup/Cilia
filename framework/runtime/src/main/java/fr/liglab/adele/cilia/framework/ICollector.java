@@ -38,6 +38,10 @@ public interface ICollector {
 	 */
 	public Data notifyDataArrival(Data data) ;
 	
-	
+	/**
+	 * Add source name to the collector instance.
+	 * @param sn
+	 */
+	public void setSourceName(String sn) ;
 	
 }
