@@ -175,7 +175,7 @@ public class TopologyImpl implements Topology {
 							PatternType pattern = adapter.getPattern();
 							if ((pattern.equals(type)
 									|| (pattern.equals(PatternType.UNASSIGNED)) || (pattern
-									.equals(PatternType.IN_OUT)))) {
+										.equals(PatternType.IN_OUT)))) {
 								if (proxy)
 									adapterResult.add(MediatorModelProxy.getInstance()
 											.makeMediatorModel(adapter));
@@ -459,4 +459,41 @@ public class TopologyImpl implements Topology {
 		}
 	}
 
+	/** 
+	 * 
+	 * @param type
+	 * @return Array of nodes matching the type 
+	 * @throws CiliaIllegalParameterException
+	 */
+	public Node[] nodeByType(String type) throws CiliaIllegalParameterException {
+		Node[] node;
+		Set set = new HashSet();
+		if ((type == null) || (type.isEmpty()))
+			throw new CiliaIllegalParameterException("Parameter is null");
+		try {
+			ciliaContainer.getMutex().readLock().acquire();
+		try {
+			node = findNodeByFilter("(chain=*)");
+			/* Iterate over all */
+			for (int i = 0; i < node.length; i++) {
+				String nodeType;
+				try {
+					nodeType = getModel(node[i]).getType();
+					if (nodeType.compareToIgnoreCase(type) == 0) {
+						set.add(node[i]);
+					}
+				} catch (CiliaIllegalStateException e) {
+				}
+			}
+		} catch (CiliaInvalidSyntaxException e) {
+		}
+		return (Node[]) set.toArray(new Node[set.size()]);
+		} catch (InterruptedException e) {
+			logger.error("Interruped thread ", e);
+			Thread.currentThread().interrupt();
+			throw new RuntimeException(e.getMessage());
+		} finally {
+			ciliaContainer.getMutex().readLock().release();
+		}
+	}
 }

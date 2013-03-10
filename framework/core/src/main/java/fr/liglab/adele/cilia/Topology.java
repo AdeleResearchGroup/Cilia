@@ -122,7 +122,8 @@ public interface Topology {
 	 * @throws CiliaIllegalStateException
 	 *             the node doesn't exist
 	 */
-	Node[] connectedTo(Node node) throws CiliaIllegalParameterException,CiliaIllegalStateException;
+	Node[] connectedTo(Node node) throws CiliaIllegalParameterException,
+			CiliaIllegalStateException;
 
 	/**
 	 * 
@@ -132,7 +133,8 @@ public interface Topology {
 	 * @throws CiliaIllegalStateException
 	 *             the node doesn't exist
 	 */
-	Node[] connectedTo(Node node, boolean proxy) throws CiliaIllegalParameterException,CiliaIllegalStateException;
+	Node[] connectedTo(Node node, boolean proxy) throws CiliaIllegalParameterException,
+			CiliaIllegalStateException;
 
 	/**
 	 * 
@@ -161,5 +163,13 @@ public interface Topology {
 	 */
 	Node[] connectedTo(String ldapFilter, boolean proxy)
 			throws CiliaIllegalParameterException, CiliaInvalidSyntaxException;
+
+	/**
+	 * 
+	 * @param type
+	 * @return Array of nodes matching the type
+	 * @throws CiliaIllegalParameterException
+	 */
+	 Node[] nodeByType(String type) throws CiliaIllegalParameterException;
 
 }
