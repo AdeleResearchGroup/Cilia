@@ -64,6 +64,7 @@ public class ConfigurationHelper {
 		/* Phase Processing */
 		setSystemCall.add("process.entry.count");
 		setSystemCall.add("process.entry.data");
+		setSystemCall.add("process.exit.data");
 		setSystemCall.add("process.exit.count");
 		setSystemCall.add("process.exit.data");
 		setSystemCall.add("process.err.count");

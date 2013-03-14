@@ -30,45 +30,45 @@ import fr.liglab.adele.cilia.util.Watch;
  */
 @SuppressWarnings({ "rawtypes", "unchecked" })
 public class MeasureImpl implements Measure {
-	private final HashMap map ;
+	private final HashMap map;
 
 	public MeasureImpl(Object value, long ticks) {
-		map = new HashMap(2) ;
-		map.put("value", value ) ;
-		map.put("ticks" , new Long(ticks));
+		map = new HashMap(2);
+		map.put("value", value);
+		map.put("ticks", new Long(ticks));
 	}
 
 	private MeasureImpl(Measure from) {
-		this.map = new HashMap(((MeasureImpl)from).map);
+		this.map = new HashMap(((MeasureImpl) from).map);
 	}
-	
-	
+
 	public Object value() {
-		return map.get("value") ;
+		return map.get("value");
 	}
 
 	public long timeStampMs() {
-		return Watch.fromTicksToMs(((Long)map.get("ticks")).longValue());
+		return Watch.fromTicksToMs(((Long) map.get("ticks")).longValue());
 	}
 
-	
-	public Measure clone()  {
-		return new MeasureImpl(this) ;
+	public Measure clone() {
+		return new MeasureImpl(this);
 	}
-	
+
 	public String toString() {
 		StringBuffer sb = new StringBuffer('[');
-		sb.append("Value: ").append(value().toString()).append("");
+		if (value() == null)
+			sb.append("Value: null");
+		else
+			sb.append("Value: ").append(value().toString()).append("");
 		sb.append(", Timestamp:").append(timeStampMs()).append("");
 		sb.append("]");
 		return sb.toString();
 	}
-	
-	public Map toMap(){
+
+	public Map toMap() {
 		Map result = new Hashtable();
 		result.put("Value", value());
 		result.put("Timestamp", timeStampMs());
 		return result;
 	}
-
 }
