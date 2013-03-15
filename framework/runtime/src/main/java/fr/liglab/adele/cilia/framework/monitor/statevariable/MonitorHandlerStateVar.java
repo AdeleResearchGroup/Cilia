@@ -37,6 +37,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import fr.liglab.adele.cilia.Data;
+import fr.liglab.adele.cilia.Measure;
 import fr.liglab.adele.cilia.framework.monitor.AbstractMonitor;
 import fr.liglab.adele.cilia.runtime.ConstRuntime;
 import fr.liglab.adele.cilia.runtime.WorkQueue;
@@ -582,7 +583,7 @@ public class MonitorHandlerStateVar extends AbstractMonitor {
 		AsynchronousExec(String stateVar, Object data) {
 			this.stateVar = stateVar;
 			if (data == null)
-				this.data = "measure.with.no.data";
+				this.data = Measure.NO_VALUE ;
 			else
 				this.data = data;
 		}

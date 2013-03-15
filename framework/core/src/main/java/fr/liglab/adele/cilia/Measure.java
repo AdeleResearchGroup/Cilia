@@ -24,7 +24,10 @@ import java.util.Map;
  *         Team</a>
  * 
  */
-public interface Measure  {
+public interface Measure {
+
+	static final String NO_VALUE = "cilia-framework#measure.with.no.data";
+
 	/**
 	 * 
 	 * @return value
@@ -37,13 +40,23 @@ public interface Measure  {
 	 * @return time in ms
 	 */
 	long timeStampMs();
-	
+
 	/**
 	 * 
 	 * @return clone this object
 	 */
-	Measure clone() ;
-	
+	Measure clone();
+
+	/**
+	 * 
+	 * @return true if no value has been stored
+	 */
+	boolean hasNoValue();
+
+	/**
+	 * 
+	 * @return Map of this object
+	 */
 	Map toMap();
 
 }

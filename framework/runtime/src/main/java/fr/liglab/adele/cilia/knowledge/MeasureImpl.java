@@ -46,6 +46,15 @@ public class MeasureImpl implements Measure {
 		return map.get("value");
 	}
 
+	public boolean hasNoValue() {
+		boolean isnull = false;
+		if (value() instanceof String) {
+			if (((String) value()).compareTo(Measure.NO_VALUE) == 0)
+				isnull = true;
+		}
+		return isnull;
+	}
+
 	public long timeStampMs() {
 		return Watch.fromTicksToMs(((Long) map.get("ticks")).longValue());
 	}
