@@ -64,6 +64,8 @@ public class CiliaHelper {
 	
 	private volatile static int initial = 0;
 	
+	private Object lock = new Object();
+	
 	public CiliaHelper(BundleContext bc) {
 		ohelper = new OSGiHelper(bc);
 	}
@@ -98,15 +100,17 @@ public class CiliaHelper {
 		return null;
 	}
 
-
 	public MediatorTestHelper instrumentMediatorInstance(String chainId,
 			String mediator, String inputports[], String exitports[]) {
-		if ((exitports == null) || (exitports.length < 1)
-				|| (inputports == null) || (inputports.length < 1)) {
+		
+		if ((exitports == null) && (inputports == null) ) {
 			System.err.println("Ilegal port parameters");
 			return null;
 		}
-		String id = chainId+"/"+mediator;
+		String id;
+		synchronized (lock) {
+			id= chainId+"_"+mediator + initial++;
+		}
 		CiliaContext ccontext = (CiliaContext) ohelper.getServiceObject(
 				CiliaContext.class.getName(), null);
 		Builder builder = ccontext.getBuilder();
@@ -115,13 +119,13 @@ public class CiliaHelper {
 			arch = builder.get(chainId);
 			arch.create().adapter().type("cilia-adapter-helper")
 			.namespace(NAMESPACE).id(id).configure().key("identifier").value(id);
-			for (int i = 0; i < inputports.length; i++) {
-				arch.bind().from("helper:unique")
+			for (int i = 0; inputports != null && i < inputports.length; i++) {
+				arch.bind().from(id+":unique")
 				.to(mediator + ":" + inputports[i]);
 			}
-			for (int i = 0; i < exitports.length; i++) {
+			for (int i = 0; exitports != null && i < exitports.length; i++) {
 				arch.bind().from(mediator + ":" + exitports[i])
-				.to("helper:unique");
+				.to(id+":unique");
 			}
 			builder.done();
 		} catch (CiliaException e) {
@@ -145,7 +149,10 @@ public class CiliaHelper {
 			String firstMediatorWithPort, String lastMediatorWithPort) {
 		CiliaContext ccontext = (CiliaContext) ohelper.getServiceObject(
 				CiliaContext.class.getName(), null);
-		String id = chainId + "-" + "helper-" + initial++;
+		String id; 
+		synchronized (lock) {
+			id = chainId + "-" + "helper-" + initial++;
+		}
 		Builder builder = ccontext.getBuilder();
 		Architecture arch = null;
 		try {
@@ -228,16 +235,20 @@ public class CiliaHelper {
 	
 	public void load(URL url) {
 		InputStream fis = null;
+		String filename;
 		try {
 			fis = url.openStream();
 		} catch (IOException e) {
 			e.printStackTrace();
 
 		}
+		synchronized (lock) {
+			filename = "temporal-file-" + initial++;
+		}
 		File file = null;
 		try {
 			
-			file = File.createTempFile("test", ".dscilia");
+			file = File.createTempFile(filename, ".dscilia");
 			OutputStream out=new FileOutputStream(file);
 			byte buf[]=new byte[1024];
 			int len;

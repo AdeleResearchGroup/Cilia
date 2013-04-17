@@ -63,7 +63,7 @@ public class CiliaHelperTest {
 						mavenBundle().groupId("org.slf4j").artifactId("slf4j-simple").versionAsInProject(),
 						mavenBundle().groupId("fr.liglab.adele.cilia").artifactId("cilia-core").versionAsInProject(),
 						mavenBundle().groupId("fr.liglab.adele.cilia").artifactId("cilia-runtime").versionAsInProject(),
-						mavenBundle().groupId("fr.liglab.adele.cilia").artifactId("cilia-helper").version("1.5.3-SNAPSHOT")
+						mavenBundle().groupId("fr.liglab.adele.cilia").artifactId("cilia-helper").version("1.6.4-SNAPSHOT")
 						)); // The target
 		Option[] r = OptionUtils.combine(platform, bundles);
 		return r;
