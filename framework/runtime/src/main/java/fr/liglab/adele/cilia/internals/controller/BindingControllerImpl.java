@@ -61,9 +61,10 @@ public class BindingControllerImpl implements TrackerCustomizer {
 	private final static byte BINDING_SERVICE = 0x1;
 	private final static byte RECEIVING_SERVICE = 0x2;
 	private final static byte SENDING_SERVICE = 0x4;
+    private final ChainControllerImpl chainController;
 
 
-	public void setSourceController(MediatorControllerImpl sourceController) {
+    public void setSourceController(MediatorControllerImpl sourceController) {
 		this.sourceController = sourceController;
 	}
 
@@ -86,8 +87,9 @@ public class BindingControllerImpl implements TrackerCustomizer {
 	 */
 	private static String DEFAULT_TYPE = "direct";
 
-	public BindingControllerImpl(BundleContext context, Binding binding) {
+	public BindingControllerImpl(BundleContext context, Binding binding, ChainControllerImpl chainController) {
 		modelBinding = (BindingImpl) binding;
+        this.chainController = chainController;
 		bcontext = context;
 		settingUp();
 		// start();
@@ -310,6 +312,7 @@ public class BindingControllerImpl implements TrackerCustomizer {
 	 */
 	public void addedService(ServiceReference reference) {
 		if (allServices == ALL_SERVICES) {
+            setupControllers();//all is ready, get controllers to be sure binding will be done.
 			try {
 				if (validatePort(modelBinding.getSourcePort(),
 						modelBinding.getTargetPort())) {
@@ -321,6 +324,11 @@ public class BindingControllerImpl implements TrackerCustomizer {
 
 		}
 	}
+
+    private void setupControllers(){
+        setSourceController(chainController.getComponentcontroller(modelBinding.getSourceMediator().getId()));
+        setTargetController(chainController.getComponentcontroller(modelBinding.getTargetMediator().getId()));
+    }
 
 	public boolean addingService(ServiceReference reference) {
 		Object cbs = null;

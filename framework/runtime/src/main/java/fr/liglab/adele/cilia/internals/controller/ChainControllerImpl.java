@@ -428,7 +428,7 @@ public class ChainControllerImpl implements Observer {
 
 
 		BindingControllerImpl bindingController = new BindingControllerImpl(bcontext,
-				binding);
+				binding, this);
 		MediatorComponent smediator = binding.getSourceMediator();
 		MediatorComponent tmediator = binding.getTargetMediator();
 		MediatorControllerImpl targetController = null;
@@ -737,5 +737,13 @@ public class ChainControllerImpl implements Observer {
 			bcontext.ungetService(refs[0]);
 		}
 	}
+
+    protected MediatorControllerImpl getComponentcontroller(String id){
+        MediatorControllerImpl controller = (MediatorControllerImpl) mediators.get(id);
+        if (controller == null){
+            controller = (MediatorControllerImpl) adapters.get(id);
+        }
+        return controller;
+    }
 
 }
