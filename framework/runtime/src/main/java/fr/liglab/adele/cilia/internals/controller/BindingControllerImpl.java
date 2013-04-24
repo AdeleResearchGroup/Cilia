@@ -287,11 +287,11 @@ public class BindingControllerImpl implements TrackerCustomizer {
 				+ Const.PROPERTY_CHAIN_ID + "="
 				+ modelBinding.getChain().getId() + ")("
 				+ Const.PROPERTY_COMPONENT_ID + "="
-				+ sourceController.mediatorModel.getId() + "))" + "(&("
+				+ modelBinding.getSourceMediator().getId() + "))" + "(&("
 				+ Const.PROPERTY_CHAIN_ID + "="
 				+ modelBinding.getChain().getId() + ")("
 				+ Const.PROPERTY_COMPONENT_ID + "="
-				+ targetController.mediatorModel.getId() + "))" + ")";
+				+ modelBinding.getTargetMediator().getId() + "))" + ")";
 		return filter;
 	}
 
@@ -334,11 +334,11 @@ public class BindingControllerImpl implements TrackerCustomizer {
 			bindingService = (CiliaBindingService) cbs;
 			toAdd = true;
 		} else if (String.valueOf(reference.getProperty(Const.PROPERTY_COMPONENT_ID))
-				.compareToIgnoreCase(sourceController.mediatorModel.getId()) == 0) {
+				.compareToIgnoreCase(modelBinding.getSourceMediator().getId()) == 0) {
 			allServices = (byte) (allServices | SENDING_SERVICE);
 			toAdd = true;
 		} else if (String.valueOf(reference.getProperty(Const.PROPERTY_COMPONENT_ID))
-				.compareToIgnoreCase(targetController.mediatorModel.getId()) == 0) {
+				.compareToIgnoreCase(modelBinding.getTargetMediator().getId()) == 0) {
 			allServices = (byte) (allServices | RECEIVING_SERVICE);
 			toAdd = true;
 		}
@@ -354,11 +354,11 @@ public class BindingControllerImpl implements TrackerCustomizer {
 				allServices = (byte) (allServices ^ BINDING_SERVICE);
 			} else if (String.valueOf(reference.getProperty(Const.PROPERTY_COMPONENT_ID))
 					.compareToIgnoreCase(
-							sourceController.mediatorModel.getId()) == 0) {
+							modelBinding.getSourceMediator().getId()) == 0) {
 				allServices = (byte) (allServices ^ SENDING_SERVICE);
 			} else	if (String.valueOf(reference.getProperty(Const.PROPERTY_COMPONENT_ID))
 						.compareToIgnoreCase(
-								targetController.mediatorModel.getId()) == 0) {
+								modelBinding.getTargetMediator().getId()) == 0) {
 					allServices = (byte) (allServices ^ RECEIVING_SERVICE);
 				}
 		} catch (Exception e) {

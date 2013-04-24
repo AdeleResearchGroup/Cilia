@@ -239,7 +239,8 @@ public class CiliaFileManagerImpl implements CiliaFileManager {
 					startManagementFor(file);
 				} catch (Throwable e) {
 					// To be sure to not kill the thread, we catch all exceptions and errors
-					logger.error("An error occurs when analyzing the content or starting the management of " + file.getName(), e.getStackTrace());
+					e.printStackTrace();
+					logger.error("An error occurs when analyzing the content or starting the management of " + file.getName());
 				}
 				synchronized (this) {
 					started = m_started;
