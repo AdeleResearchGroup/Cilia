@@ -58,6 +58,16 @@
 					</processor>
 				</mediator>
 			</mediators>
+			<adapters>
+            <adapter-instance type="SplitAggregateEndpoint" id="getPriceAdapter" >
+               <property name="endpoint.id" type="String" value="toto"/>
+               <property name="cilia.exporter.protocol" type="String" value="json-rpc"/>
+            </adapter-instance>
+         </adapters>
+         <bindings>
+            <binding from="getPriceAdapter:unique" to="xslt-transformer-1:unique" />
+            <binding from="uc1-aggregator-1:unique" to="getPriceAdapter:unique" />
+         </bindings>
 		</chain>
 	</cilia>
 

@@ -14,14 +14,8 @@
 				<mediator-instance type="FacturationFixe" id="facturation-fixe-1" />
 				<mediator-instance type="UC1Aggregator" id="uc1-aggregator-1" />
 			</mediators>
-			<adapters>
-				<adapter-instance type="SplitAggregateEndpoint" id="getPriceAdapter" >
-					<property name="endpoint.id" type="String" value="toto"/>
-					<property name="cilia.exporter.protocol" type="String" value="json-rpc"/>
-				</adapter-instance>
-			</adapters>
+
 			<bindings>
-				<binding from="getPriceAdapter:unique" to="xslt-transformer-1:unique" />
 				<binding from="xslt-transformer-1:unique" to="xml-splitter-1:unique" />
 				<binding from="xml-splitter-1:mobile" to="translator-3:unique" />
 				<binding from="xml-splitter-1:internet" to="translator-1:unique" />
@@ -35,7 +29,6 @@
 				<binding from="facturation-mobile-1:unique" to="uc1-aggregator-1:mobile" />
 				<binding from="facturation-internet-1:unique" to="uc1-aggregator-1:internet" />
 				<binding from="facturation-fixe-1:unique" to="uc1-aggregator-1:fixe" />
-				<binding from="uc1-aggregator-1:unique" to="getPriceAdapter:unique" />
 			</bindings>
 		</chain>
 	</cilia>
