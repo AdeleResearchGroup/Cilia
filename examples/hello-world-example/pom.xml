@@ -27,12 +27,24 @@
 		<url>http://repository-cilia.forge.cloudbees.com/release/</url>
 		<layout>default</layout>
 	</repository>
-	<repository>
-		<id>maven-cilia-repository-snapshot</id>
-		<name>Cilia - Snapshot</name>
-		<url>http://repository-cilia.forge.cloudbees.com/snapshot/</url>
-		<layout>default</layout>
-	</repository>
+   <repository>
+      <id>maven-cilia-repository-snapshot</id>
+      <name>Cilia - Snapshot</name>
+      <url>http://repository-cilia.forge.cloudbees.com/snapshot/</url>
+      <layout>default</layout>
+      </repository>
+     <repository>
+         <id>icasa-repository-snapshot</id>
+         <name>iCasa - Snapshot</name>
+         <url>http://repository-icasa.forge.cloudbees.com/snapshot/</url>
+         <layout>default</layout>
+   </repository>
+   <repository>
+      <id>icasa-repository-release</id>
+      <name>iCasa - iCasa</name>
+      <url>http://repository-icasa.forge.cloudbees.com/release/</url>
+      <layout>default</layout>
+   </repository>
    </repositories>
 
    <modules>
