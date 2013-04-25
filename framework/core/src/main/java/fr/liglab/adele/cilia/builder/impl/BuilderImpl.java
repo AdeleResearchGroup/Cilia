@@ -100,17 +100,10 @@ public class BuilderImpl implements Builder {
 	}
 
 	private Builder performDone() throws BuilderException, BuilderPerformerException {
-		try {
-			container.getMutex().writeLock().acquire();
-		} catch (InterruptedException e) {
-		}
-		try{
-			BuilderPerformer perf = new BuilderPerformer(architecture, container, context);
-			perf.perform();
-			return this;
-		}finally{
-			container.getMutex().writeLock().release();
-		}
+		BuilderPerformer perf = new BuilderPerformer(architecture, container, context);
+		perf.perform();
+		return this;
+
 	}
 
 	private void setInvalid() throws BuilderException {

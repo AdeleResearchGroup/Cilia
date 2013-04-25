@@ -416,10 +416,6 @@ public class CiliaContainerImpl implements CiliaContainer {
 		}
 	}
 
-	public ReadWriteLock getMutex() {
-		return mutex;
-	}
-
 	public ChainRuntime getChainRuntime(String chainId) {
 		ChainRuntime chain = null;
 		if (chainId != null) {

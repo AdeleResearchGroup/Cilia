@@ -80,8 +80,8 @@ public class TopologyImpl implements Topology {
 
 		String chainId[] = getChainId();
 		try {
-			ciliaContainer.getMutex().readLock().acquire();
-			try {
+
+
 				for (int i = 0; i < chainId.length; i++) {
 
 					/* retreive all adapters per chain */
@@ -117,10 +117,7 @@ public class TopologyImpl implements Topology {
 					}
 				}
 				return (Node[]) componentSet.toArray(new Node[componentSet.size()]);
-			} finally {
-				ciliaContainer.getMutex().readLock().release();
-			}
-		} catch (InterruptedException e) {
+		} catch (Exception e) {
 			logger.error("Interruped thread ", e);
 			Thread.currentThread().interrupt();
 			throw new RuntimeException();
@@ -159,8 +156,7 @@ public class TopologyImpl implements Topology {
 		Dictionary dico = new Hashtable();
 		String chainId[] = getChainId();
 		try {
-			ciliaContainer.getMutex().readLock().acquire();
-			try {
+
 				for (int i = 0; i < chainId.length; i++) {
 					/* retreive all adapters per all chain */
 					dico.put(ConstRuntime.CHAIN_ID, chainId[i]);
@@ -186,10 +182,8 @@ public class TopologyImpl implements Topology {
 					}
 				}
 				return (Node[]) adapterResult.toArray(new Node[adapterResult.size()]);
-			} finally {
-				ciliaContainer.getMutex().readLock().release();
-			}
-		} catch (InterruptedException e) {
+
+		} catch (Exception e) {
 			logger.error("Interruped thread ", e);
 			Thread.currentThread().interrupt();
 			throw new RuntimeException(e.getMessage());
@@ -248,8 +242,6 @@ public class TopologyImpl implements Topology {
 		/* check is the node has disappear */
 		getModel(node);
 		try {
-			ciliaContainer.getMutex().readLock().acquire();
-			try {
 				chain = ciliaContainer.getChain(node.chainId());
 				if (chain != null) {
 					/* checks if the node is an adapter */
@@ -271,14 +263,7 @@ public class TopologyImpl implements Topology {
 				return nodes;
 			} catch (NullPointerException e) {
 				throw new CiliaIllegalStateException("Node has disappeared");
-			} finally {
-				ciliaContainer.getMutex().readLock().release();
 			}
-		} catch (InterruptedException e) {
-			logger.error("Interruped thread ", e);
-			Thread.currentThread().interrupt();
-			throw new RuntimeException(e.getMessage());
-		}
 	}
 
 	protected Node[] getNextNodes(Binding[] bindings, Node node, boolean proxy)
@@ -323,8 +308,6 @@ public class TopologyImpl implements Topology {
 		Chain chain;
 		MediatorComponent mc;
 		try {
-			ciliaContainer.getMutex().readLock().acquire();
-			try {
 				chain = ciliaContainer.getChain(chainId);
 				if (chain == null) /* chain not found */
 					throw new CiliaIllegalStateException(chainId + " not existing !");
@@ -336,10 +319,8 @@ public class TopologyImpl implements Topology {
 					throw new CiliaIllegalStateException(chainId + "/" + component
 							+ " not existing !");
 				return mc;
-			} finally {
-				ciliaContainer.getMutex().readLock().release();
-			}
-		} catch (InterruptedException e) {
+
+		} catch (Exception e) {
 			logger.error("Interruped thread ", e);
 			Thread.currentThread().interrupt();
 			throw new RuntimeException(e.getMessage());
@@ -447,16 +428,7 @@ public class TopologyImpl implements Topology {
 	public Chain getChain(String chainId) throws CiliaIllegalParameterException {
 		if (chainId == null)
 			throw new CiliaIllegalParameterException("Chain id is null !");
-		try {
-			ciliaContainer.getMutex().readLock().acquire();
-			return ciliaContainer.getChain(chainId);
-		} catch (InterruptedException e) {
-			logger.error("Interruped thread ", e);
-			Thread.currentThread().interrupt();
-			throw new RuntimeException(e.getMessage());
-		} finally {
-			ciliaContainer.getMutex().readLock().release();
-		}
+		return ciliaContainer.getChain(chainId);
 	}
 
 	/** 
@@ -471,8 +443,7 @@ public class TopologyImpl implements Topology {
 		if ((type == null) || (type.isEmpty()))
 			throw new CiliaIllegalParameterException("Parameter is null");
 		try {
-			ciliaContainer.getMutex().readLock().acquire();
-		try {
+
 			node = findNodeByFilter("(chain=*)");
 			/* Iterate over all */
 			for (int i = 0; i < node.length; i++) {
@@ -486,14 +457,9 @@ public class TopologyImpl implements Topology {
 				}
 			}
 		} catch (CiliaInvalidSyntaxException e) {
-		}
+		    throw new CiliaIllegalParameterException(e.getMessage());
+        }
+
 		return (Node[]) set.toArray(new Node[set.size()]);
-		} catch (InterruptedException e) {
-			logger.error("Interruped thread ", e);
-			Thread.currentThread().interrupt();
-			throw new RuntimeException(e.getMessage());
-		} finally {
-			ciliaContainer.getMutex().readLock().release();
-		}
 	}
 }

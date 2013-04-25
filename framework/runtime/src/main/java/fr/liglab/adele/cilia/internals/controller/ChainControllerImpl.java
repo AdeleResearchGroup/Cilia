@@ -15,13 +15,7 @@
 
 package fr.liglab.adele.cilia.internals.controller;
 
-import java.util.Dictionary;
-import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Observable;
-import java.util.Observer;
-import java.util.Set;
+import java.util.*;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.InvalidSyntaxException;
@@ -88,7 +82,7 @@ public class ChainControllerImpl implements Observer {
 	
 	private static final Logger coreLog = LoggerFactory.getLogger(Const.LOGGER_CORE);
 
-	private final ReadWriteLock mutex;	
+	private final ReadWriteLock mutex;
 	/**
 	 * Create a new Chain controller.
 	 * 
@@ -183,97 +177,105 @@ public class ChainControllerImpl implements Observer {
 	 * Start all the mediators added to this chain.
 	 */
 	private void startMediators() {
-		try {
+        Iterator it = null;
+        try {
 			mutex.readLock().acquire();
 		} catch (InterruptedException e) {		}
 		try{
-			Iterator it = mediators.values().iterator();
+			it = new HashSet(mediators.values()).iterator();
+        } finally {
+            mutex.readLock().release();
+        }
 			while (it.hasNext()) {
 				MediatorControllerImpl mc = (MediatorControllerImpl) it.next();
 				mc.start();
 			}
-		} finally {
-			mutex.readLock().release();
-		}
+
 	}
 
 	/**
 	 * Start all the adapters added to this chain.
 	 */
 	private void startAdapters() {
-		try {
+        Iterator it = null;
+        try {
 			mutex.readLock().acquire();
 		} catch (InterruptedException e) {		}
 		try{
-			Iterator it = adapters.values().iterator();
+			it = new HashSet(adapters.values()).iterator();
+        }finally{
+            mutex.readLock().release();
+        }
 			while (it.hasNext()) {
 				AdapterControllerImpl mc = (AdapterControllerImpl) it.next();
 				mc.start();
 			}
-		}finally{
-			mutex.readLock().release();
-		}
+
 	}
 
 	/**
 	 * Start all the bindings controllers.
 	 */
 	private void startBindings() {
-		try {
+        Iterator it = null;
+        try {
 			mutex.readLock().acquire();
 		} catch (InterruptedException e) {		}
 		try{
-			Iterator it = bindings.values().iterator();
-			while (it.hasNext()) {
+			it = new HashSet(bindings.values()).iterator();
+        }finally{
+            mutex.readLock().release();
+        }
+
+        while (it.hasNext()) {
 				BindingControllerImpl bc = (BindingControllerImpl) it.next();
 				bc.start();
 			}
-		}finally{
-			mutex.readLock().release();
-		}
-		
+
 	}
 
 	/**
 	 * Stop all Mediators controllers and clear all mediators set.
 	 */
 	private void deleteMediators() {
-		try {
+        Iterator it = null;
+        try {
 			mutex.writeLock().acquire();
 		} catch (InterruptedException e) {
 		}
         try{
-		Iterator it = mediators.values().iterator();
+            it = new HashSet(mediators.values()).iterator();
+            mediators.clear();
+        }finally{
+            mutex.writeLock().release();
+        }
 		while (it.hasNext()) {
 			MediatorControllerImpl mc = (MediatorControllerImpl) it.next();
 			mc.stop();
 		}
-		mediators.clear();
 
-        }finally{
-            mutex.writeLock().release();
-        }
 	}
 
 	/**
 	 * Stop all Adapters controllers and clear all Adapters set.
 	 */
 	private void deleteAdapters() {
-		try {
+        Iterator it = null;
+        try {
 			mutex.writeLock().acquire();
 		} catch (InterruptedException e) {
 		}
         try{
-		Iterator it = adapters.values().iterator();
+            it = new HashSet(adapters.values()).iterator();
+            adapters.clear();
+        }finally {
+            mutex.writeLock().release();
+        }
 		while (it.hasNext()) {
 			AdapterControllerImpl mc = (AdapterControllerImpl) it.next();
 			mc.stop();
 		}
-		adapters.clear();
 
-        }finally {
-            mutex.writeLock().release();
-        }
 	}
 
 	/**
@@ -292,56 +294,63 @@ public class ChainControllerImpl implements Observer {
 	 * Stop all the mediators added to this chain.
 	 */
 	private void stopMediators() {
+        Iterator it = null;
 		try {
 			mutex.readLock().acquire();
 		} catch (InterruptedException e) {
 		}
 		try{
-			Iterator it = mediators.values().iterator();
+			it = new HashSet(mediators.values()).iterator();
+        }finally{
+            mutex.readLock().release();
+        }
 			while (it.hasNext()) {
 				MediatorControllerImpl mc = (MediatorControllerImpl) it.next();
 				mc.stop();
 			}
-		}finally{
-			mutex.readLock().release();
-		}
+
 	}
 
 	/**
 	 * Stop all the mediators added to this chain.
 	 */
 	private void stopAdapters() {
-		try {
+        Iterator it = null;
+        try {
 			mutex.readLock().acquire();
 		} catch (InterruptedException e) {
 		}
 		try{
-			Iterator it = adapters.values().iterator();
+			it = new HashSet(adapters.values()).iterator();
+        }finally{
+            mutex.readLock().release();
+        }
 			while (it.hasNext()) {
 				AdapterControllerImpl mc = (AdapterControllerImpl) it.next();
 				mc.stop();
 			}
-		}finally{
-			mutex.readLock().release();
-		}
+
 	}
 
 	/**
 	 * Stop all the mediators added to this chain.
 	 */
 	private void stopBindings() {
-		try {
+        Iterator it = null;
+
+        try {
 			mutex.readLock().acquire();
 		} catch (InterruptedException e) {		}
 		try{
-			Iterator it = bindings.values().iterator();
+			it = new HashSet(bindings.values()).iterator();
+        }finally{
+            mutex.readLock().release();
+        }
 			while (it.hasNext()) {
 				BindingControllerImpl bc = (BindingControllerImpl) it.next();
 				bc.stop();
 			}
-		}finally{
-			mutex.readLock().release();
-		}
+
 	}
 
 	/**
@@ -353,8 +362,12 @@ public class ChainControllerImpl implements Observer {
 			mutex.readLock().acquire();
 		} catch (InterruptedException e) {
 		}
+        try{
 		mediators = modelChain.getMediators();
-		try{
+        }finally{
+        mutex.readLock().release();
+        }
+
 			if (mediators != null) {
 				Iterator it = mediators.iterator();
 				while (it.hasNext()) {
@@ -363,10 +376,8 @@ public class ChainControllerImpl implements Observer {
 					createMediatorController(mediatorModel);
 				}
 			}
-		}finally{
-			mutex.readLock().release();
-		}
-	}
+    }
+
 
 	/**
 	 * Create all mediators controllers contained in the current model.
@@ -377,7 +388,8 @@ public class ChainControllerImpl implements Observer {
 		} catch (InterruptedException e) {
 		}
 		Set adapters = modelChain.getAdapters();
-		try{
+        mutex.readLock().release();
+
 			if (adapters != null) {
 				Iterator it = adapters.iterator();
 				while (it.hasNext()) {
@@ -386,9 +398,7 @@ public class ChainControllerImpl implements Observer {
 					createAdapterController(adapterModel);
 				}
 			}
-		}finally{
-			mutex.readLock().release();
-		}
+
 	}
 
 	/**
@@ -399,18 +409,18 @@ public class ChainControllerImpl implements Observer {
 			mutex.readLock().acquire();
 		} catch (InterruptedException e) {
 		}
-		try{
-			Set bindings = modelChain.getBindings();
-			if (bindings != null) {
-				Iterator it = bindings.iterator();
+
+			Set bindingsSet = modelChain.getBindings();
+
+            mutex.readLock().release();
+
+            if (bindingsSet != null) {
+				Iterator it = bindingsSet.iterator();
 				while (it.hasNext()) {
 					Binding binding = (Binding) it.next();
 					createBindingController(binding);
 				}
 			}
-		}finally{
-			mutex.readLock().release();
-		}
 	}
 
 	public void createBindingController(Binding binding) {
@@ -434,13 +444,7 @@ public class ChainControllerImpl implements Observer {
 		MediatorControllerImpl targetController = null;
 		MediatorControllerImpl sourceController = null;
 		runtimeLog.debug("Creating binding controller from {} to {}", smediator.getId(), tmediator.getId());
-		try {
-			mutex.readLock().acquire();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-        try{
+
 		if (smediator != null) {
 			sourceController = (MediatorControllerImpl) mediators.get(smediator
 					.getId());
@@ -463,9 +467,7 @@ public class ChainControllerImpl implements Observer {
 			runtimeLog.debug("Starting binding controller from {} to {}", smediator.getId(), tmediator.getId());
 			bindingController.start();
 		}
-        }finally {
-            mutex.readLock().release();
-        }
+
 		try {
 			mutex.writeLock().acquire();
 		} catch (InterruptedException e) {	}

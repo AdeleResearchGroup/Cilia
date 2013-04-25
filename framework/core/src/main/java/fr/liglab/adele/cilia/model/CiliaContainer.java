@@ -61,11 +61,7 @@ public interface CiliaContainer {
 	
 	MediatorSpecification createMediatorSpecification(String name, String namespace, String category);
 	
-	/* Mutual exclusion access on ciliaContext  */
-	ReadWriteLock getMutex();
-
-
-	/*  Runtime informations , level chain */ 
+	/*  Runtime informations , level chain */
 	ChainRuntime getChainRuntime(String chainId) ;
 	
 }
