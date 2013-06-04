@@ -448,6 +448,7 @@ public class MediatorControllerImpl implements Observer {
 	private void unregisterServiceDescription(){
 		if (entryRegistry != null) {
 			entryRegistry.unregister();
+            entryRegistry = null;
 		}
 	}
 	

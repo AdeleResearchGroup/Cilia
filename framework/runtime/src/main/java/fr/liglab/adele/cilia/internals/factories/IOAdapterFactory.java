@@ -186,7 +186,7 @@ public class IOAdapterFactory extends MediatorComponentFactory implements Adapte
 				.ciliaQualifiedName("monitor-handler"));
 		DispatcherHandler dsp = (DispatcherHandler) im.getHandler(Const
 				.ciliaQualifiedName("dispatcher"));
-		Handler m_handlers[] = im.getRegistredHandlers();
+		Handler m_handlers[] = im.getRegisteredHandlers();
 		for (int i = 0; i < m_handlers.length; i++) {
 			// Add subscription.
 			Handler handler = m_handlers[i];

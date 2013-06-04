@@ -6,11 +6,7 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.felix.ipojo.ComponentInstance;
-import org.apache.felix.ipojo.ConfigurationException;
-import org.apache.felix.ipojo.Factory;
-import org.apache.felix.ipojo.HandlerManager;
-import org.apache.felix.ipojo.IPojoContext;
+import org.apache.felix.ipojo.*;
 import org.apache.felix.ipojo.metadata.Element;
 import org.apache.felix.ipojo.util.Tracker;
 import org.apache.felix.ipojo.util.TrackerCustomizer;
@@ -149,6 +145,8 @@ public class MediatorFactory extends MediatorComponentFactory implements
 	protected MediatorManager createMediatorInstance(Dictionary config,
 			IPojoContext context, HandlerManager[] handlers)
 			throws ConfigurationException {
+        //config.remove("name");
+        //config.remove("instance.name");
 		logger.debug("[{}] creating component instance with {}", config.get(Const.PROPERTY_COMPONENT_ID), config);
 		MediatorManager instance = new MediatorManager(this,
 				(ProcessorFactory) processorFactory, context, handlers);
@@ -203,22 +201,24 @@ public class MediatorFactory extends MediatorComponentFactory implements
 		// Add requires handler.
 		try {
 			computeConstituantsDescriptions();
-		} catch (Exception e) {
-		} // will never throw an exception.
-		RequiredHandler req = new RequiredServiceHandler("processor-tracker",
-				DEFAULT_NAMESPACE, processorDescription);
-		if (!returnedList.contains(req)) {
-			returnedList.add(req);
-		}
-		RequiredHandler reqd = new RequiredServiceHandler("dispatcher-tracker",
-				DEFAULT_NAMESPACE, dispatcherDescription);
-		if (!returnedList.contains(reqd)) {
-			returnedList.add(reqd);
-		}
-		RequiredHandler reqs = new RequiredServiceHandler("scheduler-tracker",
-				DEFAULT_NAMESPACE, schedulerDescription);
-		if (!returnedList.contains(reqs)) {
-			returnedList.add(reqs);
+            RequiredHandler req = new RequiredServiceHandler("processor-tracker",
+                    DEFAULT_NAMESPACE, processorDescription);
+            if (!returnedList.contains(req)) {
+                returnedList.add(req);
+            }
+            RequiredHandler reqd = new RequiredServiceHandler("dispatcher-tracker",
+                    DEFAULT_NAMESPACE, dispatcherDescription);
+            if (!returnedList.contains(reqd)) {
+                returnedList.add(reqd);
+            }
+            RequiredHandler reqs = new RequiredServiceHandler("scheduler-tracker",
+                    DEFAULT_NAMESPACE, schedulerDescription);
+            if (!returnedList.contains(reqs)) {
+                returnedList.add(reqs);
+            }
+
+        } catch (Exception e) {
+          e.printStackTrace();
 		}
 
 		RequiredHandler reqm = new RequiredHandler("monitor-statevar-handler",
@@ -280,12 +280,20 @@ public class MediatorFactory extends MediatorComponentFactory implements
 	}
 
 	public void stopping() {
+        System.out.println("Stopping factory:" + getName());
 		super.stopping();// The parent will close Tracker. This component type
 		// doesnt track handlers services.
 		if (constituantTracker != null) {
 			constituantTracker.close();
 			constituantTracker = null;
 		}
+        // Release each handler
+        for (int i = 0; i < m_requiredHandlers.size(); i++) {
+            RequiredHandler reqHandler =  (RequiredHandler)m_requiredHandlers.get(i);
+            if (reqHandler instanceof RequiredServiceHandler){
+                ((RequiredServiceHandler) m_requiredHandlers.get(i)).stop();
+            }
+        }
 	}
 
 	
@@ -319,41 +327,88 @@ public class MediatorFactory extends MediatorComponentFactory implements
 	
 	
 	
-	private class RequiredServiceHandler extends RequiredHandler {
+	private class RequiredServiceHandler extends RequiredHandler implements TrackerCustomizer {
 
 		Component constituantToTrack;
 		String filter;
+        Tracker processorTracker;
+        ServiceReference processorReference;
+
 
 		public RequiredServiceHandler(String name, String namespace,
-				Component constituant) {
+				Component constituant) throws  InvalidSyntaxException{
 			super(name, namespace);
 			this.constituantToTrack = constituant;
 			filter = createConstituantFilter(constituantToTrack);
+            processorTracker = new Tracker(m_context, m_context.createFilter(filter), this);
+            processorTracker.open();
 		}
-
-		public ServiceReference getReference() {
+        @Override
+		public ServiceReference<? extends HandlerFactory>  getReference() {
 			ServiceReference sreference = super.getReference();
 			// See if the processor facotry is valid.
-			try {
-				ServiceReference[] serv = m_context.getAllServiceReferences(
-						Factory.class.getName(), filter);
-				if (serv != null && serv.length != 0) {
-					return sreference;
+			if (processorReference != null) {
+					return sreference;//return mediator factory reference
 				}
-			} catch (InvalidSyntaxException e1) {
-				// throw new
-				// ConfigurationException("Unable to retrieve Processor factory");
-				// //should never happen.
-			}
 			return null;
 		}
 
+        public void unRef(){
+            super.unRef();
+            processorReference = null;
+        }
+        public void stop(){
+            processorTracker.close();
+        }
 		public String getFullName() {
 			return getNamespace() + ":" + getName() + "( " + constituantToTrack
 					+ " )";
 		}
 
-	}
+        /**
+         * A service is being added to the Tracker object.
+         * This method is called before a service which matched the search parameters of the Tracker object is added to it. This method should return the service object to be tracked for this ServiceReference object.
+         * The returned service object is stored in the Tracker object and is available from the getService and getServices methods.
+         *
+         * @param reference the Reference to service being added to the Tracker object.
+         * @return The service object to be tracked for the ServiceReference object or null if the ServiceReference object should not be tracked.
+         */
+        public boolean addingService(ServiceReference reference) {
+            return true;  //To change body of implemented methods use File | Settings | File Templates.
+        }
+
+        /**
+         * A service tracked by the Tracker object has been added in the list.
+         * This method is called when a service has been added in the managed list (after addingService) and if the service has not disappeared before during the callback.
+         *
+         * @param reference the added reference.
+         */
+        public void addedService(ServiceReference reference) {
+            processorReference = reference;
+        }
+
+        /**
+         * A service tracked by the Tracker object has been modified.
+         * This method is called when a service being tracked by the Tracker object has had it properties modified.
+         *
+         * @param reference the Reference to service that has been modified.
+         * @param service   The service object for the modified service.
+         */
+        public void modifiedService(ServiceReference reference, Object service) {
+            //To change body of implemented methods use File | Settings | File Templates.
+        }
+
+        /**
+         * A service tracked by the Tracker object has been removed.
+         * This method is called after a service is no longer being tracked by the Tracker object.
+         *
+         * @param reference the Reference to service that has been removed.
+         * @param service   The service object for the removed service.
+         */
+        public void removedService(ServiceReference reference, Object service) {
+           processorReference = null;
+        }
+    }
 
 	public String getComponentType() {
 		return COMPONENT_TYPE;

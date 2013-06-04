@@ -26,12 +26,12 @@ import java.util.Set;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
-import org.osgi.service.blueprint.reflect.ComponentMetadata;
+
 
 import fr.liglab.adele.cilia.AdminData;
 import fr.liglab.adele.cilia.ApplicationRuntime;
 import fr.liglab.adele.cilia.ChainCallback;
-import fr.liglab.adele.cilia.EventsConfiguration;
+
 import fr.liglab.adele.cilia.Measure;
 import fr.liglab.adele.cilia.Node;
 import fr.liglab.adele.cilia.NodeCallback;
@@ -46,10 +46,8 @@ import fr.liglab.adele.cilia.exceptions.CiliaInvalidSyntaxException;
 import fr.liglab.adele.cilia.knowledge.configuration.RawDataImpl;
 import fr.liglab.adele.cilia.knowledge.configuration.SetUpImpl;
 import fr.liglab.adele.cilia.model.CiliaContainer;
-import fr.liglab.adele.cilia.model.Component;
 import fr.liglab.adele.cilia.model.MediatorComponent;
 import fr.liglab.adele.cilia.model.impl.ChainRuntime;
-import fr.liglab.adele.cilia.runtime.FirerEvents;
 import fr.liglab.adele.cilia.util.UnModifiableDictionary;
 
 /**

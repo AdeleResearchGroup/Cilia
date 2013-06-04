@@ -17,6 +17,7 @@ package fr.liglab.adele.cilia.internals.controller;
 
 import java.util.Dictionary;
 
+import fr.liglab.adele.cilia.model.Binding;
 import org.apache.felix.ipojo.util.Tracker;
 import org.apache.felix.ipojo.util.TrackerCustomizer;
 import org.osgi.framework.BundleContext;
@@ -27,7 +28,6 @@ import org.slf4j.LoggerFactory;
 
 import fr.liglab.adele.cilia.exceptions.CiliaException;
 import fr.liglab.adele.cilia.framework.CiliaBindingService;
-import fr.liglab.adele.cilia.model.Binding;
 import fr.liglab.adele.cilia.model.Component;
 import fr.liglab.adele.cilia.model.MediatorComponent;
 import fr.liglab.adele.cilia.model.Port;
@@ -248,9 +248,7 @@ public class BindingControllerImpl implements TrackerCustomizer {
 
 	protected void registerTracker() {
 		String filter = createFilter();
-		if (!readyToBind()) {
-			log.warn("Services to bind {} to {} are not immediately available. It will wait...", modelBinding.getSourceMediator().getId(), modelBinding.getTargetMediator().getId());	
-		}
+		log.warn("Services to bind {} to {} are not immediately available. It will wait...", modelBinding.getSourceMediator().getId(), modelBinding.getTargetMediator().getId());
 		if (bindingTracker == null) {
 			try {
 				bindingTracker = new Tracker(bcontext,
@@ -262,21 +260,6 @@ public class BindingControllerImpl implements TrackerCustomizer {
 		}
 	}
 
-	private boolean readyToBind(){
-		ServiceReference sr[] = null;
-		try {
-			sr = bcontext.getServiceReferences(null, createFilter());
-		} catch (InvalidSyntaxException e) {
-			log.error("Unable to bind. Invalid Filter.", e);
-			sr = null;
-			e.printStackTrace();
-		}
-		if (sr != null && sr.length>=3){
-			return true;
-		}
-		return false;
-	}
-	
 	protected void unregisterTracker() {
 		if (bindingTracker != null) {
 			bindingTracker.close();

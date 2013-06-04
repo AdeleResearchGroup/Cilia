@@ -86,6 +86,7 @@ public class CiliaInstanceWrapper extends Observable implements CiliaInstance,
 		if (props != null) {
 			properties = new Hashtable((Map) props);
 			properties.remove("instance.name");
+            properties.remove("name");
 		}
 		if (obs != null) {
 			this.addObserver(obs);
@@ -99,6 +100,9 @@ public class CiliaInstanceWrapper extends Observable implements CiliaInstance,
 		boolean created = false;
 			try {
 				Hashtable prs = new Hashtable(properties);
+                prs.remove("name");
+                prs.remove("instance.name");
+                System.out.println("Creating Component with: " + prs);
 				componentInstance = ipojoFactory.createComponentInstance(prs);
 				componentInstance.addInstanceStateListener(this);
 				created = true;
@@ -242,7 +246,6 @@ public class CiliaInstanceWrapper extends Observable implements CiliaInstance,
 	private void disposeInstance() {
 		if (componentInstance != null) {
 			componentInstance.removeInstanceStateListener(this);
-			componentInstance.stop();
 			componentInstance.dispose();
 			componentInstance = null;
 		}
@@ -291,7 +294,7 @@ public class CiliaInstanceWrapper extends Observable implements CiliaInstance,
 	private boolean factoryIsAvailable(){
 		ServiceReference sr[] = null;
 		try {
-			sr = m_context.getServiceReferences(null, m_filter);
+			sr = m_context.getServiceReferences(Factory.class.getName(), m_filter);
 		} catch (InvalidSyntaxException e) {
 			runtimeLogger.error("Invalid filter when accessing factory", e);
 			sr = null;

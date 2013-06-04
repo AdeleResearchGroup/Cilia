@@ -24,6 +24,7 @@
          <productVersion>${project.version}</productVersion>
          <projectName>${project.artifactId}</projectName>
          <fileinstall.version>3.1.4</fileinstall.version>
+         <adeleCommonVersion>1.0.5-SNAPSHOT</adeleCommonVersion>
       </properties>
 
       <licenses>
@@ -353,7 +354,11 @@
                <artifactId>org.apache.felix.fileinstall</artifactId> 
                <version>${fileinstall.version}</version> 
             </dependency>
-
+             <dependency>
+                 <groupId>org.osgi</groupId>
+                 <artifactId>org.osgi.core</artifactId>
+                 <version>4.3.1</version>
+             </dependency>
          </dependencies>
       </dependencyManagement>
    </project>

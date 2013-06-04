@@ -15,6 +15,8 @@
 package fr.liglab.adele.cilia.internals.factories;
 
 import java.util.Dictionary;
+import java.util.Hashtable;
+import java.util.Map;
 
 import org.apache.felix.ipojo.ComponentFactory;
 import org.apache.felix.ipojo.ComponentInstance;
@@ -92,9 +94,6 @@ public class MediatorManager extends MediatorComponentManager implements Compone
 			pinstance.dispose();
 		}
 		synchronized (this) {
-			if (pfactory != null) {
-				pfactory.disposed(this);
-			}
 			if (mfactory != null) {
 				mfactory.disposed(this);
 			}
@@ -116,7 +115,7 @@ public class MediatorManager extends MediatorComponentManager implements Compone
 		this.configuration = config;
 		// Add the name
 		m_name = (String) config.get("instance.name");
-		m_name = m_name + "-Mediator";
+		//m_name = m_name + "-Mediator";
 
 		// Create the standard handlers and add these handlers to the list
 		SchedulerHandler sch = (SchedulerHandler) ((InstanceManager)pinstance).getHandler(Const.ciliaQualifiedName("scheduler"));
@@ -156,8 +155,13 @@ public class MediatorManager extends MediatorComponentManager implements Compone
 
 
 	public void createProcessor(Dictionary config) throws UnacceptableConfiguration, MissingHandlerException, ConfigurationException {
-		
-		pinstance = pfactory.createComponentInstance(config);
+        Dictionary properties = null;
+        if (config != null) {
+            properties = new Hashtable((Map) config);
+            properties.remove("instance.name");
+            properties.remove("name");
+        }
+		pinstance = pfactory.createComponentInstance(properties);
 
 	}
 
