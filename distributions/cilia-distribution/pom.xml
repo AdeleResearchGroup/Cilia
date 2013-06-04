@@ -13,24 +13,28 @@
 	<!-- Project parent -->
 	<parent>
 		<groupId>fr.liglab.adele.cilia</groupId>
-		<artifactId>parent</artifactId>
-		<version>1.6.4-SNAPSHOT</version>
+      <artifactId>cilia-project</artifactId>
+      <version>1.6.4-SNAPSHOT</version>
       <relativePath>../../parent</relativePath>
 	</parent>
 	<groupId>fr.liglab.adele.cilia</groupId>
 	<artifactId>cilia-distribution</artifactId>
-	<version>1.6.4-SNAPSHOT</version>
-	<packaging>pom</packaging>
-	<name>Cilia :: Distribution </name>
+   <packaging>osgi-distribution</packaging>
+   <name>Cilia :: Distribution </name>
 
 	<properties>
 		<!-- flag to flatten deployment packages -->
-		<flattenDP>true</flattenDP>
 		<productName>Cilia</productName>
       <roseVersion>1.0.2</roseVersion>
 	</properties>
 	<!-- Project dependencies -->
 	<dependencies>
+      <dependency>
+         <groupId>fr.liglab.adele.common</groupId>
+         <artifactId>distribution.minimal.base</artifactId>
+         <type>osgi-distribution</type>
+         <version>${adeleCommonVersion}</version>
+      </dependency>
 		<dependency>
 			<groupId>fr.liglab.adele.cilia</groupId>
 			<artifactId>cilia.dp</artifactId>
@@ -44,27 +48,17 @@
 			<version>${project.version}</version>
 		</dependency>
 	</dependencies>
-   <repositories>
-      <repository>
-         <snapshots>
-            <enabled>false</enabled>
-         </snapshots>
-         <id>adele-central-snapshot</id>
-         <name>adele-repos</name>
-         <url>http://maven.dynamis-technologies.com/artifactory/adele-repos</url>
-      </repository>
-      <repository>
-         <snapshots />
-         <id>snapshots</id>
-         <name>adele-central-release</name>
-         <url>http://maven.dynamis-technologies.com/artifactory/adele-repos</url>
-      </repository>
-	</repositories>
-	<distributionManagement>
-		<repository>
-			<id>cloudbees-release</id>
-			<name>Cloudbees Private Repository</name>
-			<url>dav:https://repository-cilia.forge.cloudbees.com/release</url>
-		</repository>
-	</distributionManagement>
+   <build>
+      <plugins>
+         <plugin>
+            <groupId>fr.liglab.adele.common</groupId>
+            <artifactId>maven-osgi-distribution-plugin</artifactId>
+            <extensions>true</extensions>
+            <configuration>
+               <generateScripts>true</generateScripts>
+               <flattenDP>true</flattenDP>
+            </configuration>
+         </plugin>
+      </plugins>
+   </build>
 </project>

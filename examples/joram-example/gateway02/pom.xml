@@ -13,16 +13,38 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<!-- Project parent -->
-	<parent>
-		<groupId>fr.liglab.adele.cilia.joram-demo</groupId>
-		<artifactId>cilia-joram-distribution-1</artifactId>
-		<version>1.6.4-SNAPSHOT</version>
-		<relativePath>../gateway01/</relativePath>
-	</parent>
+   <parent>
+      <groupId>fr.liglab.adele.cilia</groupId>
+      <artifactId>cilia-project</artifactId>
+      <version>1.6.4-SNAPSHOT</version>
+      <relativePath>../../../parent</relativePath>
+   </parent>
 
 	<!-- Project coordinates -->
+   <groupId>fr.liglab.adele.cilia.joram-demo</groupId>
 	<artifactId>cilia-joram-distribution-2</artifactId>
-	<packaging>pom</packaging>
-	<!-- Project description -->
+   <packaging>osgi-distribution</packaging>
+   <!-- Project description -->
 	<name>${productName} :: JMS Example - Distribution 2</name>
+   <dependencies>
+      <dependency>
+         <groupId>fr.liglab.adele.cilia</groupId>
+         <artifactId>cilia-joram-distribution-1</artifactId>
+         <type>osgi-distribution</type>
+         <version>${project.version}</version>
+      </dependency>
+   </dependencies>
+   <build>
+      <plugins>
+         <plugin>
+            <groupId>fr.liglab.adele.common</groupId>
+            <artifactId>maven-osgi-distribution-plugin</artifactId>
+            <extensions>true</extensions>
+            <configuration>
+               <generateScripts>true</generateScripts>
+               <flattenDP>true</flattenDP>
+            </configuration>
+         </plugin>
+      </plugins>
+   </build>
 </project>

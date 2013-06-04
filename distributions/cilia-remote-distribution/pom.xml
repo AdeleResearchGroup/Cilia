@@ -11,20 +11,26 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<!-- Project parent -->
-	<parent>
-		<groupId>fr.liglab.adele.cilia</groupId>
-		<artifactId>cilia-distribution</artifactId>
-		<version>1.6.4-SNAPSHOT</version>
-		<relativePath>../cilia-distribution</relativePath>
-	</parent>
+   <parent>
+      <groupId>fr.liglab.adele.cilia</groupId>
+      <artifactId>cilia-project</artifactId>
+      <version>1.6.4-SNAPSHOT</version>
+      <relativePath>../../parent</relativePath>
+   </parent>
 
-	<artifactId>cilia-remote-distribution</artifactId>
-	<packaging>pom</packaging>
-	<name>Cilia :: Distribution with RoSe</name>
+   <artifactId>cilia-remote-distribution</artifactId>
+   <packaging>osgi-distribution</packaging>
+   <name>Cilia :: Distribution with RoSe</name>
 
 
 	<!-- Project dependencies -->
 	<dependencies>
+      <dependency>
+         <groupId>fr.liglab.adele.cilia</groupId>
+         <artifactId>cilia-distribution</artifactId>
+         <type>osgi-distribution</type>
+         <version>${project.version}</version>
+      </dependency>
 		<dependency>
 			<groupId>fr.liglab.adele.cilia</groupId>
 			<artifactId>cilia-remote.dp</artifactId>
@@ -34,7 +40,21 @@
 		<dependency>
 			<groupId>fr.liglab.adele.common</groupId>
 			<artifactId>rose.dp</artifactId>
+         <version>${roseVersion}</version>
 			<type>deployment-package</type>
 		</dependency>
 	</dependencies>
+   <build>
+      <plugins>
+         <plugin>
+            <groupId>fr.liglab.adele.common</groupId>
+            <artifactId>maven-osgi-distribution-plugin</artifactId>
+            <extensions>true</extensions>
+            <configuration>
+               <generateScripts>true</generateScripts>
+               <flattenDP>true</flattenDP>
+            </configuration>
+         </plugin>
+      </plugins>
+   </build>
 </project>
