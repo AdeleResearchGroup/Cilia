@@ -28,7 +28,7 @@
 	<name>${productName} :: JMS Example - Distribution 2</name>
    <dependencies>
       <dependency>
-         <groupId>fr.liglab.adele.cilia</groupId>
+         <groupId>fr.liglab.adele.cilia.joram-demo</groupId>
          <artifactId>cilia-joram-distribution-1</artifactId>
          <type>osgi-distribution</type>
          <version>${project.version}</version>
