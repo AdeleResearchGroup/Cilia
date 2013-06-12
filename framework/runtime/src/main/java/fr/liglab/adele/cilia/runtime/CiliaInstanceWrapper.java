@@ -108,21 +108,39 @@ public class CiliaInstanceWrapper extends Observable implements CiliaInstance,
 				created = true;
 			} catch (UnacceptableConfiguration e) {
 				e.printStackTrace();
+                if (componentInstance != null){
+                    componentInstance.dispose();
+                }
 				componentInstance = null;
 				refresh();
 			} catch (MissingHandlerException e) {
 				e.printStackTrace();
+                if (componentInstance != null){
+                    componentInstance.dispose();
+                }
 				componentInstance = null;
 				refresh();
 			} catch (ConfigurationException e) {
 				e.printStackTrace();
+                if (componentInstance != null){
+                    componentInstance.dispose();
+                }
 				componentInstance = null;
 				refresh();
 			} catch (RuntimeException e) {
+                if (componentInstance != null){
+                    componentInstance.dispose();
+                }
 				componentInstance = null;
 				refresh();
 				e.printStackTrace();
-			}
+			}   catch(Exception e){
+                if (componentInstance != null){
+                    componentInstance.dispose();
+                }
+                componentInstance = null;
+                e.printStackTrace();
+            }
 		if (created) {
 			stateChanged(componentInstance, getState());
 		}
