@@ -38,7 +38,7 @@
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>fr.liglab.adele.common</groupId>
+			<groupId>org.ow2.chameleon.rose</groupId>
 			<artifactId>rose.dp</artifactId>
          <version>${roseVersion}</version>
 			<type>deployment-package</type>
