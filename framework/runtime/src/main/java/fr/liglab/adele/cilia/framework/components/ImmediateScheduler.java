@@ -19,6 +19,7 @@ import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.*;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,6 +28,9 @@ import fr.liglab.adele.cilia.Data;
 import fr.liglab.adele.cilia.framework.AbstractScheduler;
 import fr.liglab.adele.cilia.framework.IScheduler;
 import fr.liglab.adele.cilia.runtime.WorkQueue;
+
+import static java.util.concurrent.Executor.*;
+
 /**
  * 
  *
@@ -40,13 +44,16 @@ public class ImmediateScheduler extends AbstractScheduler {
 	public WorkQueue wq ;
 	protected Map dataMap = new HashMap();
 
+    private int threadPoolSize;
+    LinkedBlockingDeque<Runnable> workingQueue = new LinkedBlockingDeque<Runnable>();
+    private ExecutorService executor;
 
 	public void setConnectedScheduler(IScheduler sched) {
 		scheduler = sched;
 	}
 
 	public void notifyData(Data data) {
-		process(Collections.singletonList(data));
+		executor.submit(new ProcessorExecutor(data));
 	}
 
 	public void process(List dataSet) {
@@ -72,7 +79,35 @@ public class ImmediateScheduler extends AbstractScheduler {
 		return scheduler.getData();
 	}
 
-	public void init() {
-	}
+    public void validate(){
+        if (executor != null){
+            executor.shutdownNow();
+            executor = null;
+        }
+       executor = new ThreadPoolExecutor(threadPoolSize,
+        threadPoolSize*2,5,TimeUnit.SECONDS,workingQueue);
+    }
+
+    public void invalidate(){
+        try {
+            executor.awaitTermination(2000, TimeUnit.MILLISECONDS);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private class ProcessorExecutor implements Runnable {
+
+        private final Data data;
+
+        private ProcessorExecutor(final Data data){
+            this.data = data;
+        }
+
+        public void run() {
+            appLogger.debug("WorkingQueue will execute the mediation processing");
+            process(Collections.singletonList(data));
+        }
+    }
 
 }

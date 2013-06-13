@@ -78,6 +78,11 @@
 		classname="fr.liglab.adele.cilia.framework.components.ImmediateScheduler"
 		name="immediate-scheduler" namespace="fr.liglab.adele.cilia"
 		>
+        <properties>
+            <property name="scheduler.thread.pool.size" field="threadPoolSize" value="1"/>
+        </properties>
+        <callback transition="validate" method="validate" />
+        <callback transition="invalidate" method="unvalidate" />
 <!--  
 		<cilia:audit field="testAudit" namespace ="scheduler" access="rw" />
 		

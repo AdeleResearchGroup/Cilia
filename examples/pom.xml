@@ -29,6 +29,7 @@
 	<modules>
 		<module>si-example</module>
 		<module>joram-example</module>
+      <module>hello-world-example</module>
 	</modules>
 
   <build>
