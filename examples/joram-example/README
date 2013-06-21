@@ -1,0 +1,24 @@
+
+To launch the demo with the default configuration:
+*** Start the JoRam Server
+* locate joram 5.7 server in $CILIAROOT/examples/joram-example/joram-server
+* initialize the JAVA_HOME var
+* initialize the JORAM_HOME var
+* start joram with the following script
+samples/bin/single_server.sh
+
+*** Start the distribution 1
+* go to gateway01 folder and launch the script
+$start.sh
+
+*** Start the distribution 2
+* go to gateway02 folder and launch the script
+$start.sh
+
+
+
+
+
+
+
+
