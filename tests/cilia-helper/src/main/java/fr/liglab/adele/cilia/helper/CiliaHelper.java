@@ -327,5 +327,35 @@ public class CiliaHelper {
 	public OSGiHelper getOSGIHelper() {
 		return ohelper;
 	}
+
+    public static boolean checkReceived(MediatorTestHelper helper, int count, long timeout){
+        boolean found = false;
+        long current = System.currentTimeMillis();
+        long finalTime = current + timeout;
+        while(!found && current <= finalTime) {
+            waitSomeTime(20);
+            int amount = helper.getAmountData();
+            if (amount >= count){
+                found = true;
+            }
+            current = System.currentTimeMillis();
+        }
+        return found;
+    }
+
+    public static boolean checkReceived(CollectorHelper helper, int count, long timeout){
+        boolean found = false;
+        long current = System.currentTimeMillis();
+        long finalTime = current + timeout;
+        while(!found && current <= finalTime) {
+            waitSomeTime(20);
+            int amount = helper.countReceived();
+            if (amount >= count){
+                found = true;
+            }
+            current = System.currentTimeMillis();
+        }
+        return found;
+    }
 	
 }

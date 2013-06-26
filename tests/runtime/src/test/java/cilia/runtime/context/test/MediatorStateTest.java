@@ -14,28 +14,6 @@
  */
 package cilia.runtime.context.test;
 
-import static org.ops4j.pax.exam.CoreOptions.felix;
-import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
-import static org.ops4j.pax.exam.CoreOptions.options;
-import static org.ops4j.pax.exam.CoreOptions.provision;
-
-import java.net.URL;
-
-import junit.framework.Assert;
-
-import org.apache.felix.ipojo.test.helpers.OSGiHelper;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.ops4j.pax.exam.Inject;
-import org.ops4j.pax.exam.Option;
-import org.ops4j.pax.exam.OptionUtils;
-import org.ops4j.pax.exam.junit.Configuration;
-import org.ops4j.pax.exam.junit.JUnit4TestRunner;
-import org.ops4j.pax.exam.junit.JUnitOptions;
-import org.osgi.framework.BundleContext;
-
 import fr.liglab.adele.cilia.builder.Architecture;
 import fr.liglab.adele.cilia.builder.Builder;
 import fr.liglab.adele.cilia.exceptions.CiliaException;
@@ -44,6 +22,25 @@ import fr.liglab.adele.cilia.exceptions.CiliaIllegalStateException;
 import fr.liglab.adele.cilia.helper.CiliaHelper;
 import fr.liglab.adele.cilia.model.MediatorComponent;
 import fr.liglab.adele.cilia.runtime.MediatorRuntimeSpecification;
+import fr.liglab.adele.commons.distribution.test.AbstractDistributionBaseTest;
+import junit.framework.Assert;
+import org.apache.felix.ipojo.test.helpers.OSGiHelper;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.ops4j.pax.exam.Option;
+import org.ops4j.pax.exam.junit.PaxExam;
+import org.ops4j.pax.exam.options.DefaultCompositeOption;
+import org.ops4j.pax.exam.spi.reactors.ExamReactorStrategy;
+import org.ops4j.pax.exam.spi.reactors.PerMethod;
+import org.osgi.framework.BundleContext;
+
+import javax.inject.Inject;
+import java.net.URL;
+import java.util.List;
+
+import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
 
 /**
  * 
@@ -51,8 +48,9 @@ import fr.liglab.adele.cilia.runtime.MediatorRuntimeSpecification;
  *         Team</a>
  * 
  */
-@RunWith(JUnit4TestRunner.class)
-public class MediatorStateTest {
+@RunWith(PaxExam.class)
+@ExamReactorStrategy(PerMethod.class)
+public class MediatorStateTest  extends AbstractDistributionBaseTest {
 	
 
 	@Inject
@@ -74,40 +72,23 @@ public class MediatorStateTest {
 		osgi.dispose();
 	}
 
-	@Configuration
-	public static Option[] configure() {
-		Option[] platform = options(felix());
 
-		Option[] bundles = options(provision(
-				mavenBundle().groupId("org.apache.felix")
-						.artifactId("org.apache.felix.ipojo").versionAsInProject(),
-				mavenBundle().groupId("org.apache.felix")
-						.artifactId("org.apache.felix.ipojo.test.helpers")
-						.versionAsInProject(), mavenBundle().groupId("org.osgi")
-						.artifactId("org.osgi.compendium").versionAsInProject(),
-						mavenBundle().groupId("org.apache.felix").artifactId("org.apache.felix.fileinstall").versionAsInProject(),
-				mavenBundle().groupId("org.slf4j").artifactId("slf4j-api")
-						.versionAsInProject(), mavenBundle().groupId("org.slf4j")
-						.artifactId("slf4j-simple").versionAsInProject(), mavenBundle()
-						.groupId("fr.liglab.adele.cilia").artifactId("cilia-core")
-						.versionAsInProject(),
-				mavenBundle().groupId("fr.liglab.adele.cilia")
-						.artifactId("cilia-runtime").versionAsInProject(), mavenBundle().groupId("fr.liglab.adele.cilia")
-						.artifactId("cilia-helper").versionAsInProject()
-						));
-		Option[] r = OptionUtils.combine(platform, bundles);
-		return r;
-	}
+    public static Option helpBundles() {
 
-	/**
-	 * Mockito bundle
-	 * 
-	 * @return
-	 */
-	@Configuration
-	public static Option[] mockitoBundle() {
-		return options(JUnitOptions.mockitoBundles());
-	}
+        return new DefaultCompositeOption(
+                mavenBundle().groupId("org.apache.felix").artifactId("org.apache.felix.ipojo.test.helpers").versionAsInProject(),
+                mavenBundle().groupId("fr.liglab.adele.cilia").artifactId("cilia-helper").versionAsInProject()
+        );
+    }
+
+    @org.ops4j.pax.exam.Configuration
+    public Option[] configuration() {
+
+        List<Option> lst = super.config();
+        lst.add(helpBundles());
+        Option conf[] = lst.toArray(new Option[0]);
+        return conf;
+    }
 
 
 

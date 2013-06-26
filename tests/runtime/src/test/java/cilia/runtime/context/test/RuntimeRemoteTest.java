@@ -14,61 +14,48 @@
  */
 package cilia.runtime.context.test;
 
-import static org.ops4j.pax.exam.CoreOptions.felix;
-import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
-import static org.ops4j.pax.exam.CoreOptions.options;
-import static org.ops4j.pax.exam.CoreOptions.provision;
-import static org.ops4j.pax.exam.CoreOptions.systemProperty;
-import static org.ops4j.pax.exam.CoreOptions.when;
-import static org.ops4j.pax.exam.container.def.PaxRunnerOptions.vmOption;
-
-import java.lang.management.ManagementFactory;
-import java.lang.management.RuntimeMXBean;
-import java.net.URL;
-import java.text.ParseException;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.Future;
-
-import javax.ws.rs.core.MediaType;
-
+import com.sun.jersey.api.client.Client;
+import com.sun.jersey.api.client.WebResource;
+import com.sun.jersey.api.client.config.ClientConfig;
+import com.sun.jersey.api.client.config.DefaultClientConfig;
+import com.sun.jersey.api.representation.Form;
+import fr.liglab.adele.cilia.helper.CiliaHelper;
+import fr.liglab.adele.cilia.model.*;
+import fr.liglab.adele.commons.distribution.test.AbstractDistributionBaseTest;
 import org.apache.felix.ipojo.test.helpers.OSGiHelper;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.ops4j.pax.exam.Inject;
 import org.ops4j.pax.exam.Option;
-import org.ops4j.pax.exam.OptionUtils;
-import org.ops4j.pax.exam.junit.Configuration;
-import org.ops4j.pax.exam.junit.JUnit4TestRunner;
-import org.ops4j.pax.exam.junit.JUnitOptions;
-import org.ops4j.pax.exam.options.OptionalCompositeOption;
+import static org.ops4j.pax.exam.CoreOptions.systemProperty;
+import org.ops4j.pax.exam.junit.PaxExam;
+import org.ops4j.pax.exam.options.DefaultCompositeOption;
+import org.ops4j.pax.exam.spi.reactors.ExamReactorStrategy;
+import org.ops4j.pax.exam.spi.reactors.PerMethod;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.InvalidSyntaxException;
 import org.ow2.chameleon.json.JSONService;
 import org.ow2.chameleon.rose.api.Machine;
 
-import com.sun.jersey.api.client.Client;
-import com.sun.jersey.api.client.WebResource;
-import com.sun.jersey.api.client.config.ClientConfig;
-import com.sun.jersey.api.client.config.DefaultClientConfig;
-import com.sun.jersey.api.representation.Form;
+import javax.inject.Inject;
+import javax.ws.rs.core.MediaType;
+import java.net.URL;
+import java.text.ParseException;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.Future;
 
-import fr.liglab.adele.cilia.helper.CiliaHelper;
-import fr.liglab.adele.cilia.model.Adapter;
-import fr.liglab.adele.cilia.model.Binding;
-import fr.liglab.adele.cilia.model.Chain;
-import fr.liglab.adele.cilia.model.Mediator;
-import fr.liglab.adele.cilia.model.MediatorComponent;
+import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
 
 /**
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project
  *         Team</a>
  */
-@RunWith(JUnit4TestRunner.class)
-public class RuntimeRemoteTest {
+@RunWith(PaxExam.class)
+@ExamReactorStrategy(PerMethod.class)
+public class RuntimeRemoteTest extends AbstractDistributionBaseTest {
 	@Inject
 	private BundleContext context;
 
@@ -76,7 +63,7 @@ public class RuntimeRemoteTest {
 
 	private CiliaHelper cilia;
 
-	private static String HTTP_PORT = "9874";
+	private static String HTTP_PORT = "8080";
 
 	private static String ROOT_SITE = "http://localhost:"+HTTP_PORT+"/cilia/"; 
 
@@ -94,66 +81,25 @@ public class RuntimeRemoteTest {
 		osgi.dispose();
 	}
 
-	@Configuration
-	public static Option[] configure() {
-		Option[] platform = options(felix(), systemProperty( "org.osgi.service.http.port" ).value( HTTP_PORT ));
 
-		Option[] bundles = options(
-				provision(
-						mavenBundle().groupId("org.apache.felix").artifactId("org.apache.felix.ipojo").versionAsInProject(),
-						
-						mavenBundle().groupId("org.apache.felix").artifactId("org.apache.felix.ipojo.test.helpers").versionAsInProject(),
-						mavenBundle().groupId("org.osgi").artifactId("org.osgi.compendium").versionAsInProject(),
-						mavenBundle().groupId("org.apache.felix").artifactId("org.apache.felix.fileinstall").versionAsInProject(),
-						mavenBundle().groupId("org.slf4j").artifactId("slf4j-api").versionAsInProject(),
-						mavenBundle().groupId("org.slf4j").artifactId("slf4j-simple").versionAsInProject(),
-						mavenBundle().groupId("fr.liglab.adele.cilia").artifactId("cilia-core").versionAsInProject(),
-						mavenBundle().groupId("fr.liglab.adele.cilia").artifactId("cilia-runtime").versionAsInProject(),
-						mavenBundle().groupId("fr.liglab.adele.cilia").artifactId("cilia-remote").versionAsInProject(),
-						mavenBundle().groupId("fr.liglab.adele.cilia").artifactId("cilia-helper").versionAsInProject(),
-						//Load ROSE
-						mavenBundle().groupId("org.ow2.chameleon.rose").artifactId("rose-core").versionAsInProject(),
-						mavenBundle().groupId("org.ow2.chameleon.rose.rest").artifactId("jersey-exporter").versionAsInProject(),
-						mavenBundle().groupId("org.ow2.chameleon.rose").artifactId("json-configurator").versionAsInProject(),
-						mavenBundle().groupId("com.sun.jersey").artifactId("jersey-core").versionAsInProject(),
-						mavenBundle().groupId("com.sun.jersey").artifactId("jersey-client").versionAsInProject(),
-						mavenBundle().groupId("com.sun.jersey").artifactId("jersey-server").versionAsInProject(),
-						mavenBundle().groupId("org.apache.felix").artifactId("org.apache.felix.http.jetty").versionAsInProject(),
-						mavenBundle().groupId("javax.mail").artifactId("mail").versionAsInProject(),
-						mavenBundle().groupId("javax.xml.bind").artifactId("jaxb-api-osgi").versionAsInProject(),
-						mavenBundle().groupId("org.ow2.chameleon.json").artifactId("json-service-json.org").versionAsInProject()
-						
-						)); // The target
+    public static Option helpBundles() {
 
-		OptionalCompositeOption debugOptions = when(isDebugModeOn()).useOptions(vmOption("-Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=5007"))		;
-		Option[] r = OptionUtils.combine(platform, OptionUtils.combine(bundles, debugOptions.getOptions()));
-		return r;
-	}
+        return new DefaultCompositeOption(
+                systemProperty( "org.osgi.service.http.port" ).value( HTTP_PORT ),
+                mavenBundle().groupId("org.apache.felix").artifactId("org.apache.felix.ipojo.test.helpers").versionAsInProject(),
+                mavenBundle().groupId("fr.liglab.adele.cilia").artifactId("cilia-helper").versionAsInProject(),
+                mavenBundle().groupId("com.sun.jersey").artifactId("jersey-client").versionAsInProject()
+        );
+    }
 
-	private static boolean isDebugModeOn() {
-		RuntimeMXBean RuntimemxBean = ManagementFactory.getRuntimeMXBean();
-		List<String> arguments = RuntimemxBean.getInputArguments();
+    @org.ops4j.pax.exam.Configuration
+    public Option[] configuration() {
 
-		boolean debugModeOn = false;
-
-		for (String string : arguments) {
-			debugModeOn = string.indexOf("jdwp") != -1;
-			if (debugModeOn)
-				break;
-		}
-
-		return debugModeOn;
-	}
-
-	/**
-	 * Mockito bundle
-	 * 
-	 * @return
-	 */
-	@Configuration
-	public static Option[] mockitoBundle() {
-		return options(JUnitOptions.mockitoBundles());
-	}
+        List<Option> lst = super.config();
+        lst.add(helpBundles());
+        Option conf[] = lst.toArray(new Option[0]);
+        return conf;
+    }
 
 
 	/*****************************************/

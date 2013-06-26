@@ -17,14 +17,13 @@
  */
 package fr.liglab.adele.cilia.tcp.test;
 
-import static org.ops4j.pax.exam.CoreOptions.felix;
-import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
-import static org.ops4j.pax.exam.CoreOptions.options;
-import static org.ops4j.pax.exam.CoreOptions.provision;
-
-import java.net.URL;
-import java.util.Hashtable;
-
+import fr.liglab.adele.cilia.Data;
+import fr.liglab.adele.cilia.framework.ICollector;
+import fr.liglab.adele.cilia.framework.ISender;
+import fr.liglab.adele.cilia.helper.CiliaHelper;
+import fr.liglab.adele.cilia.helper.CollectorHelper;
+import fr.liglab.adele.cilia.runtime.CiliaInstance;
+import fr.liglab.adele.commons.distribution.test.AbstractDistributionBaseTest;
 import org.apache.felix.ipojo.ComponentInstance;
 import org.apache.felix.ipojo.Factory;
 import org.apache.felix.ipojo.test.helpers.IPOJOHelper;
@@ -34,32 +33,28 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.ops4j.pax.exam.Inject;
 import org.ops4j.pax.exam.Option;
-import org.ops4j.pax.exam.OptionUtils;
-import org.ops4j.pax.exam.junit.Configuration;
-import org.ops4j.pax.exam.junit.JUnit4TestRunner;
-import org.ops4j.pax.exam.junit.JUnitOptions;
+import org.ops4j.pax.exam.junit.PaxExam;
+import org.ops4j.pax.exam.options.DefaultCompositeOption;
+import org.ops4j.pax.exam.spi.reactors.ExamReactorStrategy;
+import org.ops4j.pax.exam.spi.reactors.PerMethod;
 import org.osgi.framework.BundleContext;
-import org.osgi.service.event.Event;
-import org.osgi.service.event.EventAdmin;
 
-import fr.liglab.adele.cilia.Data;
-import fr.liglab.adele.cilia.framework.CiliaBindingService;
-import fr.liglab.adele.cilia.framework.ICollector;
-import fr.liglab.adele.cilia.framework.ISender;
-import fr.liglab.adele.cilia.helper.CiliaHelper;
-import fr.liglab.adele.cilia.helper.CollectorHelper;
-import fr.liglab.adele.cilia.helper.MediatorTestHelper;
-import fr.liglab.adele.cilia.runtime.CiliaInstance;
+import javax.inject.Inject;
+import java.net.URL;
+import java.util.Hashtable;
+import java.util.List;
+
+import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
 
 /**
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project
  *         Team</a>
  *
  */
-@RunWith(JUnit4TestRunner.class)
-public class TestTCPAdapters  {
+@RunWith(PaxExam.class)
+@ExamReactorStrategy(PerMethod.class)
+public class TestTCPAdapters  extends AbstractDistributionBaseTest {
 
 
 	private final static String COLLECTOR = "tcp-collector";
@@ -96,36 +91,24 @@ public class TestTCPAdapters  {
 
 
 
-	@Configuration
-	public static Option[] configure() {
-		Option[] platform = options(felix());
 
-		Option[] bundles = options(
-				provision(
-						mavenBundle().groupId("org.apache.felix").artifactId("org.apache.felix.ipojo").versionAsInProject(),
-						mavenBundle().groupId("org.apache.felix").artifactId("org.apache.felix.ipojo.test.helpers").versionAsInProject(),
-						mavenBundle().groupId("org.osgi").artifactId("org.osgi.compendium").versionAsInProject(),
-						mavenBundle().groupId("org.apache.felix").artifactId("org.apache.felix.fileinstall").versionAsInProject(),
-						mavenBundle().groupId("org.slf4j").artifactId("slf4j-api").versionAsInProject(),
-						mavenBundle().groupId("org.slf4j").artifactId("slf4j-simple").versionAsInProject(),
-						mavenBundle().groupId("fr.liglab.adele.cilia").artifactId("cilia-core").versionAsInProject(),
-						mavenBundle().groupId("fr.liglab.adele.cilia").artifactId("cilia-runtime").versionAsInProject(),
-						mavenBundle().groupId("org.apache.felix").artifactId("org.apache.felix.eventadmin").versionAsInProject(),
-						mavenBundle().groupId("fr.liglab.adele.cilia").artifactId("tcp-adapter").versionAsInProject(),
-						mavenBundle().groupId("fr.liglab.adele.cilia").artifactId("cilia-helper").versionAsInProject()
-						)); // The target
-		Option[] r = OptionUtils.combine(platform, bundles);
-		return r;
-	}
+    public static Option helpBundles() {
 
-	/**
-	 * Mockito bundle
-	 * @return
-	 */
-	@Configuration
-	public static Option[] mockitoBundle() {
-		return options(JUnitOptions.mockitoBundles());
-	}
+        return new DefaultCompositeOption(
+                mavenBundle().groupId("fr.liglab.adele.cilia").artifactId("tcp-adapter").versionAsInProject(),
+                mavenBundle().groupId("org.apache.felix").artifactId("org.apache.felix.ipojo.test.helpers").versionAsInProject(),
+                mavenBundle().groupId("fr.liglab.adele.cilia").artifactId("cilia-helper").versionAsInProject()
+        );
+    }
+
+    @org.ops4j.pax.exam.Configuration
+    public Option[] configuration() {
+
+        List<Option> lst = super.config();
+        lst.add(helpBundles());
+        Option conf[] = lst.toArray(new Option[0]);
+        return conf;
+    }
 
 	
 
@@ -150,7 +133,7 @@ public class TestTCPAdapters  {
 
 	@Test
 	public void validateServices() {
-		CiliaHelper.waitSomeTime(2000);
+		CiliaHelper.waitSomeTime(5000);
 		Factory col = ipojo.getFactory(COLLECTOR);
 		Assert.assertNotNull(col);
 		Assert.assertEquals(Factory.VALID, col.getState());
@@ -161,15 +144,13 @@ public class TestTCPAdapters  {
 
 	@Test
 	public void collectorTest() {
-		CiliaHelper.waitSomeTime(2000);
+		CiliaHelper.waitSomeTime(5000);
 
 		CollectorHelper ch = createCollectorHelper(getTestProperties(9999));
 
 		injectMessages(9999);
-		CiliaHelper.waitSomeTime(2000);
-		//wait to receive
-		CiliaHelper.waitSomeTime(500);
-		//See if all messages are received.
+		CiliaHelper.checkReceived(ch, 10, 10000);
+
 		Assert.assertEquals(10, ch.countReceived());
 		Data data = ch.getLast();
 
@@ -192,7 +173,7 @@ public class TestTCPAdapters  {
 			is.send(ndata);
 		}
 
-		CiliaHelper.waitSomeTime(1000);
+        CiliaHelper.checkReceived(ch, 10, 10000);
 		//See if all messages are received.
 		Assert.assertEquals(10, ch.countReceived());
 		Data data = ch.getLast();
@@ -234,7 +215,7 @@ public class TestTCPAdapters  {
 			Data ndata = new Data("Test number " + i, "data");
 			is.send(ndata);
 		}
-		CiliaHelper.waitSomeTime(1000);
+        CiliaHelper.checkReceived(ch, 10, 10000);
 		//See if all messages are received.
 		Assert.assertEquals(10, ch.countReceived());
 		Data data = ch.getLast();

@@ -17,29 +17,6 @@
  */
 package cilia.runtime.context.test;
 
-import static org.ops4j.pax.exam.CoreOptions.felix;
-import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
-import static org.ops4j.pax.exam.CoreOptions.options;
-import static org.ops4j.pax.exam.CoreOptions.provision;
-
-import java.net.URL;
-import java.util.List;
-
-import junit.framework.Assert;
-
-import org.apache.felix.ipojo.test.helpers.OSGiHelper;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.ops4j.pax.exam.Inject;
-import org.ops4j.pax.exam.Option;
-import org.ops4j.pax.exam.OptionUtils;
-import org.ops4j.pax.exam.junit.Configuration;
-import org.ops4j.pax.exam.junit.JUnit4TestRunner;
-import org.ops4j.pax.exam.junit.JUnitOptions;
-import org.osgi.framework.BundleContext;
-
 import fr.liglab.adele.cilia.Data;
 import fr.liglab.adele.cilia.builder.Architecture;
 import fr.liglab.adele.cilia.builder.Builder;
@@ -47,15 +24,34 @@ import fr.liglab.adele.cilia.exceptions.CiliaException;
 import fr.liglab.adele.cilia.helper.CiliaHelper;
 import fr.liglab.adele.cilia.helper.MediatorTestHelper;
 import fr.liglab.adele.cilia.runtime.MediatorRuntimeSpecification;
+import fr.liglab.adele.commons.distribution.test.AbstractDistributionBaseTest;
+import junit.framework.Assert;
+import org.apache.felix.ipojo.test.helpers.OSGiHelper;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.ops4j.pax.exam.Option;
+import org.ops4j.pax.exam.junit.PaxExam;
+import org.ops4j.pax.exam.options.DefaultCompositeOption;
+import org.ops4j.pax.exam.spi.reactors.ExamReactorStrategy;
+import org.ops4j.pax.exam.spi.reactors.PerMethod;
+import org.osgi.framework.BundleContext;
+
+import javax.inject.Inject;
+import java.net.URL;
+import java.util.List;
+
+import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
 
 /**
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project
  *         Team</a>
  *
  */
-@RunWith(JUnit4TestRunner.class)
-
-public class AdvancedManipulationTest {
+@RunWith(PaxExam.class)
+@ExamReactorStrategy(PerMethod.class)
+public class AdvancedManipulationTest  extends AbstractDistributionBaseTest {
 
 	@Inject
 	private BundleContext context;
@@ -75,36 +71,22 @@ public class AdvancedManipulationTest {
 		cilia.dispose();
 		osgi.dispose();
 	}
+    public static Option helpBundles() {
 
-	@Configuration
-	public static Option[] configure() {
-		Option[] platform = options(felix());
+        return new DefaultCompositeOption(
+                mavenBundle().groupId("org.apache.felix").artifactId("org.apache.felix.ipojo.test.helpers").versionAsInProject(),
+                mavenBundle().groupId("fr.liglab.adele.cilia").artifactId("cilia-helper").versionAsInProject()
+        );
+    }
 
-		Option[] bundles = options(
-				provision(mavenBundle().groupId(
-						"org.apache.felix").artifactId("org.apache.felix.ipojo").versionAsInProject(), 
-						mavenBundle().groupId("org.apache.felix").artifactId("org.apache.felix.ipojo.test.helpers").versionAsInProject(),
-						mavenBundle().groupId("org.apache.felix").artifactId("org.apache.felix.fileinstall").versionAsInProject(),
-						mavenBundle().groupId("org.osgi").artifactId("org.osgi.compendium").versionAsInProject(),
-						mavenBundle().groupId("org.slf4j").artifactId("slf4j-api").versionAsInProject(),
-						mavenBundle().groupId("org.slf4j").artifactId("slf4j-simple").versionAsInProject(),
-						mavenBundle().groupId("fr.liglab.adele.cilia").artifactId("cilia-core").versionAsInProject(),
-						mavenBundle().groupId("fr.liglab.adele.cilia").artifactId("cilia-runtime").versionAsInProject(),
-						mavenBundle().groupId("fr.liglab.adele.cilia").artifactId("cilia-helper").versionAsInProject()
-						)); // The target
-		Option[] r = OptionUtils.combine(platform, bundles);
-		return r;
-	}
+    @org.ops4j.pax.exam.Configuration
+    public Option[] configuration() {
 
-	/**
-	 * Mockito bundle
-	 * 
-	 * @return
-	 */
-	@Configuration
-	public static Option[] mockitoBundle() {
-		return options(JUnitOptions.mockitoBundles());
-	}
+        List<Option> lst = super.config();
+        lst.add(helpBundles());
+        Option conf[] = lst.toArray(new Option[0]);
+        return conf;
+    }
 	
 	@Test
 	public void replaceTest(){
@@ -115,12 +97,12 @@ public class AdvancedManipulationTest {
 		cilia.load(url);
 		System.out.println("will wait");
 		cilia.waitToChain("replacerExample",6000);
-		CiliaHelper.waitSomeTime(2000);
 		//get the helper to inject and retrieve result.
 		MediatorTestHelper tester = cilia.instrumentChain("replacerExample","firstMediator:unique", "lastMediator:unique");
 		Assert.assertNotNull(tester);
 		Assert.assertEquals(true, tester.injectData(new Data("data content", "data name")));
 		//get the resulting data.
+        CiliaHelper.checkReceived(tester, 1, 2000);
 		Data data = tester.getData().get(0);
 		Assert.assertNotNull(data);
 		String enricherValue = (String)data.getProperty("enricher");
@@ -143,7 +125,8 @@ public class AdvancedManipulationTest {
 		CiliaHelper.waitSomeTime(5000);
 		System.out.println("Inject second data");
 		Assert.assertEquals(true, tester.injectData(new Data("data content", "data name")));
-		System.out.println("Verify second data");
+        CiliaHelper.checkReceived(tester, 1, 2000);
+        System.out.println("Verify second data");
 		Assert.assertEquals(1, tester.getAmountData());
 		Data data2 = tester.getData().get(0);
 		Assert.assertNotNull(data2);
@@ -170,7 +153,8 @@ public class AdvancedManipulationTest {
 		Assert.assertNotNull(tester);
 		Assert.assertEquals(true, tester.injectData(new Data("data content", "data name")));
 		//get the resulting data.
-		List<Data> data = tester.getData();
+        CiliaHelper.checkReceived(tester, 1, 2000);
+        List<Data> data = tester.getData();
 		Assert.assertEquals(0, data.size());
 
 		Assert.assertEquals(0,tester.getAmountData());
@@ -195,7 +179,8 @@ public class AdvancedManipulationTest {
 		System.out.println("Inject second data");
 		Assert.assertEquals(true, tester.injectData(new Data("data content", "data name")));
 		System.out.println("Verify second data");
-		Assert.assertEquals(1, tester.getAmountData());
+        CiliaHelper.checkReceived(tester, 1, 2000);
+        Assert.assertEquals(1, tester.getAmountData());
 		Data data2 = tester.getData().get(0);
 		Assert.assertNotNull(data2);
 		String enricherValue2 = (String)data2.getProperty("enricher");
