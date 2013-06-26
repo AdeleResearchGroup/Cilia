@@ -10,7 +10,7 @@
       <parent>
          <groupId>fr.liglab.adele.common</groupId>
          <artifactId>base</artifactId>
-         <version>1.0.5-SNAPSHOT</version>
+         <version>1.1.0</version>
          <relativePath />
       </parent>
       <groupId>fr.liglab.adele.cilia</groupId>
@@ -24,7 +24,7 @@
          <productVersion>${project.version}</productVersion>
          <projectName>${project.artifactId}</projectName>
          <fileinstall.version>3.1.4</fileinstall.version>
-         <adeleCommonVersion>1.0.5-SNAPSHOT</adeleCommonVersion>
+         <adeleCommonVersion>1.1.0</adeleCommonVersion>
       </properties>
 
       <licenses>
