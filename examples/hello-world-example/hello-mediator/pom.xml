@@ -20,7 +20,7 @@
    <parent>
       <groupId>fr.liglab.adele.cilia.tp2</groupId>
       <artifactId>cilia-tp2-projects</artifactId>
-      <version>1.6.4-SNAPSHOT</version>
+      <version>1.7.1-SNAPSHOT</version>
    </parent>
 	<groupId>fr.liglab.adele.cilia</groupId>
 	<artifactId>hello-mediator</artifactId>
