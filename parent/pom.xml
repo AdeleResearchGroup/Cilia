@@ -16,7 +16,7 @@
       <groupId>fr.liglab.adele.cilia</groupId>
       <artifactId>cilia-project</artifactId>
       <name>${productName} :: Parent</name>
-      <version>1.6.4-SNAPSHOT</version>
+      <version>1.7.0</version>
       <packaging>pom</packaging>
       <url>http://wikiadele.imag.fr/index.php/Cilia</url>
       <properties>
@@ -346,7 +346,7 @@
          <connection>scm:git:ssh://git@github.com/AdeleResearchGroup/Cilia.git</connection>
          <url>http://github.com/AdeleResearchGroup/Cilia/tree/master</url>
          <developerConnection>scm:git:ssh://git@github.com/AdeleResearchGroup/Cilia.git</developerConnection>
-         <tag>HEAD</tag>
+         <tag>cilia-project-1.7.0</tag>
       </scm>
       <dependencyManagement>
          <dependencies>
