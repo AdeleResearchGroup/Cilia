@@ -106,7 +106,7 @@
         <dependency>
             <groupId>fr.liglab.adele.common</groupId>
             <artifactId>base.distribution.test</artifactId>
-            <version>${adeleCommonVersion}</version>
+            <version>${adeleCommonVersionTest}</version>
         </dependency>
 
         <dependency>
@@ -126,7 +126,7 @@
         <dependency>
             <groupId>fr.liglab.adele.common</groupId>
             <artifactId>distribution.factory</artifactId>
-            <version>${adeleCommonVersion}</version>
+            <version>${adeleCommonVersionTest}</version>
             <scope>test</scope>
             <exclusions>
                 <exclusion>
