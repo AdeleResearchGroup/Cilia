@@ -102,7 +102,6 @@ public class CiliaInstanceWrapper extends Observable implements CiliaInstance,
 				Hashtable prs = new Hashtable(properties);
                 prs.remove("name");
                 prs.remove("instance.name");
-                System.out.println("Creating Component with: " + prs);
 				componentInstance = ipojoFactory.createComponentInstance(prs);
 				componentInstance.addInstanceStateListener(this);
 				created = true;

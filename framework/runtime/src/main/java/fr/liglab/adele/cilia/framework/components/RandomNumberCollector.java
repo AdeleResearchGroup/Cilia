@@ -49,11 +49,9 @@ public class RandomNumberCollector extends AbstractPullCollector  {
 	
 	public void start(){
 		super.start();
-		System.out.println("Starting");
 	}
 	public void stop(){
 		super.stop();
-		System.out.println("Stopping");
 	}
 
 }

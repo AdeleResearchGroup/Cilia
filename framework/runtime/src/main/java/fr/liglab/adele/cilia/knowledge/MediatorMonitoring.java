@@ -381,7 +381,6 @@ public class MediatorMonitoring implements ModelExtension {
 
 		public void setQueueSize(int queue) {
 			try {
-				System.out.println("New queue Size "+queue+ "current size = "+measures.size()) ;
 				measures.writerSync().acquire();
 				try {
 					if (measures.size() > queue) {

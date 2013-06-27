@@ -102,7 +102,6 @@ public class SerializedData extends Data {
 				throw new IOException("Unable to read object");
 			}
 		}
-	    System.out.println("serialized Object " + object);
 	    data.put(DATA_CONTENT, object);
 	    isSerialized = false;
 	    content = null;

@@ -205,7 +205,6 @@ public class ParserUtils {
 	}
 
 	public static Hashtable<String,Object> JSONStringToHashtable(final String string) {
-		System.out.println("IT is " + string);
 		JSONObject jo = null;
 		Hashtable properties = null;
 		try {
@@ -215,7 +214,6 @@ public class ParserUtils {
 			e.printStackTrace();
 			return null;
 		}
-		System.out.println("And is " + string);
 		return properties;
 
 	}

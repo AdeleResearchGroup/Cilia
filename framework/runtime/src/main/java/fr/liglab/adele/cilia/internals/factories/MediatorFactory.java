@@ -280,7 +280,6 @@ public class MediatorFactory extends MediatorComponentFactory implements
 	}
 
 	public void stopping() {
-        System.out.println("Stopping factory:" + getName());
 		super.stopping();// The parent will close Tracker. This component type
 		// doesnt track handlers services.
 		if (constituantTracker != null) {
