@@ -63,11 +63,6 @@
 			<artifactId>jabsorb-exporter</artifactId>
 			<version>${roseVersion}</version>
 		</dependency>
-		<dependency>
-			<groupId>org.ow2.chameleon.rose</groupId>
-			<artifactId>rose-wui</artifactId>
-			<version>1.0.3-SNAPSHOT</version>
-		</dependency>
 		<!-- WEB-->
 		<dependency>
 			<groupId>javax.servlet</groupId>
