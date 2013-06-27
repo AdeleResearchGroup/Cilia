@@ -1,4 +1,12 @@
 =======================================================================================
+CILIA 1.7.0
+=======================================================================================
++  Move to iPOJO 1.10.x.
++  ImmediateScheduler will not reuse notification thread, it uses a separated threadpool.
++  with iPOJO 1.10.x retrocompatibility is broken with previous iPOJO versions.
+
+
+=======================================================================================
 CILIA 1.6.0
 =======================================================================================
 !+ Namespace is always used, if any namespace is given, the framework will use fr.liglab.adele.cilia
