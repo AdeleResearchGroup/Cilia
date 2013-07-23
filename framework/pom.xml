@@ -31,6 +31,7 @@
 		<module>core</module>
 		<module>remote</module>
 		<module>runtime</module>
+      <module>annotations</module>
 	</modules>
   <build>
     <plugins>

@@ -1,5 +1,5 @@
 
-<cilia xmlns:cilia="fr.liglab.adele.cilia" xmlns:jmx="org.apache.felix.ipojo.handlers.jmx"
+<cilia xmlns:cilia="fr.liglab.adele.cilia"
 	xmlns:ipojo="org.apache.felix.ipojo">
 	<!-- Processors to add cilia elements -->
 	<io-adapter classname="fr.liglab.adele.cilia.helper.AdapterHelper"

@@ -57,7 +57,7 @@ public class ParserUtils {
 
 	/**
 	 * Parses the string form of a Map as {key1[value1], key2[value2], [key3]:[value3]} as a list.
-	 * @param str the string form
+	 * @param prop the string form
 	 */
 	private static Hashtable<String, Object> parseTable(String prop) {
 		List<String> listOfEntrys = parseArraysAsList(prop);

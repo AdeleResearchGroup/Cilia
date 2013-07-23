@@ -101,7 +101,7 @@ public class SchedulerTest  extends AbstractDistributionBaseTest {
 		CiliaHelper.waitSomeTime(3000);//initial delay by default
 		helper.injectData(new Data("Data one","data one"));
 		helper.injectData(new Data("Data two","data two"));
-		CiliaHelper.checkReceived(helper, 2, 10000);
+		CiliaHelper.checkReceived(helper, 2, 20000);
 		Assert.assertEquals(2, helper.getAmountData());
 		helper.getData();//to erase processed data.
 		//We inject another set of data
