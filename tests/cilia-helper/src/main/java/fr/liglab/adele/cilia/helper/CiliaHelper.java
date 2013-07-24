@@ -317,7 +317,7 @@ public class CiliaHelper {
 		return found;
 	}
 
-    public boolean waitToComponentChain(String chainId, String componentId, long time) {
+    public boolean waitToComponent(String chainId, String componentId, long time) {
         if(!waitToChain(chainId,5000)){
             return false;
         }
