@@ -23,6 +23,7 @@ import java.net.URL;
 import java.util.Dictionary;
 import java.util.Hashtable;
 
+import fr.liglab.adele.cilia.model.Component;
 import junit.framework.Assert;
 
 import org.apache.felix.ipojo.test.helpers.OSGiHelper;
@@ -301,7 +302,7 @@ public class CiliaHelper {
 		long current = System.currentTimeMillis();
 		long finalTime = current + time;
 		while(!found && current <= finalTime) {
-			waitSomeTime(500);
+			waitSomeTime(50);
 			Chain ch = null;
 			try {
 				ch = getCiliaContext().getApplicationRuntime().getChain(chainId);
@@ -315,7 +316,26 @@ public class CiliaHelper {
 		}
 		return found;
 	}
-	
+
+    public boolean waitToComponentChain(String chainId, String componentId, long time) {
+        if(!waitToChain(chainId,5000)){
+            return false;
+        }
+        Chain chain = getChain(componentId);
+        Component component = null;
+        boolean found = false;
+        long current = System.currentTimeMillis();
+        long finalTime = current + time;
+        while(!found && current <= finalTime) {
+            waitSomeTime(500);
+            if(chain.getMediator(componentId) != null || chain.getAdapter(componentId)!=null){
+               found = true;
+            }
+            current = System.currentTimeMillis();
+        }
+        return found;
+    }
+
 	public static void waitSomeTime(int l) {
 		try {
 			Thread.sleep(l);//wait to be registered
