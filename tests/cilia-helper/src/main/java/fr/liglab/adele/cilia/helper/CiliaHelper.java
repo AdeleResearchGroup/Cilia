@@ -321,7 +321,7 @@ public class CiliaHelper {
         if(!waitToChain(chainId,5000)){
             return false;
         }
-        Chain chain = getChain(componentId);
+        Chain chain = getChain(chainId);
         Component component = null;
         boolean found = false;
         long current = System.currentTimeMillis();
