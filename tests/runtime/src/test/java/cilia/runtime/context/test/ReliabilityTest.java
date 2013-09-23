@@ -27,10 +27,7 @@ import fr.liglab.adele.cilia.helper.MediatorTestHelper;
 import fr.liglab.adele.cilia.runtime.MediatorRuntimeSpecification;
 import fr.liglab.adele.commons.distribution.test.AbstractDistributionBaseTest;
 import org.apache.felix.ipojo.test.helpers.OSGiHelper;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.*;
 import org.junit.runner.RunWith;
 import org.ops4j.pax.exam.Option;
 import org.ops4j.pax.exam.junit.PaxExam;
@@ -52,6 +49,7 @@ import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
  *         Team</a>
  *
  */
+@Ignore
 @RunWith(PaxExam.class)
 @ExamReactorStrategy(PerMethod.class)
 public class ReliabilityTest extends AbstractDistributionBaseTest {

@@ -27,6 +27,7 @@ import junit.framework.Assert;
 import org.apache.felix.ipojo.test.helpers.OSGiHelper;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.ops4j.pax.exam.Option;
@@ -48,6 +49,7 @@ import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
  *         Team</a>
  * 
  */
+@Ignore
 @RunWith(PaxExam.class)
 @ExamReactorStrategy(PerMethod.class)
 public class MediatorStateTest  extends AbstractDistributionBaseTest {
