@@ -19,6 +19,7 @@ import fr.liglab.adele.cilia.annotations.IOAdapter;
 import fr.liglab.adele.cilia.annotations.Port;
 import fr.liglab.adele.cilia.framework.AbstractIOAdapter;
 import fr.liglab.adele.cilia.util.TimeoutException;
+import hello.world.example.data.ContentData;
 import org.apache.felix.ipojo.annotations.Invalidate;
 import org.apache.felix.ipojo.annotations.Validate;
 import org.osgi.framework.BundleContext;
@@ -27,6 +28,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Map;
 
 /**
  *
@@ -41,7 +43,6 @@ public class GuiAdapter extends AbstractIOAdapter{
     JTextField textField;
     JLabel reponse;
     JButton collectBtn;
-    private String name;
 
     /**
 	 * @param context
@@ -58,7 +59,7 @@ public class GuiAdapter extends AbstractIOAdapter{
      */
     @Validate
 	public void start() {
-		frame = new JFrame(name);
+		frame = new JFrame("hello-world-example");
 		initComponents();
 		frame.setVisible(true);
 	}
@@ -91,7 +92,7 @@ public class GuiAdapter extends AbstractIOAdapter{
 				String msg = textField.getText();
 				String resultData = "";
 				if (msg != null & msg.trim().length()>0) {
-					Data data = new Data(textField.getText(), "guiconsole-data");
+					Data data = new Data(createComplexData(textField.getText()), "guiconsole-data");
 					textField.setText("");
 					Data result = null;
 					try {
@@ -101,7 +102,8 @@ public class GuiAdapter extends AbstractIOAdapter{
 					}
 					System.out.println(result);
 					if (result != null) {
-						resultData = String.valueOf(result.getContent());
+						ContentData response = (ContentData)(result.getContent());
+                        resultData = String.valueOf(response.get("Response"));
 					}
 					reponse.setText(String.valueOf(resultData));
 
@@ -125,5 +127,13 @@ public class GuiAdapter extends AbstractIOAdapter{
 	public Data dispatchData(Data data) {
 		return super.dispatchData(data);
 	}
+
+    public ContentData createComplexData(String value){
+        ContentData data = new ContentData(value);
+        System.out.println("User ! " + System.getenv("USER"));
+        String user = System.getenv("USER") != null ? System.getenv("USER") : "unknown" ;
+        data.put("user.name", user);
+        return data;
+    }
 
 }
