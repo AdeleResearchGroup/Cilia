@@ -35,7 +35,7 @@ public class CiliaComponentVisitor extends EmptyVisitor implements AnnotationVis
 	private ComponentWorkbench workbench;
 
 	 public CiliaComponentVisitor(String component, BindingContext context) {
-         this.component = new Element(component, NAMESPACE);
+         this.component = new Element(component, null);
 	     this.workbench = context.getWorkbench();
 	    }
 
@@ -47,6 +47,10 @@ public class CiliaComponentVisitor extends EmptyVisitor implements AnnotationVis
 	        	component.addAttribute(new Attribute("name", value.toString()));
 	            return;
 	        }
+            else if (name.equals("namespace")) {
+                component.addAttribute(new Attribute("namespace", value.toString()));
+                return;
+            }
 	    }
 
 

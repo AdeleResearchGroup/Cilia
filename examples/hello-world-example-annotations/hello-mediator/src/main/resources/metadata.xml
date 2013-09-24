@@ -1,0 +1,11 @@
+<cilia>
+    <mediator-component name="HelloMediator" namespace = "hello.world.example" category="samples">
+      <processor name="HelloProcessor" namespace = "hello.world.example"/>
+      <scheduler name="immediate-scheduler" />
+      <dispatcher name="multicast-dispatcher" />
+      <ports>
+          <in-port name="in" type="*" />
+          <out-port name="out" type="*" />
+      </ports>
+   </mediator-component>
+</cilia>

@@ -15,12 +15,16 @@
       <version>1.7.2-SNAPSHOT</version>
       <relativePath>../../parent</relativePath>
    </parent>
-	<artifactId>cilia-annotations</artifactId>
+	<artifactId>cilia-ipojo-plugin</artifactId>
 	<name>${productName} :: Annotations</name>
 	<packaging>bundle</packaging>
 
 	<dependencies>
-
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>cilia-core</artifactId>
+            <version>${project.version}</version>
+        </dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>

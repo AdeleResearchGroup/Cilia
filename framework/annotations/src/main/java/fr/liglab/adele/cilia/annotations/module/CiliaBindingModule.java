@@ -16,6 +16,7 @@ package fr.liglab.adele.cilia.annotations.module;
 
 import fr.liglab.adele.cilia.annotations.*;
 import fr.liglab.adele.cilia.annotations.visitors.CiliaComponentVisitor;
+import fr.liglab.adele.cilia.annotations.visitors.IOAdapterVisitor;
 import fr.liglab.adele.cilia.annotations.visitors.ProcessMethodVisitor;
 import org.apache.felix.ipojo.manipulator.spi.AbsBindingModule;
 import org.apache.felix.ipojo.manipulator.spi.AnnotationVisitorFactory;
@@ -29,7 +30,6 @@ import org.objectweb.asm.AnnotationVisitor;
 public class CiliaBindingModule extends AbsBindingModule {
 
     public void configure() {
-    	System.out.println("Congiguring Cilia Binding Module");
         bind(Processor.class)
             .to(new AnnotationVisitorFactory() {
                 public AnnotationVisitor newAnnotationVisitor(BindingContext context) {
@@ -60,10 +60,10 @@ public class CiliaBindingModule extends AbsBindingModule {
                         return new CiliaComponentVisitor("sender",context);
                     }
                 });
-        bind(Sender.class)
+        bind(IOAdapter.class)
                 .to(new AnnotationVisitorFactory() {
                     public AnnotationVisitor newAnnotationVisitor(BindingContext context) {
-                        return new CiliaComponentVisitor("IOAdapter",context);
+                        return new IOAdapterVisitor(context);
                     }
                 });
         bind(ProcessData.class)
