@@ -264,7 +264,7 @@ public class Data implements Serializable {
 				lock.writeLock().acquire();
 				try {
 					this.data.put(key, value);
-					if (CONTENT_CLASSNAME.equals(key)){
+					if (DATA_CONTENT.equals(key)){
 						data.put(CONTENT_CLASSNAME, value.getClass().getName());
 					}
 				} finally {
