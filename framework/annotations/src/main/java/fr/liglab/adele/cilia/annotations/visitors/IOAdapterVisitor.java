@@ -70,9 +70,10 @@ public class IOAdapterVisitor extends EmptyVisitor implements AnnotationVisitor 
 
         private String portName;
 
-        private String dataType;
+        private String dataType = "*";
 
         public PortInfoVisitor(String name){
+            System.out.println("New visitor for " + name);
             this.name = name;
         }
 
@@ -81,28 +82,35 @@ public class IOAdapterVisitor extends EmptyVisitor implements AnnotationVisitor 
          */
         public void visit(String name, Object value) {
 
+
             System.out.println("in port name: " + name);
             System.out.println("in port value: " + value);
             if (name.equals("name")) {
                 portName = String.valueOf(value);
-            } else if (name.equals("type")){
+            } else if (name.equals("dataType")){
+                //slashed classname: change it from L/package/name/ClassName; to package.name.ClassName
+                //remove "L" and ";", and replace "/" for "."
+                String classname = String.valueOf(value);
+                dataType = String.valueOf(classname.substring(1,classname.length()-1).replace("/","."));//slashed classname
+            } else if(name.equals("semanticType")){
                 dataType = String.valueOf(value);
             }
         }
 
         public void visitEnd() {
+            System.out.println("Visit end for: " + name);
             Element portElement = new Element(name.replace('_','-'), null);//in-port or out-port, instead of in_port/out_port
             Element[] ports = component.getElements("ports");
             Element portsElement = null;
             if(ports == null || ports.length<1){
                 portsElement = new Element("ports", null);
+                component.addElement(portsElement);
             } else {
                 portsElement = ports[0];//there is only one ports element
             }
             portElement.addAttribute(new Attribute("name", portName));
             portElement.addAttribute(new Attribute("type", dataType));
             portsElement.addElement(portElement);
-            component.addElement(portsElement);
         }
     }
 

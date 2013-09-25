@@ -35,7 +35,7 @@ import fr.liglab.adele.cilia.util.concurrent.ReentrantWriterPreferenceReadWriteL
  */
 
 //@SuppressWarnings({"rawtypes", "unchecked"})
-public class Data implements Serializable {
+public class Data<T> implements Serializable {
 
 	/**
 	 * All the data will be stored in this Data dictionary.
@@ -145,7 +145,7 @@ public class Data implements Serializable {
 	 * @param name
 	 * @param metadata
 	 */
-	public Data(Object content, String name, Dictionary metadata) {
+	public Data(T content, String name, Dictionary metadata) {
 
 		String finalName;
 		Date timestamp = new Date();
@@ -199,7 +199,7 @@ public class Data implements Serializable {
 	 * 
 	 * @param content
 	 */
-	public Data(final Object content) {
+	public Data(final T content) {
 		this(content, "data", null);
 	}
 
@@ -209,7 +209,7 @@ public class Data implements Serializable {
 	 * @param content
 	 * @param name
 	 */
-	public Data(final Object content, final String name) {
+	public Data(final T content, final String name) {
 		this(content, name, null);
 	}
 
@@ -331,8 +331,8 @@ public class Data implements Serializable {
 	 * 
 	 * @return
 	 */
-	public final Object getContent() {
-		return getProperty(DATA_CONTENT);
+	public final T getContent() {
+		return (T)getProperty(DATA_CONTENT);
 	}
 
 	public final boolean hasContent() {
@@ -347,7 +347,7 @@ public class Data implements Serializable {
 	 * 
 	 * @param content
 	 */
-	public final void setContent(final Object content) {
+	public final void setContent(final T content) {
 		setProperty(DATA_CONTENT, content);
 	}
 
@@ -381,7 +381,7 @@ public class Data implements Serializable {
 	/**
 	 * Set the data source
 	 * 
-	 * @param source
+	 * @param port
 	 */
 	public final void setLastDeliveryPort(final String port) {
 		setProperty(DATA_TARGET, port);

@@ -9,7 +9,7 @@ import java.util.Map;
  * Date: 9/24/13
  * Time: 5:05 PM
  */
-public class ContentData {
+public class MyData {
 
     private Date creationDate;
 
@@ -17,7 +17,7 @@ public class ContentData {
 
     private String name;
 
-    public ContentData(String name) {
+    public MyData(String name) {
         this.name = name;
         creationDate = new Date();
     }
