@@ -60,6 +60,7 @@
 				<artifactId>maven-ipojo-plugin</artifactId>
                 <version>1.10.1</version>
 				<dependencies>
+               <!-- Added to handle Cilia annotations in iPOJO manipulation-->
 					<dependency>
 						<groupId>fr.liglab.adele.cilia</groupId>
 						<artifactId>cilia-ipojo-plugin</artifactId>
