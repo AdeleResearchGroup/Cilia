@@ -151,7 +151,7 @@
                 <version>2.5</version>
                 <configuration>
                     <systemPropertyVariables>
-                        <ipojo.processing.synchronous>true</ipojo.processing.synchronous>
+                        <ipojo.processing.synchronous>false</ipojo.processing.synchronous>
                     </systemPropertyVariables>
                 </configuration>
             </plugin>

@@ -353,7 +353,7 @@ public class CiliaHelper {
         long current = System.currentTimeMillis();
         long finalTime = current + timeout;
         while(!found && current <= finalTime) {
-            waitSomeTime(20);
+            waitSomeTime(50);
             int amount = helper.getAmountData();
             if (amount >= count){
                 found = true;
@@ -368,7 +368,7 @@ public class CiliaHelper {
         long current = System.currentTimeMillis();
         long finalTime = current + timeout;
         while(!found && current <= finalTime) {
-            waitSomeTime(20);
+            waitSomeTime(50);
             int amount = helper.countReceived();
             if (amount >= count){
                 found = true;

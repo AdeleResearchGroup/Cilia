@@ -29,8 +29,8 @@
 
 	<modules>
 		<module>core</module>
-		<module>remote</module>
 		<module>runtime</module>
+      <module>remote</module>
       <module>annotations</module>
 	</modules>
   <build>

@@ -28,10 +28,7 @@ import org.apache.felix.ipojo.ComponentInstance;
 import org.apache.felix.ipojo.Factory;
 import org.apache.felix.ipojo.test.helpers.IPOJOHelper;
 import org.apache.felix.ipojo.test.helpers.OSGiHelper;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.*;
 import org.junit.runner.RunWith;
 import org.ops4j.pax.exam.Option;
 import org.ops4j.pax.exam.junit.PaxExam;
@@ -156,6 +153,7 @@ public class TestTCPAdapters  extends AbstractDistributionBaseTest {
 
 		System.out.println("Last Data");
 		System.out.println(data.getAllData());
+        cilia.dispose();
 	}
 
 	@Test
@@ -180,6 +178,7 @@ public class TestTCPAdapters  extends AbstractDistributionBaseTest {
 		Assert.assertEquals("Test number 9", data.getContent());
 		//System.out.println("Last Data");
 		System.out.println(data.getAllData());
+        cilia.dispose();
 	}
 
 	private void injectMessages(int port){
@@ -203,13 +202,12 @@ public class TestTCPAdapters  extends AbstractDistributionBaseTest {
 		System.out.println("will wait");
 		boolean found = cilia.waitToChain("toto",6000);
 		System.out.println("found chain "+ found);
-
 		//create a collector to test sending.
-		CollectorHelper ch = createCollectorHelper(getTestProperties(9999)); 
-				
-		//create a sender to test sending.
-		ISender is = createSender(getTestProperties(8888));
+		CollectorHelper ch = createCollectorHelper(getTestProperties(9999));
 
+        //create a sender to test sending.
+		ISender is = createSender(getTestProperties(8888));
+        CiliaHelper.waitSomeTime(2000);
 		int i;
 		for (i = 0; i < 10; i++) {
 			Data ndata = new Data("Test number " + i, "data");
@@ -222,6 +220,7 @@ public class TestTCPAdapters  extends AbstractDistributionBaseTest {
 		Assert.assertEquals("Test number 9", data.getContent());
 		//System.out.println("Last Data");
 		System.out.println(data.getAllData());
+        cilia.dispose();
 	}
 
 	private Hashtable<String, Object> getTestProperties(int port){
