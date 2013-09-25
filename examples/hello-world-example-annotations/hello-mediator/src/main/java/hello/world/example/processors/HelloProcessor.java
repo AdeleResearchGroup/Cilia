@@ -2,9 +2,7 @@ package hello.world.example.processors;
 
 import fr.liglab.adele.cilia.Data;
 import fr.liglab.adele.cilia.annotations.*;
-import hello.world.example.data.ContentData;
-
-import javax.activation.DataContentHandler;
+import hello.world.example.data.MyData;
 
 
 /**
@@ -20,8 +18,8 @@ public class HelloProcessor {
     * @return The data with "Hello, " prefix
     */
    @ProcessData()
-   public Data sayHello(Data param) {
-       ContentData data = (ContentData)param.getContent();
+   public Data sayHello(Data<MyData> param) {
+       MyData data = param.getContent();
        System.out.println("call processor");
        if (data != null) {
            data.put("Response", "Hello (" + data.get("user.name") + ") value = " +  data.getName());

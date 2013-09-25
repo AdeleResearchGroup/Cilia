@@ -4,8 +4,8 @@
       <scheduler name="immediate-scheduler" />
       <dispatcher name="multicast-dispatcher" />
       <ports>
-          <in-port name="in" type="*" />
-          <out-port name="out" type="*" />
+          <in-port name="in" type="hello.world.example.data.MyData" />
+          <out-port name="out" type="hello.world.example.data.MyData" />
       </ports>
    </mediator-component>
 </cilia>

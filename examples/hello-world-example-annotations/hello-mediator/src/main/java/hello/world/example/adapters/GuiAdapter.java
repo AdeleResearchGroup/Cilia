@@ -19,7 +19,7 @@ import fr.liglab.adele.cilia.annotations.IOAdapter;
 import fr.liglab.adele.cilia.annotations.Port;
 import fr.liglab.adele.cilia.framework.AbstractIOAdapter;
 import fr.liglab.adele.cilia.util.TimeoutException;
-import hello.world.example.data.ContentData;
+import hello.world.example.data.MyData;
 import org.apache.felix.ipojo.annotations.Invalidate;
 import org.apache.felix.ipojo.annotations.Validate;
 import org.osgi.framework.BundleContext;
@@ -28,14 +28,13 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Map;
 
 /**
  *
  */
 @IOAdapter(name = "gui-adapter", namespace = "hello.world.example",
-        in_port = @Port(name= "in", type = "*"),
-        out_port = @Port(name = "out", type = "*")
+        in_port = @Port(name= "in", dataType = MyData.class),
+        out_port = @Port(name = "out", dataType = MyData.class)
 )
 public class GuiAdapter extends AbstractIOAdapter{
 
@@ -92,21 +91,20 @@ public class GuiAdapter extends AbstractIOAdapter{
 				String msg = textField.getText();
 				String resultData = "";
 				if (msg != null & msg.trim().length()>0) {
-					Data data = new Data(createComplexData(textField.getText()), "guiconsole-data");
+                    //create a complex data.
+                    MyData content = createComplexData(textField.getText());
+					//create a Data wrapper data.
+                    Data<MyData> data = new Data<MyData>(content, "guiconsole-data");
+                    //remove last message text.
 					textField.setText("");
-					Data result = null;
+					Data<MyData> result = null;
 					try {
+                        //call and wait for response.
 						result = invokeChain(data);
 					} catch (TimeoutException e1) {
 						e1.printStackTrace();
 					}
-					System.out.println(result);
-					if (result != null) {
-						ContentData response = (ContentData)(result.getContent());
-                        resultData = String.valueOf(response.get("Response"));
-					}
-					reponse.setText(String.valueOf(resultData));
-
+					analyzeResponse(result);
 				}
 			}
 		});
@@ -128,12 +126,30 @@ public class GuiAdapter extends AbstractIOAdapter{
 		return super.dispatchData(data);
 	}
 
-    public ContentData createComplexData(String value){
-        ContentData data = new ContentData(value);
-        System.out.println("User ! " + System.getenv("USER"));
+    /**
+     * Create a complex data to be sent to the chain.
+     * @param value the value used to create the data
+     * @return the MyData object.
+     */
+    public MyData createComplexData(String value){
+        MyData data = new MyData(value);
         String user = System.getenv("USER") != null ? System.getenv("USER") : "unknown" ;
         data.put("user.name", user);
         return data;
     }
 
+    /**
+     * Analyse the result and put it in the gui label.
+     * @param result
+     */
+    public void analyzeResponse(Data<MyData> result){
+        String resultData = null;
+        if (result != null) {
+            MyData response = result.getContent();
+            System.out.println("Creation data in: " + response.getCreationDate());
+            System.out.println(result);
+            resultData = String.valueOf(response.get("Response"));
+        }
+        reponse.setText(resultData);
+    }
 }
