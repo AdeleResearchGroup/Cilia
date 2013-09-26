@@ -24,8 +24,8 @@
          <productVersion>${project.version}</productVersion>
          <projectName>${project.artifactId}</projectName>
          <fileinstall.version>3.1.4</fileinstall.version>
-         <adeleCommonVersion>1.1.0</adeleCommonVersion>
-         <adeleCommonVersionTest>1.1.1-SNAPSHOT</adeleCommonVersionTest>
+         <adeleCommonVersion>1.1.2-SNAPSHOT</adeleCommonVersion>
+         <adeleCommonVersionTest>1.1.2-SNAPSHOT</adeleCommonVersionTest>
       </properties>
 
       <licenses>
