@@ -207,7 +207,9 @@ public class TestTCPAdapters  extends AbstractDistributionBaseTest {
 
         //create a sender to test sending.
 		ISender is = createSender(getTestProperties(8888));
-        CiliaHelper.waitSomeTime(2000);
+        if(!cilia.checkValidState("toto","a1",5000) || !cilia.checkValidState("toto","a2",5000)){
+            Assert.fail("Unable to have a valid state for components in chain toto");
+        }
 		int i;
 		for (i = 0; i < 10; i++) {
 			Data ndata = new Data("Test number " + i, "data");

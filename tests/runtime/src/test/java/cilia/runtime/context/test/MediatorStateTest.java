@@ -49,7 +49,6 @@ import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
  *         Team</a>
  * 
  */
-@Ignore
 @RunWith(PaxExam.class)
 @ExamReactorStrategy(PerMethod.class)
 public class MediatorStateTest  extends AbstractDistributionBaseTest {
@@ -102,10 +101,14 @@ public class MediatorStateTest  extends AbstractDistributionBaseTest {
 		System.out.println("will wait");
 		boolean found = cilia.waitToChain("toto",3000);
 		System.out.println("found chain "+ found);
-		MediatorComponent toto = cilia.getMediatorModel("toto", "toto");
-		
+        if(!cilia.waitToComponent("toto", "toto", 1000)){
+            Assert.fail("Unable to locate mediator toto");
+        }
+        MediatorComponent toto = cilia.getMediatorModel("toto", "toto");
 		Assert.assertEquals(false,toto.isRunning());
-		Assert.assertEquals(MediatorComponent.State.INVALID, toto.getState());
+        if(!cilia.checkComponentState("toto","toto", MediatorComponent.State.INVALID, 3000)){
+            Assert.fail("Failed to retrieve toto component, expected state invalid. Current state is:" + toto.getState());
+        }
 	}
 	@Test
 	public void mediatorDisposedState() {
@@ -123,7 +126,9 @@ public class MediatorStateTest  extends AbstractDistributionBaseTest {
 			e.printStackTrace();
 		}
 		MediatorComponent toto = cilia.getMediatorModel("toto", "toto");
-
+        if(!cilia.checkComponentState("toto","toto", MediatorComponent.State.DISPOSED, 5000)){
+            Assert.fail("Failed to retrieve toto component, expected state disposed. Current state is:" + toto.getState());
+        }
 		Assert.assertEquals(false,toto.isRunning());
 		Assert.assertEquals(MediatorComponent.State.DISPOSED, toto.getState());
 	}
@@ -154,6 +159,10 @@ public class MediatorStateTest  extends AbstractDistributionBaseTest {
 		boolean found = cilia.waitToChain("toto",3000);
 		System.out.println("found chain "+ found);
 		MediatorComponent toto = cilia.getMediatorModel("toto", "validToto");
+
+        if(!cilia.checkComponentState("toto","validToto", MediatorComponent.State.VALID, 3000)){
+            Assert.fail("Failed to retrieve toto component, expected state valid. Current state is:" + toto.getState());
+        }
 		Assert.assertEquals(true,toto.isRunning());
 		Assert.assertEquals(MediatorComponent.State.VALID, toto.getState());
 	}
@@ -167,11 +176,16 @@ public class MediatorStateTest  extends AbstractDistributionBaseTest {
 		System.out.println("found chain "+ found);
 		MediatorComponent toto = cilia.getMediatorModel("toto", "toto");
 		System.out.println("Toto is running");
+        if(!cilia.checkComponentState("toto","toto", MediatorComponent.State.INVALID, 3000)){
+            Assert.fail("Failed to retrieve toto component, expected state invalid. Current state is:" + toto.getState());
+        }
 		Assert.assertEquals(false,toto.isRunning());
 		Assert.assertEquals(MediatorComponent.State.INVALID, toto.getState());
 		//Now we create the toto mediator.
 		createTotoMediator();
-		CiliaHelper.waitSomeTime(3000);
+        if(!cilia.checkComponentState("toto","toto", MediatorComponent.State.VALID, 3000)){
+            Assert.fail("Failed to retrieve toto component, expected state valid. Current state is:" + toto.getState());
+        }
 		Assert.assertEquals(true,toto.isRunning());
 		Assert.assertEquals(MediatorComponent.State.VALID, toto.getState());
 	}

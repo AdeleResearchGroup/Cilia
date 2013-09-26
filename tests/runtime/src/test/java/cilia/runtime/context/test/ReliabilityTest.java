@@ -24,10 +24,14 @@ import fr.liglab.adele.cilia.exceptions.BuilderException;
 import fr.liglab.adele.cilia.exceptions.CiliaException;
 import fr.liglab.adele.cilia.helper.CiliaHelper;
 import fr.liglab.adele.cilia.helper.MediatorTestHelper;
+import fr.liglab.adele.cilia.model.MediatorComponent;
 import fr.liglab.adele.cilia.runtime.MediatorRuntimeSpecification;
 import fr.liglab.adele.commons.distribution.test.AbstractDistributionBaseTest;
+import junit.framework.*;
 import org.apache.felix.ipojo.test.helpers.OSGiHelper;
 import org.junit.*;
+import org.junit.Assert;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.ops4j.pax.exam.Option;
 import org.ops4j.pax.exam.junit.PaxExam;
@@ -49,7 +53,7 @@ import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
  *         Team</a>
  *
  */
-@Ignore
+
 @RunWith(PaxExam.class)
 @ExamReactorStrategy(PerMethod.class)
 public class ReliabilityTest extends AbstractDistributionBaseTest {
@@ -110,6 +114,10 @@ public class ReliabilityTest extends AbstractDistributionBaseTest {
 		//chain must exist, and helper should be well constructed.
 		logger.info("Chain has been instrumented");
 		Assert.assertNotNull(qd);
+        //wait first mediator to be valid.
+        if(!cilia.checkComponentState("reliableTest","firstMediator", MediatorComponent.State.VALID, 3000)){
+            Assert.fail("Failed to retrieve firstMediator component, expected state valid." );
+        }
 		logger.info("Injecting First Data");
 		qd.injectData(new Data ("data ONE", "dda"));
 		CiliaHelper.waitSomeTime(2000);
@@ -136,7 +144,10 @@ public class ReliabilityTest extends AbstractDistributionBaseTest {
 			b.done();
 		} catch (CiliaException e) {
 			Assert.fail("Fail while done builder performer" + chainID);
-		}
+		}//wait to replaced component to be valid
+        if(!cilia.checkComponentState("reliableTest","enricher2", MediatorComponent.State.VALID, 3000)){
+            Assert.fail("Failed to retrieve enricher2 component, expected state valid." );
+        }
 		logger.info("Replace in builder done");
 		//We inject the last data. Now processing must be performed on replaced mediator.
 		Assert.assertEquals(0, qd.getAmountData());
@@ -155,7 +166,7 @@ public class ReliabilityTest extends AbstractDistributionBaseTest {
 		System.out.println("Received NEW processed data: " + lastData.getAllData());
 	}
 	
-	//@Test
+	@Test
 	public void testCount() {
 		CiliaHelper.waitSomeTime(2000);
 		createEnricherMediator();
@@ -168,6 +179,9 @@ public class ReliabilityTest extends AbstractDistributionBaseTest {
 		MediatorTestHelper qd = cilia.instrumentChain("reliableTest", "firstMediator:unique", "lastMediator:unique");
 		logger.info("Chain has been instrumented");
 		Assert.assertNotNull(qd);
+        if(!cilia.checkComponentState("reliableTest","firstMediator", MediatorComponent.State.VALID, 3000)){
+            Assert.fail("Failed to retrieve firstMediator component, expected state valid." );
+        }
 		logger.info("Injecting first Data");
 		qd.injectData(new Data ("data ONE", "dda"));
 		CiliaHelper.waitSomeTime(2000);

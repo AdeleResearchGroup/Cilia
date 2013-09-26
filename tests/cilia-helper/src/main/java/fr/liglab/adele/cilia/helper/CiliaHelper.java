@@ -23,7 +23,7 @@ import java.net.URL;
 import java.util.Dictionary;
 import java.util.Hashtable;
 
-import fr.liglab.adele.cilia.model.Component;
+import fr.liglab.adele.cilia.model.*;
 import junit.framework.Assert;
 
 import org.apache.felix.ipojo.test.helpers.OSGiHelper;
@@ -41,9 +41,6 @@ import fr.liglab.adele.cilia.exceptions.CiliaIllegalStateException;
 import fr.liglab.adele.cilia.framework.ICollector;
 import fr.liglab.adele.cilia.helper.impl.ProcessorHelperImpl;
 import fr.liglab.adele.cilia.helper.impl.SchedulerHelperCreator;
-import fr.liglab.adele.cilia.model.Adapter;
-import fr.liglab.adele.cilia.model.Chain;
-import fr.liglab.adele.cilia.model.Mediator;
 import fr.liglab.adele.cilia.runtime.CiliaInstance;
 import fr.liglab.adele.cilia.runtime.CiliaInstanceWrapper;
 import fr.liglab.adele.cilia.util.CiliaFileManager;
@@ -297,7 +294,7 @@ public class CiliaHelper {
 
 	}
 
-	public boolean waitToChain(String chainId, long time) {
+	public  boolean waitToChain(String chainId, long time) {
 		boolean found = false;
 		long current = System.currentTimeMillis();
 		long finalTime = current + time;
@@ -377,5 +374,35 @@ public class CiliaHelper {
         }
         return found;
     }
-	
+
+    public boolean checkValidState(String chain, String componentId, long timeout){
+        //wait to component.
+        return checkComponentState(chain, componentId, MediatorComponent.State.VALID, timeout);
+    }
+
+    public boolean checkComponentState(String chain, String componentId, MediatorComponent.State state, long timeout){
+        //wait to component.
+        boolean existsComponent = waitToComponent(chain, componentId,timeout);
+        if(!existsComponent){
+            return false;
+        }
+        MediatorComponent component = getMediatorModel(chain, componentId);
+        if(component == null){
+            component = getAdapterModel(chain, componentId);
+        }
+        if(component == null ){
+            return false;
+        }
+
+        long current = System.currentTimeMillis();
+        long finalTime = current + timeout;
+        while(current <= finalTime) {
+            waitSomeTime(50);
+            if(component.getState().compareTo(state) == 0){
+                return true;//state is the wanted.
+            }
+            current = System.currentTimeMillis();
+        }
+        return false;
+    }
 }
