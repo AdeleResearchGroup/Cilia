@@ -113,6 +113,7 @@ public class SchedulerTest  extends AbstractDistributionBaseTest {
         CiliaHelper.checkReceived(helper, 3, 10000);
 		//We must now have the three messages
 		Assert.assertEquals(3, helper.getAmountData());
+        cilia.dispose();
 	}
 	/**
 	 * Test the correlation-scheduler behavior
@@ -137,6 +138,7 @@ public class SchedulerTest  extends AbstractDistributionBaseTest {
 		helper.injectData(createCorrelatedData("Transport", 1, 2, "This contain a Train"));
         CiliaHelper.checkReceived(helper, 2, 2000);
         Assert.assertEquals(2, helper.getAmountData()); //We collect the waited correlated
+        cilia.dispose();
 	}
 	/**
 	 * Test counter-scheduler
@@ -167,6 +169,7 @@ public class SchedulerTest  extends AbstractDistributionBaseTest {
 		helper.injectData(createCorrelatedData("Transport", 1, 2, "This contain a Train"));
         CiliaHelper.checkReceived(helper, 5, 5000);
         Assert.assertEquals(5, helper.getAmountData()); //We collect the waited correlated
+        cilia.dispose();
 		
 	}
 	private Data createCorrelatedData(String id, int number, int size, String content) {
