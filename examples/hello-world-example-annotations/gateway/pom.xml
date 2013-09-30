@@ -15,7 +15,7 @@
 	<artifactId>annotated-hello-world-distribution</artifactId>
    <packaging>osgi-distribution</packaging>
    <name>Cilia :: Hello World Distribution </name>
-   <version>1.7.2-SNAPSHOT</version><!--The trunk cilia version-->
+   <version>1.7.3-SNAPSHOT</version><!--The trunk cilia version-->
 
 	<!-- Project dependencies -->
 	<dependencies>
