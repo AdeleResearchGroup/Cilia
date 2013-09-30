@@ -30,8 +30,7 @@ public class IOAdapterVisitor extends EmptyVisitor implements AnnotationVisitor 
      * Visit @Processor annotation attributes.
      */
     public void visit(String name, Object value) {
-        System.out.println("name" + name);
-        System.out.println("value" + value);
+
         if (name.equals("name")) {
             component.addAttribute(new Attribute("name", value.toString()));
             return;
@@ -43,8 +42,7 @@ public class IOAdapterVisitor extends EmptyVisitor implements AnnotationVisitor 
     }
 
     public AnnotationVisitor visitAnnotation(String name, String annotation){
-        System.out.println("s" + name);
-        System.out.println("s1" + annotation);
+
         if(annotation.compareTo("Lfr/liglab/adele/cilia/annotations/Port;") == 0){
             return new PortInfoVisitor(name);
         }
@@ -73,7 +71,6 @@ public class IOAdapterVisitor extends EmptyVisitor implements AnnotationVisitor 
         private String dataType = "*";
 
         public PortInfoVisitor(String name){
-            System.out.println("New visitor for " + name);
             this.name = name;
         }
 
@@ -82,9 +79,6 @@ public class IOAdapterVisitor extends EmptyVisitor implements AnnotationVisitor 
          */
         public void visit(String name, Object value) {
 
-
-            System.out.println("in port name: " + name);
-            System.out.println("in port value: " + value);
             if (name.equals("name")) {
                 portName = String.valueOf(value);
             } else if (name.equals("dataType")){
@@ -98,7 +92,6 @@ public class IOAdapterVisitor extends EmptyVisitor implements AnnotationVisitor 
         }
 
         public void visitEnd() {
-            System.out.println("Visit end for: " + name);
             Element portElement = new Element(name.replace('_','-'), null);//in-port or out-port, instead of in_port/out_port
             Element[] ports = component.getElements("ports");
             Element portsElement = null;

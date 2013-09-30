@@ -25,7 +25,6 @@ public class ProcessMethodVisitor  extends EmptyVisitor implements AnnotationVis
     public ProcessMethodVisitor(BindingContext context) {
         this.context = context;
         MethodNode node = (MethodNode) context.getNode();
-        System.out.println("********** INIT ProcessMethodVisitor: " + node.name + " " + node.desc);
         Type[] parameters = Type.getArgumentTypes(node.desc);
         Type returnType =  Type.getReturnType(node.desc);
         method.addAttribute(new Attribute("name", node.name));
