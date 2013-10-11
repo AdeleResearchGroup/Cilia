@@ -82,7 +82,7 @@
             <property name="scheduler.thread.pool.size" field="threadPoolSize" value="1"/>
         </properties>
         <callback transition="validate" method="validate" />
-        <callback transition="invalidate" method="unvalidate" />
+        <callback transition="invalidate" method="invalidate" />
 <!--  
 		<cilia:audit field="testAudit" namespace ="scheduler" access="rw" />
 		
