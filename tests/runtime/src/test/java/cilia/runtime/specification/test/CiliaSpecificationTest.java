@@ -60,6 +60,7 @@ public class CiliaSpecificationTest  extends AbstractDistributionBaseTest {
 
 	@Before
 	public void setUp() {
+
 		osgi = new OSGiHelper(context);
 	}
 
@@ -88,7 +89,9 @@ public class CiliaSpecificationTest  extends AbstractDistributionBaseTest {
 
 	public CiliaContext getCiliaContextService() {
 		ServiceReference sr[] = null;
+        osgi.waitForService(CiliaContext.class.getName(), null,2000);
 		sr = osgi.getServiceReferences(CiliaContext.class.getName(), null);
+        assertNotNull(sr);
 		assertNotNull(sr[0]);
 		CiliaContext ccontext = (CiliaContext) context.getService(sr[0]);
 		assertNotNull(ccontext);
