@@ -21,31 +21,49 @@
 			<artifactId>jms-adapter</artifactId>
 			<version>${project.version}</version>
 		</dependency>		
+		<dependency>
+			<groupId>fr.liglab.adele.cilia</groupId>
+			<artifactId>jms2-adapter</artifactId>
+			<version>${project.version}</version>
+		</dependency>		
 		<!-- JORAM 5.7.0 dependencies -->
 		<dependency>
-			<groupId>javax.jms</groupId>
-			<artifactId>com.springsource.javax.jms</artifactId>
+            <groupId>org.ow2.spec.ee</groupId>
+            <artifactId>ow2-jms-2.0-spec</artifactId>
+			<version>1.0.0</version>
 		</dependency>
 		<dependency>
-			<groupId>org.objectweb.joram</groupId>
+			<groupId>org.ow2.joram</groupId>
 			<artifactId>joram-client-jms</artifactId>
+			<version>${joram.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>org.objectweb.joram</groupId>
+			<groupId>org.ow2.joram</groupId>
 			<artifactId>a3-common</artifactId>
+			<version>${joram.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>org.objectweb.joram</groupId>
+			<groupId>org.ow2.joram</groupId>
 			<artifactId>jndi-client</artifactId>
+			<version>${joram.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>org.objectweb.joram</groupId>
+			<groupId>org.ow2.joram</groupId>
 			<artifactId>jndi-shared</artifactId>
+			<version>${joram.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>org.objectweb.joram</groupId>
+			<groupId>org.ow2.joram</groupId>
 			<artifactId>joram-shared</artifactId>
+			<version>${joram.version}</version>
 		</dependency>
+		
+		<dependency>
+        	<groupId>org.ow2.spec.ee</groupId>
+        	<artifactId>ow2-jta-1.1-spec</artifactId>
+        	<version>1.0.13</version>
+      	</dependency>
+		
 		<dependency>
 			<groupId>org.objectweb.joram</groupId>
 			<artifactId>jcup</artifactId>

@@ -30,6 +30,7 @@
 
 	<modules>
 		<module>jms-adapter</module>
+		<module>jms2-adapter</module>
 		<module>ea-adapter</module>
 		<module>tcp-adapter</module>
 	</modules>

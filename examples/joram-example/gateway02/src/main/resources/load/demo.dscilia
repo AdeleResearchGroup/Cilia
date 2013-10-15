@@ -7,8 +7,8 @@
 		</mediators>
 	
 		<adapters>
-			<adapter-instance type="JMS-in-adapter" id="jms-adapter-1">
-				<property name="jms.topic" value="demo$topic"/>
+			<adapter-instance type="JMS2-in-adapter" id="jms-adapter-1">
+				<property name="jms.dest" value="queue:demo"/>
 			</adapter-instance>
 			<adapter-instance type="console-adapter" id="ca"/>
 		</adapters>

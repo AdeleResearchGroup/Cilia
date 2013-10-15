@@ -1,3 +1,0 @@
-AgentServer\:server\=AgentServer#0,cons\=Transaction		LogMemorySize
-Joram#0\:type\=Destination,name\=queue	NbMsgsReceiveSinceCreation,PendingMessageCount
-Joram#0\:type\=User,*	NbMsgsDeliveredSinceCreation,NbMsgsSentToDMQSinceCreation,PendingMessageCount

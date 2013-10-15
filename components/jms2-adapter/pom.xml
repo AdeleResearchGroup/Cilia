@@ -7,7 +7,8 @@
 	OR CONDITIONS OF ANY KIND, either express or implied. See the License for 
 	the specific language governing permissions and limitations under the License. -->
 
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
@@ -17,8 +18,8 @@
 		<relativePath>../../parent</relativePath>
 	</parent>
 
-	<artifactId>jms-adapter</artifactId>
-	<name>${productName} :: JMS (Joram 5.9.0) Adapter/Binding</name>
+	<artifactId>jms2-adapter</artifactId>
+	<name>${productName} :: JMS2 (Joram 5.9.0) Adapter/Binding</name>
 	<packaging>bundle</packaging>
 
 	<dependencies>
@@ -52,11 +53,11 @@
 			<artifactId>slf4j-api</artifactId>
 		</dependency>
 		<dependency>
-            <groupId>org.ow2.spec.ee</groupId>
-            <artifactId>ow2-jms-2.0-spec</artifactId>
+			<groupId>org.ow2.spec.ee</groupId>
+			<artifactId>ow2-jms-2.0-spec</artifactId>
 			<version>1.0.0</version>
 		</dependency>
- 		<dependency>
+		<dependency>
 			<groupId>org.ow2.joram</groupId>
 			<artifactId>joram-client-jms</artifactId>
 			<version>${joram.version}</version>
