@@ -11,11 +11,17 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<!-- Project parent -->
+   <parent>
+      <groupId>fr.liglab.adele.cilia</groupId>
+      <artifactId>cilia-project</artifactId>
+      <version>1.7.3-SNAPSHOT</version>
+      <relativePath>../../../parent</relativePath>
+   </parent>
 	<groupId>fr.liglab.adele.cilia.examples</groupId>
 	<artifactId>annotated-hello-world-distribution</artifactId>
    <packaging>osgi-distribution</packaging>
    <name>Cilia :: Hello World Distribution </name>
-   <version>1.7.3-SNAPSHOT</version><!--The trunk cilia version-->
+
 
 	<!-- Project dependencies -->
 	<dependencies>
