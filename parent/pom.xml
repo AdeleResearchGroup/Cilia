@@ -194,6 +194,10 @@
       <!--Project Test Repository -->
       <repositories>
          <repository>
+            <id>apache-snapshots</id>
+            <url>http://repository.apache.org/snapshots/</url>
+         </repository>
+         <repository>
             <id>mvnrepository</id>
             <url>http://repo1.maven.org/maven2</url>
             <snapshots>
