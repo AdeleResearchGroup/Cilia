@@ -13,16 +13,17 @@
  * limitations under the License.
  */
 
-package fr.liglab.adele.cilia.admin.impl;
+package fr.liglab.adele.cilia.chameleon.deployer;
 
 import java.io.File;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.apache.felix.fileinstall.ArtifactInstaller;
+import org.apache.felix.ipojo.annotations.*;
 import org.osgi.framework.BundleContext;
 
 import fr.liglab.adele.cilia.util.CiliaFileManager;
+import org.ow2.chameleon.core.services.AbstractDeployer;
 
 /**
  * This class will listen all deployed files using fileinstall,
@@ -31,7 +32,10 @@ import fr.liglab.adele.cilia.util.CiliaFileManager;
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project Team</a>
  *
  */
-public class CiliaFileInstall implements ArtifactInstaller {
+@Component
+@Provides
+@Instantiate
+public class CiliaChameleonDeployer extends AbstractDeployer {
 
 	/**
 	 * OSGi Bundle Context.
@@ -41,18 +45,21 @@ public class CiliaFileInstall implements ArtifactInstaller {
 	 * The Cilia logger.
 	 */
 
+    @Requires
 	private CiliaFileManager manager;
 
 	private Set<File> handledFiles = new HashSet<File>();
 
 
-	public CiliaFileInstall (BundleContext context) {
+	public CiliaChameleonDeployer(BundleContext context) {
 		bcontext = context;
 	}
 
+    @Validate
 	public void start(){
 	}
 
+    @Invalidate
 	public void stop() {
 		Set<File> files = handledFiles;
 		File filesArray[];
@@ -62,23 +69,36 @@ public class CiliaFileInstall implements ArtifactInstaller {
 		}
 	}
 
-	public boolean canHandle(File file) {
-		if (file.getName().endsWith(".dscilia") || file.getName().endsWith(".cfgcilia") || file.getName().endsWith(".autocilia")){//For instance it use the same parser
-			return true;
-		}
-		return false;
-	}
 
-	public void install(File arg0) throws Exception {
-		manager.loadChain(arg0);
-
-	}
-	public void uninstall(File arg0) throws Exception {
-		manager.unloadChain(arg0);
-	}
-	public void update(File arg0) throws Exception {
+	private void update(File arg0) throws Exception {
 		manager.unloadChain(arg0);
 		manager.loadChain(arg0);
 	}
+
+    public boolean accept(File file) {
+        if (file.getName().endsWith(".dscilia") || file.getName().endsWith(".cfgcilia") || file.getName().endsWith(".autocilia")){//For instance it use the same parser
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public void onFileCreate(File file) {
+        manager.loadChain(file);
+    }
+
+    @Override
+    public void onFileChange(File file) {
+        try {
+            update(file);
+        } catch (Exception e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
+    }
+
+    @Override
+    public void onFileDelete(File file) {
+        manager.unloadChain(file);
+    }
 
 }

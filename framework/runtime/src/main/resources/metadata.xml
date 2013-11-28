@@ -433,20 +433,12 @@
 			<property name="osgi.command.scope" type="String"
 				value="cilia" />
 			<property name="osgi.command.function" type="String[]"
-				value="{startChain,stopChain,copyComponent,createChain,emptyChain,createEmptyChain,deleteChain,chain,chains,loadChain,replaceComponent,updateChain,createAdapter,createMediator,deleteAdapter,deleteMediator,adapter,mediator,updateAdapter,updateMediator,createBinding,deleteBinding}" />
+				value="{startChain,stopChain,copyComponent,createChain,emptyChain,createEmptyChain,deleteChain,chain,chains,loadChain,replaceComponent,createAdapter,createMediator,deleteAdapter,deleteMediator,adapter,mediator,updateAdapter,updateMediator,createBinding,deleteBinding}" />
 		</provides>
 		<requires field="ccontext" />
 		<requires field="admin" />
 	</component>
 
-	<component
-		classname="fr.liglab.adele.cilia.admin.impl.CiliaFileInstall"
-		name="Cilia-Deployer" >
-		<provides />
-		<requires field="manager" />
-		<callback transition="validate" method="start" />
-		<callback transition="invalidate" method="stop" />
-	</component>
 
 	<!-- Gogo commands : monitoring specification and runtime -->
 	<component
@@ -479,8 +471,7 @@
 
 	<instance component="Cilia-Admin-Gogo" name="Cilia-Admin-Gogo" />
 
-	<instance component="Cilia-Deployer" name="Cilia-Deployer" />
-	<!--  
+	<!--
  	<instance component="Monitoring_Commands.gogo"
 		name="Monitoring_Commands.gogo" />
 	-->

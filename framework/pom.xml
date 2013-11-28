@@ -30,6 +30,8 @@
 	<modules>
 		<module>core</module>
 		<module>runtime</module>
+      <module>fileinstall-deployer</module>
+      <module>chameleon-deployer</module>
       <module>remote</module>
       <module>annotations</module>
 	</modules>

@@ -32,12 +32,6 @@
 	<dependencies>
 		<dependency>
 			<groupId>fr.liglab.adele.cilia</groupId>
-			<artifactId>cilia.dp</artifactId>
-			<type>deployment-package</type>
-			<version>${project.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>fr.liglab.adele.cilia</groupId>
 			<artifactId>cilia-eventadmin.dp</artifactId>
 			<type>deployment-package</type>
 			<version>${project.version}</version>
@@ -61,6 +55,7 @@
             <artifactId>maven-osgi-distribution-plugin</artifactId>
             <extensions>true</extensions>
             <configuration>
+               <defaultOutputDirectory>application</defaultOutputDirectory>
                <generateScripts>true</generateScripts>
                <flattenDP>true</flattenDP>
             </configuration>

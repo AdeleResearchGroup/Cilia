@@ -90,7 +90,7 @@
 							fr.liglab.adele.cilia.model.impl, javax.xml.namespace,
 							javax.xml.parsers, javax.xml.transform, javax.xml.transform.dom,
 							javax.xml.transform.stream, javax.xml.xpath,
-							org.apache.felix.fileinstall, org.apache.felix.ipojo,
+							org.apache.felix.ipojo,
 							org.apache.felix.ipojo.architecture,
 							org.apache.felix.ipojo.context, org.apache.felix.ipojo.metadata,
 							org.apache.felix.ipojo.parser, org.apache.felix.ipojo.util,

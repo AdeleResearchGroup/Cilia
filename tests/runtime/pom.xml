@@ -23,8 +23,8 @@
 
 
     <properties>
-        <exam.version>3.0.0</exam.version>
-        <url.version>1.5.2</url.version>
+        <exam.version>3.3.0</exam.version>
+        <url.version>1.6.0</url.version>
         <distrib.groupId>${project.groupId}</distrib.groupId>
         <distrib.artifactId>cilia-remote-distribution</distrib.artifactId>
         <distrib.version>${project.version}</distrib.version>
@@ -82,13 +82,28 @@
             <version>${exam.version}</version>
             <scope>test</scope>
         </dependency>
-
+        <!--
+        <dependency>
+            <groupId>org.ops4j.pax.exam</groupId>
+            <artifactId>pax-exam-invoker-junit</artifactId>
+            <version>${exam.version}</version>
+            <scope>test</scope>
+        </dependency>
+            -->
         <dependency>
             <groupId>org.ops4j.pax.exam</groupId>
             <artifactId>pax-exam-link-mvn</artifactId>
             <version>${exam.version}</version>
             <scope>test</scope>
         </dependency>
+        <!--
+        <dependency>
+            <groupId>org.ops4j.pax.exam</groupId>
+            <artifactId>pax-exam-link-assembly</artifactId>
+            <version>${exam.version}</version>
+            <scope>test</scope>
+        </dependency>
+        -->
 
         <dependency>
             <groupId>org.ops4j.pax.url</groupId>
@@ -98,8 +113,16 @@
         </dependency>
 
         <dependency>
+            <groupId>org.ops4j.pax.url</groupId>
+            <artifactId>pax-url-link</artifactId>
+            <version>${url.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
+            <version>4.11</version>
             <type>jar</type>
             <scope>test</scope>
         </dependency>

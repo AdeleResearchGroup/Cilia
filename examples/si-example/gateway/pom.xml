@@ -94,6 +94,7 @@
             <extensions>true</extensions>
             <configuration>
                <generateScripts>true</generateScripts>
+               <defaultOutputDirectory>application</defaultOutputDirectory>
                <flattenDP>true</flattenDP>
             </configuration>
          </plugin>

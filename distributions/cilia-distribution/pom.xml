@@ -31,7 +31,7 @@
 	<dependencies>
       <dependency>
          <groupId>fr.liglab.adele.common</groupId>
-         <artifactId>distribution.minimal.base</artifactId>
+         <artifactId>distribution.base</artifactId>
          <type>osgi-distribution</type>
          <version>${adeleCommonVersion}</version>
       </dependency>
@@ -41,6 +41,11 @@
 			<type>deployment-package</type>
 			<version>${project.version}</version>
 		</dependency>
+      <dependency>
+         <groupId>fr.liglab.adele.cilia</groupId>
+         <artifactId>cilia-chameleon-deployer</artifactId>
+         <version>${project.version}</version>
+      </dependency>
 		<dependency>
 			<groupId>fr.liglab.adele.cilia</groupId>
 			<artifactId>cilia-eventadmin.dp</artifactId>
@@ -55,6 +60,7 @@
             <artifactId>maven-osgi-distribution-plugin</artifactId>
             <extensions>true</extensions>
             <configuration>
+               <defaultOutputDirectory>runtime</defaultOutputDirectory>
                <generateScripts>true</generateScripts>
                <flattenDP>true</flattenDP>
             </configuration>
