@@ -61,7 +61,7 @@
             <configuration>
                <generateScripts>true</generateScripts>
                <defaultOutputDirectory>runtime</defaultOutputDirectory>
-               <flattenDP>false</flattenDP>
+               <flattenDP>true</flattenDP>
             </configuration>
          </plugin>
       </plugins>

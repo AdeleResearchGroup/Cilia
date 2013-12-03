@@ -41,25 +41,12 @@
             <groupId>${project.groupId}</groupId>
             <artifactId>cilia-runtime</artifactId>
             <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>cilia-helper</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.felix</groupId>
-            <artifactId>org.apache.felix.ipojo</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.sun.jersey</groupId>
-            <artifactId>jersey-core</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.sun.jersey</groupId>
-            <artifactId>jersey-client</artifactId>
-            <version>1.9</version>
-            <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.osgi</groupId>
+                    <artifactId>org.osgi.core</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.ow2.chameleon.json</groupId>
@@ -70,60 +57,27 @@
             <artifactId>rose-core</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.ops4j.pax.exam</groupId>
-            <artifactId>pax-exam-container-native</artifactId>
-            <version>${exam.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <!-- Needed bundles to run pax-exam -->
-        <dependency>
-            <groupId>org.ops4j.pax.exam</groupId>
-            <artifactId>pax-exam-junit4</artifactId>
-            <version>${exam.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <!--
-        <dependency>
-            <groupId>org.ops4j.pax.exam</groupId>
-            <artifactId>pax-exam-invoker-junit</artifactId>
-            <version>${exam.version}</version>
-            <scope>test</scope>
-        </dependency>
-            -->
-        <dependency>
-            <groupId>org.ops4j.pax.exam</groupId>
-            <artifactId>pax-exam-link-mvn</artifactId>
-            <version>${exam.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <!--
-        <dependency>
-            <groupId>org.ops4j.pax.exam</groupId>
-            <artifactId>pax-exam-link-assembly</artifactId>
-            <version>${exam.version}</version>
-            <scope>test</scope>
-        </dependency>
-        -->
-
-        <dependency>
-            <groupId>org.ops4j.pax.url</groupId>
-            <artifactId>pax-url-aether</artifactId>
-            <version>${url.version}</version>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.ops4j.pax.url</groupId>
-            <artifactId>pax-url-link</artifactId>
-            <version>${url.version}</version>
-            <scope>test</scope>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>cilia-helper</artifactId>
+            <version>${project.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.osgi</groupId>
+                    <artifactId>org.osgi.core</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>4.11</version>
-            <type>jar</type>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>fr.liglab.adele.common</groupId>
+            <artifactId>chameleon-tests</artifactId>
+            <version>1.2.2-SNAPSHOT</version>
             <scope>test</scope>
         </dependency>
 
@@ -134,12 +88,6 @@
             <version>${distrib.version}</version>
             <type>osgi-distribution</type>
             <scope>test</scope>
-        </dependency>
-        <!--Test to herit -->
-        <dependency>
-            <groupId>fr.liglab.adele.common</groupId>
-            <artifactId>base.distribution.test</artifactId>
-            <version>${adeleCommonVersionTest}</version>
         </dependency>
 
         <dependency>
@@ -153,19 +101,37 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.osgi</groupId>
-            <artifactId>org.osgi.core</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>fr.liglab.adele.common</groupId>
-            <artifactId>distribution.factory</artifactId>
-            <version>${adeleCommonVersionTest}</version>
-            <scope>test</scope>
+            <groupId>org.ow2.chameleon.testing</groupId>
+            <artifactId>osgi-helpers</artifactId>
+            <version>0.6.2-SNAPSHOT</version>
             <exclusions>
                 <exclusion>
-                    <!-- declare the exclusion here -->
                     <groupId>org.apache.felix</groupId>
                     <artifactId>org.apache.felix.framework</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.ow2.chameleon</groupId>
+                    <artifactId>chameleon-core</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.osgi</groupId>
+                    <artifactId>org.osgi.core</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>ch.qos.logback</groupId>
+                    <artifactId>logback-core</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>ch.qos.logback</groupId>
+                    <artifactId>logback-classic</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.ops4j.pax.tinybundles</groupId>
+                    <artifactId>tinybundles</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>biz.aQute</groupId>
+                    <artifactId>bndlib</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
@@ -179,7 +145,7 @@
                 <version>2.5</version>
                 <configuration>
                     <systemPropertyVariables>
-                        <ipojo.processing.synchronous>false</ipojo.processing.synchronous>
+                        <ipojo.processing.synchronous>true</ipojo.processing.synchronous>
                     </systemPropertyVariables>
                 </configuration>
             </plugin>
@@ -199,28 +165,55 @@
                             <outputDirectory>${project.build.directory}/distribution</outputDirectory>
                         </configuration>
                     </execution>
+                    <execution>
+                        <id>copy-deps</id>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>copy</goal>
+                        </goals>
+                        <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>${distrib.groupId}</groupId>
+                                    <artifactId>cilia-helper</artifactId>
+                                    <outputDirectory>${project.build.directory}/distribution/${distrib.artifactId}/runtime</outputDirectory>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>org.ow2.chameleon.testing</groupId>
+                                    <artifactId>osgi-helpers</artifactId>
+                                    <outputDirectory>${project.build.directory}/distribution/${distrib.artifactId}/runtime</outputDirectory>
+                                </artifactItem>
+                            </artifactItems>
+                        </configuration>
+                    </execution>
                 </executions>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
-                    <source>1.5</source>
-                    <target>1.5</target>
+                    <source>1.7</source>
+                    <target>1.7</target>
                 </configuration>
             </plugin>
             <plugin>
-                <groupId>org.ops4j.pax.exam</groupId>
-                <artifactId>maven-paxexam-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>generate-config</id>
-                        <goals>
-                            <goal>generate-depends-file</goal>
-                        </goals>
-                    </execution>
-                </executions>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
             </plugin>
+            <!--
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.16</version>
+                <configuration>
+                    <classpathDependencyExcludes>
+                         <classpathDependencyExcludes>com.sun.jersey:jersey-core</classpathDependencyExcludes>
+                         <classpathDependencyExcludes>com.sun.jersey:jersey-server</classpathDependencyExcludes>
+                         <classpathDependencyExcludes>com.sun.jersey:jersey-client</classpathDependencyExcludes>
+                    </classpathDependencyExcludes>
+                </configuration>
+            </plugin>
+            -->
         </plugins>
 	</build>
 </project>

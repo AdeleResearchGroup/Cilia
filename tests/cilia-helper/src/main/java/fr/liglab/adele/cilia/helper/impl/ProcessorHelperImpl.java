@@ -23,7 +23,7 @@ import java.util.List;
 import junit.framework.Assert;
 
 import org.apache.felix.ipojo.Factory;
-import org.apache.felix.ipojo.test.helpers.OSGiHelper;
+
 
 import fr.liglab.adele.cilia.Data;
 import fr.liglab.adele.cilia.builder.Architecture;
@@ -37,6 +37,7 @@ import fr.liglab.adele.cilia.helper.DispatcherProcessorHelper;
 import fr.liglab.adele.cilia.helper.ProcessorHelper;
 import fr.liglab.adele.cilia.helper.SchedulerProcessorHelper;
 import fr.liglab.adele.cilia.runtime.MediatorRuntimeSpecification;
+import org.ow2.chameleon.testing.helpers.OSGiHelper;
 
 /**
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project

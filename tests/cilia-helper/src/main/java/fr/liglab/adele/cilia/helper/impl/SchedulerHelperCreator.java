@@ -17,22 +17,17 @@
  */
 package fr.liglab.adele.cilia.helper.impl;
 
-import java.util.Hashtable;
-import java.util.List;
-
-import junit.framework.Assert;
-
-import org.apache.felix.ipojo.Factory;
-import org.apache.felix.ipojo.test.helpers.OSGiHelper;
-
-import fr.liglab.adele.cilia.Data;
 import fr.liglab.adele.cilia.builder.Architecture;
 import fr.liglab.adele.cilia.builder.Builder;
 import fr.liglab.adele.cilia.exceptions.BuilderException;
 import fr.liglab.adele.cilia.exceptions.CiliaException;
 import fr.liglab.adele.cilia.helper.CiliaHelper;
-import fr.liglab.adele.cilia.helper.MediatorTestHelper;
 import fr.liglab.adele.cilia.runtime.MediatorRuntimeSpecification;
+import junit.framework.Assert;
+import org.apache.felix.ipojo.Factory;
+import org.ow2.chameleon.testing.helpers.OSGiHelper;
+
+import java.util.Hashtable;
 
 /**
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project

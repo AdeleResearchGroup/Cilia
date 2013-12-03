@@ -24,19 +24,16 @@ import fr.liglab.adele.cilia.exceptions.CiliaException;
 import fr.liglab.adele.cilia.helper.CiliaHelper;
 import fr.liglab.adele.cilia.helper.MediatorTestHelper;
 import fr.liglab.adele.cilia.runtime.MediatorRuntimeSpecification;
-import fr.liglab.adele.commons.distribution.test.AbstractDistributionBaseTest;
 import junit.framework.Assert;
-import org.apache.felix.ipojo.test.helpers.OSGiHelper;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.ops4j.pax.exam.Option;
-import org.ops4j.pax.exam.junit.PaxExam;
-import org.ops4j.pax.exam.options.DefaultCompositeOption;
-import org.ops4j.pax.exam.spi.reactors.ExamReactorStrategy;
-import org.ops4j.pax.exam.spi.reactors.PerMethod;
+
 import org.osgi.framework.BundleContext;
+import org.ow2.chameleon.testing.helpers.OSGiHelper;
+import org.ow2.chameleon.wisdom.test.WisdomRunner;
 
 import javax.inject.Inject;
 import java.net.URL;
@@ -49,9 +46,8 @@ import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
  *         Team</a>
  *
  */
-@RunWith(PaxExam.class)
-@ExamReactorStrategy(PerMethod.class)
-public class AdvancedManipulationTest  extends AbstractDistributionBaseTest {
+@RunWith(WisdomRunner.class)
+public class AdvancedManipulationTest   {
 
 	@Inject
 	private BundleContext context;
@@ -71,23 +67,8 @@ public class AdvancedManipulationTest  extends AbstractDistributionBaseTest {
 		cilia.dispose();
 		osgi.dispose();
 	}
-    public static Option helpBundles() {
 
-        return new DefaultCompositeOption(
-                mavenBundle().groupId("org.apache.felix").artifactId("org.apache.felix.ipojo.test.helpers").versionAsInProject(),
-                mavenBundle().groupId("fr.liglab.adele.cilia").artifactId("cilia-helper").versionAsInProject()
-        );
-    }
 
-    @org.ops4j.pax.exam.Configuration
-    public Option[] configuration() {
-
-        List<Option> lst = super.config();
-        lst.add(helpBundles());
-        Option conf[] = lst.toArray(new Option[0]);
-        return conf;
-    }
-	
 	@Test
 	public void replaceTest(){
 		CiliaHelper.waitSomeTime(2000);

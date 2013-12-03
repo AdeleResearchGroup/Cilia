@@ -11,7 +11,8 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+ *//*
+
 package cilia.runtime.context.test;
 
 import com.sun.jersey.api.client.Client;
@@ -21,23 +22,17 @@ import com.sun.jersey.api.client.config.DefaultClientConfig;
 import com.sun.jersey.api.representation.Form;
 import fr.liglab.adele.cilia.helper.CiliaHelper;
 import fr.liglab.adele.cilia.model.*;
-import fr.liglab.adele.commons.distribution.test.AbstractDistributionBaseTest;
-import org.apache.felix.ipojo.test.helpers.OSGiHelper;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.ops4j.pax.exam.Option;
-import static org.ops4j.pax.exam.CoreOptions.systemProperty;
-import org.ops4j.pax.exam.junit.PaxExam;
-import org.ops4j.pax.exam.options.DefaultCompositeOption;
-import org.ops4j.pax.exam.spi.reactors.ExamReactorStrategy;
-import org.ops4j.pax.exam.spi.reactors.PerMethod;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.InvalidSyntaxException;
 import org.ow2.chameleon.json.JSONService;
 import org.ow2.chameleon.rose.api.Machine;
+import org.ow2.chameleon.testing.helpers.OSGiHelper;
+import org.ow2.chameleon.wisdom.test.WisdomRunner;
 
 import javax.inject.Inject;
 import javax.ws.rs.core.MediaType;
@@ -47,15 +42,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Future;
 
-import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
-
+*/
 /**
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project
  *         Team</a>
- */
-@RunWith(PaxExam.class)
-@ExamReactorStrategy(PerMethod.class)
-public class RuntimeRemoteTest extends AbstractDistributionBaseTest {
+ *//*
+
+@RunWith(WisdomRunner.class)
+public class RuntimeRemoteTest {
 	@Inject
 	private BundleContext context;
 
@@ -82,33 +76,23 @@ public class RuntimeRemoteTest extends AbstractDistributionBaseTest {
 	}
 
 
-    public static Option helpBundles() {
-
-        return new DefaultCompositeOption(
-                systemProperty( "org.osgi.service.http.port" ).value( HTTP_PORT ),
-                mavenBundle().groupId("org.apache.felix").artifactId("org.apache.felix.ipojo.test.helpers").versionAsInProject(),
-                mavenBundle().groupId("fr.liglab.adele.cilia").artifactId("cilia-helper").versionAsInProject(),
-                mavenBundle().groupId("com.sun.jersey").artifactId("jersey-client").versionAsInProject()
-        );
-    }
-
-    @org.ops4j.pax.exam.Configuration
-    public Option[] configuration() {
-
-        List<Option> lst = super.config();
-        lst.add(helpBundles());
-        Option conf[] = lst.toArray(new Option[0]);
-        return conf;
-    }
 
 
-	/*****************************************/
-	/**          GET METHODS                **/
-	/*****************************************/
+	*/
+/*****************************************//*
 
-	/**
+	*/
+/**          GET METHODS                **//*
+
+	*/
+/*****************************************//*
+
+
+	*/
+/**
 	 * Test GET method in the URL http://localhost:9874/cilia
-	 */
+	 *//*
+
 	@Test
 	public void testGetAllChains(){
 		String chainName = "remote";
@@ -122,9 +106,11 @@ public class RuntimeRemoteTest extends AbstractDistributionBaseTest {
 		List chains = (List)reponse.get("chains");
 		Assert.assertEquals(1, chains.size());
 	}
-	/**
+	*/
+/**
 	 * Test GET method in the URL http://localhost:9874/cilia/remote
-	 */
+	 *//*
+
 	@Test
 	public void testGetSimpleChain(){
 		String chainName = "remote";
@@ -144,9 +130,11 @@ public class RuntimeRemoteTest extends AbstractDistributionBaseTest {
 		Assert.assertEquals(0, ((List)adapters.get("in-out")).size()); //zero adapters
 		Assert.assertEquals(1, ((List)reponse.get("Bindings")).size()); //one binding
 	}
-	/**
+	*/
+/**
 	 * Test GET method in the URL http://localhost:9874/cilia/remote/components
-	 */
+	 *//*
+
 	@Test
 	public void testGETAllComponents(){
 		String chainName = "remote";
@@ -164,9 +152,11 @@ public class RuntimeRemoteTest extends AbstractDistributionBaseTest {
 		Assert.assertEquals(1, adapters.size());
 	}
 
-	/**
+	*/
+/**
 	 * Test GET method in the URL http://localhost:9874/cilia/remote/mediators
-	 */
+	 *//*
+
 	@Test
 	public void testGETAllMediators(){
 		String chainName = "remote";
@@ -184,9 +174,11 @@ public class RuntimeRemoteTest extends AbstractDistributionBaseTest {
 
 
 
-	/**
+	*/
+/**
 	 * Test GET method in the URL http://localhost:9874/cilia/remote/adapters
-	 */
+	 *//*
+
 	@Test
 	public void testGETAlladapters(){
 		String chainName = "remote";
@@ -204,9 +196,11 @@ public class RuntimeRemoteTest extends AbstractDistributionBaseTest {
 
 
 
-	/**
+	*/
+/**
 	 * Test GET method in the URL http://localhost:9874/cilia/remote/bindings
-	 */
+	 *//*
+
 	@Test
 	public void testGETAllBindings(){
 		String chainName = "remote";
@@ -222,11 +216,13 @@ public class RuntimeRemoteTest extends AbstractDistributionBaseTest {
 		Assert.assertEquals(1, bindings.size());//This chain has one adapter
 	}
 
-	/**
+	*/
+/**
 	 * Test GET method in the URL http://localhost:9874/cilia/remote/mediators/validToto 
 	 * 						and in http://localhost:9874/cilia/remote/components/validToto 
 	 * to retrieve the validToto mediator in the chain remote
-	 */
+	 *//*
+
 	@Test
 	public void testGETOneMediator(){
 		String chainName = "remote";
@@ -247,10 +243,12 @@ public class RuntimeRemoteTest extends AbstractDistributionBaseTest {
 		Assert.assertEquals(mediatorName, reponse2.get("ID"));//compare mediator name
 	}
 
-	/**
+	*/
+/**
 	 * Test GET method in the URL http://localhost:9874/cilia/remote/adapters/adapter1
 	 * to retrieve the adapter1 adapter in the chain remote
-	 */
+	 *//*
+
 	@Test
 	public void testGETOneAdapter(){
 		String chainName = "remote";
@@ -271,14 +269,22 @@ public class RuntimeRemoteTest extends AbstractDistributionBaseTest {
 		Assert.assertEquals(adapterName, reponse2.get("ID"));//compare mediator name
 	}
 
-	/*****************************************/
-	/**          PUT METHODS                **/
-	/*****************************************/
+	*/
+/*****************************************//*
 
-	/**
+	*/
+/**          PUT METHODS                **//*
+
+	*/
+/*****************************************//*
+
+
+	*/
+/**
 	 * Test PUT method in the URL http://localhost:9874/cilia/remote/components/validToto
 	 * with properties in json format -d properties={"delay":"10"}
-	 */
+	 *//*
+
 	@Test
 	public void testPUTProperties(){
 		String chainName = "remote";
@@ -311,14 +317,16 @@ public class RuntimeRemoteTest extends AbstractDistributionBaseTest {
 		}catch(Exception ex){}
 	}
 
-	/**
+	*/
+/**
 	 * Test PUT method in the URL http://localhost:9874/cilia/remote/components
 	 * with parameters :
 	 * 	command = replace
 	 * 	from = toto
 	 * 	to = validToto
 	 * to delete a chain.
-	 */
+	 *//*
+
 	@Test
 	public void testReplaceComponent(){
 		String chainName = "remote";
@@ -337,14 +345,16 @@ public class RuntimeRemoteTest extends AbstractDistributionBaseTest {
 		doRequest(ROOT_SITE + chainName + "/components", Method.PUT, parameters);
 	}
 
-	/**
+	*/
+/**
 	 * Test PUT method in the URL http://localhost:9874/cilia/remote/components
 	 * with parameters :
 	 * 	command = copy
 	 * 	from = toto
 	 * 	to = toto2
 	 * to delete a chain.
-	 */
+	 *//*
+
 	@Test
 	public void testCopyComponent(){
 		String chainName = "remote";
@@ -372,15 +382,23 @@ public class RuntimeRemoteTest extends AbstractDistributionBaseTest {
 
 
 
-	/*****************************************/
-	/**          POST METHODS               **/
-	/*****************************************/
+	*/
+/*****************************************//*
+
+	*/
+/**          POST METHODS               **//*
+
+	*/
+/*****************************************//*
 
 
 
-	/**
+
+	*/
+/**
 	 * Test POST method in the URL http://localhost:9874/cilia/MyNewChain
-	 */
+	 *//*
+
 	@Test
 	public void testCreationChain(){
 		String chainName = "MyNewChain";
@@ -389,9 +407,11 @@ public class RuntimeRemoteTest extends AbstractDistributionBaseTest {
 		Chain myNewChain = cilia.getChain(chainName);
 		Assert.assertNotNull(myNewChain);
 	}
-	/**
+	*/
+/**
 	 * Test POST method in the URL http://localhost:9874/cilia/remote/mediators/myMediator1 -d "type=Mock&properties={prop1:val1}"
-	 */
+	 *//*
+
 	@Test
 	public void testCreationMediator(){
 		String chainName = "remote";
@@ -410,9 +430,11 @@ public class RuntimeRemoteTest extends AbstractDistributionBaseTest {
 		Assert.assertEquals(mymediator.getProperty("prop1"), "val1");
 	}
 
-	/**
+	*/
+/**
 	 * Test POST method in the URL http://localhost:9874/cilia/remote/adapters/myAdapter -d "type=console-adapter&properties={prop1:val1}"
-	 */
+	 *//*
+
 	@Test
 	public void testCreationAdapter(){
 		String chainName = "remote";
@@ -432,9 +454,11 @@ public class RuntimeRemoteTest extends AbstractDistributionBaseTest {
 		Assert.assertEquals(mymediator.getType(), "console-adapter");
 	}
 
-	/**
+	*/
+/**
 	 * Test POST method in the URL http://localhost:9874/cilia/remote/bindings/ -d "from=toto:unique&to=adapter1:unique"
-	 */
+	 *//*
+
 	@Test
 	public void testCreationBinding(){
 		String chainName = "remote";
@@ -457,15 +481,23 @@ public class RuntimeRemoteTest extends AbstractDistributionBaseTest {
 	}
 
 
-	/*****************************************/
-	/**          DELETE METHODS             **/
-	/*****************************************/
+	*/
+/*****************************************//*
+
+	*/
+/**          DELETE METHODS             **//*
+
+	*/
+/*****************************************//*
 
 
-	/**
+
+	*/
+/**
 	 * Test DELETE method in the URL http://localhost:9874/cilia/remote
 	 * to delete a chain.
-	 */
+	 *//*
+
 	@Test
 	public void testRemoveChain(){
 		String chainName = "remote";
@@ -482,10 +514,12 @@ public class RuntimeRemoteTest extends AbstractDistributionBaseTest {
 		Assert.assertNull(cilia.getChain(chainName));
 	}
 
-	/**
+	*/
+/**
 	 * Test DELETE method in the URL http://localhost:9874/cilia/remote/mediators/toto
 	 * to delete a mediator with ID toto.
-	 */
+	 *//*
+
 	@Test
 	public void testRemoveMediator(){
 		String chainName = "remote";
@@ -520,10 +554,12 @@ public class RuntimeRemoteTest extends AbstractDistributionBaseTest {
 		}catch(Exception ex){}
 	}
 
-	/**
+	*/
+/**
 	 * Test DELETE method in the URL http://localhost:9874/cilia/remote/adapters/toto
 	 * to delete a mediator with ID toto.
-	 */
+	 *//*
+
 	@Test
 	public void testRemoveAdapter(){
 		String chainName = "remote";
@@ -560,9 +596,11 @@ public class RuntimeRemoteTest extends AbstractDistributionBaseTest {
 
 	}
 
-	/**
+	*/
+/**
 	 * Test DELETE method in the URL http://localhost:9874/cilia/remote/bindings/ -d "validToto:unique&to=toto:unique"
-	 */
+	 *//*
+
 	@Test
 	public void testRemoveBinding(){
 		String chainName = "remote";
@@ -659,3 +697,4 @@ public class RuntimeRemoteTest extends AbstractDistributionBaseTest {
 	}
 
 }
+*/

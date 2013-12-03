@@ -25,40 +25,33 @@ import fr.liglab.adele.cilia.helper.CiliaHelper;
 import fr.liglab.adele.cilia.helper.CollectorHelper;
 import fr.liglab.adele.cilia.helper.MediatorTestHelper;
 import fr.liglab.adele.cilia.runtime.CiliaInstance;
-import fr.liglab.adele.commons.distribution.test.AbstractDistributionBaseTest;
 import org.apache.felix.ipojo.ComponentInstance;
 import org.apache.felix.ipojo.Factory;
-import org.apache.felix.ipojo.test.helpers.IPOJOHelper;
-import org.apache.felix.ipojo.test.helpers.OSGiHelper;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.ops4j.pax.exam.Option;
-import org.ops4j.pax.exam.junit.PaxExam;
-import org.ops4j.pax.exam.options.DefaultCompositeOption;
-import org.ops4j.pax.exam.spi.reactors.ExamReactorStrategy;
-import org.ops4j.pax.exam.spi.reactors.PerMethod;
 import org.osgi.framework.BundleContext;
 import org.osgi.service.event.Event;
 import org.osgi.service.event.EventAdmin;
+import org.ow2.chameleon.testing.helpers.IPOJOHelper;
+import org.ow2.chameleon.testing.helpers.OSGiHelper;
+import org.ow2.chameleon.wisdom.test.Artifact;
+import org.ow2.chameleon.wisdom.test.Configuration;
+import org.ow2.chameleon.wisdom.test.WisdomRunner;
 
 import javax.inject.Inject;
 import java.net.URL;
 import java.util.Hashtable;
-import java.util.List;
-
-import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
 
 /**
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project
  *         Team</a>
  *
  */
-@RunWith(PaxExam.class)
-@ExamReactorStrategy(PerMethod.class)
-public class TestEA  extends AbstractDistributionBaseTest {
+@RunWith(WisdomRunner.class)
+public class TestEA   {
 
 
 	private final static String COLLECTOR = "ea-collector";
@@ -90,8 +83,13 @@ public class TestEA  extends AbstractDistributionBaseTest {
 		ipojo.dispose();
 	}
 
+    @Configuration
+    public static Artifact[]  getDeps(){
+        return new Artifact[]{new Artifact("mvn://fr.liglab.adele.cilia/cilia-helper/1.7.4-SNAPSHOT"),
+                new Artifact("mvn://org.ow2.chameleon.testing/osgi-helpers/0.6.2-SNAPSHOT")};
+    }
 
-
+    /*
     public static Option helpBundles() {
 
         return new DefaultCompositeOption(
@@ -99,15 +97,7 @@ public class TestEA  extends AbstractDistributionBaseTest {
                 mavenBundle().groupId("fr.liglab.adele.cilia").artifactId("cilia-helper").versionAsInProject()
         );
     }
-
-    @org.ops4j.pax.exam.Configuration
-    public Option[] configuration() {
-
-        List<Option> lst = super.config();
-        lst.add(helpBundles());
-        Option conf[] = lst.toArray(new Option[0]);
-        return conf;
-    }
+      */
 
 	
 
@@ -130,7 +120,7 @@ public class TestEA  extends AbstractDistributionBaseTest {
 		return is;
 	}
 
-	@Test
+	//@Test
 	public void validateServices() {
 		CiliaHelper.waitSomeTime(2000);
 		Factory col = ipojo.getFactory(COLLECTOR);

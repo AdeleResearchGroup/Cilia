@@ -37,61 +37,18 @@
             <artifactId>cilia-helper</artifactId>
             <version>${project.version}</version>
         </dependency>
-        <dependency>
-            <groupId>org.apache.felix</groupId>
-            <artifactId>org.apache.felix.ipojo</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.sun.jersey</groupId>
-            <artifactId>jersey-core</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.sun.jersey</groupId>
-            <artifactId>jersey-client</artifactId>
-            <version>1.9</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.ow2.chameleon.json</groupId>
-            <artifactId>json-service-json.org</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.ow2.chameleon.rose</groupId>
-            <artifactId>rose-core</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.ops4j.pax.exam</groupId>
-            <artifactId>pax-exam-container-native</artifactId>
-            <version>${exam.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <!-- Needed bundles to run pax-exam -->
-        <dependency>
-            <groupId>org.ops4j.pax.exam</groupId>
-            <artifactId>pax-exam-junit4</artifactId>
-            <version>${exam.version}</version>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.ops4j.pax.exam</groupId>
-            <artifactId>pax-exam-link-mvn</artifactId>
-            <version>${exam.version}</version>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.ops4j.pax.url</groupId>
-            <artifactId>pax-url-aether</artifactId>
-            <version>${url.version}</version>
-            <scope>test</scope>
-        </dependency>
 
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <type>jar</type>
+            <version>4.11</version>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+           <groupId>fr.liglab.adele.common</groupId>
+           <artifactId>chameleon-tests</artifactId>
+           <version>1.2.2-SNAPSHOT</version>
+           <scope>test</scope>
         </dependency>
 
         <!-- Distribution to test -->
@@ -101,12 +58,6 @@
             <version>${distrib.version}</version>
             <type>osgi-distribution</type>
             <scope>test</scope>
-        </dependency>
-        <!--Test to herit -->
-        <dependency>
-            <groupId>fr.liglab.adele.common</groupId>
-            <artifactId>base.distribution.test</artifactId>
-            <version>${adeleCommonVersionTest}</version>
         </dependency>
 
         <dependency>
@@ -124,17 +75,10 @@
             <artifactId>org.osgi.core</artifactId>
         </dependency>
         <dependency>
-            <groupId>fr.liglab.adele.common</groupId>
-            <artifactId>distribution.factory</artifactId>
-            <version>${adeleCommonVersionTest}</version>
-            <scope>test</scope>
-            <exclusions>
-                <exclusion>
-                    <!-- declare the exclusion here -->
-                    <groupId>org.apache.felix</groupId>
-                    <artifactId>org.apache.felix.framework</artifactId>
-                </exclusion>
-            </exclusions>
+            <groupId>org.ow2.chameleon.testing</groupId>
+            <artifactId>osgi-helpers</artifactId>
+            <version>0.6.2-SNAPSHOT</version>
+
         </dependency>
     </dependencies>
 	<build>
@@ -145,7 +89,7 @@
                 <version>2.5</version>
                 <configuration>
                     <systemPropertyVariables>
-                        <ipojo.processing.synchronous>true</ipojo.processing.synchronous>
+                        <ipojo.processing.synchronous>false</ipojo.processing.synchronous>
                     </systemPropertyVariables>
                 </configuration>
             </plugin>
@@ -165,30 +109,37 @@
                             <outputDirectory>${project.build.directory}/distribution</outputDirectory>
                         </configuration>
                     </execution>
+                    <execution>
+                        <id>copy-helpers</id>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>copy</goal>
+                        </goals>
+                        <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>${distrib.groupId}</groupId>
+                                    <artifactId>cilia-helper</artifactId>
+                                    <outputDirectory>${project.build.directory}/distribution/${distrib.artifactId}/runtime</outputDirectory>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>org.ow2.chameleon.testing</groupId>
+                                    <artifactId>osgi-helpers</artifactId>
+                                    <outputDirectory>${project.build.directory}/distribution/${distrib.artifactId}/runtime</outputDirectory>
+                                </artifactItem>
+                            </artifactItems>
+                        </configuration>
+                    </execution>
                 </executions>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
-                    <source>1.5</source>
-                    <target>1.5</target>
+                    <source>1.7</source>
+                    <target>1.7</target>
                 </configuration>
             </plugin>
-            <plugin>
-                <groupId>org.ops4j.pax.exam</groupId>
-                <artifactId>maven-paxexam-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>generate-config</id>
-                        <goals>
-                            <goal>generate-depends-file</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
         </plugins>
-
 	</build>
-
 </project>

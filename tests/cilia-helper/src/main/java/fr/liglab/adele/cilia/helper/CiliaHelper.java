@@ -14,23 +14,6 @@
  */
 package fr.liglab.adele.cilia.helper;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.URL;
-import java.util.Dictionary;
-import java.util.Hashtable;
-
-import fr.liglab.adele.cilia.model.*;
-import junit.framework.Assert;
-
-import org.apache.felix.ipojo.test.helpers.OSGiHelper;
-import org.osgi.framework.BundleContext;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import fr.liglab.adele.cilia.ApplicationRuntime;
 import fr.liglab.adele.cilia.CiliaContext;
 import fr.liglab.adele.cilia.builder.Architecture;
@@ -41,10 +24,22 @@ import fr.liglab.adele.cilia.exceptions.CiliaIllegalStateException;
 import fr.liglab.adele.cilia.framework.ICollector;
 import fr.liglab.adele.cilia.helper.impl.ProcessorHelperImpl;
 import fr.liglab.adele.cilia.helper.impl.SchedulerHelperCreator;
+import fr.liglab.adele.cilia.model.*;
 import fr.liglab.adele.cilia.runtime.CiliaInstance;
 import fr.liglab.adele.cilia.runtime.CiliaInstanceWrapper;
 import fr.liglab.adele.cilia.util.CiliaFileManager;
 import fr.liglab.adele.cilia.util.Const;
+import junit.framework.Assert;
+import org.osgi.framework.BundleContext;
+import org.ow2.chameleon.testing.helpers.IPOJOHelper;
+import org.ow2.chameleon.testing.helpers.OSGiHelper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.*;
+import java.net.URL;
+import java.util.Dictionary;
+import java.util.Hashtable;
 
 /**
  * 
@@ -57,6 +52,8 @@ public class CiliaHelper {
 	private static final Logger logger = LoggerFactory.getLogger(Const.LOGGER_CORE);
 
 	protected OSGiHelper ohelper;
+
+    protected IPOJOHelper ipojo;
 	
 	private static final String NAMESPACE = "fr.liglab.adele.cilia.test";
 	
@@ -65,6 +62,7 @@ public class CiliaHelper {
 	private Object lock = new Object();
 	
 	public CiliaHelper(BundleContext bc) {
+        ipojo = new IPOJOHelper(bc);
 		ohelper = new OSGiHelper(bc);
 	}
 	/**
@@ -227,7 +225,7 @@ public class CiliaHelper {
 	}
 	
 	public void loadFileFromResource(String filename){
-		URL url = ohelper.getContext().getBundle().getResource("remoteTest.dscilia");
+		URL url = ohelper.getContext().getBundle().getResource(filename);
 		load(url);
 	}
 	

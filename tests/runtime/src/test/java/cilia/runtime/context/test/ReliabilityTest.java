@@ -26,27 +26,19 @@ import fr.liglab.adele.cilia.helper.CiliaHelper;
 import fr.liglab.adele.cilia.helper.MediatorTestHelper;
 import fr.liglab.adele.cilia.model.MediatorComponent;
 import fr.liglab.adele.cilia.runtime.MediatorRuntimeSpecification;
-import fr.liglab.adele.commons.distribution.test.AbstractDistributionBaseTest;
-import junit.framework.*;
-import org.apache.felix.ipojo.test.helpers.OSGiHelper;
-import org.junit.*;
+import org.junit.After;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.ops4j.pax.exam.Option;
-import org.ops4j.pax.exam.junit.PaxExam;
-import org.ops4j.pax.exam.options.DefaultCompositeOption;
-import org.ops4j.pax.exam.spi.reactors.ExamReactorStrategy;
-import org.ops4j.pax.exam.spi.reactors.PerMethod;
 import org.osgi.framework.BundleContext;
+import org.ow2.chameleon.testing.helpers.OSGiHelper;
+import org.ow2.chameleon.wisdom.test.WisdomRunner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import java.net.URL;
-import java.util.List;
-
-import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
 
 /**
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project
@@ -54,9 +46,8 @@ import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
  *
  */
 
-@RunWith(PaxExam.class)
-@ExamReactorStrategy(PerMethod.class)
-public class ReliabilityTest extends AbstractDistributionBaseTest {
+@RunWith(WisdomRunner.class)
+public class ReliabilityTest {
 
 	@Inject
 	private BundleContext context;
@@ -81,23 +72,7 @@ public class ReliabilityTest extends AbstractDistributionBaseTest {
 	}
 
 
-    public static Option helpBundles() {
 
-        return new DefaultCompositeOption(
-                mavenBundle().groupId("org.apache.felix").artifactId("org.apache.felix.ipojo.test.helpers").versionAsInProject(),
-                mavenBundle().groupId("fr.liglab.adele.cilia").artifactId("cilia-helper").versionAsInProject()
-        );
-    }
-
-    @org.ops4j.pax.exam.Configuration
-    public Option[] configuration() {
-
-        List<Option> lst = super.config();
-        lst.add(helpBundles());
-        Option conf[] = lst.toArray(new Option[0]);
-        return conf;
-    }
-	
 	@Test
 	public void replaceWithoutLoose() {
 		CiliaHelper.waitSomeTime(2000);

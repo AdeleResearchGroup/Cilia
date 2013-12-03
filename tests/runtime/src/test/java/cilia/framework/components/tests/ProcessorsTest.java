@@ -20,23 +20,14 @@ package cilia.framework.components.tests;
 import fr.liglab.adele.cilia.Data;
 import fr.liglab.adele.cilia.helper.CiliaHelper;
 import fr.liglab.adele.cilia.helper.ProcessorHelper;
-import fr.liglab.adele.commons.distribution.test.AbstractDistributionBaseTest;
 import junit.framework.Assert;
-import org.apache.felix.ipojo.test.helpers.OSGiHelper;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.ops4j.pax.exam.Configuration;
-import org.ops4j.pax.exam.Option;
-import org.ops4j.pax.exam.junit.PaxExam;
-import org.ops4j.pax.exam.options.DefaultCompositeOption;
-import org.ops4j.pax.exam.spi.reactors.ExamReactorStrategy;
-import org.ops4j.pax.exam.spi.reactors.PerMethod;
 import org.osgi.framework.BundleContext;
-
-import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
-
+import org.ow2.chameleon.testing.helpers.OSGiHelper;
+import org.ow2.chameleon.wisdom.test.WisdomRunner;
 
 import javax.inject.Inject;
 import java.util.Hashtable;
@@ -48,9 +39,8 @@ import java.util.List;
  *         Team</a>
  *
  */
-@RunWith(PaxExam.class)
-@ExamReactorStrategy(PerMethod.class)
-public class ProcessorsTest  extends AbstractDistributionBaseTest {
+@RunWith(WisdomRunner.class)
+public class ProcessorsTest   {
 
 	@Inject
 	private BundleContext context;
@@ -71,22 +61,7 @@ public class ProcessorsTest  extends AbstractDistributionBaseTest {
 		osgi.dispose();
 	}
 
-    public static Option helpBundles() {
 
-        return new DefaultCompositeOption(
-                mavenBundle().groupId("org.apache.felix").artifactId("org.apache.felix.ipojo.test.helpers").versionAsInProject(),
-                mavenBundle().groupId("fr.liglab.adele.cilia").artifactId("cilia-helper").versionAsInProject()
-                );
-    }
-
-    @Configuration
-    public Option[] configuration() {
-
-        List<Option> lst = super.config();
-        lst.add(helpBundles());
-        Option conf[] = lst.toArray(new Option[0]);
-        return conf;
-    }
 
 	/**
 	 * Test the SimpleEnricherProcessor

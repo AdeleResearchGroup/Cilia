@@ -36,6 +36,7 @@
             <groupId>${project.groupId}</groupId>
             <artifactId>cilia-helper</artifactId>
             <version>${project.version}</version>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
@@ -65,37 +66,15 @@
             <artifactId>rose-core</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.ops4j.pax.exam</groupId>
-            <artifactId>pax-exam-container-native</artifactId>
-            <version>${exam.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <!-- Needed bundles to run pax-exam -->
-        <dependency>
-            <groupId>org.ops4j.pax.exam</groupId>
-            <artifactId>pax-exam-junit4</artifactId>
-            <version>${exam.version}</version>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.ops4j.pax.exam</groupId>
-            <artifactId>pax-exam-link-mvn</artifactId>
-            <version>${exam.version}</version>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.ops4j.pax.url</groupId>
-            <artifactId>pax-url-aether</artifactId>
-            <version>${url.version}</version>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <type>jar</type>
+            <version>4.11</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>fr.liglab.adele.common</groupId>
+            <artifactId>chameleon-tests</artifactId>
+            <version>1.2.2-SNAPSHOT</version>
             <scope>test</scope>
         </dependency>
 
@@ -106,12 +85,6 @@
             <version>${distrib.version}</version>
             <type>osgi-distribution</type>
             <scope>test</scope>
-        </dependency>
-        <!--Test to herit -->
-        <dependency>
-            <groupId>fr.liglab.adele.common</groupId>
-            <artifactId>base.distribution.test</artifactId>
-            <version>${adeleCommonVersionTest}</version>
         </dependency>
 
         <dependency>
@@ -125,21 +98,9 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.osgi</groupId>
-            <artifactId>org.osgi.core</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>fr.liglab.adele.common</groupId>
-            <artifactId>distribution.factory</artifactId>
-            <version>${adeleCommonVersionTest}</version>
-            <scope>test</scope>
-            <exclusions>
-                <exclusion>
-                    <!-- declare the exclusion here -->
-                    <groupId>org.apache.felix</groupId>
-                    <artifactId>org.apache.felix.framework</artifactId>
-                </exclusion>
-            </exclusions>
+            <groupId>org.ow2.chameleon.testing</groupId>
+            <artifactId>osgi-helpers</artifactId>
+            <version>0.6.2-SNAPSHOT</version>
         </dependency>
     </dependencies>
 
@@ -171,6 +132,32 @@
                             <outputDirectory>${project.build.directory}/distribution</outputDirectory>
                         </configuration>
                     </execution>
+                    <execution>
+                        <id>copy-helpers</id>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>copy</goal>
+                        </goals>
+                        <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>${distrib.groupId}</groupId>
+                                    <artifactId>cilia-helper</artifactId>
+                                    <outputDirectory>${project.build.directory}/distribution/${distrib.artifactId}/runtime</outputDirectory>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>${distrib.groupId}</groupId>
+                                    <artifactId>tcp-adapter</artifactId>
+                                    <outputDirectory>${project.build.directory}/distribution/${distrib.artifactId}/runtime</outputDirectory>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>org.ow2.chameleon.testing</groupId>
+                                    <artifactId>osgi-helpers</artifactId>
+                                    <outputDirectory>${project.build.directory}/distribution/${distrib.artifactId}/runtime</outputDirectory>
+                                </artifactItem>
+                            </artifactItems>
+                        </configuration>
+                    </execution>
                 </executions>
             </plugin>
             <plugin>
@@ -182,16 +169,14 @@
                 </configuration>
             </plugin>
             <plugin>
-                <groupId>org.ops4j.pax.exam</groupId>
-                <artifactId>maven-paxexam-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>generate-config</id>
-                        <goals>
-                            <goal>generate-depends-file</goal>
-                        </goals>
-                    </execution>
-                </executions>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.16</version>
+                <configuration>
+                    <classpathDependencyExcludes>
+                        <classpathDependencyExcludes>org.osgi:org.osgi.core</classpathDependencyExcludes>
+                    </classpathDependencyExcludes>
+                </configuration>
             </plugin>
         </plugins>
     </build>

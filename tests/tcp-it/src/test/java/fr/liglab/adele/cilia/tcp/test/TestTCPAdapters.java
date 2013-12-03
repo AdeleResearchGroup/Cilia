@@ -23,19 +23,15 @@ import fr.liglab.adele.cilia.framework.ISender;
 import fr.liglab.adele.cilia.helper.CiliaHelper;
 import fr.liglab.adele.cilia.helper.CollectorHelper;
 import fr.liglab.adele.cilia.runtime.CiliaInstance;
-import fr.liglab.adele.commons.distribution.test.AbstractDistributionBaseTest;
 import org.apache.felix.ipojo.ComponentInstance;
 import org.apache.felix.ipojo.Factory;
-import org.apache.felix.ipojo.test.helpers.IPOJOHelper;
-import org.apache.felix.ipojo.test.helpers.OSGiHelper;
+
 import org.junit.*;
 import org.junit.runner.RunWith;
-import org.ops4j.pax.exam.Option;
-import org.ops4j.pax.exam.junit.PaxExam;
-import org.ops4j.pax.exam.options.DefaultCompositeOption;
-import org.ops4j.pax.exam.spi.reactors.ExamReactorStrategy;
-import org.ops4j.pax.exam.spi.reactors.PerMethod;
 import org.osgi.framework.BundleContext;
+import org.ow2.chameleon.testing.helpers.IPOJOHelper;
+import org.ow2.chameleon.testing.helpers.OSGiHelper;
+import org.ow2.chameleon.wisdom.test.WisdomRunner;
 
 import javax.inject.Inject;
 import java.net.URL;
@@ -49,9 +45,8 @@ import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
  *         Team</a>
  *
  */
-@RunWith(PaxExam.class)
-@ExamReactorStrategy(PerMethod.class)
-public class TestTCPAdapters  extends AbstractDistributionBaseTest {
+@RunWith(WisdomRunner.class)
+public class TestTCPAdapters  {
 
 
 	private final static String COLLECTOR = "tcp-collector";
@@ -89,26 +84,6 @@ public class TestTCPAdapters  extends AbstractDistributionBaseTest {
 
 
 
-    public static Option helpBundles() {
-
-        return new DefaultCompositeOption(
-                mavenBundle().groupId("fr.liglab.adele.cilia").artifactId("tcp-adapter").versionAsInProject(),
-                mavenBundle().groupId("org.apache.felix").artifactId("org.apache.felix.ipojo.test.helpers").versionAsInProject(),
-                mavenBundle().groupId("fr.liglab.adele.cilia").artifactId("cilia-helper").versionAsInProject()
-        );
-    }
-
-    @org.ops4j.pax.exam.Configuration
-    public Option[] configuration() {
-
-        List<Option> lst = super.config();
-        lst.add(helpBundles());
-        Option conf[] = lst.toArray(new Option[0]);
-        return conf;
-    }
-
-	
-
 	public CollectorHelper createCollectorHelper(Hashtable<String, Object> props){
 		CiliaInstance ci = cilia.createInstance(COLLECTOR, props);
 		ci.start();
@@ -143,9 +118,9 @@ public class TestTCPAdapters  extends AbstractDistributionBaseTest {
 	public void collectorTest() {
 		CiliaHelper.waitSomeTime(5000);
 
-		CollectorHelper ch = createCollectorHelper(getTestProperties(9999));
+		CollectorHelper ch = createCollectorHelper(getTestProperties(9876));
 
-		injectMessages(9999);
+		injectMessages(9876);
 		CiliaHelper.checkReceived(ch, 10, 10000);
 
 		Assert.assertEquals(10, ch.countReceived());
@@ -161,9 +136,9 @@ public class TestTCPAdapters  extends AbstractDistributionBaseTest {
 		CiliaHelper.waitSomeTime(2000);
 
 		//Get collector Helper
-		CollectorHelper ch = createCollectorHelper(getTestProperties(9999));
+		CollectorHelper ch = createCollectorHelper(getTestProperties(9875));
 		//Get Sender
-		ISender is = createSender(getTestProperties(9999));
+		ISender is = createSender(getTestProperties(9875));
 
 		int i;
 		for (i = 0; i < 10; i++) {

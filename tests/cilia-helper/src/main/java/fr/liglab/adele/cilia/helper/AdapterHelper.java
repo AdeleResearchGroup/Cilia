@@ -14,8 +14,6 @@
  */
 package fr.liglab.adele.cilia.helper;
 
-import java.util.List;
-
 import fr.liglab.adele.cilia.Data;
 import fr.liglab.adele.cilia.framework.AbstractAsyncIOAdapter;
 

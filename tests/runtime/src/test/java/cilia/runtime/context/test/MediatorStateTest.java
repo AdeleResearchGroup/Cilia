@@ -22,26 +22,17 @@ import fr.liglab.adele.cilia.exceptions.CiliaIllegalStateException;
 import fr.liglab.adele.cilia.helper.CiliaHelper;
 import fr.liglab.adele.cilia.model.MediatorComponent;
 import fr.liglab.adele.cilia.runtime.MediatorRuntimeSpecification;
-import fr.liglab.adele.commons.distribution.test.AbstractDistributionBaseTest;
 import junit.framework.Assert;
-import org.apache.felix.ipojo.test.helpers.OSGiHelper;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.ops4j.pax.exam.Option;
-import org.ops4j.pax.exam.junit.PaxExam;
-import org.ops4j.pax.exam.options.DefaultCompositeOption;
-import org.ops4j.pax.exam.spi.reactors.ExamReactorStrategy;
-import org.ops4j.pax.exam.spi.reactors.PerMethod;
 import org.osgi.framework.BundleContext;
+import org.ow2.chameleon.testing.helpers.OSGiHelper;
+import org.ow2.chameleon.wisdom.test.WisdomRunner;
 
 import javax.inject.Inject;
 import java.net.URL;
-import java.util.List;
-
-import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
 
 /**
  * 
@@ -49,9 +40,8 @@ import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
  *         Team</a>
  * 
  */
-@RunWith(PaxExam.class)
-@ExamReactorStrategy(PerMethod.class)
-public class MediatorStateTest  extends AbstractDistributionBaseTest {
+@RunWith(WisdomRunner.class)
+public class MediatorStateTest  {
 	
 
 	@Inject
@@ -74,39 +64,22 @@ public class MediatorStateTest  extends AbstractDistributionBaseTest {
 	}
 
 
-    public static Option helpBundles() {
-
-        return new DefaultCompositeOption(
-                mavenBundle().groupId("org.apache.felix").artifactId("org.apache.felix.ipojo.test.helpers").versionAsInProject(),
-                mavenBundle().groupId("fr.liglab.adele.cilia").artifactId("cilia-helper").versionAsInProject()
-        );
-    }
-
-    @org.ops4j.pax.exam.Configuration
-    public Option[] configuration() {
-
-        List<Option> lst = super.config();
-        lst.add(helpBundles());
-        Option conf[] = lst.toArray(new Option[0]);
-        return conf;
-    }
-
 
 
 	@Test
 	public void mediatorInvalidState() {
 		CiliaHelper.waitSomeTime(2000);
-		URL url = context.getBundle().getResource("test1.dscilia");
+		URL url = context.getBundle().getResource("mediatorInvalidState.dscilia");
 		cilia.load(url);
 		System.out.println("will wait");
-		boolean found = cilia.waitToChain("toto",3000);
+		boolean found = cilia.waitToChain("mediatorInvalidState",3000);
 		System.out.println("found chain "+ found);
-        if(!cilia.waitToComponent("toto", "toto", 1000)){
+        if(!cilia.waitToComponent("mediatorInvalidState", "toto", 1000)){
             Assert.fail("Unable to locate mediator toto");
         }
-        MediatorComponent toto = cilia.getMediatorModel("toto", "toto");
+        MediatorComponent toto = cilia.getMediatorModel("mediatorInvalidState", "toto");
 		Assert.assertEquals(false,toto.isRunning());
-        if(!cilia.checkComponentState("toto","toto", MediatorComponent.State.INVALID, 8000)){
+        if(!cilia.checkComponentState("mediatorInvalidState","toto", MediatorComponent.State.INVALID, 8000)){
             Assert.fail("Failed to retrieve toto component, expected state invalid. Current state is:" + toto.getState());
         }
         cilia.dispose();
@@ -114,20 +87,20 @@ public class MediatorStateTest  extends AbstractDistributionBaseTest {
 	@Test
 	public void mediatorDisposedState() {
 		CiliaHelper.waitSomeTime(2000);
-		URL url = context.getBundle().getResource("test1.dscilia");
+		URL url = context.getBundle().getResource("mediatorDisposedState.dscilia");
 		cilia.load(url);
 		System.out.println("will wait");
-		boolean found = cilia.waitToChain("toto",3000);
+		boolean found = cilia.waitToChain("mediatorDisposedState",3000);
 		System.out.println("found chain "+ found);
 		try {
-			cilia.getCiliaContext().getApplicationRuntime().stopChain("toto");
+			cilia.getCiliaContext().getApplicationRuntime().stopChain("mediatorDisposedState");
 		} catch (CiliaIllegalParameterException e) {
 			e.printStackTrace();
 		} catch (CiliaIllegalStateException e) {
 			e.printStackTrace();
 		}
-		MediatorComponent toto = cilia.getMediatorModel("toto", "toto");
-        if(!cilia.checkComponentState("toto","toto", MediatorComponent.State.DISPOSED, 8000)){
+		MediatorComponent toto = cilia.getMediatorModel("mediatorDisposedState", "toto");
+        if(!cilia.checkComponentState("mediatorDisposedState","toto", MediatorComponent.State.DISPOSED, 8000)){
             Assert.fail("Failed to retrieve toto component, expected state disposed. Current state is:" + toto.getState());
         }
 		Assert.assertEquals(false,toto.isRunning());
@@ -140,10 +113,10 @@ public class MediatorStateTest  extends AbstractDistributionBaseTest {
 		MediatorComponent titi = null;
 		try {
 			Builder b = cilia.getCiliaContext().getBuilder();
-			Architecture toto = b.create("toto");
+			Architecture toto = b.create("mediatorStopped");
 			toto.create().mediator().type("titi").id("toto");
 			b.done();
-			titi = cilia.getMediatorModel("toto", "toto");
+			titi = cilia.getMediatorModel("mediatorStopped", "toto");
 		} catch (CiliaException e) {
 			e.printStackTrace();
 		}
@@ -156,14 +129,14 @@ public class MediatorStateTest  extends AbstractDistributionBaseTest {
 	@Test
 	public void mediatorValid(){
 		CiliaHelper.waitSomeTime(2000);
-		URL url = context.getBundle().getResource("test1.dscilia");
+		URL url = context.getBundle().getResource("mediatorValid.dscilia");
 		cilia.load(url);
 		System.out.println("will wait");
-		boolean found = cilia.waitToChain("toto",3000);
+		boolean found = cilia.waitToChain("mediatorValid",3000);
 		System.out.println("found chain "+ found);
-		MediatorComponent toto = cilia.getMediatorModel("toto", "validToto");
+		MediatorComponent toto = cilia.getMediatorModel("mediatorValid", "validToto");
 
-        if(!cilia.checkComponentState("toto","validToto", MediatorComponent.State.VALID, 8000)){
+        if(!cilia.checkComponentState("mediatorValid","validToto", MediatorComponent.State.VALID, 8000)){
             Assert.fail("Failed to retrieve toto component, expected state valid. Current state is:" + toto.getState());
         }
 		Assert.assertEquals(true,toto.isRunning());
@@ -173,21 +146,21 @@ public class MediatorStateTest  extends AbstractDistributionBaseTest {
 	@Test
 	public void mediatorInvalidSAfterCreateSpecification() {
 		CiliaHelper.waitSomeTime(2000);
-		URL url = context.getBundle().getResource("test1.dscilia");
+		URL url = context.getBundle().getResource("mediatorInvalidAfterCreateSpecification.dscilia");
 		cilia.load(url);
 		System.out.println("will wait");
-		boolean found = cilia.waitToChain("toto",3000);
+		boolean found = cilia.waitToChain("mediatorInvalidAfterCreateSpecification",3000);
 		System.out.println("found chain "+ found);
-		MediatorComponent toto = cilia.getMediatorModel("toto", "toto");
+		MediatorComponent toto = cilia.getMediatorModel("mediatorInvalidAfterCreateSpecification", "toto");
 		System.out.println("Toto is running");
-        if(!cilia.checkComponentState("toto","toto", MediatorComponent.State.INVALID, 8000)){
+        if(!cilia.checkComponentState("mediatorInvalidAfterCreateSpecification","toto", MediatorComponent.State.INVALID, 8000)){
             Assert.fail("Failed to retrieve toto component, expected state invalid. Current state is:" + toto.getState());
         }
 		Assert.assertEquals(false,toto.isRunning());
 		Assert.assertEquals(MediatorComponent.State.INVALID, toto.getState());
 		//Now we create the toto mediator.
-		createTotoMediator();
-        if(!cilia.checkComponentState("toto","toto", MediatorComponent.State.VALID, 8000)){
+		createTotoMediator("newMediator");
+        if(!cilia.checkComponentState("mediatorInvalidAfterCreateSpecification","toto", MediatorComponent.State.VALID, 8000)){
             Assert.fail("Failed to retrieve toto component, expected state valid. Current state is:" + toto.getState());
         }
 		Assert.assertEquals(true,toto.isRunning());
@@ -195,8 +168,8 @@ public class MediatorStateTest  extends AbstractDistributionBaseTest {
         cilia.dispose();
 	}
 	
-	private void createTotoMediator(){
-		MediatorRuntimeSpecification mrs = new MediatorRuntimeSpecification("toto", null, null, context);
+	private void createTotoMediator(String name){
+		MediatorRuntimeSpecification mrs = new MediatorRuntimeSpecification(name, null, null, context);
 		mrs.setDispatcher("multicast-dispatcher", "fr.liglab.adele.cilia");
 		mrs.setScheduler("immediate-scheduler", "fr.liglab.adele.cilia");
 		mrs.setProcessor("simple-processor", "fr.liglab.adele.cilia");

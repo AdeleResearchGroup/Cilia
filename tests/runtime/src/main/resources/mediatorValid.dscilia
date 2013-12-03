@@ -1,5 +1,5 @@
 <cilia>
-	<chain id="toto">
+	<chain id="mediatorValid">
 		<mediators>
 			<mediator-instance id="toto" type="toto" />
 			<mediator-instance id="validToto" type="Mock" namespace="fr.liglab.adele.cilia.test" />

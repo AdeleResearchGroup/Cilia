@@ -21,26 +21,17 @@ import fr.liglab.adele.cilia.Data;
 import fr.liglab.adele.cilia.framework.data.DataEnrichment;
 import fr.liglab.adele.cilia.helper.CiliaHelper;
 import fr.liglab.adele.cilia.helper.MediatorTestHelper;
-import fr.liglab.adele.commons.distribution.test.AbstractDistributionBaseTest;
 import junit.framework.Assert;
-import org.apache.felix.ipojo.test.helpers.OSGiHelper;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.ops4j.pax.exam.Option;
-import org.ops4j.pax.exam.junit.Configuration;
-import org.ops4j.pax.exam.junit.PaxExam;
-import org.ops4j.pax.exam.options.DefaultCompositeOption;
-import org.ops4j.pax.exam.spi.reactors.ExamReactorStrategy;
-import org.ops4j.pax.exam.spi.reactors.PerMethod;
 import org.osgi.framework.BundleContext;
+import org.ow2.chameleon.testing.helpers.OSGiHelper;
+import org.ow2.chameleon.wisdom.test.WisdomRunner;
 
 import javax.inject.Inject;
 import java.util.Hashtable;
-import java.util.List;
-
-import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
 
 /**
  *This class will test the behaviour of processors.
@@ -48,9 +39,8 @@ import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
  *         Team</a>
  *
  */
-@RunWith(PaxExam.class)
-@ExamReactorStrategy(PerMethod.class)
-public class SchedulerTest  extends AbstractDistributionBaseTest {
+@RunWith(WisdomRunner.class)
+public class SchedulerTest  {
 
 	@Inject
 	private BundleContext context;
@@ -71,22 +61,6 @@ public class SchedulerTest  extends AbstractDistributionBaseTest {
 		osgi.dispose();
 	}
 
-    public static Option helpBundles() {
-
-        return new DefaultCompositeOption(
-                mavenBundle().groupId("org.apache.felix").artifactId("org.apache.felix.ipojo.test.helpers").versionAsInProject(),
-                mavenBundle().groupId("fr.liglab.adele.cilia").artifactId("cilia-helper").versionAsInProject()
-        );
-    }
-
-    @org.ops4j.pax.exam.Configuration
-    public Option[] configuration() {
-
-        List<Option> lst = super.config();
-        lst.add(helpBundles());
-        Option conf[] = lst.toArray(new Option[0]);
-        return conf;
-    }
 
 	/**
 	 * Test the periodic-scheduler behavior
@@ -102,6 +76,7 @@ public class SchedulerTest  extends AbstractDistributionBaseTest {
 		helper.injectData(new Data("Data one","data one"));
 		helper.injectData(new Data("Data two","data two"));
 		CiliaHelper.checkReceived(helper, 2, 20000);
+
 		Assert.assertEquals(2, helper.getAmountData());
 		helper.getData();//to erase processed data.
 		//We inject another set of data

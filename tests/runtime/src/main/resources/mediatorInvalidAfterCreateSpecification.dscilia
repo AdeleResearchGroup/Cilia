@@ -1,0 +1,11 @@
+<cilia>
+	<chain id="mediatorInvalidAfterCreateSpecification">
+		<mediators>
+			<mediator-instance id="toto" type="newMediator" />
+			<mediator-instance id="validToto" type="Mock" namespace="fr.liglab.adele.cilia.test" />
+		</mediators>
+		<bindings>
+			<binding from="validToto:unique" to="toto:unique"/>
+		</bindings>
+	</chain>
+</cilia>
