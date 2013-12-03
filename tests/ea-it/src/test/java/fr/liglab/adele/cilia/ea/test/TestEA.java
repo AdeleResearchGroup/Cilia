@@ -35,11 +35,9 @@ import org.junit.runner.RunWith;
 import org.osgi.framework.BundleContext;
 import org.osgi.service.event.Event;
 import org.osgi.service.event.EventAdmin;
+import org.ow2.chameleon.runner.test.ChameleonRunner;
 import org.ow2.chameleon.testing.helpers.IPOJOHelper;
 import org.ow2.chameleon.testing.helpers.OSGiHelper;
-import org.ow2.chameleon.wisdom.test.Artifact;
-import org.ow2.chameleon.wisdom.test.Configuration;
-import org.ow2.chameleon.wisdom.test.WisdomRunner;
 
 import javax.inject.Inject;
 import java.net.URL;
@@ -50,7 +48,7 @@ import java.util.Hashtable;
  *         Team</a>
  *
  */
-@RunWith(WisdomRunner.class)
+@RunWith(ChameleonRunner.class)
 public class TestEA   {
 
 
@@ -83,11 +81,6 @@ public class TestEA   {
 		ipojo.dispose();
 	}
 
-    @Configuration
-    public static Artifact[]  getDeps(){
-        return new Artifact[]{new Artifact("mvn://fr.liglab.adele.cilia/cilia-helper/1.7.4-SNAPSHOT"),
-                new Artifact("mvn://org.ow2.chameleon.testing/osgi-helpers/0.6.2-SNAPSHOT")};
-    }
 
     /*
     public static Option helpBundles() {

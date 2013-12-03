@@ -26,8 +26,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.osgi.framework.BundleContext;
+import org.ow2.chameleon.runner.test.ChameleonRunner;
 import org.ow2.chameleon.testing.helpers.OSGiHelper;
-import org.ow2.chameleon.wisdom.test.WisdomRunner;
 
 import javax.inject.Inject;
 import java.util.Hashtable;
@@ -39,7 +39,7 @@ import java.util.List;
  *         Team</a>
  *
  */
-@RunWith(WisdomRunner.class)
+@RunWith(ChameleonRunner.class)
 public class ProcessorsTest   {
 
 	@Inject
