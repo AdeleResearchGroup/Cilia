@@ -46,7 +46,7 @@
         </dependency>
         <dependency>
            <groupId>fr.liglab.adele.common</groupId>
-           <artifactId>chameleon-tests</artifactId>
+           <artifactId>chameleon-runner</artifactId>
            <version>1.2.2-SNAPSHOT</version>
            <scope>test</scope>
         </dependency>
