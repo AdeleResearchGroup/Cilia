@@ -1,0 +1,34 @@
+
+<div class="span11 well">
+    <div class="span6">
+        <p>Cilia is a lightweight data mediation and integration service component model, built upon OSGi, the dynamic Java platform. Cilia provides a framework and toolset that simplify the development and the maintenance of large-scale, complex integration solutions that interacts with heterogeneous and complex integrated systems.</p>
+
+      <p>Specifically, Cilia provides:</p>
+
+		<ul>
+			<li><strong>A mediation component model:</strong> based on EIP patterns</li>
+			<li><strong>An architectural style:</strong> based on chain of mediation components</li>
+			<li><strong>A DSL language:</strong> To build mediation chain applications using a fluent API or a XML-based language</li>
+			<li><strong>A REST API:</strong> To introspect mediation applications (prototpe)</li>
+			<li><strong>Predefined components:</strong> A list of generic components ready-to-use</li>
+		</ul>
+
+
+<a href="http://repository-cilia.forge.cloudbees.com/${repo_path}/fr/liglab/adele/cilia/cilia-distribution//${project.version}/cilia-distribution-${project.version}.zip" class="btn
+       btn-primary btn-large"><i class="fa-icon-download"></i>&nbsp; Download</a>
+    </div>
+</div>
+
+
+
+<div class="span11 ">
+<p>
+    Cilia is licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0.html">Apache License v.2.0</a>
+</p>
+</div>
+
+
+<div class="span11 ">
+<p>Powered By<br/>
+    <a href="http://www.cloudbees.com/"> <img alt="Cloudbees" src="cloudbees.png" /></a></p>
+</div>

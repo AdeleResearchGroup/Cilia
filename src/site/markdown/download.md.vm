@@ -1,0 +1,20 @@
+Download
+==========
+
+Cilia distribution
+----------
+
+Is an OSGi gateway with Cilia in it.
+<br/><br/>
+<h3>Version=${project.version}</h3>
+<br/>
+<a href="http://repository-cilia.forge.cloudbees.com/${repo_path}/fr/liglab/adele/cilia/cilia-distribution/${project.version}/cilia-distribution-${project.version}.zip" class="btn
+       btn-primary btn-large"><i class="fa-icon-download"></i>&nbsp; Download</a>
+
+<hr/>
+
+Running
+------------
+In order to run the Cilia distribution, execute the script startGateway.bat or startGateway.sh, based on the operative system.
+
+

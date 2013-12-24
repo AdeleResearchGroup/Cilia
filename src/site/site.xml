@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!--
+  ~ Copyright 2013 OW2 Nanoko Project
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~   http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+-->
+
+<project name="iCasa" xmlns="http://maven.apache.org/DECORATION/1.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/DECORATION/1.0.0 http://maven.apache.org/xsd/decoration-1.0.0.xsd">
+    <bannerLeft>
+        <name>Cilia - A service mediation framework for dynamic applications</name>
+        <src>cilia-small.png</src>
+        <href>#</href>
+    </bannerLeft>
+
+    <skin>
+       <groupId>lt.velykis.maven.skins</groupId>
+       <artifactId>reflow-maven-skin</artifactId>
+       <version>1.0.1-SNAPSHOT</version>
+    </skin>
+    <custom>
+        <reflowSkin>
+              <theme>bootswatch-spacelab</theme>
+              <highlightJs>true</highlightJs>
+              <brand>
+                <name>Cilia on github</name>
+                <href>http://github.com/AdeleResearchGroup/Cilia</href>
+              </brand>
+              <slogan>A service mediation framework for dynamic applications</slogan>
+              <titleTemplate>%2$s | %1$s</titleTemplate>
+              <toc>top</toc>
+              <topNav>Cilia|Documentation|Advanced tutorials</topNav>
+
+              <bottomNav>
+                <column>Cilia|Documentation</column>
+               </bottomNav>
+
+              <bottomDescription>
+                A service mediation framework for dynamic applications.
+              </bottomDescription>
+              <pages>
+                <index project="project-id">
+                  <shortTitle>Welcome</shortTitle>
+                  <breadcrumbs>false</breadcrumbs>
+                  <toc>false</toc>
+                  <sections>
+                    <carousel />
+                    <body />
+                    <sidebar />
+                    <thumbs>2</thumbs>
+                    <columns>3</columns>
+                  </sections>
+                </index>
+                <developer-info>
+                  <toc>sidebar</toc>
+                </developer-info>
+              </pages>
+            </reflowSkin>
+    </custom>
+
+    <body>
+        <head>
+            <link rel="stylesheet" href="./css/site.css" type="text/css" />
+            <link rel="stylesheet" href="./css/font-awesome.css" type="text/css" />
+
+            <script type="text/javascript">
+                var _gaq = _gaq || [];
+                _gaq.push(['_setAccount', 'UA-35847694-2']);
+                _gaq.push(['_trackPageview']);
+
+                (function() {
+                var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+                ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+                var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+                })();
+            </script>
+
+            <script type="text/javascript">
+                $(document).ready(function () {
+                $("pre code").parent().addClass("prettyprint");
+                prettyPrint();
+                });
+            </script>
+            <link rel="shortcut icon"  href="favicon.png" />
+        </head>
+
+        <menu name="Cilia">
+            <item name="Home" href="index.html"/>
+            <item name="Overview" href="overview.html"/>
+            <item name="Download" href="download.html"/>
+            <item name="Available components" href="components.html"/>
+        </menu>
+
+        <menu name="Documentation">
+            <item name="Quick start" href="quickstart.html"/>
+            <item name="DSL Reference" href="dsl.html"/>
+            <item name="REST API" href="rest-api.html"/>
+            <item name="Gogo commands" href="gogo-commands.html"/>
+            <item name="Javadoc" href="apidocs/index.html"/>
+      </menu>		
+      <menu name="Advanced tutorials">
+         <item name="Creating a new Linker" href="linker.html"/>
+         <item name="Creating new adapter" href="adapter.html"/>
+         <item name="Using monitoring capabilities" href="monitor.html"/>
+         <item name="Extending the DSL Language" href="extendDSL.html"/>
+         <item name="Runtime Manipulation" href="#">
+            <item name="Cilia Admin Builder Pattern" href="builder.html"/>
+            <item name="Cilia Admin Service" href="ciliaAdmin.html"/>
+         </item>
+       </menu>
+
+      
+    </body>
+</project>
