@@ -6,7 +6,7 @@ Cilia has been designed for the widest range of uses, including embedded applica
 
 Cilia is a project in collaboration with the Adele Research Team and Orange Labs.
 
-For more information seehttp://adeleresearchgroup.github.io/Cilia/
+For more information see http://adeleresearchgroup.github.io/Cilia/
 
 ### Repository 
   	
