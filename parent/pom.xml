@@ -286,6 +286,7 @@
                   <allowTimestampedSnapshots>true</allowTimestampedSnapshots>
                   <autoVersionSubmodules>true</autoVersionSubmodules>
                   <releaseProfiles>release</releaseProfiles>
+                  <goals>deploy site-deploy</goals>
                </configuration>
             </plugin>
             <plugin>
