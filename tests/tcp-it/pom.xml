@@ -74,7 +74,7 @@
         <dependency>
             <groupId>fr.liglab.adele.common</groupId>
             <artifactId>chameleon-runner</artifactId>
-            <version>1.2.2-SNAPSHOT</version>
+            <version>${adeleCommonVersionTest}</version>
             <scope>test</scope>
         </dependency>
 
