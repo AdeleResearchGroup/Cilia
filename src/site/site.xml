@@ -104,7 +104,11 @@
 
         <menu name="Documentation">
             <item name="Quick start" href="quickstart.html"/>
-            <item name="DSL Reference" href="dsl.html"/>
+            <item name="DSL Reference" href="#">
+               <item name="Component Type specification" href="dslComponent.html"/>
+               <item name="Chain description" href="dslCilia.html"/>
+               <item name="Chain configuration" href="cfgCilia.html"/>
+            </item>
             <item name="REST API" href="rest-api.html"/>
             <item name="Gogo commands" href="gogo-commands.html"/>
             <item name="Javadoc" href="apidocs/index.html"/>

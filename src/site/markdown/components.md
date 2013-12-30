@@ -1201,5 +1201,6 @@ information to an external application listening on the specified port.
        </adapter-instance>
     </adapters>
 
-  [Event Admin]: http://felix.apache.org/site/apache-felix-event-admin.html
+
+[Event Admin]: http://felix.apache.org/site/apache-felix-event-admin.html
   

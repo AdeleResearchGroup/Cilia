@@ -19,7 +19,7 @@
       <name>${productName} :: Parent</name>
       <version>1.7.4-SNAPSHOT</version>
       <packaging>pom</packaging>
-      <url>http://wikiadele.imag.fr/index.php/Cilia</url>
+      <url>http://adeleresearchgroup.github.io/Cilia</url>
       <properties>
          <productName>Cilia</productName>
          <productVersion>${project.version}</productVersion>

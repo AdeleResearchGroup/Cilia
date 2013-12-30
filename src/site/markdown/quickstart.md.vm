@@ -1,5 +1,11 @@
-Creating a new project
-====================
+#set($h1 = '#')
+#set($h2 = '##')
+#set($h3 = '###')
+#set($h4 = '####')
+#set($h5 = '#####')
+
+$h2 Creating a new project
+
 
 For building Cilia projects we use the [Apache Maven][] project
 management software. Maven compiles the Java code, adds the appropriated
@@ -7,9 +13,7 @@ metadata to the components and creates OSGi standard bundles (jar
 files). To have an idea about Maven you can follow the [Maven in 5
 minutes][] tutorial.
 
-
-### Project Structure
-
+$h3 Project Structure
 
 A Cilia project should follow this structure :
 
@@ -21,7 +25,8 @@ A sample project structures is shown in next image:
 
 ![maven-structure][]
 
-### Sample Maven Script File
+
+$h3 Sample Maven Script File
 
 This file is used to describe the project, information to be used is:
 
@@ -36,8 +41,6 @@ This file is used to describe the project, information to be used is:
 
     <project>
       <modelVersion>4.0.0</modelVersion>
-    
-    
       <!-- Project Identification -->
       <groupId>fr.liglab.adele.cilia</groupId>
       <artifactId>hello-mediator</artifactId>
@@ -66,12 +69,12 @@ This file is used to describe the project, information to be used is:
         <dependency>
           <groupId>fr.liglab.adele.cilia</groupId>
           <artifactId>cilia-core</artifactId>
-          <version>CURRENT_VERSION</version>
+          <version>${project.version}</version>
         </dependency>
         <dependency>
           <groupId>fr.liglab.adele.cilia</groupId>
           <artifactId>cilia-runtime</artifactId>
-          <version>CURRENT_VERSION</version>
+          <version>${project.version}</version>
         </dependency>
       </dependencies>
     
@@ -107,7 +110,7 @@ This file is used to describe the project, information to be used is:
     </project>
     
 
-###Project Build
+$h3 Project Build
 
 
 To build a Cilia project with maven use this command in a OS console:
@@ -118,15 +121,15 @@ You can also use a pluging for your IDE as [M2Eclipse][].
 
 
 Hello World Sample
-==================
+------------------
 
 In this lesson, you will manipulate Cilia mediation chains. We will
 extend the Hello Mediator example to add other mediators to the chain.
 In addition, we will study other capabilities of mediators and bindings.
 
 
-Overview
---------
+$h3 Overview
+
 
 The goal of this section it to create a simple mediation chain with only
 one mediator i.e. the “Hello World” mediator. The mediator receives an
@@ -135,16 +138,11 @@ standard output console.
 
 ![ center | 600px][]
 
-Mediator Implementation
------------------------
+$h3 Mediator Implementation
 
-A mediator is composed of three elements: processor, scheduler and
-dispatcher (for an detailed explanation see the [ Cilia Overview][]). In
-this subsection, for the Hello World mediator we will present its
-elements, then the mediator description and finally the mediation build
-process.
+A mediator is composed of three elements: processor, scheduler and dispatcher (for an detailed explanation see the [ Cilia Overview][]). In this subsection, for the Hello World mediator we will present its elements, then the mediator description and finally the mediation build process. 
 
-### Processor
+$h4 Processor
 
 The processor of the Hello Mediator takes the data received by the
 mediator, next it extracts the content of this data (a string in this
@@ -189,8 +187,8 @@ This description is realized as follows:
     <processor name="HelloProcessor" classname="fr.liglab.adele.cilia.components.mediators.HelloProcessor">
       <cilia:method name="sayHello" data.type="fr.liglab.adele.cilia.Data" />
     </processor>
-
-### Scheduler and Dispatcher
+    
+$h4 Scheduler and Dispatcher
 
 A set of prebuilt Schedulers and Dispatchers are available into the
 Cilia compendium distribution. For this mediator we will use the
@@ -198,7 +196,8 @@ Immediate Scheduler (the data is passed to the processor when they are
 received by the scheduler) and the Multicast Dispatcher (the data is
 passed to the all next mediators).
 
-### Mediator Description
+
+$h4 Mediator Description
 
 The mediator is described into the Cilia DSL language. The
 description indicates each element forming the mediator (scheduler,
@@ -215,7 +214,9 @@ processor and dispatcher). The description file is a follows:
     </mediator-component>
 
 
-### Build (Compilation and Packaging)
+
+$h4 Build (Compilation and Packaging)
+
 
 For build process we use Maven as presented in previously.
 To launch the build of this project the command “mvn clean install” must
@@ -225,7 +226,9 @@ If the build process ends successfully the bundle
 "hello-mediator-1.0.0-SNAPSHOT.jar" must be in the target directory of
 the project.
 
-### Mediator Deployment
+
+$h4 Mediator Deployment
+
 
 Mediator deployment is simple, it consists only in copying the file
 produced by maven (hello-mediator-1.0.0-SNAPSHOT.jar) into the **applications**
@@ -237,10 +240,9 @@ deployment of bundles only putting files into a specific directory (e.g.
 the **applications** directory).
 
 
-Hello World Chain
------------------
+$h3 Hello World Chain
 
-### Chain Description
+$h4 Chain Description
 
 Once the mediators created a chain can be created using instances of
 these mediators. We will create a chain having only one instance of the
@@ -297,7 +299,7 @@ figure:
 
 ![ center | 600px][]
 
-### Chain Deployment
+$h4 Chain Deployment
 
 The deployment of the chain is similar to a mediator deployment. In this
 case, the file describing the chain (a XML document having as extension
@@ -309,50 +311,17 @@ when it push the Send Data button the information is sent to the hello
 mediator that process them and next deliver the data to the standard
 console, that shows the greeting message.
 
-Example Resources
------------------
-
-### Source code
-
-Some examples are available in the github repository
-
-    <https://github.com/AdeleResearchGroup/Cilia/tree/master/examples>
-
-### Cilia source code
-
-Get the Cilia code
-
-    git clone git://github.com/AdeleResearchGroup/Cilia.git
-
-
-### List of repositories
-
-    <repositories>
-      <repository>
-        <id>maven-cilia-repository-release</id>
-        <name>Cilia - Release</name>
-        <url>http://repository-cilia.forge.cloudbees.com/release/</url>
-        <layout>default</layout>
-      </repository>
-      <repository>
-        <id>maven-cilia-repository-snapshot</id>
-        <name>Cilia - Snapshot</name>
-        <url>http://repository-cilia.forge.cloudbees.com/snapshot/</url>
-        <layout>default</layout>
-      </repository>
-    </repositories>
-
 
 
 Developing Mediators
-=======================
+--------------------
 
 In this lesson, you will manipulate Cilia mediation chains. We will
 extend the Hello Mediator example to add other mediators to the chain.
 In addition, we will study other capabilities of mediators and bindings.
 
-Adding a new Mediator (Encryptor)
----------------------------------
+$h3 Adding a new Mediator (Encryptor)
+
 
 This example will add a new mediator to our Hello World example. This
 new Mediator takes the data produced by the Hello Mediator instance and
@@ -364,9 +333,9 @@ To do that, we have to modify the mediation chain as follow:
 
 ![hello-chain2][]
 
-### Encryptor Mediator Implementation
+$h4 Encryptor Mediator Implementation
 
-#### Processor Definition
+$h5 Processor Definition
 
 The Encryptor class implements the processor of the Mediator. It takes
 the data content and then applies a DES encryption.
@@ -403,7 +372,7 @@ The processor description is as follows:
         <cilia:method name="process" data.type="fr.liglab.adele.cilia.Data" />
     </processor>
 
-#### Mediator Description
+$h5 Mediator Description
 
 In this mediator we use also the immmediate scheduler and the multicast
 dispatcher.
@@ -420,7 +389,8 @@ dispatcher.
     </mediator-component>
 
 
-### Chain Description
+$h4 Chain Description
+
 
     <cilia>
     
@@ -464,7 +434,7 @@ A graphical representation of the chain is shown in the next figure:
 
 ![hello-chain2][]
 
-### Hello-Encryption Chain Execution
+$h4 Hello-Encryption Chain Execution
 
 
 A window is presented, type an arbitrary text, into the console an
@@ -477,7 +447,7 @@ incomprehensible message is shown.
 
 
 Developing a Scheduler and a Dispatcher
-=======================================
+---------------------------------------
 
 In a previous lesson we have learned how to use different kind of
 schedulers to modify the behavior of mediators. In this lesson we will
@@ -485,8 +455,8 @@ learn how to create new kinds of schedulers and dispatchers to obtain a
 special behavior when it does not exist in the Cilia available
 components.
 
-Chain Description
------------------
+$h3 Chain Description
+
 
 This chain has a mediator instance that waits for two numbers, when they
 arrive the processor makes an addition of the two numbers. Then, a
@@ -504,8 +474,8 @@ where send the data.
 We will focus on the NumberAddition mediator since the other mediator
 type NumberConverter mediator was presented in the previous trail.
 
-Implementating a Cilia Scheduler
---------------------------------
+$h3 Implementating a Cilia Scheduler
+
 
 In Cilia, a Scheduler implementation class should extend the
 CiliaScheduler class (provided by the framework). The method notifyData
@@ -564,8 +534,8 @@ class implementing it, the namespace is an optional attribute.
     </scheduler>
 
 
-Implementating a Cilia Dispatcher
----------------------------------
+$h3 Implementating a Cilia Dispatcher
+
 
 In this example we will implement a Dispatcher that observes the data
 content, if it’s a odd number it send the data by the “odd” port
@@ -618,10 +588,10 @@ the mediation chain is defined, their default values are **"odd"** and
     </dispatcher>
 
 
-Mediator Implementation
------------------------
+$h3 Mediator Implementation
 
-### Processor Implementation
+
+$h4 Processor Implementation
 
 This processor takes a List of Data (each data contains a **long**
 number) and calculates the addition of the elements of the list. The
@@ -669,7 +639,7 @@ parameter.
     </processor>
 
 
-### Mediator Description
+$h4 Mediator Description
 
 The mediator is created using the three elements presented above. The
 mediator will have a **wait-all-scheduler** Scheduler and an
@@ -682,8 +652,8 @@ mediator will have a **wait-all-scheduler** Scheduler and an
       <cilia:dispatcher name="odd-even-dispatcher" />
     </mediator-component>
 
-Chain Description
------------------
+$h3 Chain Description
+
 
 This chain receives the data from the GUI window (using the gui-console
 binding). Each window is connected to an input port (i1 and i2) of the
