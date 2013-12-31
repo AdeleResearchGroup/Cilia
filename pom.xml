@@ -19,7 +19,7 @@
 	<parent>
 		<groupId>fr.liglab.adele.cilia</groupId>
 		<artifactId>cilia-project</artifactId>
-		<version>1.7.4-SNAPSHOT</version>
+		<version>1.7.4</version>
 		<relativePath>parent</relativePath>
 	</parent>
 
@@ -195,6 +195,6 @@
 		<connection>scm:git:ssh://git@github.com/AdeleResearchGroup/Cilia.git</connection>
 		<url>https://github.com/AdeleResearchGroup/Cilia/</url>
 		<developerConnection>scm:git:ssh://git@github.com/AdeleResearchGroup/Cilia.git</developerConnection>
-		<tag>HEAD</tag>
+		<tag>cilia-parent-reactor-1.7.4</tag>
 	</scm>
 </project>
