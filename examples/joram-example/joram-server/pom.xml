@@ -10,7 +10,7 @@
   <parent>
     <artifactId>cilia-JMS-demo-reactor</artifactId>
     <groupId>fr.liglab.adele.cilia</groupId>
-    <version>1.7.4-SNAPSHOT</version>
+    <version>1.7.5-SNAPSHOT</version>
   </parent>
   
   <build>

@@ -14,12 +14,12 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<!--<parent> <groupId>fr.liglab.adele.cilia</groupId> <artifactId>cilia-project</artifactId> 
-		<version>1.7.4-SNAPSHOT</version> <relativePath>../../../parent</relativePath> 
+		<version>1.7.5-SNAPSHOT</version> <relativePath>../../../parent</relativePath> 
 		</parent> -->
 
 	<groupId>fr.liglab.adele.cilia.examples</groupId>
    <artifactId>annotated-hello-world-mediator</artifactId>
-   <version>1.7.4-SNAPSHOT</version><!-- The current trunk version-->
+   <version>1.7.5-SNAPSHOT</version><!-- The current trunk version-->
 	<packaging>bundle</packaging>
 	<name>Hello Mediator</name>
 
