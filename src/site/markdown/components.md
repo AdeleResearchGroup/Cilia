@@ -933,7 +933,7 @@ gateway, using the Event Admin Service.
     </adapters>
  
 
-### JMS/Joram Adapter
+### JMS/Joram (JMS 1.1) Adapter
 
 Joram is an Open source implementation of JMS (Java Message System) 1.1
 Cilia provides INPUT and OUTPUT adapters to communicate with
@@ -1094,6 +1094,168 @@ information to the JMS server using an specified topic
        </adapter-instance>
     </adapters>
 
+    
+### JMS/Joram (JMS 2.0) Adapter
+
+Joram is an Open source implementation of JMS (Java Message System) 2.0
+Cilia provides INPUT and OUTPUT adapters to communicate with
+applications or systems using Joram as a Message Oriented Middleware
+(MOM). Also, there is possible to communicate two distributed mediation
+chains using the JMS adapters.
+
+
+#### INPUT Adapter
+
+**Description :** The **input JMS** adapter is in charge of receiving
+information of the JMS server on an specified topic
+
+<table class="wikitable gauche" style="text-align:center; width:90%; background-color:#cecece">
+<tbody><tr>
+<th> name
+</th>
+<th> location
+</th></tr>
+<tr>
+<td> JMS2-in-adapter
+</td>
+<td> <a rel="nofollow" class="external text" href="http://repository-cilia.forge.cloudbees.com/release/fr/liglab/adele/cilia/jms2-adapter/">jms2-adapter</a>
+</td></tr></tbody></table>
+
+<center>Properties</center>
+
+<table style="width: 90%; text-align:center; background-color:#cecece;" border="3">
+<tbody>
+<tr>
+<th> name
+</th>
+<th> default value
+</th>
+<th> description
+</th></tr>
+<tr>
+<td> jms.topic
+</td>
+<td> ∅
+</td>
+<td> The JMS topic to receive event messages.
+</td></tr>
+<tr>
+<td> jms.host
+</td>
+<td> localhost
+</td>
+<td> The hostname where the JMS server is located.
+</td></tr>
+<tr>
+<td> jms.port
+</td>
+<td> 16010
+</td>
+<td> The port number to connect to the JMS server.
+</td></tr>
+<tr>
+<td> jms.login
+</td>
+<td> root
+</td>
+<td> The user name to connect to the JMS server.
+</td></tr>
+<tr>
+<td> jms.password
+</td>
+<td> root
+</td>
+<td> The password to connect to the JMS server.
+</td></tr></tbody></table>
+
+**Example** of code declaring a **INPUT JMS2 adapter**:
+
+    <adapters>
+       <adapter-instance type="JMS2-in-adapter" id="jms2-in-adapter-1">
+         <property name="jms.topic" value="topic$to$listen"/>
+         <property name="jms.host" value="129.88.51.194"/>
+         <property name="jms.login" value="garciai"/>
+         <property name="jms.password" value="12375"/>
+       </adapter-instance>
+    </adapters>
+
+
+#### OUTPUT Adapter
+
+**Description :** The **output JMS2** adapter is in charge of sending
+information to the JMS server using an specified topic
+
+<table class="wikitable gauche" style="text-align:center; width:90%; background-color:#cecece">
+<tbody><tr>
+<th> name
+</th>
+<th> location
+</th></tr>
+<tr>
+<td> JMS2-out-adapter
+</td>
+<td> <a rel="nofollow" class="external text" href="http://repository-cilia.forge.cloudbees.com/release/fr/liglab/adele/cilia/jms2-adapter/">jms2-adapter</a>
+</td></tr></tbody></table>
+
+<center>Properties</center>
+
+<table style="width: 90%; text-align:center; background-color:#cecece;" border="3">
+<tbody>
+<tr>
+<th> name
+</th>
+<th> default value
+</th>
+<th> description
+</th></tr>
+<tr>
+<td> jms.topic
+</td>
+<td> ∅
+</td>
+<td> The JMS topic to sent event messages.
+</td></tr>
+<tr>
+<td> jms.host
+</td>
+<td> localhost
+</td>
+<td> The hostname where the JMS server is located.
+</td></tr>
+<tr>
+<td> jms.port
+</td>
+<td> 16010
+</td>
+<td> The port number to connect to the JMS server.
+</td></tr>
+<tr>
+<td> jms.login
+</td>
+<td> root
+</td>
+<td> The user name to connect to the JMS server.
+</td></tr>
+<tr>
+<td> jms.password
+</td>
+<td> root
+</td>
+<td> The password to connect to the JMS server.
+</td></tr></tbody></table>
+
+**Example** of code declaring a **OUTPUT JMS adapter**:
+
+
+    <adapters>
+       <adapter-instance type="JMS2-out-adapter" id="jms2-out-adapter-1">
+         <property name="jms.topic" value="topic$to$listen"/>
+         <property name="jms.host" value="129.88.51.194"/>
+         <property name="jms.login" value="garciai"/>
+         <property name="jms.password" value="12375"/>
+       </adapter-instance>
+    </adapters>
+    
 
 
 ### Simple TCP Adapter

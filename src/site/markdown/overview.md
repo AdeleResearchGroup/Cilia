@@ -122,7 +122,7 @@ Tasks in mediation application
 Tasks realized in a mediation application have been classified in two
 groups:
 
-*Tasks associated to the **data processing**:*
+#### Tasks associated to the* *data processing*
 
 -   **Incoming data synchronization**. A mediator receives a set of data
     that will be processed. A synchronization task is realized over
@@ -145,7 +145,7 @@ groups:
     complex and based in the content of data or its meta-data.
 
     
-*Tasks associated to **data communication***
+#### Tasks associated to** *data communication*
 
 -   **Data collection**. Mediators could receive data from different
     sources (other mediators or applications), using different
@@ -163,9 +163,7 @@ groups:
 Cilia Building Blocks
 =====================
 
-Basic concepts (i.e. building blocks) of the Cilia component model will
-be presented in this section. In the next section will be presented how
-build applications using these building blocks.
+There is two building blocks in Cilia: mediators and adapters.
 
 Mediator
 --------
@@ -226,6 +224,8 @@ of dispatchers are:
 -   *Content-Based Dispatcher*: send the processed data to the chosen
     destination based in the data content.
 
+Also, a mediator defines a set of entry ports and a set of exit ports; specifying the accepted data type for each port.    
+    
 Adapters
 --------
 
@@ -254,13 +254,13 @@ This special kind of adapter receives a data request from a data source
 and has to reply to the same source. In this case the client plays both
 roles, data source and target application.  
 
-Cilia application (a.k.a. Mediation Chain)
-==========================================
+Cilia applications mediation chain 
+======================
 
 In Cilia a mediation application is known as a **mediation chain**. A
 mediation chain is built by composition of **mediator instances**, those
 instances are connected using **bindings**. A binding is a dataflow that
-brings all data put in an out port of an instance to the in port of
+brings all data put in an out-port of an instance to the in-port of
 another. The meta-model of Cilia applications is presented in the next
 figure.
 
@@ -269,23 +269,15 @@ figure.
 Mediator Instances
 ------------------
 
-In Cilia approach an instance is a configured occurrence (or a
-configured copy) of a mediator (presented in previous section). Each
-mediator instance has to define a set of in and out ports that are used
-in the application to connect it with other mediators. Two different
-instances of the same mediator could have a different set of ports. In
-addition, each mediator instance could have as many ports it requires,
-and in each port several bindings could be connected.
-
-In previous figure, the *m-add* mediator instance has 2 in ports (in1,
-in2), and two out ports (out-1, out-f).
+In Cilia approach an instance is a configured occurrence of a mediator. 
+The mediator configuration allows, for example, to configure its scheduler and/or dispatcher.
+This configuration is a set of key/value elements.
 
 Adapter instances
 -----------------
 
 In the same way as mediators, adapter instances are configured copy of
-Adapters. However, ports have not to be defined for adapter instances.
-In addition, adaptors instances have respect some constrains:
+Adapters.In addition, adaptors instances have respect some constrains:
 In-adapters could not have incoming bindings as well as out-adapters
 could not have outgoing bindings.
 
@@ -294,11 +286,7 @@ Bindings
 
 A binding describe a logical connection between mediator instances or
 between a mediator instance and an adaptor instance. A binding is
-defined between an out-port of a mediator and an in-port of another. At
-execution, a logical binding uses a communication protocols in order to
-transfer data from a mediator to other (mediation applications could be
-executed in distributed environments). This protocol could be specified
-at deployment time but also in developing time.
+defined between an out-port of a mediator and an in-port of another.
 
 Cilia Communication Blocks
 ==========================
@@ -363,7 +351,7 @@ They will be presented in next sections.
     the other hand, data routing algorithms can be also be implemented
     creating new Dispatchers.
 
-**Protocols**
+**Binding Protocols**
     A binding uses a protocol to pass data between mediators, some basic
     protocols are available to developers in the Cilia library. If your
     application needs to use a new protocol three elements must be
