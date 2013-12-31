@@ -93,8 +93,7 @@
             <artifactId>maven-osgi-distribution-plugin</artifactId>
             <extensions>true</extensions>
             <configuration>
-               <generateScripts>true</generateScripts>
-               <defaultOutputDirectory>application</defaultOutputDirectory>
+               <defaultOutputDirectory>applications</defaultOutputDirectory>
                <flattenDP>true</flattenDP>
             </configuration>
          </plugin>

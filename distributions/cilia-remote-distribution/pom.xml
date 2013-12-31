@@ -59,7 +59,6 @@
             <artifactId>maven-osgi-distribution-plugin</artifactId>
             <extensions>true</extensions>
             <configuration>
-               <generateScripts>true</generateScripts>
                <defaultOutputDirectory>runtime</defaultOutputDirectory>
                <flattenDP>true</flattenDP>
             </configuration>

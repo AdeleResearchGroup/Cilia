@@ -52,7 +52,6 @@
 			<groupId>fr.liglab.adele.cilia</groupId>
 			<artifactId>cilia-runtime</artifactId>
          <version>${project.version}</version>
-
 		</dependency>
 	</dependencies>
 

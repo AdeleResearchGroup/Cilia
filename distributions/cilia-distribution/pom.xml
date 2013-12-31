@@ -61,7 +61,6 @@
             <extensions>true</extensions>
             <configuration>
                <defaultOutputDirectory>runtime</defaultOutputDirectory>
-               <generateScripts>true</generateScripts>
                <flattenDP>true</flattenDP>
             </configuration>
          </plugin>

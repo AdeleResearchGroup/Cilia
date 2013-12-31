@@ -50,7 +50,6 @@
             <artifactId>maven-osgi-distribution-plugin</artifactId>
             <extensions>true</extensions>
             <configuration>
-               <generateScripts>true</generateScripts>
                <flattenDP>true</flattenDP>
             </configuration>
          </plugin>

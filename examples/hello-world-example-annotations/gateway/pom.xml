@@ -54,10 +54,8 @@
          <plugin>
             <groupId>fr.liglab.adele.common</groupId>
             <artifactId>maven-osgi-distribution-plugin</artifactId>
-            <version>1.1.0</version>
             <extensions>true</extensions>
             <configuration>
-               <generateScripts>true</generateScripts>
                <flattenDP>true</flattenDP>
             </configuration>
          </plugin>
