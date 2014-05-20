@@ -28,7 +28,6 @@ the specific language governing permissions and limitations under the License. -
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
-            <version>1.6.4</version>
         </dependency>
         <dependency>
             <groupId>org.apache.felix</groupId>
@@ -39,7 +38,6 @@ the specific language governing permissions and limitations under the License. -
             <artifactId>org.apache.felix.ipojo.manipulator</artifactId>
         </dependency>
     </dependencies>
-
 
     <build>
         <plugins>

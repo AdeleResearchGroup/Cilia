@@ -11,7 +11,7 @@
     <parent>
         <groupId>fr.liglab.adele.common</groupId>
         <artifactId>base</artifactId>
-        <version>1.2.2</version>
+        <version>1.2.4-SNAPSHOT</version>
         <relativePath/>
     </parent>
 
@@ -25,9 +25,9 @@
         <productName>Cilia</productName>
         <productVersion>${project.version}</productVersion>
         <projectName>${project.artifactId}</projectName>
-        <fileinstall.version>3.1.4</fileinstall.version>
-        <adeleCommonVersion>1.2.2</adeleCommonVersion>
-        <adeleCommonVersionTest>1.2.3-SNAPSHOT</adeleCommonVersionTest>
+        <fileinstall.version>3.2.6</fileinstall.version>
+        <adeleCommonVersion>1.2.3</adeleCommonVersion>
+        <adeleCommonVersionTest>1.2.4-SNAPSHOT</adeleCommonVersionTest>
         <joram.version>5.9.0</joram.version>
     </properties>
 
@@ -221,20 +221,21 @@
         </repository>
         <!-- ADELE repositories -->
         <repository>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
             <id>adele-central-release</id>
             <name>adele-repos</name>
             <url>http://repository-icasa.forge.cloudbees.com/release</url>
         </repository>
         <repository>
-            <snapshots/>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
             <id>adele-central-snapshots</id>
             <name>adele-central-snapshot</name>
             <url>http://repository-icasa.forge.cloudbees.com/snapshot</url>
         </repository>
-
 
         <!-- OW2 Release -->
         <repository>
@@ -395,6 +396,11 @@
                         </execution>
                     </executions>
                 </plugin>
+                <plugin>
+                    <groupId>org.apache.servicemix.tooling</groupId>
+                    <artifactId>depends-maven-plugin</artifactId>
+                    <version>1.2</version>
+                </plugin>
             </plugins>
         </pluginManagement>
     </build>
@@ -418,6 +424,7 @@
         <developerConnection>scm:git:ssh://git@github.com/AdeleResearchGroup/Cilia.git</developerConnection>
         <tag>HEAD</tag>
     </scm>
+
     <dependencyManagement>
         <dependencies>
             <dependency>
@@ -429,6 +436,16 @@
                 <groupId>org.osgi</groupId>
                 <artifactId>org.osgi.core</artifactId>
                 <version>4.3.1</version>
+            </dependency>
+            <dependency>
+                <groupId>org.ow2.chameleon.testing</groupId>
+                <artifactId>osgi-helpers</artifactId>
+                <version>0.6.2</version>
+            </dependency>
+            <dependency>
+                <groupId>junit</groupId>
+                <artifactId>junit</artifactId>
+                <version>4.11</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

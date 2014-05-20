@@ -28,7 +28,6 @@
         <distrib.groupId>${project.groupId}</distrib.groupId>
         <distrib.artifactId>cilia-remote-distribution</distrib.artifactId>
         <distrib.version>${project.version}</distrib.version>
-
     </properties>
 
     <dependencies>
@@ -48,6 +47,12 @@
                 </exclusion>
             </exclusions>
         </dependency>
+
+        <dependency>
+            <groupId>org.apache.felix</groupId>
+            <artifactId>org.apache.felix.ipojo</artifactId>
+        </dependency>
+
         <dependency>
             <groupId>org.ow2.chameleon.json</groupId>
             <artifactId>json-service-json.org</artifactId>
@@ -71,7 +76,6 @@
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.11</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -103,7 +107,6 @@
         <dependency>
             <groupId>org.ow2.chameleon.testing</groupId>
             <artifactId>osgi-helpers</artifactId>
-            <version>0.6.2-SNAPSHOT</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.apache.felix</groupId>
@@ -142,7 +145,6 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>2.5</version>
                 <configuration>
                     <systemPropertyVariables>
                         <ipojo.processing.synchronous>true</ipojo.processing.synchronous>
