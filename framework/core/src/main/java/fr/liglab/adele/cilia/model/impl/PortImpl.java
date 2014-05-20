@@ -92,7 +92,16 @@ public class PortImpl implements Port {
         return mediator;
     }
 
-
+    @Override
+    public String toString() {
+        StringBuffer sb = new StringBuffer("[");
+        sb.append(portName).append(", ");
+        sb.append(portType).append(", ");
+        sb.append(mediator.chainId()).append(":").append(mediator.getId()).append(", ");
+        sb.append(dataType);
+        sb.append("]\n");
+        return sb.toString();
+    }
 }
 
 
