@@ -17,8 +17,9 @@ package fr.liglab.adele.cilia.framework.monitor;
 import java.util.Map;
 
 public interface IServiceMonitor {
-	
-	void onServiceArrival(Map info);
 
-	void onServiceDeparture(Map info);
+    void onServiceArrival(Map info);
+
+    void onServiceDeparture(Map info);
 }
+e

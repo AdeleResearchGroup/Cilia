@@ -17,11 +17,9 @@ package fr.liglab.adele.cilia.builder;
 import java.util.Hashtable;
 
 /**
- *
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project Team</a>
- *
  */
 public interface CustomBuilderConfigurator {
 
-	Hashtable properties();
+    Hashtable properties();
 }

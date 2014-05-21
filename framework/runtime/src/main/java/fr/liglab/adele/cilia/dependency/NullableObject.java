@@ -23,6 +23,7 @@ import java.lang.reflect.Method;
 
 /**
  * Default nullable object.
+ *
  * @author <a href="mailto:dev@felix.apache.org">Felix Project Team</a>
  */
 public class NullableObject implements InvocationHandler {
@@ -41,7 +42,7 @@ public class NullableObject implements InvocationHandler {
      * Default short value.
      */
     private static final Short DEFAULT_SHORT = new Short((short) 0);
-
+    e
     /**
      * Default integer value.
      */
@@ -65,9 +66,10 @@ public class NullableObject implements InvocationHandler {
     /**
      * Invokes a method on this null object. The method will return a default
      * value without doing anything.
-     * @param proxy : proxy object
+     *
+     * @param proxy  : proxy object
      * @param method : invoked method
-     * @param args : arguments.
+     * @param args   : arguments.
      * @return the returned value.
      * @see java.lang.reflect.InvocationHandler#invoke(java.lang.Object, java.lang.reflect.Method, java.lang.Object[])
      */

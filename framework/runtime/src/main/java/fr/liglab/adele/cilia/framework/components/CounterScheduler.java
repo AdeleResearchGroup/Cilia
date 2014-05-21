@@ -1,67 +1,62 @@
 package fr.liglab.adele.cilia.framework.components;
 
-import java.util.Dictionary;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-
-import org.osgi.framework.BundleContext;
-
+import fr.liglab.adele.cilia.Data;
 import fr.liglab.adele.cilia.exceptions.CiliaException;
 import fr.liglab.adele.cilia.framework.AbstractCorrelationScheduler;
 import fr.liglab.adele.cilia.framework.data.DataCount;
-import fr.liglab.adele.cilia.Data;
+import org.osgi.framework.BundleContext;
 
-public class CounterScheduler extends AbstractCorrelationScheduler{
-	/**
-	 * Number of message needed to start processing.
-	 */
-	private Map m_counter;
+import java.util.*;
 
-	/**
-	 * Condition to start processing
-	 */
-	private String m_condition;
+public class CounterScheduler extends AbstractCorrelationScheduler {
+    /**
+     * Number of message needed to start processing.
+     */
+    private Map m_counter;
 
-	private final static String NAME = "counter-scheduler";
+    /**
+     * Condition to start processing
+     */
+    private String m_condition;
 
-	private DataCount datacount = null;
+    private final static String NAME = "counter-scheduler";
 
-	public CounterScheduler(BundleContext bcontext) {
-		super(bcontext);
-		datacount = new DataCount(bcontext);
-	}
+    private DataCount datacount = null;
 
-	public boolean checkCompletness(List dataset) {
-		boolean completness = false;
+    public CounterScheduler(BundleContext bcontext) {
+        super(bcontext);
+        datacount = new DataCount(bcontext);
+    }
 
-		int count = 0;
+    public boolean checkCompletness(List dataset) {
+        boolean completness = false;
 
-		Dictionary variables = new Properties();
-		count = dataset.size();
-		
-		if (m_counter==null) appLogger.error("m_counter==null" );
-		else if (m_counter.keySet() ==null) appLogger.error("m_counter.keySet==null") ;
-		
-		Iterator keys = (m_counter.keySet()).iterator();
+        int count = 0;
 
-		while (keys.hasNext()) {
-			String key = (String) keys.next();
-			int localcount = 0;
-			try {
-				localcount = datacount.count(dataset, m_counter.get(key)+"");
-			} catch (CiliaException e) {
-				e.printStackTrace();
-			}
-			variables.put(key, localcount + "");
-		}
-		Data dataVariables = new Data("","variables",variables);
-		completness = expreParser.evaluateBooleanExpression(m_condition, dataVariables);
-		appLogger.debug(" count = " + count);
-		return completness;
-	}
+        Dictionary variables = new Properties();
+        count = dataset.size();
 
-	public void init() {
-	}
+        if (m_counter == null) appLogger.error("m_counter==null");
+        else if (m_counter.keySet() == null) appLogger.error("m_counter.keySet==null");
+
+        Iterator keys = (m_counter.keySet()).iterator();
+
+        while (keys.hasNext()) {
+            String key = (String) keys.next();
+            int localcount = 0;
+            try {
+                localcount = datacount.count(dataset, m_counter.get(key) + "");
+            } catch (CiliaException e) {
+                e.printStackTrace();
+            }
+            variables.put(key, localcount + "");
+        }
+        Data dataVariables = new Data("", "variables", variables);
+        completness = expreParser.evaluateBooleanExpression(m_condition, dataVariables);
+        appLogger.debug(" count = " + count);
+        return completness;
+    }
+
+    public void init() {
+    }
 }

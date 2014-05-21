@@ -21,16 +21,18 @@ import fr.liglab.adele.cilia.framework.AbstractCollector;
 
 /**
  * This is the implementation of direct collector service.
- * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project Team</a>
  *
+ * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project Team</a>
  */
-public class DirectCollector extends AbstractCollector implements IDirectCollector{
+public class DirectCollector extends AbstractCollector implements IDirectCollector {
     /**
      * identificator used to identify the mediator.
      */
     private String asociatedMediator;
+
     /**
      * This method is called by the direct sender.
+     *
      * @param data data received.
      */
     public void receive(Data data) {

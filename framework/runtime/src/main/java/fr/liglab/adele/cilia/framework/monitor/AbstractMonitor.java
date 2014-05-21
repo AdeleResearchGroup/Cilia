@@ -14,45 +14,45 @@
  */
 package fr.liglab.adele.cilia.framework.monitor;
 
-import java.util.List;
-import java.util.Map;
-
 import fr.liglab.adele.cilia.Data;
 import fr.liglab.adele.cilia.runtime.MediatorHandler;
 
+import java.util.List;
+import java.util.Map;
+
 public abstract class AbstractMonitor extends MediatorHandler implements IMonitor {
 
-	public void onCollect(Data data) {
-	}
+    public void onCollect(Data data) {
+    }
 
-	public void onProcessEntry(List data) {
-	}
+    public void onProcessEntry(List data) {
+    }
 
-	public void onProcessExit(List data) {
-	}
+    public void onProcessExit(List data) {
+    }
 
-	public void onDispatchEntry(List data) {
-	}
+    public void onDispatchEntry(List data) {
+    }
 
-	public void onDispatch(List data) {
-	}
+    public void onDispatch(List data) {
+    }
 
-	public void onProcessError(List data, Exception ex) {
-	}
+    public void onProcessError(List data, Exception ex) {
+    }
 
-	public void fireEvent(Map info) {
-	}
+    public void fireEvent(Map info) {
+    }
 
-	public void onServiceArrival(Map info) {
-	}
+    public void onServiceArrival(Map info) {
+    }
 
-	public void onServiceDeparture(Map info) {
-	}
+    public void onServiceDeparture(Map info) {
+    }
 
-	public void onFieldGet(String field, Object o) {
-	}
+    public void onFieldGet(String field, Object o) {
+    }
 
-	public void onFieldSet(String field, Object o) {
-	}
+    public void onFieldSet(String field, Object o) {
+    }
 
 }

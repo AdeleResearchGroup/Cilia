@@ -14,67 +14,73 @@
  */
 package fr.liglab.adele.cilia.helper;
 
+import fr.liglab.adele.cilia.Data;
+import fr.liglab.adele.cilia.framework.ICollector;
+import fr.liglab.adele.cilia.framework.IScheduler;
+
 import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.List;
 import java.util.Map;
 
-import fr.liglab.adele.cilia.Data;
-import fr.liglab.adele.cilia.framework.ICollector;
-import fr.liglab.adele.cilia.framework.IScheduler;
-
 /**
- *
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project Team</a>
- *
  */
 public class CollectorHelper {
-	
-	private EmptyScheduler scheduler;
-	
-	protected CollectorHelper(ICollector col){
-		scheduler = new EmptyScheduler();
-		col.setScheduler(scheduler);
-	}
-	
-	public Data getLast(){
-		return scheduler.buffer.get(scheduler.buffer.size()-1);
-	}
-	
-	public List getAllData(){
-		return new ArrayList(scheduler.buffer);
-	}
-	public int countReceived() {
-		return scheduler.buffer.size();
-	}
-	public void clear(){
-		scheduler.buffer.clear();
-	}
-	
-	private class EmptyScheduler implements IScheduler {
 
-		List<Data> buffer = new ArrayList<Data>();
-				
-		public void notifyData(Data data) {
-			buffer.add(data);
-		}
+    private EmptyScheduler scheduler;
 
-		public void process(List dataSet) {	}
+    protected CollectorHelper(ICollector col) {
+        scheduler = new EmptyScheduler();
+        col.setScheduler(scheduler);
+    }
 
+    public Data getLast() {
+        return scheduler.buffer.get(scheduler.buffer.size() - 1);
+    }
 
-		public List getSourcesIds() {
-			return null;
-		}
-		public void addCollector(String collectorType, String collectorId,
-				Dictionary dictionary) {	}
-		public void fireEvent(Map map) {	}
+    public List getAllData() {
+        return new ArrayList(scheduler.buffer);
+    }
 
-		public Map getData() {
-			return null;
-		}
+    public int countReceived() {
+        return scheduler.buffer.size();
+    }
+
+    public void clear() {
+        scheduler.buffer.clear();
+    }
+
+    private class EmptyScheduler implements IScheduler {
+
+        List<Data> buffer = new ArrayList<Data>();
+
+        public void notifyData(Data data) {
+            buffer.add(data);
+        }
+
+        public void process(List dataSet) {
+        }
 
 
-		public void init() {}
-		
-	}
+        public List getSourcesIds() {
+            return null;
+        }
+
+        public void addCollector(String collectorType, String collectorId,
+                                 Dictionary dictionary) {
+        }
+
+        public void fireEvent(Map map) {
+        }
+
+        public Map getData() {
+            return null;
+        }
+
+
+        public void init() {
+        }
+
+    }
 }

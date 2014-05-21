@@ -14,48 +14,46 @@
  */
 package fr.liglab.adele.cilia.runtime;
 
-import java.util.Dictionary;
-
 import org.apache.felix.ipojo.ConfigurationException;
 import org.apache.felix.ipojo.PrimitiveHandler;
 import org.apache.felix.ipojo.metadata.Element;
+
+import java.util.Dictionary;
+
 /**
- * 
- *
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project Team</a>
- *
  */
 @SuppressWarnings({"rawtypes"})
 public class MediatorHandler extends PrimitiveHandler {
 
-	private IDispatcherHandler dispatcher;
+    private IDispatcherHandler dispatcher;
 
-	private ISchedulerHandler scheduler;
+    private ISchedulerHandler scheduler;
 
-	public void configure(Element metadata, Dictionary configuration)
-			throws ConfigurationException {
-	}
+    public void configure(Element metadata, Dictionary configuration)
+            throws ConfigurationException {
+    }
 
-	public void stop() {
-	}
+    public void stop() {
+    }
 
-	public void start() {
-	}
+    public void start() {
+    }
 
-	protected IDispatcherHandler getDispatcher() {
-		return dispatcher;
-	}
+    protected IDispatcherHandler getDispatcher() {
+        return dispatcher;
+    }
 
-	protected ISchedulerHandler getScheduler() {
-		return scheduler;
-	}
+    protected ISchedulerHandler getScheduler() {
+        return scheduler;
+    }
 
-	public void setDispatcher(IDispatcherHandler dispatcher) {
-		this.dispatcher = dispatcher;
-	}
+    public void setDispatcher(IDispatcherHandler dispatcher) {
+        this.dispatcher = dispatcher;
+    }
 
-	public void setScheduler(ISchedulerHandler scheduler) {
-		this.scheduler = scheduler;
-	}
+    public void setScheduler(ISchedulerHandler scheduler) {
+        this.scheduler = scheduler;
+    }
 
 }

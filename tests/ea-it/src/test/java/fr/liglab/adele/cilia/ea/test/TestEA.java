@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 /**
- * 
+ *
  */
 package fr.liglab.adele.cilia.ea.test;
 
@@ -46,40 +46,39 @@ import java.util.Hashtable;
 /**
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project
  *         Team</a>
- *
  */
 @RunWith(ChameleonRunner.class)
-public class TestEA   {
+public class TestEA {
 
 
-	private final static String COLLECTOR = "ea-collector";
+    private final static String COLLECTOR = "ea-collector";
 
-	private final static String SENDER = "ea-sender";
+    private final static String SENDER = "ea-sender";
 
-	private final static String LINKER ="event-admin";
+    private final static String LINKER = "event-admin";
 
-	@Inject
-	protected BundleContext context;
+    @Inject
+    protected BundleContext context;
 
-	protected CiliaHelper cilia;
+    protected CiliaHelper cilia;
 
-	protected OSGiHelper osgi;
+    protected OSGiHelper osgi;
 
-	protected IPOJOHelper ipojo;
+    protected IPOJOHelper ipojo;
 
-	@Before
-	public void setUp() {
-		osgi = new OSGiHelper(context);
-		ipojo = new IPOJOHelper(context);
-		cilia = new CiliaHelper(context);
-	}
+    @Before
+    public void setUp() {
+        osgi = new OSGiHelper(context);
+        ipojo = new IPOJOHelper(context);
+        cilia = new CiliaHelper(context);
+    }
 
-	@After
-	public void tearDown() {
-		cilia.dispose();
-		osgi.dispose();
-		ipojo.dispose();
-	}
+    @After
+    public void tearDown() {
+        cilia.dispose();
+        osgi.dispose();
+        ipojo.dispose();
+    }
 
 
     /*
@@ -92,164 +91,164 @@ public class TestEA   {
     }
       */
 
-	
 
-	public CollectorHelper createCollectorHelper(Hashtable<String, String> props){
-		CiliaInstance ci = cilia.createInstance(COLLECTOR, props);
-		ci.start();
-		Assert.assertEquals(ComponentInstance.VALID,ci.getState());
-		ICollector ic = (ICollector)ci.getObject();
-		Assert.assertNotNull(ic);
-		CollectorHelper ch = cilia.getCollectorHelper(ic);
-		return ch;
-	}
+    public CollectorHelper createCollectorHelper(Hashtable<String, String> props) {
+        CiliaInstance ci = cilia.createInstance(COLLECTOR, props);
+        ci.start();
+        Assert.assertEquals(ComponentInstance.VALID, ci.getState());
+        ICollector ic = (ICollector) ci.getObject();
+        Assert.assertNotNull(ic);
+        CollectorHelper ch = cilia.getCollectorHelper(ic);
+        return ch;
+    }
 
-	public ISender createSender(Hashtable<String, String> props){
-		CiliaInstance si = cilia.createInstance(SENDER, props);
-		si.start();
-		Assert.assertEquals(ComponentInstance.VALID,si.getState());
-		ISender is = (ISender)si.getObject();
-		Assert.assertNotNull(is);
-		return is;
-	}
+    public ISender createSender(Hashtable<String, String> props) {
+        CiliaInstance si = cilia.createInstance(SENDER, props);
+        si.start();
+        Assert.assertEquals(ComponentInstance.VALID, si.getState());
+        ISender is = (ISender) si.getObject();
+        Assert.assertNotNull(is);
+        return is;
+    }
 
-	//@Test
-	public void validateServices() {
-		CiliaHelper.waitSomeTime(2000);
-		Factory col = ipojo.getFactory(COLLECTOR);
-		Assert.assertNotNull(col);
-		Assert.assertEquals(Factory.VALID, col.getState());
-		Factory snd = ipojo.getFactory(SENDER);
-		Assert.assertNotNull(snd);
-		Assert.assertEquals(Factory.VALID, snd.getState());
-		CiliaBindingService gbs = (CiliaBindingService)osgi.getServiceObject(CiliaBindingService.class.getName(), "(cilia.binding.type=" +  LINKER +")");
-		Assert.assertNotNull(gbs);
-	}
+    //@Test
+    public void validateServices() {
+        CiliaHelper.waitSomeTime(2000);
+        Factory col = ipojo.getFactory(COLLECTOR);
+        Assert.assertNotNull(col);
+        Assert.assertEquals(Factory.VALID, col.getState());
+        Factory snd = ipojo.getFactory(SENDER);
+        Assert.assertNotNull(snd);
+        Assert.assertEquals(Factory.VALID, snd.getState());
+        CiliaBindingService gbs = (CiliaBindingService) osgi.getServiceObject(CiliaBindingService.class.getName(), "(cilia.binding.type=" + LINKER + ")");
+        Assert.assertNotNull(gbs);
+    }
 
-	@Test
-	public void collectorTest() {
-		String topic = "eatopic";
-		CiliaHelper.waitSomeTime(2000);
-		Hashtable<String, String> ht = new Hashtable<String, String>();
-		ht.put("topic", topic);
-		CollectorHelper ch = createCollectorHelper(ht);
-		injectMessages(topic);
-		//wait to receive
-		CiliaHelper.waitSomeTime(500);
-		//See if all messages are received.
-		Assert.assertEquals(10, ch.countReceived());
-		Data data = ch.getLast();
+    @Test
+    public void collectorTest() {
+        String topic = "eatopic";
+        CiliaHelper.waitSomeTime(2000);
+        Hashtable<String, String> ht = new Hashtable<String, String>();
+        ht.put("topic", topic);
+        CollectorHelper ch = createCollectorHelper(ht);
+        injectMessages(topic);
+        //wait to receive
+        CiliaHelper.waitSomeTime(500);
+        //See if all messages are received.
+        Assert.assertEquals(10, ch.countReceived());
+        Data data = ch.getLast();
 
-		System.out.println("Last Data");
-		System.out.println(data.getAllData());
-	}
+        System.out.println("Last Data");
+        System.out.println(data.getAllData());
+    }
 
-	@Test
-	public void senderTest() {
-		String topic = "receivingTopic";
-		CiliaHelper.waitSomeTime(2000);
+    @Test
+    public void senderTest() {
+        String topic = "receivingTopic";
+        CiliaHelper.waitSomeTime(2000);
 
-		//initializesTopics(topic);
-		Hashtable<String, String> ht = new Hashtable<String, String>();
-		ht.put("topic", topic);
+        //initializesTopics(topic);
+        Hashtable<String, String> ht = new Hashtable<String, String>();
+        ht.put("topic", topic);
 
-		//initializesTopics(topic);
-		Hashtable<String, String> ht2 = new Hashtable<String, String>();
-		ht2.put("topic", topic);
+        //initializesTopics(topic);
+        Hashtable<String, String> ht2 = new Hashtable<String, String>();
+        ht2.put("topic", topic);
 
-		//Get collector Helper
-		CollectorHelper ch = createCollectorHelper(ht);
-		//Get Sender
-		ISender is = createSender(ht2);
+        //Get collector Helper
+        CollectorHelper ch = createCollectorHelper(ht);
+        //Get Sender
+        ISender is = createSender(ht2);
 
-		int i;
-		for (i = 0; i < 10; i++) {
-			Data ndata = new Data("Test number " + i, "data");
-			is.send(ndata);
-		}
+        int i;
+        for (i = 0; i < 10; i++) {
+            Data ndata = new Data("Test number " + i, "data");
+            is.send(ndata);
+        }
 
-		CiliaHelper.waitSomeTime(1000);
-		//See if all messages are received.
-		Assert.assertEquals(10, ch.countReceived());
-		Data data = ch.getLast();
-		Assert.assertEquals("data", data.getName());
-		Assert.assertEquals("Test number 9", data.getContent());
-		//System.out.println("Last Data");
-		System.out.println(data.getAllData());
-	}
+        CiliaHelper.waitSomeTime(1000);
+        //See if all messages are received.
+        Assert.assertEquals(10, ch.countReceived());
+        Data data = ch.getLast();
+        Assert.assertEquals("data", data.getName());
+        Assert.assertEquals("Test number 9", data.getContent());
+        //System.out.println("Last Data");
+        System.out.println(data.getAllData());
+    }
 
-	private void injectMessages(String stopic){
-		EventAdmin m_eventAdmin = getService();
+    private void injectMessages(String stopic) {
+        EventAdmin m_eventAdmin = getService();
 
-		int i;
-		for (i = 0; i < 10; i++) {
-			System.out.println("Sending Message: " + i);
-			Data data = new Data("Test number " + i, "Test number " + i);
-			m_eventAdmin.postEvent(new Event(stopic, data.getAllData()));
-		}
+        int i;
+        for (i = 0; i < 10; i++) {
+            System.out.println("Sending Message: " + i);
+            Data data = new Data("Test number " + i, "Test number " + i);
+            m_eventAdmin.postEvent(new Event(stopic, data.getAllData()));
+        }
 
-	}
-	private EventAdmin getService(){
-		return (EventAdmin) osgi.getServiceObject(EventAdmin.class.getName(), null);
-	}
-	
-	@Test
-	public void testBinding() {
-		CiliaHelper.waitSomeTime(2000);
-		URL url = context.getBundle().getResource("test.dscilia");
-		cilia.load(url);
-		//wait to be added.
-		System.out.println("will wait");
-		boolean found = cilia.waitToChain("toto",6000);
-		System.out.println("found chain "+ found);
-		CiliaHelper.waitSomeTime(3000);
-		MediatorTestHelper qd = cilia.instrumentChain("toto", "m11:unique", "m22:unique");
-		//chain must exist, and helper should be well constructed.
-		Assert.assertNotNull(qd);
-		qd.injectData(new Data ("data", "dda"));
-		//wait some time to arrive message.
-		CiliaHelper.waitSomeTime(4000);
-		Assert.assertEquals(1, qd.getAmountData());
-		Data lastData = qd.getLastData();
-		Assert.assertEquals("data", lastData.getContent());
-		Assert.assertEquals("dda", lastData.getName());
-		System.out.println("Received data: " + lastData.getAllData());
-	}
+    }
 
-	@Test
-	public void testAdapters() {
-		CiliaHelper.waitSomeTime(2000);
-		URL url = context.getBundle().getResource("testAdapter.dscilia");
-		cilia.load(url);
-		System.out.println("will wait");
-		boolean found = cilia.waitToChain("toto",6000);
-		CiliaHelper.waitSomeTime(1000);
-		System.out.println("found chain "+ found);
-		Hashtable<String, String> ht = new Hashtable<String, String>();
-		ht.put("topic", "in_adapter_topic");
+    private EventAdmin getService() {
+        return (EventAdmin) osgi.getServiceObject(EventAdmin.class.getName(), null);
+    }
 
-		Hashtable<String, String> ht2 = new Hashtable<String, String>();
-		ht2.put("topic", "out_adapter_topic");
-		//create a collector to test sending.
-		CollectorHelper ch = createCollectorHelper(ht2); 
-				
-		//create a sender to test sending.
-		ISender is = createSender(ht);
+    @Test
+    public void testBinding() {
+        CiliaHelper.waitSomeTime(2000);
+        URL url = context.getBundle().getResource("test.dscilia");
+        cilia.load(url);
+        //wait to be added.
+        System.out.println("will wait");
+        boolean found = cilia.waitToChain("toto", 6000);
+        System.out.println("found chain " + found);
+        CiliaHelper.waitSomeTime(3000);
+        MediatorTestHelper qd = cilia.instrumentChain("toto", "m11:unique", "m22:unique");
+        //chain must exist, and helper should be well constructed.
+        Assert.assertNotNull(qd);
+        qd.injectData(new Data("data", "dda"));
+        //wait some time to arrive message.
+        CiliaHelper.waitSomeTime(4000);
+        Assert.assertEquals(1, qd.getAmountData());
+        Data lastData = qd.getLastData();
+        Assert.assertEquals("data", lastData.getContent());
+        Assert.assertEquals("dda", lastData.getName());
+        System.out.println("Received data: " + lastData.getAllData());
+    }
 
-		int i;
-		for (i = 0; i < 10; i++) {
-			Data ndata = new Data("Test number " + i, "data");
-			is.send(ndata);
-		}
-		CiliaHelper.waitSomeTime(6000);
-		//See if all messages are received.
-		Assert.assertEquals(10, ch.countReceived());
-		Data data = ch.getLast();
-		Assert.assertEquals("data", data.getName());
-		Assert.assertEquals("Test number 9", data.getContent());
-		//System.out.println("Last Data");
-		System.out.println(data.getAllData());
-	}
+    @Test
+    public void testAdapters() {
+        CiliaHelper.waitSomeTime(2000);
+        URL url = context.getBundle().getResource("testAdapter.dscilia");
+        cilia.load(url);
+        System.out.println("will wait");
+        boolean found = cilia.waitToChain("toto", 6000);
+        CiliaHelper.waitSomeTime(1000);
+        System.out.println("found chain " + found);
+        Hashtable<String, String> ht = new Hashtable<String, String>();
+        ht.put("topic", "in_adapter_topic");
+
+        Hashtable<String, String> ht2 = new Hashtable<String, String>();
+        ht2.put("topic", "out_adapter_topic");
+        //create a collector to test sending.
+        CollectorHelper ch = createCollectorHelper(ht2);
+
+        //create a sender to test sending.
+        ISender is = createSender(ht);
+
+        int i;
+        for (i = 0; i < 10; i++) {
+            Data ndata = new Data("Test number " + i, "data");
+            is.send(ndata);
+        }
+        CiliaHelper.waitSomeTime(6000);
+        //See if all messages are received.
+        Assert.assertEquals(10, ch.countReceived());
+        Data data = ch.getLast();
+        Assert.assertEquals("data", data.getName());
+        Assert.assertEquals("Test number 9", data.getContent());
+        //System.out.println("Last Data");
+        System.out.println(data.getAllData());
+    }
 
 
 }

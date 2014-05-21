@@ -1,127 +1,128 @@
-	<!-- Copyright Adele Team LIG Licensed under the Apache License, Version 
-	2.0 (the "License"); you may not use this file except in compliance with 
-	the License. You may obtain a copy of the License at    http://www.apache.org/licenses/LICENSE-2.0 
-	Unless required by applicable law or agreed to in writing, software distributed 
-	under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES 
-	OR CONDITIONS OF ANY KIND, either express or implied. See the License for 
-	the specific language governing permissions and limitations under the License. -->
+<!-- Copyright Adele Team LIG Licensed under the Apache License, Version
+2.0 (the "License"); you may not use this file except in compliance with
+the License. You may obtain a copy of the License at    http://www.apache.org/licenses/LICENSE-2.0
+Unless required by applicable law or agreed to in writing, software distributed
+under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES
+OR CONDITIONS OF ANY KIND, either express or implied. See the License for
+the specific language governing permissions and limitations under the License. -->
 
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-	<modelVersion>4.0.0</modelVersion>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
 
-	<parent>
-		<groupId>fr.liglab.adele.cilia</groupId>
-		<artifactId>cilia-project</artifactId>
-		<version>1.7.5-SNAPSHOT</version>
-		<relativePath>../../parent</relativePath>
-	</parent>
+    <parent>
+        <groupId>fr.liglab.adele.cilia</groupId>
+        <artifactId>cilia-project</artifactId>
+        <version>1.7.5-SNAPSHOT</version>
+        <relativePath>../../parent</relativePath>
+    </parent>
 
-	<artifactId>cilia-runtime</artifactId>
-	<name>${productName} :: Runtime</name>
-	<packaging>bundle</packaging>
+    <artifactId>cilia-runtime</artifactId>
+    <name>${productName} :: Runtime</name>
+    <packaging>bundle</packaging>
 
-	<dependencies>
-		<dependency>
-			<groupId>fr.liglab.adele.cilia</groupId>
-			<artifactId>cilia-core</artifactId>
-			<version>${project.version}</version>
-		</dependency>
+    <dependencies>
+        <dependency>
+            <groupId>fr.liglab.adele.cilia</groupId>
+            <artifactId>cilia-core</artifactId>
+            <version>${project.version}</version>
+        </dependency>
 
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-api</artifactId>
-		</dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+        </dependency>
 
-		<dependency>
-			<groupId>org.osgi</groupId>
-			<artifactId>org.osgi.core</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.osgi</groupId>
-			<artifactId>org.osgi.compendium</artifactId>
-		</dependency>
+        <dependency>
+            <groupId>org.osgi</groupId>
+            <artifactId>org.osgi.core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.osgi</groupId>
+            <artifactId>org.osgi.compendium</artifactId>
+        </dependency>
 
-		<dependency>
-			<groupId>org.apache.felix</groupId>
-			<artifactId>org.apache.felix.ipojo</artifactId>
-		</dependency>
+        <dependency>
+            <groupId>org.apache.felix</groupId>
+            <artifactId>org.apache.felix.ipojo</artifactId>
+        </dependency>
     </dependencies>
 
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.felix</groupId>
-				<artifactId>maven-bundle-plugin</artifactId>
-				<configuration>
-					<instructions>
-						<Export-Package>
-							fr.liglab.adele.cilia.admin.util,
-							fr.liglab.adele.cilia.framework,
-							fr.liglab.adele.cilia.framework.data,
-							fr.liglab.adele.cilia.framework.monitor,
-							fr.liglab.adele.cilia.framework.components,
-							fr.liglab.adele.cilia.framework.monitor.statevariable,
-							fr.liglab.adele.cilia.runtime,
-							fr.liglab.adele.cilia.dependency,
-							fr.liglab.adele.cilia.knowledge,
-							fr.liglab.adele.cilia.knowledge.configuration
-						</Export-Package>
-						<Private-Package>
-							fr.liglab.adele.cilia.internals,
-							fr.liglab.adele.cilia.admin.impl,
-							fr.liglab.adele.cilia.internals.controller,
-							fr.liglab.adele.cilia.internals.factories,
-							fr.liglab.adele.cilia.runtime.impl,
-							org.objectweb.asm
-						</Private-Package>
-						<Import-Package>
-							fr.liglab.adele.cilia,
-							fr.liglab.adele.cilia.builder,
-							fr.liglab.adele.cilia.builder.impl,
-							fr.liglab.adele.cilia.exceptions,
-							fr.liglab.adele.cilia.model,
-							fr.liglab.adele.cilia.specification,
-							fr.liglab.adele.cilia.util,
-							fr.liglab.adele.cilia.util.concurrent,fr.liglab.adele.cilia.ext,
-							fr.liglab.adele.cilia.model.impl, javax.xml.namespace,
-							javax.xml.parsers, javax.xml.transform, javax.xml.transform.dom,
-							javax.xml.transform.stream, javax.xml.xpath,
-							org.apache.felix.ipojo,
-							org.apache.felix.ipojo.architecture,
-							org.apache.felix.ipojo.context, org.apache.felix.ipojo.metadata,
-							org.apache.felix.ipojo.parser, org.apache.felix.ipojo.util,
-							org.osgi.framework, org.osgi.service.event, org.osgi.service.packageadmin,
-							org.osgi.util.measurement;resolution:=optional, org.slf4j, org.w3c.dom, org.xml.sax
-						</Import-Package>
-						<IPOJO-Extension>
-							mediator-component:fr.liglab.adele.cilia.internals.factories.MediatorFactory,
-							scheduler:fr.liglab.adele.cilia.internals.factories.SchedulerFactory,
-							dispatcher:fr.liglab.adele.cilia.internals.factories.DispatcherFactory,
-							processor:fr.liglab.adele.cilia.internals.factories.ProcessorFactory,
-							collector:fr.liglab.adele.cilia.internals.factories.CollectorFactory,
-							sender:fr.liglab.adele.cilia.internals.factories.SenderFactory,
-							adapter:fr.liglab.adele.cilia.internals.factories.AdapterFactory,
-							io-adapter:fr.liglab.adele.cilia.internals.factories.IOAdapterFactory,
-							monitor:fr.liglab.adele.cilia.internals.factories.MonitorHandlerFactory,
-							linker:fr.liglab.adele.cilia.internals.factories.BindingFactory
-						</IPOJO-Extension>
-					</instructions>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.felix</groupId>
-				<artifactId>maven-ipojo-plugin</artifactId>
-			</plugin>
-		</plugins>
-	</build>
-	<scm>
-		<connection>scm:git:ssh://git@github.com/AdeleResearchGroup/Cilia.git</connection>
-		<url>http://github.com/AdeleResearchGroup/Cilia/tree/master</url>
-		<developerConnection>scm:git:ssh://git@github.com/AdeleResearchGroup/Cilia.git</developerConnection>
-		<tag>HEAD</tag>
-	</scm>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <configuration>
+                    <instructions>
+                        <Export-Package>
+                            fr.liglab.adele.cilia.admin.util,
+                            fr.liglab.adele.cilia.framework,
+                            fr.liglab.adele.cilia.framework.data,
+                            fr.liglab.adele.cilia.framework.monitor,
+                            fr.liglab.adele.cilia.framework.components,
+                            fr.liglab.adele.cilia.framework.monitor.statevariable,
+                            fr.liglab.adele.cilia.runtime,
+                            fr.liglab.adele.cilia.dependency,
+                            fr.liglab.adele.cilia.knowledge,
+                            fr.liglab.adele.cilia.knowledge.configuration
+                        </Export-Package>
+                        <Private-Package>
+                            fr.liglab.adele.cilia.internals,
+                            fr.liglab.adele.cilia.admin.impl,
+                            fr.liglab.adele.cilia.internals.controller,
+                            fr.liglab.adele.cilia.internals.factories,
+                            fr.liglab.adele.cilia.runtime.impl,
+                            org.objectweb.asm
+                        </Private-Package>
+                        <Import-Package>
+                            fr.liglab.adele.cilia,
+                            fr.liglab.adele.cilia.builder,
+                            fr.liglab.adele.cilia.builder.impl,
+                            fr.liglab.adele.cilia.exceptions,
+                            fr.liglab.adele.cilia.model,
+                            fr.liglab.adele.cilia.specification,
+                            fr.liglab.adele.cilia.util,
+                            fr.liglab.adele.cilia.util.concurrent,fr.liglab.adele.cilia.ext,
+                            fr.liglab.adele.cilia.model.impl, javax.xml.namespace,
+                            javax.xml.parsers, javax.xml.transform, javax.xml.transform.dom,
+                            javax.xml.transform.stream, javax.xml.xpath,
+                            org.apache.felix.ipojo,
+                            org.apache.felix.ipojo.architecture,
+                            org.apache.felix.ipojo.context, org.apache.felix.ipojo.metadata,
+                            org.apache.felix.ipojo.parser, org.apache.felix.ipojo.util,
+                            org.osgi.framework, org.osgi.service.event, org.osgi.service.packageadmin,
+                            org.osgi.util.measurement;resolution:=optional, org.slf4j, org.w3c.dom, org.xml.sax
+                        </Import-Package>
+                        <IPOJO-Extension>
+                            mediator-component:fr.liglab.adele.cilia.internals.factories.MediatorFactory,
+                            scheduler:fr.liglab.adele.cilia.internals.factories.SchedulerFactory,
+                            dispatcher:fr.liglab.adele.cilia.internals.factories.DispatcherFactory,
+                            processor:fr.liglab.adele.cilia.internals.factories.ProcessorFactory,
+                            collector:fr.liglab.adele.cilia.internals.factories.CollectorFactory,
+                            sender:fr.liglab.adele.cilia.internals.factories.SenderFactory,
+                            adapter:fr.liglab.adele.cilia.internals.factories.AdapterFactory,
+                            io-adapter:fr.liglab.adele.cilia.internals.factories.IOAdapterFactory,
+                            monitor:fr.liglab.adele.cilia.internals.factories.MonitorHandlerFactory,
+                            linker:fr.liglab.adele.cilia.internals.factories.BindingFactory
+                        </IPOJO-Extension>
+                    </instructions>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-ipojo-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
+    <scm>
+        <connection>scm:git:ssh://git@github.com/AdeleResearchGroup/Cilia.git</connection>
+        <url>http://github.com/AdeleResearchGroup/Cilia/tree/master</url>
+        <developerConnection>scm:git:ssh://git@github.com/AdeleResearchGroup/Cilia.git</developerConnection>
+        <tag>HEAD</tag>
+    </scm>
 </project>

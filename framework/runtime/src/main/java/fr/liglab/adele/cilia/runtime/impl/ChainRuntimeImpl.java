@@ -15,41 +15,39 @@
 
 package fr.liglab.adele.cilia.runtime.impl;
 
-import java.util.Date;
-
 import fr.liglab.adele.cilia.ApplicationRuntime;
 import fr.liglab.adele.cilia.model.impl.ChainRuntime;
 
+import java.util.Date;
+
 /**
- * 
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project Team</a>
- *
  */
 public class ChainRuntimeImpl implements ChainRuntime {
-	public int state;
+    public int state;
 
-	private Date lastCommand ;
+    private Date lastCommand;
 
-	public ChainRuntimeImpl() {
-		state = ApplicationRuntime.CHAIN_STATE_IDLE ;
+    public ChainRuntimeImpl() {
+        state = ApplicationRuntime.CHAIN_STATE_IDLE;
 
-	}
+    }
 
-	public void setState(int state) {
-		this.state = state;
-	}
+    public void setState(int state) {
+        this.state = state;
+    }
 
-	public int getState() {
-		return state;
-	}
+    public int getState() {
+        return state;
+    }
 
 
-	public Date lastCommand() {
-		return lastCommand ;
-	}
-	
-	public void setLastDate() {
-		lastCommand = new Date(System.currentTimeMillis());
-	}
+    public Date lastCommand() {
+        return lastCommand;
+    }
+
+    public void setLastDate() {
+        lastCommand = new Date(System.currentTimeMillis());
+    }
 
 }

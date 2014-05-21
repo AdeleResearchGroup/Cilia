@@ -13,14 +13,13 @@
  * limitations under the License.
  */
 /**
- * 
+ *
  */
 package fr.liglab.adele.cilia.runtime;
 
 /**
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project
  *         Team</a>
- *
  */
 public interface MediatorDescriptionEntry {
 

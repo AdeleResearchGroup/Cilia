@@ -16,40 +16,37 @@
 package fr.liglab.adele.cilia;
 
 import java.util.Map;
+
 /**
- * 
- *
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project Team</a>
- *
  */
 @SuppressWarnings("rawtypes")
 public interface AdminData {
 
-	/**
-	 * retreive data buffer map related to the mediator.
-	 * 
-	 * @param mediatorId mediator reference id 
-	 * @param isRegular
-	 *            true selects regular message flow, false selects messages
-	 *            bufferized
-	 * @return Map containing buffer Data
-	 */
-	public Map getData(String mediatorId, boolean isRegular);
+    /**
+     * retreive data buffer map related to the mediator.
+     *
+     * @param mediatorId mediator reference id
+     * @param isRegular  true selects regular message flow, false selects messages
+     *                   bufferized
+     * @return Map containing buffer Data
+     */
+    public Map getData(String mediatorId, boolean isRegular);
 
-	/**
-	 * clear all messages (regular and bufferized messages)
-	 * 
-	 * @param mediatorId
-	 *            mediator unique id
-	 */
-	public void clearData(String mediatorId);
+    /**
+     * clear all messages (regular and bufferized messages)
+     *
+     * @param mediatorId mediator unique id
+     */
+    public void clearData(String mediatorId);
 
-	/**
-	 * copy messages ( regular and stored)
-	 * @param mediatorfrom_Id
-	 * @param mediatorTo_Id 
-	 */
-	public void copyData(String mediatorFrom_Id, String mediatorTo_Id) ;
-	
+    /**
+     * copy messages ( regular and stored)
+     *
+     * @param mediatorfrom_Id
+     * @param mediatorTo_Id
+     */
+    public void copyData(String mediatorFrom_Id, String mediatorTo_Id);
+
 
 }

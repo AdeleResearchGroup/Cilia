@@ -1,33 +1,22 @@
 package fr.liglab.adele.cilia.internals.factories;
 
-import java.util.ArrayList;
-import java.util.Dictionary;
-import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.List;
-
-import org.apache.felix.ipojo.ComponentInstance;
-import org.apache.felix.ipojo.ConfigurationException;
-import org.apache.felix.ipojo.Factory;
-import org.apache.felix.ipojo.FactoryStateListener;
-import org.apache.felix.ipojo.HandlerManager;
-import org.apache.felix.ipojo.IPojoContext;
-import org.apache.felix.ipojo.MissingHandlerException;
-import org.apache.felix.ipojo.UnacceptableConfiguration;
+import fr.liglab.adele.cilia.framework.AbstractBindingService;
+import fr.liglab.adele.cilia.framework.CiliaBindingService;
+import fr.liglab.adele.cilia.framework.GenericBindingService;
+import fr.liglab.adele.cilia.util.Const;
+import org.apache.felix.ipojo.*;
 import org.apache.felix.ipojo.metadata.Attribute;
 import org.apache.felix.ipojo.metadata.Element;
 import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import fr.liglab.adele.cilia.framework.AbstractBindingService;
-import fr.liglab.adele.cilia.framework.CiliaBindingService;
-import fr.liglab.adele.cilia.framework.GenericBindingService;
-import fr.liglab.adele.cilia.util.Const;
+import java.util.*;
+
 /**
  * This class defines the binding factory.
- * @author torito
  *
+ * @author torito
  */
 public class BindingFactory extends CiliaComponentFactory implements FactoryStateListener {
 
@@ -44,9 +33,9 @@ public class BindingFactory extends CiliaComponentFactory implements FactoryStat
      */
     protected String className = null;
     /**
-     * True when Binding doesn't specifies a classname. It will use a generic classname. 
+     * True when Binding doesn't specifies a classname. It will use a generic classname.
      */
-    protected boolean isGeneric = false; 
+    protected boolean isGeneric = false;
 
     protected short nature = CiliaBindingService.NATURE_UNASSIGNED;
 
@@ -60,17 +49,18 @@ public class BindingFactory extends CiliaComponentFactory implements FactoryStat
 
     private Dictionary configuration = new Hashtable();
 
-	private static final Logger logger = LoggerFactory.getLogger(Const.LOGGER_RUNTIME);
+    private static final Logger logger = LoggerFactory.getLogger(Const.LOGGER_RUNTIME);
 
 
     /**
      * Binding Factory constructor.
+     *
      * @param context OSGi BundleContext.
      * @param element Element used to configure factory (i.e. Component metadata)
      * @throws ConfigurationException When binding doesn't have a specified name or protocol
      */
     public BindingFactory(BundleContext context, Element element)
-    throws ConfigurationException {
+            throws ConfigurationException {
         super(context, element);
 
         className = element.getAttribute(CLASSNAME);
@@ -89,11 +79,13 @@ public class BindingFactory extends CiliaComponentFactory implements FactoryStat
         this.addFactoryStateListener(this);
     }
 
-    public void check(Element element) throws ConfigurationException {}
+    public void check(Element element) throws ConfigurationException {
+    }
 
     public String getComponentType() {
         return "binding";
     }
+
     /**
      * Add provides handler.
      */
@@ -106,8 +98,8 @@ public class BindingFactory extends CiliaComponentFactory implements FactoryStat
         while (it.hasNext()) {
             RequiredHandler req = (RequiredHandler) it.next();
             if (!(req.equals(new RequiredHandler("collector", null))) && !(req.equals(new RequiredHandler("collector", DEFAULT_NAMESPACE)))
-                    &&  !(req.equals(new RequiredHandler("sender", null))) && !(req.equals(new RequiredHandler("sender", DEFAULT_NAMESPACE)))
-            ) {
+                    && !(req.equals(new RequiredHandler("sender", null))) && !(req.equals(new RequiredHandler("sender", DEFAULT_NAMESPACE)))
+                    ) {
                 if (!returnedList.contains(req)) {
                     returnedList.add(req);
                 }
@@ -128,7 +120,7 @@ public class BindingFactory extends CiliaComponentFactory implements FactoryStat
     }
 
 
-    private void configureConstituentsDescriptions() throws ConfigurationException{
+    private void configureConstituentsDescriptions() throws ConfigurationException {
         Element[] colls = m_componentMetadata.getElements("collector");
         Element[] sendss = m_componentMetadata.getElements("sender");
         Element collector = null;
@@ -141,15 +133,15 @@ public class BindingFactory extends CiliaComponentFactory implements FactoryStat
             throw new ConfigurationException("Incorrect Binding specification, only one collector must be defined in" + getComponentName());
         }
         if (sendss != null && sendss.length > 1) {
-        	logger.error("Incorrect Binding specification, only one sender must be defined in" + getComponentName());
-            throw new ConfigurationException("Incorrect Binding specification, only one sender must be defined in" + getComponentName());            
+            logger.error("Incorrect Binding specification, only one sender must be defined in" + getComponentName());
+            throw new ConfigurationException("Incorrect Binding specification, only one sender must be defined in" + getComponentName());
         }
         //get collector name.
         if (colls != null) {
             collector = colls[0];
             collectorName = collector.getAttribute("name");
             if (collectorName == null) {
-            	collectorName = collector.getAttribute("type");	
+                collectorName = collector.getAttribute("type");
             }
             collectorNS = collector.getAttribute("namespace");
         }
@@ -158,7 +150,7 @@ public class BindingFactory extends CiliaComponentFactory implements FactoryStat
             sender = sendss[0];
             senderName = sender.getAttribute("name");
             if (senderName == null) {
-            	senderName = sender.getAttribute("type");	
+                senderName = sender.getAttribute("type");
             }
             senderNS = sender.getAttribute("namespace");
         }
@@ -181,7 +173,7 @@ public class BindingFactory extends CiliaComponentFactory implements FactoryStat
         Element properties = null;
         Element[] props = m_componentMetadata.getElements("Properties");
         if (props == null) {
-            properties = new Element("Properties", null); 
+            properties = new Element("Properties", null);
         } else {
             properties = props[0];
         }
@@ -234,19 +226,22 @@ public class BindingFactory extends CiliaComponentFactory implements FactoryStat
             m_componentMetadata.addElement(properties);
         }
     }
+
     /**
      * There is possible to create only one instance, and is done when starting the factory.
      */
     public ComponentInstance createInstance(Dictionary config,
-            IPojoContext context, HandlerManager[] handlers)
-    throws org.apache.felix.ipojo.ConfigurationException {
+                                            IPojoContext context, HandlerManager[] handlers)
+            throws org.apache.felix.ipojo.ConfigurationException {
         return super.createInstance(config, context, handlers);
     }
+
     /**
      * Method called when initializing the factory service.
      * This method will create a single instance
-     * @throws MissingHandlerException 
-     * @throws UnacceptableConfiguration 
+     *
+     * @throws MissingHandlerException
+     * @throws UnacceptableConfiguration
      */
     public void startingSpecification() throws UnacceptableConfiguration, MissingHandlerException {
 
@@ -260,6 +255,7 @@ public class BindingFactory extends CiliaComponentFactory implements FactoryStat
             e.printStackTrace();
         }
     }
+
     /**
      * Stoping the service factory.
      * This method is called when the factory is disappearing, the binding service must be removed
@@ -267,29 +263,33 @@ public class BindingFactory extends CiliaComponentFactory implements FactoryStat
 
     public void removingSpecification() {
         if (isGeneric) {
-            removeGenericInstance();            
+            removeGenericInstance();
         } else {
             removeSingleInstance();
         }
     }
+
     /**
      * This method remove the generic instance.
      */
     private void removeGenericInstance() {
         removeSingleInstance();
     }
+
     /**
      * This method create a generic instance.
-     * @throws MissingHandlerException 
-     * @throws UnacceptableConfiguration 
+     *
+     * @throws MissingHandlerException
+     * @throws UnacceptableConfiguration
      */
-    private void createGenericInstance() throws ConfigurationException, UnacceptableConfiguration, MissingHandlerException{
+    private void createGenericInstance() throws ConfigurationException, UnacceptableConfiguration, MissingHandlerException {
         createSingleInstance();
     }
+
     /**
      * This hardcode add manipulation info to a generic binding.
      */
-    private void updateGenericManipulationInfo()throws ConfigurationException {
+    private void updateGenericManipulationInfo() throws ConfigurationException {
         if (isGeneric) {
             Element manip = new Element("manipulation", null);
             //Add parent class.
@@ -334,26 +334,26 @@ public class BindingFactory extends CiliaComponentFactory implements FactoryStat
         protocolName.addAttribute(new Attribute("type", "String"));
         protocolName.addAttribute(new Attribute("value", getComponentName()));
         provides.addElement(protocolName);
-        
+
         if (providesArray == null) {
             m_componentMetadata.addElement(provides);
         }
 
     }
+
     /**
-     * 
-     * @param config
-     *  Configuration to pass to the binding instance.
+     * @param config Configuration to pass to the binding instance.
      * @throws org.apache.felix.ipojo.ConfigurationException
-     * @throws MissingHandlerException 
-     * @throws UnacceptableConfiguration 
+     * @throws MissingHandlerException
+     * @throws UnacceptableConfiguration
      */
-    private void createSingleInstance () throws org.apache.felix.ipojo.ConfigurationException, UnacceptableConfiguration, MissingHandlerException {
+    private void createSingleInstance() throws org.apache.felix.ipojo.ConfigurationException, UnacceptableConfiguration, MissingHandlerException {
         if (nature != CiliaBindingService.NATURE_UNASSIGNED) {
             bindingComponentInstance = createComponentInstance(null);
         }
 
     }
+
     /**
      * Removing the binding service instance.
      */
@@ -363,22 +363,21 @@ public class BindingFactory extends CiliaComponentFactory implements FactoryStat
     }
 
 
-
     public void stateChanged(Factory factory, int newState) {
-        switch(newState) {
+        switch (newState) {
             case INVALID: {
-            	logger.debug("removing binding specification" + this.getComponentName());
+                logger.debug("removing binding specification" + this.getComponentName());
                 removingSpecification();
                 break;
             }
             case VALID: {
-            	logger.debug("adding binding specification" + this.getComponentName());
+                logger.debug("adding binding specification" + this.getComponentName());
                 try {
                     startingSpecification();
                 } catch (UnacceptableConfiguration e) {
-                	logger.error("invalid configuration",e.getStackTrace());
+                    logger.error("invalid configuration", e.getStackTrace());
                 } catch (MissingHandlerException e) {
-                	logger.error("MissingHandler",e.getStackTrace());
+                    logger.error("MissingHandler", e.getStackTrace());
                 }
                 break;
             }

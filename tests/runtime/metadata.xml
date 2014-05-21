@@ -1,20 +1,19 @@
-
 <ipojo xmlns:cilia="fr.liglab.adele.cilia">
 
-	<processor name="immediate-processor"
-		classname="cilia.runtime.dynamic.test.ImmediateProcessor">
-		<cilia:method name="processor" data.type="fr.liglab.adele.cilia.Data" notifier="notify" />
-		<cilia:audit field="header" namespace ="processor" access="rw" />
-		<cilia:audit field="debug" namespace = "processor" access="r" />
- 		<properties>
-			<property name="header" method="setHeader" value="-+-" />
-		</properties>
-	</processor>
+    <processor name="immediate-processor"
+               classname="cilia.runtime.dynamic.test.ImmediateProcessor">
+        <cilia:method name="processor" data.type="fr.liglab.adele.cilia.Data" notifier="notify"/>
+        <cilia:audit field="header" namespace="processor" access="rw"/>
+        <cilia:audit field="debug" namespace="processor" access="r"/>
+        <properties>
+            <property name="header" method="setHeader" value="-+-"/>
+        </properties>
+    </processor>
 
-	<mediator-component name="immediate-mediator" category="junit.tests">
-		<cilia:scheduler name="immediate-scheduler" />
-		<cilia:processor name="immediate-processor" />
-		<cilia:dispatcher name="multicast-dispatcher" />
-	</mediator-component>
-	
+    <mediator-component name="immediate-mediator" category="junit.tests">
+        <cilia:scheduler name="immediate-scheduler"/>
+        <cilia:processor name="immediate-processor"/>
+        <cilia:dispatcher name="multicast-dispatcher"/>
+    </mediator-component>
+
 </ipojo>

@@ -19,21 +19,19 @@ import fr.liglab.adele.cilia.model.MediatorComponent;
 import fr.liglab.adele.cilia.model.Port;
 
 /**
- * 
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project Team</a>
- *
  */
-public class PortImpl implements Port{
+public class PortImpl implements Port {
 
-   /**
-    * PortImpl Name. 
-    */
+    /**
+     * PortImpl Name.
+     */
     private final String portName;
     /**
      * The allowed data type.
      */
     private final String dataType;
-    
+
     private final static String ANY_DATA_TYPE = "*";
     /**
      * PortImpl Type, ex INPUT/OUTPUT
@@ -43,50 +41,58 @@ public class PortImpl implements Port{
      * MediatorImpl which contain this port.
      */
     private final MediatorComponent mediator;
+
     /**
      * This constructor will create a PortImpl which will be asociated to the
      * given mediator.
-     * @param name Name of the port.
-     * @param ptype Type of port.
+     *
+     * @param name     Name of the port.
+     * @param ptype    Type of port.
      * @param mediator MediatorImpl which contain this port.
      */
-    public PortImpl (String name, PortType ptype, MediatorComponent med ) {
+    public PortImpl(String name, PortType ptype, MediatorComponent med) {
         this(name, ANY_DATA_TYPE, ptype, med);
     }
-    
-    public PortImpl (String name, String dt, PortType ptype, MediatorComponent med ) {
+
+    public PortImpl(String name, String dt, PortType ptype, MediatorComponent med) {
         portName = name;
         portType = ptype;
         mediator = med;
         dataType = dt;
     }
+
     /**
      * Get the port Tyoe.
+     *
      * @return
      */
     public PortType getPortType() {
         return portType;
     }
-    
-    public String getDataType(){
-    	return dataType;
+
+    public String getDataType() {
+        return dataType;
     }
+
     /**
      * Get the port name.
+     *
      * @return
      */
     public String getName() {
         return portName;
     }
+
     /**
      * Get the mediator reference which contain this port.
+     *
      * @return
      */
     public MediatorComponent getMediator() {
         return mediator;
     }
-    
-    
+
+
 }
 
 

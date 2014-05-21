@@ -19,58 +19,56 @@ import fr.liglab.adele.cilia.builder.InstanceRemover;
 import fr.liglab.adele.cilia.builder.Remover;
 
 /**
- *
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project Team</a>
- *
  */
 public class RemoverImpl implements Remover, InstanceRemover {
-	
-	int type = 0;
-	
-	String id;
-	
-	Architecture architecture;
-	
-	protected RemoverImpl(Architecture arch) {
-		architecture = arch;
-	}
-	
-	/* (non-Javadoc)
-	 * @see fr.liglab.adele.cilia.builder.Remover#mediator()
-	 */
-	public InstanceRemover mediator() {
-		type = Architecture.MEDIATOR;
-		return this;
-	}
 
-	/* (non-Javadoc)
-	 * @see fr.liglab.adele.cilia.builder.Remover#adapter()
-	 */
-	public InstanceRemover adapter() {
-		type = Architecture.ADAPTER;
-		return this;
-	}
+    int type = 0;
+
+    String id;
+
+    Architecture architecture;
+
+    protected RemoverImpl(Architecture arch) {
+        architecture = arch;
+    }
+
+    /* (non-Javadoc)
+     * @see fr.liglab.adele.cilia.builder.Remover#mediator()
+     */
+    public InstanceRemover mediator() {
+        type = Architecture.MEDIATOR;
+        return this;
+    }
+
+    /* (non-Javadoc)
+     * @see fr.liglab.adele.cilia.builder.Remover#adapter()
+     */
+    public InstanceRemover adapter() {
+        type = Architecture.ADAPTER;
+        return this;
+    }
 
 
-	/* (non-Javadoc)
-	 * @see fr.liglab.adele.cilia.builder.RemoverMediator#id(java.lang.String)
-	 */
-	public Architecture id(String id) {
-		this.id = id;
-		return architecture;
-	}
+    /* (non-Javadoc)
+     * @see fr.liglab.adele.cilia.builder.RemoverMediator#id(java.lang.String)
+     */
+    public Architecture id(String id) {
+        this.id = id;
+        return architecture;
+    }
 
-	/**
-	 * @return the type
-	 */
-	protected int getType() {
-		return type;
-	}
+    /**
+     * @return the type
+     */
+    protected int getType() {
+        return type;
+    }
 
-	/**
-	 * @return the id
-	 */
-	protected String getId() {
-		return id;
-	}
+    /**
+     * @return the id
+     */
+    protected String getId() {
+        return id;
+    }
 }

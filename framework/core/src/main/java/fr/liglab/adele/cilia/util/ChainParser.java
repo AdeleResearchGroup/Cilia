@@ -15,24 +15,22 @@
 
 package fr.liglab.adele.cilia.util;
 
-import java.io.FileNotFoundException;
-import java.net.URL;
-
 import fr.liglab.adele.cilia.builder.Builder;
 import fr.liglab.adele.cilia.exceptions.BuilderException;
 import fr.liglab.adele.cilia.exceptions.BuilderPerformerException;
 import fr.liglab.adele.cilia.exceptions.CiliaException;
 
+import java.io.FileNotFoundException;
+import java.net.URL;
+
 
 /**
- * 
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project Team</a>
- *
  */
 public interface ChainParser {
 
     Builder[] parseChains(Object chain) throws CiliaException, BuilderException, BuilderPerformerException;
-    
+
     Builder[] obtainChains(URL url) throws CiliaException, BuilderException, BuilderPerformerException, FileNotFoundException;
-    
+
 }

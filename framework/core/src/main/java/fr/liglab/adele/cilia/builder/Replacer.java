@@ -1,5 +1,5 @@
 package fr.liglab.adele.cilia.builder;
 
 public interface Replacer {
-	ReplacerConfigurator id(String id);
+    ReplacerConfigurator id(String id);
 }

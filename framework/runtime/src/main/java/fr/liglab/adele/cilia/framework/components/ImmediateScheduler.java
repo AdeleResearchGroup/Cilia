@@ -14,81 +14,75 @@
  */
 package fr.liglab.adele.cilia.framework.components;
 
-import java.util.Collections;
-import java.util.Dictionary;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.*;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import fr.liglab.adele.cilia.Data;
 import fr.liglab.adele.cilia.framework.AbstractScheduler;
 import fr.liglab.adele.cilia.framework.IScheduler;
 import fr.liglab.adele.cilia.runtime.WorkQueue;
 
-import static java.util.concurrent.Executor.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.LinkedBlockingDeque;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 /**
- * 
- *
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project Team</a>
- *
  */
 public class ImmediateScheduler extends AbstractScheduler {
 
-	IScheduler scheduler;
-	public String testAudit ;
-	public WorkQueue wq ;
-	protected Map dataMap = new HashMap();
+    IScheduler scheduler;
+    public String testAudit;
+    public WorkQueue wq;
+    protected Map dataMap = new HashMap();
 
     private int threadPoolSize;
     LinkedBlockingDeque<Runnable> workingQueue = new LinkedBlockingDeque<Runnable>();
     private ExecutorService executor;
 
-	public void setConnectedScheduler(IScheduler sched) {
-		scheduler = sched;
-	}
+    public void setConnectedScheduler(IScheduler sched) {
+        scheduler = sched;
+    }
 
-	public void notifyData(Data data) {
-		executor.submit(new ProcessorExecutor(data));
-	}
+    public void notifyData(Data data) {
+        executor.submit(new ProcessorExecutor(data));
+    }
 
-	public void process(List dataSet) {
-		if (scheduler == null) {
-			appLogger.error("Unable to process data, Scheduler reference is not valid.");
-			return;
-		}
-		testAudit =" testScheduler"+System.currentTimeMillis() ;
-		scheduler.process(dataSet);
-	}
+    public void process(List dataSet) {
+        if (scheduler == null) {
+            appLogger.error("Unable to process data, Scheduler reference is not valid.");
+            return;
+        }
+        testAudit = " testScheduler" + System.currentTimeMillis();
+        scheduler.process(dataSet);
+    }
 
-	public List getSourcesIds() {
-		return scheduler.getSourcesIds();
-	}
+    public List getSourcesIds() {
+        return scheduler.getSourcesIds();
+    }
 
-	public void fireEvent(Map map) {
-		appLogger.info("fireEvent " + map);
-		if (scheduler != null)
-			scheduler.fireEvent(map);
-	}
+    public void fireEvent(Map map) {
+        appLogger.info("fireEvent " + map);
+        if (scheduler != null)
+            scheduler.fireEvent(map);
+    }
 
-	public Map getData() {
-		return scheduler.getData();
-	}
+    public Map getData() {
+        return scheduler.getData();
+    }
 
-    public void validate(){
-        if (executor != null){
+    public void validate() {
+        if (executor != null) {
             executor.shutdownNow();
             executor = null;
         }
-       executor = new ThreadPoolExecutor(threadPoolSize,
-        threadPoolSize*2,5,TimeUnit.SECONDS,workingQueue);
+        executor = new ThreadPoolExecutor(threadPoolSize,
+                threadPoolSize * 2, 5, TimeUnit.SECONDS, workingQueue);
     }
 
-    public void invalidate(){
+    public void invalidate() {
         try {
             executor.awaitTermination(2000, TimeUnit.MILLISECONDS);
         } catch (InterruptedException e) {
@@ -100,7 +94,7 @@ public class ImmediateScheduler extends AbstractScheduler {
 
         private final Data data;
 
-        private ProcessorExecutor(final Data data){
+        private ProcessorExecutor(final Data data) {
             this.data = data;
         }
 

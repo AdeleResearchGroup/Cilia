@@ -7,6 +7,8 @@ package fr.liglab.adele.cilia.annotations;
  */
 public @interface Port {
     String name();
+
     Class dataType() default Object.class;
+
     String semanticType() default "*";
 }

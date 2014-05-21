@@ -16,5 +16,5 @@ package fr.liglab.adele.cilia.util;
 
 
 public interface Callable {
-  Object call() throws Exception;
+    Object call() throws Exception;
 }

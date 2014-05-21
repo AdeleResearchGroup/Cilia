@@ -14,10 +14,10 @@
  */
 package fr.liglab.adele.cilia.annotations;
 
+import fr.liglab.adele.cilia.util.Const;
+
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Target;
-
-import fr.liglab.adele.cilia.util.Const;
 
 /**
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project
@@ -25,6 +25,7 @@ import fr.liglab.adele.cilia.util.Const;
  */
 @Target(ElementType.TYPE)
 public @interface Processor {
-	String name();
-	String namespace() default Const.CILIA_NAMESPACE;
+    String name();
+
+    String namespace() default Const.CILIA_NAMESPACE;
 }

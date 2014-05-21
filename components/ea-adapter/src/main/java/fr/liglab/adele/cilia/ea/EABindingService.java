@@ -16,19 +16,19 @@
 
 package fr.liglab.adele.cilia.ea;
 
-import java.util.Dictionary;
-import java.util.Properties;
-
 import fr.liglab.adele.cilia.framework.CiliaBindingService;
 import fr.liglab.adele.cilia.framework.GenericBindingService;
 import fr.liglab.adele.cilia.model.Binding;
+
+import java.util.Dictionary;
+import java.util.Properties;
 
 
 public class EABindingService extends GenericBindingService implements CiliaBindingService {
     protected static final String TOPIC_PROPERTY = "topic";
 
     public Dictionary getProperties(Dictionary collectorProperties,
-            Dictionary senderProperties, Binding b) {
+                                    Dictionary senderProperties, Binding b) {
         Dictionary properties = new Properties();
 
         String topic = getTopic(b);
@@ -46,7 +46,7 @@ public class EABindingService extends GenericBindingService implements CiliaBind
 
     private String getTopic(Binding b) {
         if (b.getProperty(TOPIC_PROPERTY) != null) {
-            String topic = (String)b.getProperty(TOPIC_PROPERTY);
+            String topic = (String) b.getProperty(TOPIC_PROPERTY);
             return topic;
         }
 

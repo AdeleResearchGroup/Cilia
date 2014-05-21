@@ -21,29 +21,29 @@ import fr.liglab.adele.cilia.model.ModelExtension;
 
 public class UpdateEvent {
 
-	
-	private int updateAction;
-	private Object source;
-	
-	public UpdateEvent(int updateAction, Component source) {
-		this.updateAction = updateAction;
-		this.source = source;
-	}
-	
-	public UpdateEvent(int updateAction, ModelExtension source) {
-		this.updateAction = updateAction;
-		this.source = source;
-	}
-	
-	public int getUpdateAction() {
-		return this.updateAction;
-	}
-	
-	public Component getSource() {
-		return (Component)this.source;
-	}
-	
-	public ModelExtension getModelExtension() {
-		return (ModelExtension)this.source ;
-	}
+
+    private int updateAction;
+    private Object source;
+
+    public UpdateEvent(int updateAction, Component source) {
+        this.updateAction = updateAction;
+        this.source = source;
+    }
+
+    public UpdateEvent(int updateAction, ModelExtension source) {
+        this.updateAction = updateAction;
+        this.source = source;
+    }
+
+    public int getUpdateAction() {
+        return this.updateAction;
+    }
+
+    public Component getSource() {
+        return (Component) this.source;
+    }
+
+    public ModelExtension getModelExtension() {
+        return (ModelExtension) this.source;
+    }
 }

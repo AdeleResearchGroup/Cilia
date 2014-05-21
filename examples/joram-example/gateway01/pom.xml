@@ -8,51 +8,51 @@
 	the specific language governing permissions and limitations under the License. -->
 
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-	<modelVersion>4.0.0</modelVersion>
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <modelVersion>4.0.0</modelVersion>
 
-	<!-- Project parent -->
-   <parent>
-      <groupId>fr.liglab.adele.cilia</groupId>
-      <artifactId>cilia-project</artifactId>
-      <version>1.7.5-SNAPSHOT</version>
-      <relativePath>../../../parent</relativePath>
-   </parent>
+    <!-- Project parent -->
+    <parent>
+        <groupId>fr.liglab.adele.cilia</groupId>
+        <artifactId>cilia-project</artifactId>
+        <version>1.7.5-SNAPSHOT</version>
+        <relativePath>../../../parent</relativePath>
+    </parent>
 
-	<!-- Project coordinates -->
-	<groupId>fr.liglab.adele.cilia.joram-demo</groupId>
-	<artifactId>cilia-joram-distribution-1</artifactId>
-   <packaging>osgi-distribution</packaging>   
-	<!-- Project description -->
-	<name>${productName} :: JMS Example - Distribution 1</name>
+    <!-- Project coordinates -->
+    <groupId>fr.liglab.adele.cilia.joram-demo</groupId>
+    <artifactId>cilia-joram-distribution-1</artifactId>
+    <packaging>osgi-distribution</packaging>
+    <!-- Project description -->
+    <name>${productName} :: JMS Example - Distribution 1</name>
 
-	<!-- Project dependencies -->
-	<dependencies>
-		<!-- Demo Components-->
-		<dependency>
-			<groupId>fr.liglab.adele.cilia.joram-demo</groupId>
-			<artifactId>jms-demo.mediators</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-      
-      <dependency>
-         <groupId>fr.liglab.adele.cilia</groupId>
-         <artifactId>cilia-joram-distribution</artifactId>
-         <type>osgi-distribution</type>
-         <version>${project.version}</version>
-      </dependency>
-	</dependencies>
-   <build>
-      <plugins>
-         <plugin>
-            <groupId>fr.liglab.adele.common</groupId>
-            <artifactId>maven-osgi-distribution-plugin</artifactId>
-            <extensions>true</extensions>
-            <configuration>
-               <flattenDP>true</flattenDP>
-            </configuration>
-         </plugin>
-      </plugins>
-   </build>
+    <!-- Project dependencies -->
+    <dependencies>
+        <!-- Demo Components-->
+        <dependency>
+            <groupId>fr.liglab.adele.cilia.joram-demo</groupId>
+            <artifactId>jms-demo.mediators</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>fr.liglab.adele.cilia</groupId>
+            <artifactId>cilia-joram-distribution</artifactId>
+            <type>osgi-distribution</type>
+            <version>${project.version}</version>
+        </dependency>
+    </dependencies>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>fr.liglab.adele.common</groupId>
+                <artifactId>maven-osgi-distribution-plugin</artifactId>
+                <extensions>true</extensions>
+                <configuration>
+                    <flattenDP>true</flattenDP>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 </project>

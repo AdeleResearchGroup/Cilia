@@ -20,48 +20,47 @@ import java.util.Enumeration;
 
 /**
  * Unmodifiable dictionnary
- * 
+ *
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project
  *         Team</a>
- * 
  */
 public class UnModifiableDictionary extends Dictionary {
-	private final Dictionary dico;
+    private final Dictionary dico;
 
-	public UnModifiableDictionary(Dictionary dictionary) {
-		this.dico = dictionary;
-	}
+    public UnModifiableDictionary(Dictionary dictionary) {
+        this.dico = dictionary;
+    }
 
-	public Enumeration elements() {
-		return dico.elements();
-	}
+    public Enumeration elements() {
+        return dico.elements();
+    }
 
-	public Object get(Object key) {
-		return dico.get(key);
-	}
+    public Object get(Object key) {
+        return dico.get(key);
+    }
 
-	public boolean isEmpty() {
-		return dico.isEmpty();
-	}
+    public boolean isEmpty() {
+        return dico.isEmpty();
+    }
 
-	public Enumeration keys() {
-		return dico.keys();
-	}
+    public Enumeration keys() {
+        return dico.keys();
+    }
 
-	public Object put(Object key, Object value) {
-		throw new UnsupportedOperationException();
-	}
+    public Object put(Object key, Object value) {
+        throw new UnsupportedOperationException();
+    }
 
-	public Object remove(Object key) {
-		throw new UnsupportedOperationException();
-	}
+    public Object remove(Object key) {
+        throw new UnsupportedOperationException();
+    }
 
-	public int size() {
-		return dico.size();
-	}
-	
-	public String toString() {
-		return dico.toString();
-	}
-		
+    public int size() {
+        return dico.size();
+    }
+
+    public String toString() {
+        return dico.toString();
+    }
+
 }

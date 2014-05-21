@@ -19,62 +19,57 @@ import fr.liglab.adele.cilia.exceptions.CiliaIllegalParameterException;
 
 public interface WorkQueue {
 
-	/**
-	 * Change the piority for all threads
-	 * 
-	 * @param newPriority
-	 * @throws CiliaIllegalParameterException
-	 */
-	void setPriority(int newPriority) throws CiliaIllegalParameterException;
+    /**
+     * Change the piority for all threads
+     *
+     * @param newPriority
+     * @throws CiliaIllegalParameterException
+     */
+    void setPriority(int newPriority) throws CiliaIllegalParameterException;
 
-	/**
-	 * 
-	 * @return threads priority
-	 */
-	int getPriority();
+    /**
+     * @return threads priority
+     */
+    int getPriority();
 
-	/**
-	 * 
-	 * @return current size of the pool of thread
-	 */
-	int size();
+    /**
+     * @return current size of the pool of thread
+     */
+    int size();
 
-	/**
-	 * manage the size of the pool of thread ( increment , reduce )
-	 * 
-	 * @param newSize
-	 * @return the new current size of the pool of thread
-	 * @throws CiliaIllegalParameterException
-	 */
-	int size(int newSize) throws CiliaIllegalParameterException;
+    /**
+     * manage the size of the pool of thread ( increment , reduce )
+     *
+     * @param newSize
+     * @return the new current size of the pool of thread
+     * @throws CiliaIllegalParameterException
+     */
+    int size(int newSize) throws CiliaIllegalParameterException;
 
-	/**
-	 * 
-	 * @return the number of job waiting to be executed
-	 */
-	int sizeJobQueued();
+    /**
+     * @return the number of job waiting to be executed
+     */
+    int sizeJobQueued();
 
-	/**
-	 * 
-	 * @param job
-	 *            asynchronous work executed inside the first thread ready
-	 */
-	void execute(Runnable job);
+    /**
+     * @param job asynchronous work executed inside the first thread ready
+     */
+    void execute(Runnable job);
 
-	/**
-	 * Return the number max of job queued
-	 * 
-	 * @return
-	 */
-	int sizeMaxjobQueued();
+    /**
+     * Return the number max of job queued
+     *
+     * @return
+     */
+    int sizeMaxjobQueued();
 
-	/**
-	 * Reset the value max
-	 */
-	void resetMaxJobQueued();
+    /**
+     * Reset the value max
+     */
+    void resetMaxJobQueued();
 
-	void start();
+    void start();
 
-	void stop();
+    void stop();
 
 }

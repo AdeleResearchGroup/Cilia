@@ -18,14 +18,14 @@ import java.util.Map;
 
 public class ProcessorNotifier implements INotifier {
 
-	IProcessorMonitor monitor;
+    IProcessorMonitor monitor;
 
-	public ProcessorNotifier(IProcessorMonitor pmonitor) {
-		monitor=pmonitor ;
-	}
-	
-	public void fireEvent(Map info) {
-		if (monitor != null)
-			monitor.fireEvent(info);
-	}
+    public ProcessorNotifier(IProcessorMonitor pmonitor) {
+        monitor = pmonitor;
+    }
+
+    public void fireEvent(Map info) {
+        if (monitor != null)
+            monitor.fireEvent(info);
+    }
 }

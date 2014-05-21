@@ -15,23 +15,22 @@
 
 package fr.liglab.adele.cilia.framework.data;
 
-import java.util.List;
-
+import fr.liglab.adele.cilia.Data;
+import fr.liglab.adele.cilia.exceptions.CiliaException;
 import org.osgi.framework.BundleContext;
 
-import fr.liglab.adele.cilia.exceptions.CiliaException;
-import fr.liglab.adele.cilia.Data;
+import java.util.List;
 
 /**
  * This class is used to count Data
  * in a DataSet
- * @author torito 
  *
+ * @author torito
  */
 public class DataCount {
     /**
      * CiliaExpression used to count the number of data
-     * in a DataSet that match the given expression. 
+     * in a DataSet that match the given expression.
      */
     private CiliaExpression expreParser;
     /**
@@ -47,30 +46,37 @@ public class DataCount {
      * OSGi BundleContext is used to use the
      * ldap filter provided in the OSGi framework.
      */
-    private BundleContext bcontext = null; 
+    private BundleContext bcontext = null;
+
     /**
-     * Constructor 
+     * Constructor
+     *
      * @param context OSGi BundleContext
      */
-    public DataCount (BundleContext context) {
+    public DataCount(BundleContext context) {
         bcontext = context;
     }
+
     /**
      * Constructor
      */
-    public DataCount () {}
-    
+    public DataCount() {
+    }
+
     /**
      * Return the number of Data in the DataSet
      * (SimpleCount)
+     *
      * @param ds
      * @return
      */
-    public int count (List/*<Data>*/ ds) {
+    public int count(List/*<Data>*/ ds) {
         return ds.size();
     }
+
     /**
      * Create the Expression Parser used to count.
+     *
      * @throws CiliaException When ExpressionParser could not be created.
      */
     private void createExpressionParser() throws CiliaException {
@@ -80,24 +86,26 @@ public class DataCount {
         }
         return;
     }
+
     /**
      * Count number of Data in DataSet that match the given expression.
      * This method should be called in a synchronized block.
-     * @param dataset DataSet where it will search matching.
+     *
+     * @param dataset    DataSet where it will search matching.
      * @param expression expression used to search.
      * @return number of Data in DataSet that match expression.
      * @throws CiliaException When ExpressionParser could not be created.
      */
     public int count(List/*<Data>*/ dataset, String expression) throws CiliaException {
         createExpressionParser();
-        
+
         int count = 0;
         boolean matched = false;
-        
+
         int size = dataset.size();
         if (expression.compareTo("") != 0) {
             for (int i = 0; i < size; i++) {
-                Data mdata = (Data)dataset.get(i);
+                Data mdata = (Data) dataset.get(i);
                 matched = expreParser.evaluateBooleanExpression(expression, mdata);
                 if (matched) {
                     count++;

@@ -19,39 +19,39 @@ package fr.liglab.adele.cilia.util;
 public class Const {
 
 
-	public static final String CILIA_NAMESPACE = "fr.liglab.adele.cilia";
-	
+    public static final String CILIA_NAMESPACE = "fr.liglab.adele.cilia";
 
-	public static final String PROPERTY_INSTANCE_TYPE = "cilia.component.type";
-	public static final String PROPERTY_CHAIN_ID = "cilia.chain.name";
-	public static final String PROPERTY_COMPONENT_ID = "cilia.component.id";
-	public static final String PROPERTY_UUID ="cilia.component.uuid" ;
-	
-	public static final String PROPERTY_LOCK_UNLOCK = "cilia.command.lock.unlock" ;
-	public static final String SET_LOCK ="lock" ;
-	public static final String SET_UNLOCK = "unlock" ;
-	
-	/**
-	 * The cilia.core is used to trace modification to models
-	 */
-	public final static String LOGGER_CORE = "cilia.core";
-	/**
-	 * The cilia.application is used to trace the behavior of mediation chains
-	 */
-	public final static String LOGGER_APPLICATION = "cilia.application";
-	/**
-	 * The cilia.runtime is used to trace component creatioin/execution
-	 */
-	public final static String LOGGER_RUNTIME = "cilia.runtime";
 
-	
-	/*
-	 * Build a default Cilia Qualified Name String
-	 */
-	public static final String ciliaQualifiedName(String name) {
-		StringBuffer sb = new StringBuffer().append(CILIA_NAMESPACE);
-		sb.append(":").append(name);
-		return sb.toString();
-	}
+    public static final String PROPERTY_INSTANCE_TYPE = "cilia.component.type";
+    public static final String PROPERTY_CHAIN_ID = "cilia.chain.name";
+    public static final String PROPERTY_COMPONENT_ID = "cilia.component.id";
+    public static final String PROPERTY_UUID = "cilia.component.uuid";
+
+    public static final String PROPERTY_LOCK_UNLOCK = "cilia.command.lock.unlock";
+    public static final String SET_LOCK = "lock";
+    public static final String SET_UNLOCK = "unlock";
+
+    /**
+     * The cilia.core is used to trace modification to models
+     */
+    public final static String LOGGER_CORE = "cilia.core";
+    /**
+     * The cilia.application is used to trace the behavior of mediation chains
+     */
+    public final static String LOGGER_APPLICATION = "cilia.application";
+    /**
+     * The cilia.runtime is used to trace component creatioin/execution
+     */
+    public final static String LOGGER_RUNTIME = "cilia.runtime";
+
+
+    /*
+     * Build a default Cilia Qualified Name String
+     */
+    public static final String ciliaQualifiedName(String name) {
+        StringBuffer sb = new StringBuffer().append(CILIA_NAMESPACE);
+        sb.append(":").append(name);
+        return sb.toString();
+    }
 
 }

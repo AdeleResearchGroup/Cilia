@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 /**
- * 
+ *
  */
 package fr.liglab.adele.cilia.helper;
 
@@ -22,9 +22,9 @@ import fr.liglab.adele.cilia.Data;
 /**
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project
  *         Team</a>
- *
  */
 public interface SchedulerProcessorHelper {
-	void trigger();
-	void notifyData(Data data);
+    void trigger();
+
+    void notifyData(Data data);
 }

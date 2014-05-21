@@ -14,57 +14,54 @@
  */
 package fr.liglab.adele.cilia.framework;
 
-import java.util.List;
-import java.util.Map;
-
+import fr.liglab.adele.cilia.Data;
+import fr.liglab.adele.cilia.util.Const;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import fr.liglab.adele.cilia.Data;
-import fr.liglab.adele.cilia.util.Const;
+import java.util.List;
+import java.util.Map;
+
 /**
- * 
- *
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project Team</a>
- *
  */
 public abstract class AbstractScheduler implements IScheduler {
 
-	IScheduler scheduler;
-	
+    IScheduler scheduler;
 
-	protected static Logger appLogger = LoggerFactory.getLogger(Const.LOGGER_APPLICATION);
 
-	public void setConnectedScheduler(IScheduler sched) {
-		scheduler = sched;
-	}
+    protected static Logger appLogger = LoggerFactory.getLogger(Const.LOGGER_APPLICATION);
 
-	public abstract void notifyData(Data data);
+    public void setConnectedScheduler(IScheduler sched) {
+        scheduler = sched;
+    }
 
-	public void process(List dataSet) {
-		if (scheduler == null) {
-			appLogger.error("Unable to process data, Scheduler reference is not valid.");
-			return;
-		}
-		scheduler.process(dataSet);
-	}
+    public abstract void notifyData(Data data);
 
-	public List getSourcesIds() {
-		return scheduler.getSourcesIds();
-	}
+    public void process(List dataSet) {
+        if (scheduler == null) {
+            appLogger.error("Unable to process data, Scheduler reference is not valid.");
+            return;
+        }
+        scheduler.process(dataSet);
+    }
 
-	public void fireEvent(Map map) {
-		appLogger.debug("fireEvent " + map);
-		if (scheduler != null) {
-			scheduler.fireEvent(map);
-		}
-	}
+    public List getSourcesIds() {
+        return scheduler.getSourcesIds();
+    }
 
-	public Map getData() {
-		return scheduler.getData();
-	}
+    public void fireEvent(Map map) {
+        appLogger.debug("fireEvent " + map);
+        if (scheduler != null) {
+            scheduler.fireEvent(map);
+        }
+    }
 
-	public void init() {
-	}
+    public Map getData() {
+        return scheduler.getData();
+    }
+
+    public void init() {
+    }
 
 }

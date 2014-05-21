@@ -14,105 +14,103 @@
  */
 package fr.liglab.adele.cilia.tcp;
 
+import fr.liglab.adele.cilia.Data;
+import fr.liglab.adele.cilia.framework.ISender;
+import fr.liglab.adele.cilia.util.Const;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.net.SocketFactory;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.net.Socket;
 
-import javax.net.SocketFactory;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import fr.liglab.adele.cilia.Data;
-import fr.liglab.adele.cilia.framework.ISender;
-import fr.liglab.adele.cilia.util.Const;
-
 /**
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project
  *         Team</a>
- *
  */
 public class TCPSender implements ISender {
 
-	private int port;
+    private int port;
 
-	private String hostname;
+    private String hostname;
 
-	private Socket socket;
+    private Socket socket;
 
-	private static final Logger log = LoggerFactory.getLogger(Const.LOGGER_APPLICATION);
-
-
-	private void setPort(int port) throws Exception{
-		this.port = port;
-	}
-	private void setHostname(String hostname) throws Exception {
-		this.hostname = hostname;
-	}
-
-	private void checkSocket() throws Exception {
-		stopSocket();
-		if(socket == null){
-			SocketFactory factory = SocketFactory.getDefault();
-			socket = factory.createSocket(hostname, port);
-		}
-	}
-
-	private void stopSocket()  {
-		if(socket != null) {
-			try {
-				socket.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-		socket = null;
-	}
-
-	/* (non-Javadoc)
-	 * @see fr.liglab.adele.cilia.framework.ISender#send(fr.liglab.adele.cilia.Data)
-	 */
-	public boolean send(Data data) {
-		try {
-			checkSocket();
-			Object content = data.getContent();
-			if (content != null) {
-				try {
-					byte[] serialized = serializeObject(content);
-					OutputStream os = socket.getOutputStream();
-					os.write(serialized);
-					os.flush();
-					log.trace("[TCPSender] Sending message {}", data);
-					return true;
-				} catch (IOException e) {
-					log.error("[TCPSender] Error Sending message", e);
-					e.printStackTrace();
-				}
-			}
-			return false;
-		} catch (Exception e1) {
-			e1.printStackTrace();
-			log.error("[TCPSender] Error Sending message", e1);
-			return false;
-		} finally{
-			stopSocket();
-		}
-	}
+    private static final Logger log = LoggerFactory.getLogger(Const.LOGGER_APPLICATION);
 
 
-	private byte[] serializeObject(Object message) throws IOException {
-		// If already in the right format
-		if (message instanceof byte[]) {
-			return (byte[]) message;
-		}
-		// If not, serialize it by hand
-		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		ObjectOutputStream oos = new ObjectOutputStream(baos);
+    private void setPort(int port) throws Exception {
+        this.port = port;
+    }
 
-		oos.writeObject(message);
+    private void setHostname(String hostname) throws Exception {
+        this.hostname = hostname;
+    }
 
-		return baos.toByteArray();
-	}
+    private void checkSocket() throws Exception {
+        stopSocket();
+        if (socket == null) {
+            SocketFactory factory = SocketFactory.getDefault();
+            socket = factory.createSocket(hostname, port);
+        }
+    }
+
+    private void stopSocket() {
+        if (socket != null) {
+            try {
+                socket.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        socket = null;
+    }
+
+    /* (non-Javadoc)
+     * @see fr.liglab.adele.cilia.framework.ISender#send(fr.liglab.adele.cilia.Data)
+     */
+    public boolean send(Data data) {
+        try {
+            checkSocket();
+            Object content = data.getContent();
+            if (content != null) {
+                try {
+                    byte[] serialized = serializeObject(content);
+                    OutputStream os = socket.getOutputStream();
+                    os.write(serialized);
+                    os.flush();
+                    log.trace("[TCPSender] Sending message {}", data);
+                    return true;
+                } catch (IOException e) {
+                    log.error("[TCPSender] Error Sending message", e);
+                    e.printStackTrace();
+                }
+            }
+            return false;
+        } catch (Exception e1) {
+            e1.printStackTrace();
+            log.error("[TCPSender] Error Sending message", e1);
+            return false;
+        } finally {
+            stopSocket();
+        }
+    }
+
+
+    private byte[] serializeObject(Object message) throws IOException {
+        // If already in the right format
+        if (message instanceof byte[]) {
+            return (byte[]) message;
+        }
+        // If not, serialize it by hand
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        ObjectOutputStream oos = new ObjectOutputStream(baos);
+
+        oos.writeObject(message);
+
+        return baos.toByteArray();
+    }
 }

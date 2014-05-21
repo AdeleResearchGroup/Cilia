@@ -14,57 +14,57 @@
  */
 package fr.liglab.adele.cilia.internals;
 
-import org.w3c.dom.Node;
-
 import fr.liglab.adele.cilia.exceptions.CiliaParserException;
 import fr.liglab.adele.cilia.ext.SimpleEnricher;
 import fr.liglab.adele.cilia.model.Component;
 import fr.liglab.adele.cilia.model.Mediator;
 import fr.liglab.adele.cilia.util.CiliaExtenderParser;
+import org.w3c.dom.Node;
 
 /**
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project Team</a>
- *
  */
-public class EnricherParser extends DomExtenderParser implements CiliaExtenderParser{
+public class EnricherParser extends DomExtenderParser implements CiliaExtenderParser {
 
-	private static final String CONTENT = "name";
-	private static final String VALUE = "value";
-	/* (non-Javadoc)
-	 * @see fr.liglab.adele.cilia.model.impl.parser.CiliaExtenderParser#getComponent(java.lang.Object, fr.liglab.adele.cilia.model.impl.IComponent)
-	 */
-	public EnricherParser() {
-		//NAMESPACE = "fr.imag.adele.cilia.processor.enricher";
-		NAME = "enricher";
-	}
-	public Component getComponent(Object componentDescription,
-			Component currentComponent) throws CiliaParserException {
-		SimpleEnricher enricher = new SimpleEnricher((Mediator)currentComponent);
-		Node child = getNode("processor",componentDescription);
-		try{
-		while (child != null) {
-			if (child.getLocalName() != null && child.getLocalName().equalsIgnoreCase(NAME)) {
-				String content = getAttributeValue(child,CONTENT );
-				String value = getAttributeValue(child, VALUE);
-				enricher.key(content).value(value);
-			}
-			child = child.getNextSibling();
-		}
-	}catch (Throwable ex) {
-		ex.printStackTrace();
-	}
-		return currentComponent;
-	}
+    private static final String CONTENT = "name";
+    private static final String VALUE = "value";
 
-	/* (non-Javadoc)
-	 * @see fr.liglab.adele.cilia.model.impl.parser.CiliaExtenderParser#canHandle(java.lang.Object)
-	 */
-	public boolean canHandle(Object mediatorDescription) {
-		Node disp = getNode("processor",mediatorDescription);
-		if(disp == null) {
-			return false;
-		}
-		return true;	
-	}
+    /* (non-Javadoc)
+     * @see fr.liglab.adele.cilia.model.impl.parser.CiliaExtenderParser#getComponent(java.lang.Object, fr.liglab.adele.cilia.model.impl.IComponent)
+     */
+    public EnricherParser() {
+        //NAMESPACE = "fr.imag.adele.cilia.processor.enricher";
+        NAME = "enricher";
+    }
+
+    public Component getComponent(Object componentDescription,
+                                  Component currentComponent) throws CiliaParserException {
+        SimpleEnricher enricher = new SimpleEnricher((Mediator) currentComponent);
+        Node child = getNode("processor", componentDescription);
+        try {
+            while (child != null) {
+                if (child.getLocalName() != null && child.getLocalName().equalsIgnoreCase(NAME)) {
+                    String content = getAttributeValue(child, CONTENT);
+                    String value = getAttributeValue(child, VALUE);
+                    enricher.key(content).value(value);
+                }
+                child = child.getNextSibling();
+            }
+        } catch (Throwable ex) {
+            ex.printStackTrace();
+        }
+        return currentComponent;
+    }
+
+    /* (non-Javadoc)
+     * @see fr.liglab.adele.cilia.model.impl.parser.CiliaExtenderParser#canHandle(java.lang.Object)
+     */
+    public boolean canHandle(Object mediatorDescription) {
+        Node disp = getNode("processor", mediatorDescription);
+        if (disp == null) {
+            return false;
+        }
+        return true;
+    }
 
 }

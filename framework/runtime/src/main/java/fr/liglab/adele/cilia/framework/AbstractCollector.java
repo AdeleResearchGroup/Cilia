@@ -15,53 +15,58 @@
 
 package fr.liglab.adele.cilia.framework;
 
+import fr.liglab.adele.cilia.Data;
+import fr.liglab.adele.cilia.util.Const;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import fr.liglab.adele.cilia.Data;
-import fr.liglab.adele.cilia.util.Const;
 /**
  * This is the abstract collector.
- * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project Team</a>
  *
+ * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project Team</a>
  */
 public abstract class AbstractCollector implements ICollector {
 
     private String dataSource;
-	/**
-	 * Cilia Scheduler to notify when collecting data.
-	 */
-	IScheduler m_scheduler;
-	/**
-	 * Set the scheduler to call when collect data.
-	 * @param scheduler Cilia Scheduler.
-	 */
-	private static Logger log = LoggerFactory.getLogger(Const.LOGGER_APPLICATION);
+    /**
+     * Cilia Scheduler to notify when collecting data.
+     */
+    IScheduler m_scheduler;
+    /**
+     * Set the scheduler to call when collect data.
+     *
+     * @param scheduler Cilia Scheduler.
+     */
+    private static Logger log = LoggerFactory.getLogger(Const.LOGGER_APPLICATION);
 
-	public void setScheduler(IScheduler scheduler) {
-		m_scheduler = scheduler;
-	}
-	/**
-	 * Notify to the Scheduler when data has arrive. 
-	 * @param data Data collected.
-	 */
-	public Data notifyDataArrival(Data data) {
-	    if (dataSource != null && data != null) {
-	        data.setLastReceivingPort(dataSource);
-	    }
-		if (m_scheduler != null) {
-		    m_scheduler.notifyData(data);
-		} else {
-			log.error("Unable to notify data arriva, Scheduler is not available");
-		}
-		return data;
-	}
-	/**
-	 * Add source name to the collector instance.
-	 * @param sn
-	 */
-	public void setSourceName(String sn) {
-	    this.dataSource = sn;
-	}
-	
+    public void setScheduler(IScheduler scheduler) {
+        m_scheduler = scheduler;
+    }
+
+    /**
+     * Notify to the Scheduler when data has arrive.
+     *
+     * @param data Data collected.
+     */
+    public Data notifyDataArrival(Data data) {
+        if (dataSource != null && data != null) {
+            data.setLastReceivingPort(dataSource);
+        }
+        if (m_scheduler != null) {
+            m_scheduler.notifyData(data);
+        } else {
+            log.error("Unable to notify data arriva, Scheduler is not available");
+        }
+        return data;
+    }
+
+    /**
+     * Add source name to the collector instance.
+     *
+     * @param sn
+     */
+    public void setSourceName(String sn) {
+        this.dataSource = sn;
+    }
+
 }

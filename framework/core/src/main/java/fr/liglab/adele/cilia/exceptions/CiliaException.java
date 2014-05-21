@@ -16,40 +16,38 @@
 package fr.liglab.adele.cilia.exceptions;
 
 /**
- * 
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project Team</a>
- *
  */
 public class CiliaException extends Exception {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 3407569503641841325L;
+    /**
+     *
+     */
+    private static final long serialVersionUID = 3407569503641841325L;
 
-	/**
-	 * CiliaException Constructor.
-	 */
-	public CiliaException() {
-	}
+    /**
+     * CiliaException Constructor.
+     */
+    public CiliaException() {
+    }
 
-	/**
-	 * Cilia Exception Constructor.
-	 * 
-	 * @param message
-	 *            Message to be used.
-	 */
-	public CiliaException(final String message) {
-		super(message);
-	}
-	public CiliaException(final String message, Throwable t) {
-		super(message, t);
-	}
-	
-	/**
-	 * @param cause
-	 */
-	public CiliaException(Throwable cause) {
-		super(cause);
-	}
+    /**
+     * Cilia Exception Constructor.
+     *
+     * @param message Message to be used.
+     */
+    public CiliaException(final String message) {
+        super(message);
+    }
+
+    public CiliaException(final String message, Throwable t) {
+        super(message, t);
+    }
+
+    /**
+     * @param cause
+     */
+    public CiliaException(Throwable cause) {
+        super(cause);
+    }
 }

@@ -14,54 +14,51 @@
  */
 package fr.liglab.adele.cilia.framework;
 
+import fr.liglab.adele.cilia.Data;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import fr.liglab.adele.cilia.Data;
-
 /**
- *
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project Team</a>
- *
  */
 public class AbstractAsyncIOAdapter {
 
-	protected List<Data> currentData = new ArrayList<Data>();
+    protected List<Data> currentData = new ArrayList<Data>();
 
-	private volatile boolean hasData = false;
-	
+    private volatile boolean hasData = false;
 
-	/**
-	 * 
-	 * @param data
-	 */
-	public synchronized void receiveData(Data data) {
-		currentData.add(data);
-		hasData = true;
-	}
 
-	public  Data dispatchData(Data data) {
-		return data;
-	}
+    /**
+     * @param data
+     */
+    public synchronized void receiveData(Data data) {
+        currentData.add(data);
+        hasData = true;
+    }
 
-	public synchronized  boolean hasData(){
-		return hasData;
-	}
-	
-	public synchronized List<Data> getData(){
-		List<Data> ndata = null;
-		synchronized (this) {
-			hasData = false;
-			ndata = new ArrayList<Data>(currentData);
-			currentData.clear();
-		}
-		return ndata;
-	}
-	
-	public synchronized int messageCount() {
-		if (hasData()) {
-			return currentData.size();
-		}
-		return 0;
-	}
+    public Data dispatchData(Data data) {
+        return data;
+    }
+
+    public synchronized boolean hasData() {
+        return hasData;
+    }
+
+    public synchronized List<Data> getData() {
+        List<Data> ndata = null;
+        synchronized (this) {
+            hasData = false;
+            ndata = new ArrayList<Data>(currentData);
+            currentData.clear();
+        }
+        return ndata;
+    }
+
+    public synchronized int messageCount() {
+        if (hasData()) {
+            return currentData.size();
+        }
+        return 0;
+    }
 }

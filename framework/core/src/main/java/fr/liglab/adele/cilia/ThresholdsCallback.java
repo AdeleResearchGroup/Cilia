@@ -19,26 +19,22 @@ package fr.liglab.adele.cilia;
 /**
  * Callback variable out of viability area veryLow < Low < value < High <
  * VeryHigh
- * 
+ *
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project
  *         Team</a>
- * 
  */
 public interface ThresholdsCallback {
-	static int NONE = 0 ;
-	static int VERY_LOW = 1;
-	static int LOW = 2;
-	static int HIGH = 3;
-	static int VERY_HIGH = 4;
+    static int NONE = 0;
+    static int VERY_LOW = 1;
+    static int LOW = 2;
+    static int HIGH = 3;
+    static int VERY_HIGH = 4;
 
-	/**
-	 * @param evt
-	 *            event threshold number {VERY_LOW,LOW,HIGH,VERY_HIGH}
-	 * @param variable
-	 *            variable name
-	 * @param measure
-	 *            measure received
-	 */
-	void onThreshold(Node node, String variable, Measure measure, int thresholdType);
+    /**
+     * @param evt      event threshold number {VERY_LOW,LOW,HIGH,VERY_HIGH}
+     * @param variable variable name
+     * @param measure  measure received
+     */
+    void onThreshold(Node node, String variable, Measure measure, int thresholdType);
 
 }

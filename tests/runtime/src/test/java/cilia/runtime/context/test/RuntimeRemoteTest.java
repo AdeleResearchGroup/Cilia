@@ -90,8 +90,8 @@ public class RuntimeRemoteTest {
 
 	*/
 /**
-	 * Test GET method in the URL http://localhost:9874/cilia
-	 *//*
+ * Test GET method in the URL http://localhost:9874/cilia
+ *//*
 
 	@Test
 	public void testGetAllChains(){
@@ -108,8 +108,8 @@ public class RuntimeRemoteTest {
 	}
 	*/
 /**
-	 * Test GET method in the URL http://localhost:9874/cilia/remote
-	 *//*
+ * Test GET method in the URL http://localhost:9874/cilia/remote
+ *//*
 
 	@Test
 	public void testGetSimpleChain(){
@@ -132,8 +132,8 @@ public class RuntimeRemoteTest {
 	}
 	*/
 /**
-	 * Test GET method in the URL http://localhost:9874/cilia/remote/components
-	 *//*
+ * Test GET method in the URL http://localhost:9874/cilia/remote/components
+ *//*
 
 	@Test
 	public void testGETAllComponents(){
@@ -154,8 +154,8 @@ public class RuntimeRemoteTest {
 
 	*/
 /**
-	 * Test GET method in the URL http://localhost:9874/cilia/remote/mediators
-	 *//*
+ * Test GET method in the URL http://localhost:9874/cilia/remote/mediators
+ *//*
 
 	@Test
 	public void testGETAllMediators(){
@@ -176,8 +176,8 @@ public class RuntimeRemoteTest {
 
 	*/
 /**
-	 * Test GET method in the URL http://localhost:9874/cilia/remote/adapters
-	 *//*
+ * Test GET method in the URL http://localhost:9874/cilia/remote/adapters
+ *//*
 
 	@Test
 	public void testGETAlladapters(){
@@ -198,8 +198,8 @@ public class RuntimeRemoteTest {
 
 	*/
 /**
-	 * Test GET method in the URL http://localhost:9874/cilia/remote/bindings
-	 *//*
+ * Test GET method in the URL http://localhost:9874/cilia/remote/bindings
+ *//*
 
 	@Test
 	public void testGETAllBindings(){
@@ -218,10 +218,10 @@ public class RuntimeRemoteTest {
 
 	*/
 /**
-	 * Test GET method in the URL http://localhost:9874/cilia/remote/mediators/validToto 
-	 * 						and in http://localhost:9874/cilia/remote/components/validToto 
-	 * to retrieve the validToto mediator in the chain remote
-	 *//*
+ * Test GET method in the URL http://localhost:9874/cilia/remote/mediators/validToto
+ * 						and in http://localhost:9874/cilia/remote/components/validToto
+ * to retrieve the validToto mediator in the chain remote
+ *//*
 
 	@Test
 	public void testGETOneMediator(){
@@ -245,9 +245,9 @@ public class RuntimeRemoteTest {
 
 	*/
 /**
-	 * Test GET method in the URL http://localhost:9874/cilia/remote/adapters/adapter1
-	 * to retrieve the adapter1 adapter in the chain remote
-	 *//*
+ * Test GET method in the URL http://localhost:9874/cilia/remote/adapters/adapter1
+ * to retrieve the adapter1 adapter in the chain remote
+ *//*
 
 	@Test
 	public void testGETOneAdapter(){
@@ -281,9 +281,9 @@ public class RuntimeRemoteTest {
 
 	*/
 /**
-	 * Test PUT method in the URL http://localhost:9874/cilia/remote/components/validToto
-	 * with properties in json format -d properties={"delay":"10"}
-	 *//*
+ * Test PUT method in the URL http://localhost:9874/cilia/remote/components/validToto
+ * with properties in json format -d properties={"delay":"10"}
+ *//*
 
 	@Test
 	public void testPUTProperties(){
@@ -319,13 +319,13 @@ public class RuntimeRemoteTest {
 
 	*/
 /**
-	 * Test PUT method in the URL http://localhost:9874/cilia/remote/components
-	 * with parameters :
-	 * 	command = replace
-	 * 	from = toto
-	 * 	to = validToto
-	 * to delete a chain.
-	 *//*
+ * Test PUT method in the URL http://localhost:9874/cilia/remote/components
+ * with parameters :
+ * 	command = replace
+ * 	from = toto
+ * 	to = validToto
+ * to delete a chain.
+ *//*
 
 	@Test
 	public void testReplaceComponent(){
@@ -347,13 +347,13 @@ public class RuntimeRemoteTest {
 
 	*/
 /**
-	 * Test PUT method in the URL http://localhost:9874/cilia/remote/components
-	 * with parameters :
-	 * 	command = copy
-	 * 	from = toto
-	 * 	to = toto2
-	 * to delete a chain.
-	 *//*
+ * Test PUT method in the URL http://localhost:9874/cilia/remote/components
+ * with parameters :
+ * 	command = copy
+ * 	from = toto
+ * 	to = toto2
+ * to delete a chain.
+ *//*
 
 	@Test
 	public void testCopyComponent(){
@@ -396,8 +396,8 @@ public class RuntimeRemoteTest {
 
 	*/
 /**
-	 * Test POST method in the URL http://localhost:9874/cilia/MyNewChain
-	 *//*
+ * Test POST method in the URL http://localhost:9874/cilia/MyNewChain
+ *//*
 
 	@Test
 	public void testCreationChain(){
@@ -409,8 +409,8 @@ public class RuntimeRemoteTest {
 	}
 	*/
 /**
-	 * Test POST method in the URL http://localhost:9874/cilia/remote/mediators/myMediator1 -d "type=Mock&properties={prop1:val1}"
-	 *//*
+ * Test POST method in the URL http://localhost:9874/cilia/remote/mediators/myMediator1 -d "type=Mock&properties={prop1:val1}"
+ *//*
 
 	@Test
 	public void testCreationMediator(){
@@ -432,8 +432,8 @@ public class RuntimeRemoteTest {
 
 	*/
 /**
-	 * Test POST method in the URL http://localhost:9874/cilia/remote/adapters/myAdapter -d "type=console-adapter&properties={prop1:val1}"
-	 *//*
+ * Test POST method in the URL http://localhost:9874/cilia/remote/adapters/myAdapter -d "type=console-adapter&properties={prop1:val1}"
+ *//*
 
 	@Test
 	public void testCreationAdapter(){
@@ -456,8 +456,8 @@ public class RuntimeRemoteTest {
 
 	*/
 /**
-	 * Test POST method in the URL http://localhost:9874/cilia/remote/bindings/ -d "from=toto:unique&to=adapter1:unique"
-	 *//*
+ * Test POST method in the URL http://localhost:9874/cilia/remote/bindings/ -d "from=toto:unique&to=adapter1:unique"
+ *//*
 
 	@Test
 	public void testCreationBinding(){
@@ -494,9 +494,9 @@ public class RuntimeRemoteTest {
 
 	*/
 /**
-	 * Test DELETE method in the URL http://localhost:9874/cilia/remote
-	 * to delete a chain.
-	 *//*
+ * Test DELETE method in the URL http://localhost:9874/cilia/remote
+ * to delete a chain.
+ *//*
 
 	@Test
 	public void testRemoveChain(){
@@ -516,9 +516,9 @@ public class RuntimeRemoteTest {
 
 	*/
 /**
-	 * Test DELETE method in the URL http://localhost:9874/cilia/remote/mediators/toto
-	 * to delete a mediator with ID toto.
-	 *//*
+ * Test DELETE method in the URL http://localhost:9874/cilia/remote/mediators/toto
+ * to delete a mediator with ID toto.
+ *//*
 
 	@Test
 	public void testRemoveMediator(){
@@ -556,9 +556,9 @@ public class RuntimeRemoteTest {
 
 	*/
 /**
-	 * Test DELETE method in the URL http://localhost:9874/cilia/remote/adapters/toto
-	 * to delete a mediator with ID toto.
-	 *//*
+ * Test DELETE method in the URL http://localhost:9874/cilia/remote/adapters/toto
+ * to delete a mediator with ID toto.
+ *//*
 
 	@Test
 	public void testRemoveAdapter(){
@@ -598,8 +598,8 @@ public class RuntimeRemoteTest {
 
 	*/
 /**
-	 * Test DELETE method in the URL http://localhost:9874/cilia/remote/bindings/ -d "validToto:unique&to=toto:unique"
-	 *//*
+ * Test DELETE method in the URL http://localhost:9874/cilia/remote/bindings/ -d "validToto:unique&to=toto:unique"
+ *//*
 
 	@Test
 	public void testRemoveBinding(){

@@ -17,18 +17,16 @@ package fr.liglab.adele.cilia.builder;
 import fr.liglab.adele.cilia.exceptions.BuilderConfigurationException;
 
 /**
- *
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project Team</a>
- *
  */
 public interface InstanceCreatorConfiguration {
-	
-	ConfiguratorReturner id(String Id) throws BuilderConfigurationException;
-	
-	InstanceCreatorConfiguration namespace(String ns);
-	
-	InstanceCreatorConfiguration category(String cate);
-	
-	InstanceCreatorConfiguration version(String version);
-	
+
+    ConfiguratorReturner id(String Id) throws BuilderConfigurationException;
+
+    InstanceCreatorConfiguration namespace(String ns);
+
+    InstanceCreatorConfiguration category(String cate);
+
+    InstanceCreatorConfiguration version(String version);
+
 }

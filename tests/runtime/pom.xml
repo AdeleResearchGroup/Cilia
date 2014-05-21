@@ -7,19 +7,19 @@
 	the specific language governing permissions and limitations under the License. -->
 
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-	<modelVersion>4.0.0</modelVersion>
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
 
-	<parent>
-		<groupId>fr.liglab.adele.cilia</groupId>
-		<artifactId>cilia-project</artifactId>
-		<version>1.7.5-SNAPSHOT</version>
-		<relativePath>../../parent/pom.xml</relativePath>
-	</parent>
+    <parent>
+        <groupId>fr.liglab.adele.cilia</groupId>
+        <artifactId>cilia-project</artifactId>
+        <version>1.7.5-SNAPSHOT</version>
+        <relativePath>../../parent/pom.xml</relativePath>
+    </parent>
 
-	<artifactId>cilia-runtime-tests</artifactId>
-	<name>${productName} :: Runtime Tests</name>
-	<packaging>jar</packaging>
+    <artifactId>cilia-runtime-tests</artifactId>
+    <name>${productName} :: Runtime Tests</name>
+    <packaging>jar</packaging>
 
 
     <properties>
@@ -137,7 +137,7 @@
         </dependency>
     </dependencies>
 
-	<build>
+    <build>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -176,12 +176,16 @@
                                 <artifactItem>
                                     <groupId>${distrib.groupId}</groupId>
                                     <artifactId>cilia-helper</artifactId>
-                                    <outputDirectory>${project.build.directory}/distribution/${distrib.artifactId}/runtime</outputDirectory>
+                                    <outputDirectory>
+                                        ${project.build.directory}/distribution/${distrib.artifactId}/runtime
+                                    </outputDirectory>
                                 </artifactItem>
                                 <artifactItem>
                                     <groupId>org.ow2.chameleon.testing</groupId>
                                     <artifactId>osgi-helpers</artifactId>
-                                    <outputDirectory>${project.build.directory}/distribution/${distrib.artifactId}/runtime</outputDirectory>
+                                    <outputDirectory>
+                                        ${project.build.directory}/distribution/${distrib.artifactId}/runtime
+                                    </outputDirectory>
                                 </artifactItem>
                             </artifactItems>
                         </configuration>
@@ -215,5 +219,5 @@
             </plugin>
             -->
         </plugins>
-	</build>
+    </build>
 </project>

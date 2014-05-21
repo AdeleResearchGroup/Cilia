@@ -15,53 +15,57 @@
 package fr.liglab.adele.cilia.builder.impl;
 
 import fr.liglab.adele.cilia.builder.Architecture;
-import fr.liglab.adele.cilia.builder.MediatorConfigurator;
 import fr.liglab.adele.cilia.builder.InstanceModifier;
+import fr.liglab.adele.cilia.builder.MediatorConfigurator;
 import fr.liglab.adele.cilia.builder.Modifier;
 
 /**
- *
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project Team</a>
- *
  */
 public class InstanceModifierImpl extends MediatorConfiguratorImpl implements InstanceModifier, Modifier {
-	String id;
-	int type;
-	BinderImpl binderConfig;
-	protected InstanceModifierImpl() {
-	}
-	/* (non-Javadoc)
-	 * @see fr.liglab.adele.cilia.builder.InstanceModifier#id(java.lang.String)
-	 */
-	public MediatorConfigurator id(String id) {
-		this.id = id;
-		return this;
-	}
-	/* (non-Javadoc)
-	 * @see fr.liglab.adele.cilia.builder.InstanceModifier#adapter()
-	 */
-	public InstanceModifier adapter() {
-		type = Architecture.ADAPTER;
-		return this;
-	}
-	/* (non-Javadoc)
-	 * @see fr.liglab.adele.cilia.builder.InstanceModifier#mediator()
-	 */
-	public InstanceModifier mediator() {
-		type = Architecture.MEDIATOR;
-		return this;
-	}
-	/**
-	 * @return the id
-	 */
-	protected String getId() {
-		return id;
-	}
-	/**
-	 * @return the type
-	 */
-	protected int getType() {
-		return type;
-	}
+    String id;
+    int type;
+    BinderImpl binderConfig;
+
+    protected InstanceModifierImpl() {
+    }
+
+    /* (non-Javadoc)
+     * @see fr.liglab.adele.cilia.builder.InstanceModifier#id(java.lang.String)
+     */
+    public MediatorConfigurator id(String id) {
+        this.id = id;
+        return this;
+    }
+
+    /* (non-Javadoc)
+     * @see fr.liglab.adele.cilia.builder.InstanceModifier#adapter()
+     */
+    public InstanceModifier adapter() {
+        type = Architecture.ADAPTER;
+        return this;
+    }
+
+    /* (non-Javadoc)
+     * @see fr.liglab.adele.cilia.builder.InstanceModifier#mediator()
+     */
+    public InstanceModifier mediator() {
+        type = Architecture.MEDIATOR;
+        return this;
+    }
+
+    /**
+     * @return the id
+     */
+    protected String getId() {
+        return id;
+    }
+
+    /**
+     * @return the type
+     */
+    protected int getType() {
+        return type;
+    }
 
 }

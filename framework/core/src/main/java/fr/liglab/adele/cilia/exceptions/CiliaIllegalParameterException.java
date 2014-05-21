@@ -15,23 +15,20 @@
 
 package fr.liglab.adele.cilia.exceptions;
 
-import fr.liglab.adele.cilia.exceptions.CiliaException;
-
 /**
- * Illegal argument 
- * 
+ * Illegal argument
+ *
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project
  *         Team</a>
- * 
  */
 public class CiliaIllegalParameterException extends CiliaException {
-	private static final long serialVersionUID = -1389067402013653551L;
+    private static final long serialVersionUID = -1389067402013653551L;
 
-	public CiliaIllegalParameterException() {
-	}
+    public CiliaIllegalParameterException() {
+    }
 
-	public CiliaIllegalParameterException(String message) {
-		super(message);
-	}
+    public CiliaIllegalParameterException(String message) {
+        super(message);
+    }
 
 }

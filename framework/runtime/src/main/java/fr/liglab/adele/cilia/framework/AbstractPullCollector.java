@@ -14,67 +14,65 @@
  */
 package fr.liglab.adele.cilia.framework;
 
+import fr.liglab.adele.cilia.Data;
+import fr.liglab.adele.cilia.exceptions.CiliaException;
+
 import java.io.IOException;
 import java.util.List;
 
-import fr.liglab.adele.cilia.exceptions.CiliaException;
-import fr.liglab.adele.cilia.Data;
-
 /**
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project Team</a>
- *
  */
 public abstract class AbstractPullCollector extends AbstractCollector implements Runnable {
 
-	/**
-	 * Specifies the initial delay of the poll execution.
-	 */
-	private long initialDelay;
-	/**
-	 * Specifies the period in miliseconds betwen each poll execution.
-	 */
-	private long period;
+    /**
+     * Specifies the initial delay of the poll execution.
+     */
+    private long initialDelay;
+    /**
+     * Specifies the period in miliseconds betwen each poll execution.
+     */
+    private long period;
 
-	private Thread thread;
+    private Thread thread;
 
-	private volatile boolean running;
+    private volatile boolean running;
 
-	public void delay(long iDelay) {
-		initialDelay = iDelay;
-	}
+    public void delay(long iDelay) {
+        initialDelay = iDelay;
+    }
 
-	public void period(long lperiod) {
-		period = lperiod;
-	}
+    public void period(long lperiod) {
+        period = lperiod;
+    }
 
 
-	public void start(){
-		thread = new Thread(this);
-		running = true;
-		thread.start();
-	}
+    public void start() {
+        thread = new Thread(this);
+        running = true;
+        thread.start();
+    }
 
-	public void stop(){
-		running = false;
-	}
+    public void stop() {
+        running = false;
+    }
 
-	protected abstract List/*<Data>*/ pullData() throws IOException;
+    protected abstract List/*<Data>*/ pullData() throws IOException;
 
-	public void run(){
-		while(running){
-			try {
-				Thread.sleep(period);
-				List ldata = pullData();
-				for(int i = 0; ldata != null && i < ldata.size(); i ++){
-					super.notifyDataArrival( (Data)ldata.get(i));
-				}
-			}catch (Exception ex){
-				ex.printStackTrace();
-				new CiliaException("Error when pulling data in collector").printStackTrace();
-			}
-		}
-	}
-
+    public void run() {
+        while (running) {
+            try {
+                Thread.sleep(period);
+                List ldata = pullData();
+                for (int i = 0; ldata != null && i < ldata.size(); i++) {
+                    super.notifyDataArrival((Data) ldata.get(i));
+                }
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                new CiliaException("Error when pulling data in collector").printStackTrace();
+            }
+        }
+    }
 
 
 }

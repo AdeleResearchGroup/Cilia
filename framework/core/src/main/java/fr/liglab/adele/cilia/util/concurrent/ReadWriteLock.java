@@ -27,7 +27,7 @@
  *        pays to introduce a bit more overhead associated with
  *        ReadWrite locks compared to simple synchronized methods etc
  *        in order to allow concurrency among reader threads.
- *        
+ *
  * </ul>
  * Different implementation classes differ in policies surrounding
  * which threads to prefer when there is
@@ -41,7 +41,7 @@
  *   ReadWriteLock rw;
  *   // ...
  *
- *   public void read() throws InterruptedException { 
+ *   public void read() throws InterruptedException {
  *     rw.readLock().acquire();
  *     try {
  *       // ... do the read
@@ -52,7 +52,7 @@
  *   }
  *
  *
- *   public void write() throws InterruptedException { 
+ *   public void write() throws InterruptedException {
  *     rw.writeLock().acquire();
  *     try {
  *       // ... do the write
@@ -71,9 +71,13 @@
 package fr.liglab.adele.cilia.util.concurrent;
 
 public interface ReadWriteLock {
-	/** get the readLock **/
-	Sync readLock();
+    /**
+     * get the readLock *
+     */
+    Sync readLock();
 
-	/** get the writeLock **/
-	Sync writeLock();
+    /**
+     * get the writeLock *
+     */
+    Sync writeLock();
 }

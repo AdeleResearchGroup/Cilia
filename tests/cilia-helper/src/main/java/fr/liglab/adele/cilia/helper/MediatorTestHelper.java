@@ -14,45 +14,50 @@
  */
 package fr.liglab.adele.cilia.helper;
 
-import java.util.List;
-
 import fr.liglab.adele.cilia.Data;
 
+import java.util.List;
+
 /**
- *
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project Team</a>
- *
  */
 public interface MediatorTestHelper {
-	/**
-	 * Get the last port name where the mediator send data.
-	 */
-	String lastExitPort();
-	/**
-	 * See if mediator has finish to process data.
-	 */
-	boolean hasFinishToProcess();
-	/**
-	 * Inject a single Data to the mediator.
-	 * @param the data to inject.
-	 * @return true if is injected, false if not.
-	 */
-	boolean injectData (Data data);
-	/**
-	 * Inject an array of data to the mediator.
-	 * @param data, the array of data to inject.
-	 * @return true if the array is injected, false if some data is not well injected.
-	 */
-	boolean notifyData (Data [] data);
-	/**
-	 * Get the last received Data.
-	 */
-	Data getLastData();
-	/**
-	 * Get the amount of data treated and delivered by the mediator.
-	 */
-	int getAmountData();
-	
-	List<Data> getData();
-	
+    /**
+     * Get the last port name where the mediator send data.
+     */
+    String lastExitPort();
+
+    /**
+     * See if mediator has finish to process data.
+     */
+    boolean hasFinishToProcess();
+
+    /**
+     * Inject a single Data to the mediator.
+     *
+     * @param the data to inject.
+     * @return true if is injected, false if not.
+     */
+    boolean injectData(Data data);
+
+    /**
+     * Inject an array of data to the mediator.
+     *
+     * @param data, the array of data to inject.
+     * @return true if the array is injected, false if some data is not well injected.
+     */
+    boolean notifyData(Data[] data);
+
+    /**
+     * Get the last received Data.
+     */
+    Data getLastData();
+
+    /**
+     * Get the amount of data treated and delivered by the mediator.
+     */
+    int getAmountData();
+
+    List<Data> getData();
+
 }

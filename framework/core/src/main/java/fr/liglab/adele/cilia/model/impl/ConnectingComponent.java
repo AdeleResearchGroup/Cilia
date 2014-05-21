@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 /**
- * 
+ *
  */
 package fr.liglab.adele.cilia.model.impl;
 
@@ -22,27 +22,28 @@ import java.util.Dictionary;
 /**
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project
  *         Team</a>
- *
  */
 public class ConnectingComponent extends InternalComponent {
 
-	private final String portname;
-	/**
-	 * @return the portname
-	 */
-	public String getPortname() {
-		return portname;
-	}
-	/**
-	 * @param id
-	 * @param type
-	 * @param nspace
-	 * @param properties
-	 */
-	public ConnectingComponent(String id, String type, String nspace, String portname,
-			Dictionary properties) {
-		super(id, type, nspace, properties);
-		this.portname = portname; 
-	}
+    private final String portname;
+
+    /**
+     * @return the portname
+     */
+    public String getPortname() {
+        return portname;
+    }
+
+    /**
+     * @param id
+     * @param type
+     * @param nspace
+     * @param properties
+     */
+    public ConnectingComponent(String id, String type, String nspace, String portname,
+                               Dictionary properties) {
+        super(id, type, nspace, properties);
+        this.portname = portname;
+    }
 
 }

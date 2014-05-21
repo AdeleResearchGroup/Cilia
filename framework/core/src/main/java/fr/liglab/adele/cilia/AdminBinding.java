@@ -13,47 +13,48 @@
  * limitations under the License.
  */
 /**
- * 
+ *
  */
 package fr.liglab.adele.cilia;
-
-import java.util.Map;
 
 import fr.liglab.adele.cilia.exceptions.CiliaException;
 import fr.liglab.adele.cilia.exceptions.CiliaIllegalParameterException;
 import fr.liglab.adele.cilia.exceptions.CiliaInvalidSyntaxException;
 
+import java.util.Map;
+
 /**
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project
  *         Team</a>
- *
  */
 public interface AdminBinding {
-	
-	/**
-	 * Create a new binding between two components.
-	 * @param chainId The chain Id where the binding will be created.
-	 * @param from The component which will deliver data. Parameter format must be 
-	 * 			<componentID>:<portName>
-	 * @param to The component which will obtain the data. Parameter format must be 
-	 * 			<componentID>:<portName>
-	 * @param linker To specifies the linker protocol to use to communicate two components.
-	 * @param properties The properties if needed to create the binding.
-	 * @throws CiliaInvalidSyntaxException if from or to parameters are not well formed.
-	 * @throws CiliaIllegalParameterException If chain or any of the components does not exist.
-	 */
 
-	void createBinding(String chainId, String from, String to, String linker, Map<String, Object> properties) throws CiliaIllegalParameterException, CiliaException;
-	
-	/**
-	 * Delete a binding from two mediators.
-	 * @param chainID The chain where mediators are.
-	 * @param from The component which deliver data. Parameter format must be 
-	 * 			<componentID>:<portName>
-	 * @param to The component which receives data. Parameter format must be 
-	 * 			<componentID>:<portName>
-	 * @throws CiliaIllegalParameterException If any of the components does not exist.
-	 */
-	void deleteBinding(String chainID, String from, String to) throws CiliaIllegalParameterException, CiliaException;
-	
+    /**
+     * Create a new binding between two components.
+     *
+     * @param chainId    The chain Id where the binding will be created.
+     * @param from       The component which will deliver data. Parameter format must be
+     *                   <componentID>:<portName>
+     * @param to         The component which will obtain the data. Parameter format must be
+     *                   <componentID>:<portName>
+     * @param linker     To specifies the linker protocol to use to communicate two components.
+     * @param properties The properties if needed to create the binding.
+     * @throws CiliaInvalidSyntaxException    if from or to parameters are not well formed.
+     * @throws CiliaIllegalParameterException If chain or any of the components does not exist.
+     */
+
+    void createBinding(String chainId, String from, String to, String linker, Map<String, Object> properties) throws CiliaIllegalParameterException, CiliaException;
+
+    /**
+     * Delete a binding from two mediators.
+     *
+     * @param chainID The chain where mediators are.
+     * @param from    The component which deliver data. Parameter format must be
+     *                <componentID>:<portName>
+     * @param to      The component which receives data. Parameter format must be
+     *                <componentID>:<portName>
+     * @throws CiliaIllegalParameterException If any of the components does not exist.
+     */
+    void deleteBinding(String chainID, String from, String to) throws CiliaIllegalParameterException, CiliaException;
+
 }

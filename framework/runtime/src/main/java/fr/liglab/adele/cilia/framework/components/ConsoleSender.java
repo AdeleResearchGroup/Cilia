@@ -16,35 +16,35 @@
 
 package fr.liglab.adele.cilia.framework.components;
 
+import fr.liglab.adele.cilia.Data;
+import fr.liglab.adele.cilia.framework.ISender;
+import fr.liglab.adele.cilia.util.Const;
 import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import fr.liglab.adele.cilia.Data;
-import fr.liglab.adele.cilia.framework.ISender;
-import fr.liglab.adele.cilia.util.Const;
-
 
 public class ConsoleSender implements ISender {
 
-	boolean detail;
-	
-	String header ;
-	
-	private static Logger log =LoggerFactory.getLogger(Const.LOGGER_APPLICATION);
-	public ConsoleSender(BundleContext context) {
-	}
-	
-	public boolean send(Data data) {
-		if (data != null) {
-			if (detail == true) {
-				System.out.println(header + "\n" + data.toString());
-			} else {
+    boolean detail;
+
+    String header;
+
+    private static Logger log = LoggerFactory.getLogger(Const.LOGGER_APPLICATION);
+
+    public ConsoleSender(BundleContext context) {
+    }
+
+    public boolean send(Data data) {
+        if (data != null) {
+            if (detail == true) {
+                System.out.println(header + "\n" + data.toString());
+            } else {
                 System.out.println(header + "\n" + String.valueOf(data.getContent()));
-			}
-		} else  {
-			log.warn(header + "\n" + "[INFO] ConsoleSender : data=null");
-		}
-		return false;
-	}
+            }
+        } else {
+            log.warn(header + "\n" + "[INFO] ConsoleSender : data=null");
+        }
+        return false;
+    }
 }

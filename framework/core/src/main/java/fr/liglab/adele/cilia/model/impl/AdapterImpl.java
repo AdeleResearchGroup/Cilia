@@ -14,96 +14,93 @@
  */
 package fr.liglab.adele.cilia.model.impl;
 
-import java.util.Dictionary;
-import java.util.Hashtable;
-import java.util.LinkedHashMap;
-import java.util.Map;
-
 import fr.liglab.adele.cilia.model.Adapter;
 import fr.liglab.adele.cilia.model.Chain;
 import fr.liglab.adele.cilia.util.FrameworkUtils;
 import fr.liglab.adele.cilia.util.Watch;
 
+import java.util.Dictionary;
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 /**
  * This class represent the adapter in the model at execution.
- * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project Team</a>
  *
+ * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project Team</a>
  */
-public class AdapterImpl  extends MediatorComponentImpl implements Adapter{
-	/**
-	 * The pattern this adapter has.
-	 */
-	private PatternType adapterPattern = PatternType.UNASSIGNED;
-	/**
-	 * 
-	 * @param adapterId
-	 * @param adapterType
-	 * @param adapterProperties
-	 * @param pattern
-	 */
-	public AdapterImpl(String adapterId, String adapterType, String adapterNamespace, String version,
-			Dictionary adapterProperties, Chain chain, PatternType pattern) {
-		super(adapterId, adapterType, adapterNamespace,null,version, adapterProperties, chain);
-		adapterPattern = pattern;
-		setChain(chain);
-	}
-	
-	public AdapterImpl(String adapterId, String adapterType) {
-		this(adapterId, adapterType, null,null, null, null, PatternType.UNASSIGNED);
-	}
-	
-	/**
-	 * Get the pattern associated to the AdapterImpl.
-	 * @return The pattern.
-	 */
-	public PatternType getPattern() {return adapterPattern;}
-	
-	
-	/**
-	 * Get the pattern associated to the AdapterImpl.
-	 * @return The pattern.
-	 */
-	public void setPattern(PatternType type) {
-		adapterPattern = type;
-	}
-	
-	
-	/**
-	 * Set the chain representation model which will contain this mediator.
-	 * 
-	 * @param chain
-	 *            chain which will contain this mediator.
-	 */
-	public void setChain(Chain chain) {
-		synchronized (lockObject) {
-			this.chain = chain;
-		}
-	}
-	public String toString() {
-		StringBuffer sb = new StringBuffer("{\n");
-		sb.append("UUID : ").append(FrameworkUtils.makeQualifiedId(chainId(), nodeId(), uuid())).append(",\n");
-		sb.append("Type : ").append(getType()).append(",\n");
-		sb.append("Namespace : ").append(getNamespace()).append(",\n");
-		sb.append("Pattern : ").append(getPattern().getName()).append(",\n");
-		sb.append("ID : ").append(getId()).append(",\n");
-		sb.append("State : ").append(getState()).append(",\n");
-		sb.append("Version: ").append(getVersion()).append(",\n");
-		sb.append("Creation date :"+Watch.formatDateIso8601(timeStamp())).append(",\n");
-		sb.append("Properties:").append(super.getProperties());
-		sb.append("\n}");
-		return sb.toString();
-	}
-	public Map toMap() {
-		Map result = new LinkedHashMap();
-		result.put("UUID", FrameworkUtils.makeQualifiedId(chainId(), nodeId(), uuid()));
-		result.put("Type", getType());
-		result.put("Pattern", getPattern().getName());
-		result.put("Namespace", getNamespace());
-		result.put("ID", getId());
-		result.put("State", getState());
-		result.put("Version", getVersion());
-		result.put("Creation date", Watch.formatDateIso8601(timeStamp()));
-		result.put("Properties", super.getProperties());
-		return result;
-	}
+public class AdapterImpl extends MediatorComponentImpl implements Adapter {
+    /**
+     * The pattern this adapter has.
+     */
+    private PatternType adapterPattern = PatternType.UNASSIGNED;
+
+    /**
+     * @param adapterId
+     * @param adapterType
+     * @param adapterProperties
+     * @param pattern
+     */
+    public AdapterImpl(String adapterId, String adapterType, String adapterNamespace, String version,
+                       Dictionary adapterProperties, Chain chain, PatternType pattern) {
+        super(adapterId, adapterType, adapterNamespace, null, version, adapterProperties, chain);
+        adapterPattern = pattern;
+        setChain(chain);
+    }
+
+    public AdapterImpl(String adapterId, String adapterType) {
+        this(adapterId, adapterType, null, null, null, null, PatternType.UNASSIGNED);
+    }
+
+    /**
+     * Get the pattern associated to the AdapterImpl.
+     *
+     * @return The pattern.
+     */
+    public PatternType getPattern() {
+        return adapterPattern;
+    }
+
+
+    /**
+     * Get the pattern associated to the AdapterImpl.
+     *
+     * @return The pattern.
+     */
+    public void setPattern(PatternType type) {
+        adapterPattern = type;
+    }
+
+
+    /**
+     * Set the chain representation model which will contain this mediator.
+     *
+     * @param chain chain which will contain this mediator.
+     */
+    public void setChain(Chain chain) {
+        synchronized (lockObject) {
+            this.chain = chain;
+        }
+    }
+
+    public String toString() {
+        StringBuffer sb = new StringBuffer("{\n");
+        sb.append(super.toString());
+        sb.append("Pattern : ").append(getPattern().getName()).append(",\n");
+        sb.append("\n}");
+        return sb.toString();
+    }
+
+    public Map toMap() {
+        Map result = new LinkedHashMap();
+        result.put("UUID", FrameworkUtils.makeQualifiedId(chainId(), nodeId(), uuid()));
+        result.put("Type", getType());
+        result.put("Pattern", getPattern().getName());
+        result.put("Namespace", getNamespace());
+        result.put("ID", getId());
+        result.put("State", getState());
+        result.put("Version", getVersion());
+        result.put("Creation date", Watch.formatDateIso8601(timeStamp()));
+        result.put("Properties", super.getProperties());
+        return result;
+    }
 }

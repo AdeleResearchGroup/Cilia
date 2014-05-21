@@ -19,28 +19,32 @@ import fr.liglab.adele.cilia.model.impl.PortType;
 
 public interface Port {
 
-	/**
-	 * Get the port Type.
-	 * @return
-	 */
-	public PortType getPortType();
-	
-	/**
-	 * Get the Data Type
-	 * @return the data type accepted on the port.
-	 */
-	public String getDataType();
+    /**
+     * Get the port Type.
+     *
+     * @return
+     */
+    public PortType getPortType();
 
-	/**
-	 * Get the port name.
-	 * @return
-	 */
-	public String getName();
+    /**
+     * Get the Data Type
+     *
+     * @return the data type accepted on the port.
+     */
+    public String getDataType();
 
-	/**
-	 * Get the mediator reference which contain this port.
-	 * @return
-	 */
-	public MediatorComponent getMediator();
+    /**
+     * Get the port name.
+     *
+     * @return
+     */
+    public String getName();
+
+    /**
+     * Get the mediator reference which contain this port.
+     *
+     * @return
+     */
+    public MediatorComponent getMediator();
 
 }

@@ -20,32 +20,24 @@ import fr.liglab.adele.cilia.exceptions.CiliaInvalidSyntaxException;
 
 /**
  * Listener to events [node arrival / node departure] component
- * 
+ *
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project
  *         Team</a>
- * 
  */
 public interface NodeRegistration {
 
-	/**
-	 * @param ldapfilter
-	 *            ldap keywords :uuid,chain, node
-	 * @param listener
-	 *            , listener to add
-	 * @throws CiliaIllegalParameterException
-	 *             , null of wrong parameter
-	 * @throws CiliaInvalidSyntaxException
-	 *             LDAP syntax error
-	 * 
-	 */
-	void addListener(String ldapFilter, NodeCallback listener)
-			throws CiliaIllegalParameterException, CiliaInvalidSyntaxException;
+    /**
+     * @param ldapfilter ldap keywords :uuid,chain, node
+     * @param listener   , listener to add
+     * @throws CiliaIllegalParameterException , null of wrong parameter
+     * @throws CiliaInvalidSyntaxException    LDAP syntax error
+     */
+    void addListener(String ldapFilter, NodeCallback listener)
+            throws CiliaIllegalParameterException, CiliaInvalidSyntaxException;
 
-	/**
-	 * @param listener
-	 *            , listener to remove
-	 * @throws CiliaIllegalParameterException
-	 *             , null parameter
-	 */
-	void removeListener(NodeCallback listener) throws CiliaIllegalParameterException;
+    /**
+     * @param listener , listener to remove
+     * @throws CiliaIllegalParameterException , null parameter
+     */
+    void removeListener(NodeCallback listener) throws CiliaIllegalParameterException;
 }

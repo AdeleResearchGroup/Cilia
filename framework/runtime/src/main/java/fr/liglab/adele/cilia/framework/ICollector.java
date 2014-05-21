@@ -21,27 +21,31 @@ import fr.liglab.adele.cilia.Data;
 
 /**
  * Cilia Collector Interface
- * 
+ *
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project Team</a>
  */
 public interface ICollector {
-	
 
-	/**
-	 * Set the scheduler to call when collect data.
-	 * @param scheduler Cilia Scheduler.
-	 */
-	public void setScheduler(IScheduler scheduler);
-	/**
-	 * Notify to the Scheduler when data has arrive. 
-	 * @param data Data collected.
-	 */
-	public Data notifyDataArrival(Data data) ;
-	
-	/**
-	 * Add source name to the collector instance.
-	 * @param sn
-	 */
-	public void setSourceName(String sn) ;
-	
+
+    /**
+     * Set the scheduler to call when collect data.
+     *
+     * @param scheduler Cilia Scheduler.
+     */
+    public void setScheduler(IScheduler scheduler);
+
+    /**
+     * Notify to the Scheduler when data has arrive.
+     *
+     * @param data Data collected.
+     */
+    public Data notifyDataArrival(Data data);
+
+    /**
+     * Add source name to the collector instance.
+     *
+     * @param sn
+     */
+    public void setSourceName(String sn);
+
 }

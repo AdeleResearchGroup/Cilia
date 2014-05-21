@@ -14,62 +14,60 @@
  */
 package fr.liglab.adele.cilia.internals;
 
-import org.w3c.dom.Node;
-
 import fr.liglab.adele.cilia.exceptions.CiliaParserException;
 import fr.liglab.adele.cilia.ext.ErrorHandler;
 import fr.liglab.adele.cilia.model.Component;
 import fr.liglab.adele.cilia.model.impl.MediatorComponentImpl;
 import fr.liglab.adele.cilia.util.CiliaExtenderParser;
+import org.w3c.dom.Node;
 
 /**
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project Team</a>
- *
  */
 public class MonitorErrorHandlerParser extends DomExtenderParser implements
-		CiliaExtenderParser {
+        CiliaExtenderParser {
 
-	private static final String CONDITION = "exception";
-	private static final String CONFIGURATION = "error";
-	private static final String TO = "send-to";
-	
-	public MonitorErrorHandlerParser(){
-		//NAMESPACE = "fr.imag.adele.cilia.monitor";
-		NAME = "error-handler";
-	}
-	
-	/* (non-Javadoc)
-	 * @see fr.liglab.adele.cilia.model.impl.parser.CiliaExtenderParser#getComponent(java.lang.Object, fr.liglab.adele.cilia.model.impl.IComponent)
-	 */
-	public Component getComponent(Object componentDescription,
-			Component currentComponent) throws CiliaParserException {
-		Node child = getNode("monitor",componentDescription);
-		if (child != null) {
-			ErrorHandler cbr = new ErrorHandler((MediatorComponentImpl)currentComponent);
-			Node conf = child.getFirstChild();
-			while (conf != null) {
-				if (conf.getLocalName() != null && conf.getLocalName().equalsIgnoreCase(CONFIGURATION)) {
-					String condition = getAttributeValue(conf, CONDITION);
-					String sendTo = getAttributeValue(conf, TO);
-					if (condition != null && sendTo != null) {
-						cbr.condition(condition).to(sendTo);
-					}
-				}
-				conf = conf.getNextSibling();
-			}
-		}
-		return currentComponent;
-	}
+    private static final String CONDITION = "exception";
+    private static final String CONFIGURATION = "error";
+    private static final String TO = "send-to";
 
-	/* (non-Javadoc)
-	 * @see fr.liglab.adele.cilia.model.impl.parser.CiliaExtenderParser#canHandle(java.lang.Object)
-	 */
-	public boolean canHandle(Object mediatorDescription) {
-		Node disp = getNode("monitor",mediatorDescription);
-		if(disp == null) {
-			return false;
-		}
-		return true;
-	}
+    public MonitorErrorHandlerParser() {
+        //NAMESPACE = "fr.imag.adele.cilia.monitor";
+        NAME = "error-handler";
+    }
+
+    /* (non-Javadoc)
+     * @see fr.liglab.adele.cilia.model.impl.parser.CiliaExtenderParser#getComponent(java.lang.Object, fr.liglab.adele.cilia.model.impl.IComponent)
+     */
+    public Component getComponent(Object componentDescription,
+                                  Component currentComponent) throws CiliaParserException {
+        Node child = getNode("monitor", componentDescription);
+        if (child != null) {
+            ErrorHandler cbr = new ErrorHandler((MediatorComponentImpl) currentComponent);
+            Node conf = child.getFirstChild();
+            while (conf != null) {
+                if (conf.getLocalName() != null && conf.getLocalName().equalsIgnoreCase(CONFIGURATION)) {
+                    String condition = getAttributeValue(conf, CONDITION);
+                    String sendTo = getAttributeValue(conf, TO);
+                    if (condition != null && sendTo != null) {
+                        cbr.condition(condition).to(sendTo);
+                    }
+                }
+                conf = conf.getNextSibling();
+            }
+        }
+        return currentComponent;
+    }
+
+    /* (non-Javadoc)
+     * @see fr.liglab.adele.cilia.model.impl.parser.CiliaExtenderParser#canHandle(java.lang.Object)
+     */
+    public boolean canHandle(Object mediatorDescription) {
+        Node disp = getNode("monitor", mediatorDescription);
+        if (disp == null) {
+            return false;
+        }
+        return true;
+    }
 
 }

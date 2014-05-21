@@ -14,39 +14,37 @@
  */
 package fr.liglab.adele.cilia.jms;
 
+import org.objectweb.joram.client.jms.tcp.TcpConnectionFactory;
+
 import javax.jms.JMSException;
 import javax.jms.TopicConnection;
 import javax.jms.TopicConnectionFactory;
 
-import org.objectweb.joram.client.jms.tcp.TcpConnectionFactory;
-
 /**
- *
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project Team</a>
- *
  */
 public class CiliaJoramTool {
-	public static TopicConnection createTopicConnection(String user, String pass, String hostname, int port)
-			throws JMSException {
-		
-		TopicConnectionFactory joramTopicConnectionFactory = null;
-		try {
-			joramTopicConnectionFactory = TcpConnectionFactory.create( hostname,port);	
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		
-		// resolving classloader issues
-		ClassLoader classloader = Thread.currentThread()
-				.getContextClassLoader();
-		try {
-			Thread.currentThread().setContextClassLoader(
-					CiliaJoramTool.class.getClassLoader());
-			// returns the a new topic connection
-			return joramTopicConnectionFactory
-					.createTopicConnection(user, pass);
-		} finally {
-			Thread.currentThread().setContextClassLoader(classloader);
-		}
-	}
+    public static TopicConnection createTopicConnection(String user, String pass, String hostname, int port)
+            throws JMSException {
+
+        TopicConnectionFactory joramTopicConnectionFactory = null;
+        try {
+            joramTopicConnectionFactory = TcpConnectionFactory.create(hostname, port);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        // resolving classloader issues
+        ClassLoader classloader = Thread.currentThread()
+                .getContextClassLoader();
+        try {
+            Thread.currentThread().setContextClassLoader(
+                    CiliaJoramTool.class.getClassLoader());
+            // returns the a new topic connection
+            return joramTopicConnectionFactory
+                    .createTopicConnection(user, pass);
+        } finally {
+            Thread.currentThread().setContextClassLoader(classloader);
+        }
+    }
 }

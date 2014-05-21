@@ -25,54 +25,54 @@
     </bannerLeft>
 
     <skin>
-       <groupId>lt.velykis.maven.skins</groupId>
-       <artifactId>reflow-maven-skin</artifactId>
-       <version>1.0.1-SNAPSHOT</version>
+        <groupId>lt.velykis.maven.skins</groupId>
+        <artifactId>reflow-maven-skin</artifactId>
+        <version>1.0.1-SNAPSHOT</version>
     </skin>
     <custom>
         <reflowSkin>
-              <theme>bootswatch-spacelab</theme>
-              <highlightJs>true</highlightJs>
-              <brand>
+            <theme>bootswatch-spacelab</theme>
+            <highlightJs>true</highlightJs>
+            <brand>
                 <name>Cilia on github</name>
                 <href>http://github.com/AdeleResearchGroup/Cilia</href>
-              </brand>
-              <slogan>A service mediation framework for dynamic applications</slogan>
-              <titleTemplate>%2$s | %1$s</titleTemplate>
-              <toc>top</toc>
-              <topNav>Cilia|Documentation|Advanced tutorials</topNav>
+            </brand>
+            <slogan>A service mediation framework for dynamic applications</slogan>
+            <titleTemplate>%2$s | %1$s</titleTemplate>
+            <toc>top</toc>
+            <topNav>Cilia|Documentation|Advanced tutorials</topNav>
 
-              <bottomNav>
+            <bottomNav>
                 <column>Cilia|Documentation</column>
-               </bottomNav>
+            </bottomNav>
 
-              <bottomDescription>
+            <bottomDescription>
                 A service mediation framework for dynamic applications.
-              </bottomDescription>
-              <pages>
+            </bottomDescription>
+            <pages>
                 <index project="project-id">
-                  <shortTitle>Welcome</shortTitle>
-                  <breadcrumbs>false</breadcrumbs>
-                  <toc>false</toc>
-                  <sections>
-                    <carousel />
-                    <body />
-                    <sidebar />
-                    <thumbs>2</thumbs>
-                    <columns>3</columns>
-                  </sections>
+                    <shortTitle>Welcome</shortTitle>
+                    <breadcrumbs>false</breadcrumbs>
+                    <toc>false</toc>
+                    <sections>
+                        <carousel/>
+                        <body/>
+                        <sidebar/>
+                        <thumbs>2</thumbs>
+                        <columns>3</columns>
+                    </sections>
                 </index>
                 <developer-info>
-                  <toc>sidebar</toc>
+                    <toc>sidebar</toc>
                 </developer-info>
-              </pages>
-            </reflowSkin>
+            </pages>
+        </reflowSkin>
     </custom>
 
     <body>
         <head>
-            <link rel="stylesheet" href="./css/site.css" type="text/css" />
-            <link rel="stylesheet" href="./css/font-awesome.css" type="text/css" />
+            <link rel="stylesheet" href="./css/site.css" type="text/css"/>
+            <link rel="stylesheet" href="./css/font-awesome.css" type="text/css"/>
 
             <script type="text/javascript">
                 var _gaq = _gaq || [];
@@ -81,7 +81,8 @@
 
                 (function() {
                 var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-                ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+                ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') +
+                '.google-analytics.com/ga.js';
                 var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
                 })();
             </script>
@@ -92,7 +93,7 @@
                 prettyPrint();
                 });
             </script>
-            <link rel="shortcut icon"  href="favicon.png" />
+            <link rel="shortcut icon" href="favicon.png"/>
         </head>
 
         <menu name="Cilia">
@@ -105,25 +106,25 @@
         <menu name="Documentation">
             <item name="Quick start" href="quickstart.html"/>
             <item name="DSL Reference" href="#">
-               <item name="Component Type specification" href="dslComponent.html"/>
-               <item name="Chain description" href="dslCilia.html"/>
-               <item name="Chain configuration" href="cfgCilia.html"/>
+                <item name="Component Type specification" href="dslComponent.html"/>
+                <item name="Chain description" href="dslCilia.html"/>
+                <item name="Chain configuration" href="cfgCilia.html"/>
             </item>
             <item name="REST API" href="rest-api.html"/>
             <item name="Gogo commands" href="gogo-commands.html"/>
             <item name="Javadoc" href="apidocs/index.html"/>
-      </menu>		
-      <menu name="Advanced tutorials">
-         <item name="Creating a new Linker" href="linker.html"/>
-         <item name="Creating new adapter" href="adapter.html"/>
-         <item name="Using monitoring capabilities" href="monitor.html"/>
-         <item name="Extending the DSL Language" href="extendDSL.html"/>
-         <item name="Runtime Manipulation" href="#">
-            <item name="Cilia Admin Builder Pattern" href="builder.html"/>
-            <item name="Cilia Admin Service" href="ciliaAdmin.html"/>
-         </item>
-       </menu>
+        </menu>
+        <menu name="Advanced tutorials">
+            <item name="Creating a new Linker" href="linker.html"/>
+            <item name="Creating new adapter" href="adapter.html"/>
+            <item name="Using monitoring capabilities" href="monitor.html"/>
+            <item name="Extending the DSL Language" href="extendDSL.html"/>
+            <item name="Runtime Manipulation" href="#">
+                <item name="Cilia Admin Builder Pattern" href="builder.html"/>
+                <item name="Cilia Admin Service" href="ciliaAdmin.html"/>
+            </item>
+        </menu>
 
-      
+
     </body>
 </project>

@@ -13,35 +13,34 @@
  * limitations under the License.
  */
 /**
- * 
+ *
  */
 package fr.liglab.adele.cilia.helper.impl;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import fr.liglab.adele.cilia.Data;
 import fr.liglab.adele.cilia.framework.AbstractScheduler;
 import fr.liglab.adele.cilia.helper.SchedulerProcessorHelper;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project
  *         Team</a>
- *
  */
 public class SchedulerProcessorHelperImpl extends AbstractScheduler implements SchedulerProcessorHelper {
 
-	List datal = new ArrayList();
-	
-	public void trigger(){
-		List datatp = new ArrayList(datal);
-		datal.clear();
-		process(datatp);
-	}
-	
-	@Override
-	public void notifyData(Data data) {
-		datal.add(data);
-	}
-	
+    List datal = new ArrayList();
+
+    public void trigger() {
+        List datatp = new ArrayList(datal);
+        datal.clear();
+        process(datatp);
+    }
+
+    @Override
+    public void notifyData(Data data) {
+        datal.add(data);
+    }
+
 }

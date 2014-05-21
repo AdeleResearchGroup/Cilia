@@ -18,18 +18,17 @@ import fr.liglab.adele.cilia.Data;
 
 /**
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project Team</a>
- *
  */
 public class PrefixEnricherProcessor {
-	private String prefix;
+    private String prefix;
 
-	public Data process(final Data data){
-		if (prefix == null){
-			return data;
-		}
-		StringBuilder sb = new StringBuilder(prefix);
-		sb.append(data.getContent());
-		data.setContent(sb.toString());
-		return data;
-	}
+    public Data process(final Data data) {
+        if (prefix == null) {
+            return data;
+        }
+        StringBuilder sb = new StringBuilder(prefix);
+        sb.append(data.getContent());
+        data.setContent(sb.toString());
+        return data;
+    }
 }

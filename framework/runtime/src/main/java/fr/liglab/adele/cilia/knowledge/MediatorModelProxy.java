@@ -14,101 +14,101 @@
 
 package fr.liglab.adele.cilia.knowledge;
 
-import java.lang.ref.WeakReference;
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
-
 import fr.liglab.adele.cilia.Node;
 import fr.liglab.adele.cilia.exceptions.CiliaIllegalStateException;
 import fr.liglab.adele.cilia.model.Adapter;
 import fr.liglab.adele.cilia.model.Chain;
 import fr.liglab.adele.cilia.model.Mediator;
 
+import java.lang.ref.WeakReference;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
+
 /**
- * Build a Weak Reference proxy (Mediator, Adapter, Chain , Node) 
- * 
+ * Build a Weak Reference proxy (Mediator, Adapter, Chain , Node)
+ *
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project
  *         Team</a>
- * 
  */
-@SuppressWarnings({ "rawtypes", "unchecked" })
+@SuppressWarnings({"rawtypes", "unchecked"})
 public class MediatorModelProxy {
 
-	private static MediatorModelProxy instance = null;
+    private static MediatorModelProxy instance = null;
 
-	public static MediatorModelProxy getInstance() {
-		if (null == instance) {
-			instance = new MediatorModelProxy();
-		}
-		return instance;
-	}
+    public static MediatorModelProxy getInstance() {
+        if (null == instance) {
+            instance = new MediatorModelProxy();
+        }
+        return instance;
+    }
 
-	private MediatorModelProxy() {
-	}
+    private MediatorModelProxy() {
+    }
 
-	public Object makeMediatorModel(Object object) {
-		Object proxy;
-		if (object instanceof Adapter)
-			proxy = makeAdapter(object);
-		else
-			proxy = makeMediator(object);
-		return proxy;
-	}
+    public Object makeMediatorModel(Object object) {
+        Object proxy;
+        if (object instanceof Adapter)
+            proxy = makeAdapter(object);
+        else
+            proxy = makeMediator(object);
+        return proxy;
+    }
 
-	private Object makeAdapter(Object object) {
-		Handler handler = new Handler(object);
-		Object proxy = Proxy.newProxyInstance(Adapter.class.getClassLoader(),
-				new Class[] { Adapter.class }, handler);
-		return Adapter.class.cast(proxy);
-	}
+    private Object makeAdapter(Object object) {
+        Handler handler = new Handler(object);
+        Object proxy = Proxy.newProxyInstance(Adapter.class.getClassLoader(),
+                new Class[]{Adapter.class}, handler);
+        return Adapter.class.cast(proxy);
+    }
 
-	private Object makeMediator(Object object) {
-		Handler handler = new Handler(object);
-		Object proxy = Proxy.newProxyInstance(Mediator.class.getClassLoader(),
-				new Class[] { Mediator.class }, handler);
-		return Mediator.class.cast(proxy);
-	}
+    private Object makeMediator(Object object) {
+        Handler handler = new Handler(object);
+        Object proxy = Proxy.newProxyInstance(Mediator.class.getClassLoader(),
+                new Class[]{Mediator.class}, handler);
+        return Mediator.class.cast(proxy);
+    }
 
-	public Object makeNode(Object object) {
-		Handler handler = new Handler(object);
-		Object proxy = Proxy.newProxyInstance(Node.class.getClassLoader(),
-				new Class[] { Node.class }, handler);
-		return Node.class.cast(proxy);
+    public Object makeNode(Object object) {
+        Handler handler = new Handler(object);
+        Object proxy = Proxy.newProxyInstance(Node.class.getClassLoader(),
+                new Class[]{Node.class}, handler);
+        return Node.class.cast(proxy);
 
-	}
+    }
 
-	public Object makeChain(Object object) {
-		Handler handler = new Handler(object);
-		Object proxy = Proxy.newProxyInstance(Chain.class.getClassLoader(),
-				new Class[] { Chain.class }, handler);
-		return Chain.class.cast(proxy);
+    public Object makeChain(Object object) {
+        Handler handler = new Handler(object);
+        Object proxy = Proxy.newProxyInstance(Chain.class.getClassLoader(),
+                new Class[]{Chain.class}, handler);
+        return Chain.class.cast(proxy);
 
-	}
-	private class Handler implements InvocationHandler {
-		private final WeakReference resourceRef;
+    }
 
-		public Handler(Object resource) {
-			this.resourceRef = new WeakReference(resource);
-		}
+    private class Handler implements InvocationHandler {
+        private final WeakReference resourceRef;
 
-		public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-			Object resource = resourceRef.get();
-			if ((resource == null)) {
-				throw new CiliaIllegalStateException();
-			} else {
-				try {
-					return method.invoke(resource, args);
-				} catch (InvocationTargetException e) {
-					throw e.getTargetException();
-				} catch (Throwable e) {
-					if (e instanceof NullPointerException) {
-						throw new CiliaIllegalStateException();
-					} else
-						throw new RuntimeException(e.getMessage());
-				}
-			}
-		}
-	}
+        public Handler(Object resource) {
+            this.resourceRef = new WeakReference(resource);
+        }
+
+        public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+            Object resource = resourceRef.get();
+            if ((resource == null)) {
+                throw new CiliaIllegalStateException();
+            } else {
+                try {
+                    return method.invoke(resource, args);
+                } catch (InvocationTargetException e) {
+                    throw e.getTargetException();
+                } catch (Throwable e) {
+                    if (e instanceof NullPointerException) {
+                        throw new CiliaIllegalStateException();
+                    } else
+                        throw new RuntimeException(e.getMessage());
+                }
+            }
+        }
+    }
 }

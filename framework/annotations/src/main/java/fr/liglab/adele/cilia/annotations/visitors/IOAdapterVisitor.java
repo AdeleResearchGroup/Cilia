@@ -1,6 +1,5 @@
 package fr.liglab.adele.cilia.annotations.visitors;
 
-import fr.liglab.adele.cilia.annotations.Port;
 import org.apache.felix.ipojo.manipulator.metadata.annotation.ComponentWorkbench;
 import org.apache.felix.ipojo.manipulator.spi.BindingContext;
 import org.apache.felix.ipojo.metadata.Attribute;
@@ -34,16 +33,15 @@ public class IOAdapterVisitor extends EmptyVisitor implements AnnotationVisitor 
         if (name.equals("name")) {
             component.addAttribute(new Attribute("name", value.toString()));
             return;
-        }
-        else if (name.equals("namespace")) {
+        } else if (name.equals("namespace")) {
             component.addAttribute(new Attribute("namespace", value.toString()));
             return;
         }
     }
 
-    public AnnotationVisitor visitAnnotation(String name, String annotation){
+    public AnnotationVisitor visitAnnotation(String name, String annotation) {
 
-        if(annotation.compareTo("Lfr/liglab/adele/cilia/annotations/Port;") == 0){
+        if (annotation.compareTo("Lfr/liglab/adele/cilia/annotations/Port;") == 0) {
             return new PortInfoVisitor(name);
         }
 
@@ -70,7 +68,7 @@ public class IOAdapterVisitor extends EmptyVisitor implements AnnotationVisitor 
 
         private String dataType = "*";
 
-        public PortInfoVisitor(String name){
+        public PortInfoVisitor(String name) {
             this.name = name;
         }
 
@@ -81,21 +79,21 @@ public class IOAdapterVisitor extends EmptyVisitor implements AnnotationVisitor 
 
             if (name.equals("name")) {
                 portName = String.valueOf(value);
-            } else if (name.equals("dataType")){
+            } else if (name.equals("dataType")) {
                 //slashed classname: change it from L/package/name/ClassName; to package.name.ClassName
                 //remove "L" and ";", and replace "/" for "."
                 String classname = String.valueOf(value);
-                dataType = String.valueOf(classname.substring(1,classname.length()-1).replace("/","."));//slashed classname
-            } else if(name.equals("semanticType")){
+                dataType = String.valueOf(classname.substring(1, classname.length() - 1).replace("/", "."));//slashed classname
+            } else if (name.equals("semanticType")) {
                 dataType = String.valueOf(value);
             }
         }
 
         public void visitEnd() {
-            Element portElement = new Element(name.replace('_','-'), null);//in-port or out-port, instead of in_port/out_port
+            Element portElement = new Element(name.replace('_', '-'), null);//in-port or out-port, instead of in_port/out_port
             Element[] ports = component.getElements("ports");
             Element portsElement = null;
-            if(ports == null || ports.length<1){
+            if (ports == null || ports.length < 1) {
                 portsElement = new Element("ports", null);
                 component.addElement(portsElement);
             } else {

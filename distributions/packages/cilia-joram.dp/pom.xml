@@ -1,94 +1,95 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-	<modelVersion>4.0.0</modelVersion>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
 
-	<!-- Project parent -->
-	<parent>
-		<groupId>fr.liglab.adele.cilia</groupId>
-		<artifactId>cilia-project</artifactId>
-		<version>1.7.5-SNAPSHOT</version>
-		<relativePath>../../../parent</relativePath>
-	</parent>
+    <!-- Project parent -->
+    <parent>
+        <groupId>fr.liglab.adele.cilia</groupId>
+        <artifactId>cilia-project</artifactId>
+        <version>1.7.5-SNAPSHOT</version>
+        <relativePath>../../../parent</relativePath>
+    </parent>
 
-	<!-- Project Description -->
-	<artifactId>cilia-joram.dp</artifactId>
-	<packaging>deployment-package</packaging>
-	<name>${productName} :: Joram - Deployment Package</name>
+    <!-- Project Description -->
+    <artifactId>cilia-joram.dp</artifactId>
+    <packaging>deployment-package</packaging>
+    <name>${productName} :: Joram - Deployment Package</name>
 
-	<dependencies>
-		<!--Cilia-->
-		<dependency>
-			<groupId>fr.liglab.adele.cilia</groupId>
-			<artifactId>jms-adapter</artifactId>
-			<version>${project.version}</version>
-		</dependency>		
-		<dependency>
-			<groupId>fr.liglab.adele.cilia</groupId>
-			<artifactId>jms2-adapter</artifactId>
-			<version>${project.version}</version>
-		</dependency>		
-		<!-- JORAM 5.7.0 dependencies -->
-		<dependency>
+    <dependencies>
+        <!--Cilia-->
+        <dependency>
+            <groupId>fr.liglab.adele.cilia</groupId>
+            <artifactId>jms-adapter</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>fr.liglab.adele.cilia</groupId>
+            <artifactId>jms2-adapter</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <!-- JORAM 5.7.0 dependencies -->
+        <dependency>
             <groupId>org.ow2.spec.ee</groupId>
             <artifactId>ow2-jms-2.0-spec</artifactId>
-			<version>1.0.0</version>
-		</dependency>
-		<dependency>
-			<groupId>org.ow2.joram</groupId>
-			<artifactId>joram-client-jms</artifactId>
-			<version>${joram.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.ow2.joram</groupId>
-			<artifactId>a3-common</artifactId>
-			<version>${joram.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.ow2.joram</groupId>
-			<artifactId>jndi-client</artifactId>
-			<version>${joram.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.ow2.joram</groupId>
-			<artifactId>jndi-shared</artifactId>
-			<version>${joram.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.ow2.joram</groupId>
-			<artifactId>joram-shared</artifactId>
-			<version>${joram.version}</version>
-		</dependency>
-		
-		<dependency>
-        	<groupId>org.ow2.spec.ee</groupId>
-        	<artifactId>ow2-jta-1.1-spec</artifactId>
-        	<version>1.0.13</version>
-      	</dependency>
-		
-		<dependency>
-			<groupId>org.objectweb.joram</groupId>
-			<artifactId>jcup</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.ow2.jonas.osgi</groupId>
-			<artifactId>monolog</artifactId>
-		</dependency>
-	</dependencies>
+            <version>1.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.ow2.joram</groupId>
+            <artifactId>joram-client-jms</artifactId>
+            <version>${joram.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.ow2.joram</groupId>
+            <artifactId>a3-common</artifactId>
+            <version>${joram.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.ow2.joram</groupId>
+            <artifactId>jndi-client</artifactId>
+            <version>${joram.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.ow2.joram</groupId>
+            <artifactId>jndi-shared</artifactId>
+            <version>${joram.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.ow2.joram</groupId>
+            <artifactId>joram-shared</artifactId>
+            <version>${joram.version}</version>
+        </dependency>
 
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>de.akquinet.gomobile</groupId>
-				<artifactId>maven-dp-plugin</artifactId>
-				<extensions>true</extensions>
-				<configuration>
-					<writeExtraData>true</writeExtraData>
-					<deploymentPackage>
-						<resources>
-						</resources>
-					</deploymentPackage>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
+        <dependency>
+            <groupId>org.ow2.spec.ee</groupId>
+            <artifactId>ow2-jta-1.1-spec</artifactId>
+            <version>1.0.13</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.objectweb.joram</groupId>
+            <artifactId>jcup</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.ow2.jonas.osgi</groupId>
+            <artifactId>monolog</artifactId>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>de.akquinet.gomobile</groupId>
+                <artifactId>maven-dp-plugin</artifactId>
+                <extensions>true</extensions>
+                <configuration>
+                    <writeExtraData>true</writeExtraData>
+                    <deploymentPackage>
+                        <resources>
+                        </resources>
+                    </deploymentPackage>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 
 </project>

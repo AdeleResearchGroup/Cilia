@@ -17,7 +17,7 @@ package fr.liglab.adele.cilia.framework.monitor;
 
 public interface IFieldMonitor {
 
-	void onFieldGet(String field, Object o);
+    void onFieldGet(String field, Object o);
 
-	void onFieldSet(String field, Object o);
+    void onFieldSet(String field, Object o);
 }

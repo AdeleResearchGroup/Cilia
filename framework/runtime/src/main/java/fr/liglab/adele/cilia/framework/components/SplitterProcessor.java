@@ -1,17 +1,17 @@
 package fr.liglab.adele.cilia.framework.components;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import fr.liglab.adele.cilia.Data;
 import fr.liglab.adele.cilia.exceptions.CiliaException;
 import fr.liglab.adele.cilia.framework.AbstractSplitter;
 import fr.liglab.adele.cilia.framework.data.DataEnrichment;
 
+import java.util.ArrayList;
+import java.util.List;
+
 
 public class SplitterProcessor extends AbstractSplitter {
 
-    private String expression; 
+    private String expression;
 
 
     public List process(List data) {
@@ -28,8 +28,8 @@ public class SplitterProcessor extends AbstractSplitter {
             throw new CiliaException(ex.getMessage());
         }
         String[] contents = content.split(expression);
-        for (int i = 0; contents != null && i < contents.length ; i++) {
-            Data ndata = (Data)dataToSplit.clone();
+        for (int i = 0; contents != null && i < contents.length; i++) {
+            Data ndata = (Data) dataToSplit.clone();
             ndata.setContent(contents[i]);
             ndata = DataEnrichment.addCorrelationInfo(ndata, contents.length, i, String.valueOf(dataToSplit.hashCode()));
             dataList.add(ndata);

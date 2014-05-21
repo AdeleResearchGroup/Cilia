@@ -17,5 +17,5 @@ package fr.liglab.adele.cilia.framework.monitor;
 import java.util.Map;
 
 public interface IProcessorMonitor {
-	void fireEvent(Map info);
+    void fireEvent(Map info);
 }

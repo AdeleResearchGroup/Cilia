@@ -14,10 +14,6 @@
  */
 package fr.liglab.adele.cilia.admin.impl;
 
-import java.util.Date;
-
-import org.osgi.framework.BundleContext;
-
 import fr.liglab.adele.cilia.ApplicationRuntime;
 import fr.liglab.adele.cilia.CiliaContext;
 import fr.liglab.adele.cilia.builder.Builder;
@@ -25,78 +21,80 @@ import fr.liglab.adele.cilia.builder.impl.BuilderImpl;
 import fr.liglab.adele.cilia.internals.CiliaContainerImpl;
 import fr.liglab.adele.cilia.knowledge.EventsManagerImpl;
 import fr.liglab.adele.cilia.knowledge.KEngineImpl;
+import org.osgi.framework.BundleContext;
+
+import java.util.Date;
 
 /**
  * Main Cilia Service implementation. It contains methods to retrieve information of mediation
  * applications and also to modify Chains. It allows to modify mediation chains
  * by using a retrieved builder and to inspect applications in both: Structural
  * information and Executing Information.
- * 
+ *
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project
  *         Team</a>
- * 
  */
 public class CiliaContextImpl implements CiliaContext {
 
-	private BundleContext bcontext = null;
+    private BundleContext bcontext = null;
 
-	private CiliaContainerImpl container = null;
+    private CiliaContainerImpl container = null;
 
-	private final static String version = "2.0.1";
+    private final static String version = "2.0.1";
 
-	private final static Date startup=new Date(System.currentTimeMillis()) ;
-	
-	private final EventsManagerImpl eventManager ;
-	private final KEngineImpl KEngine ;
+    private final static Date startup = new Date(System.currentTimeMillis());
 
-	public CiliaContextImpl(BundleContext bc) {
-		bcontext = bc;
-		/* Fire events related to operating modes level chain / mediator / bindings */
-		eventManager = new EventsManagerImpl(bc) ;
-		container = new CiliaContainerImpl(bcontext,eventManager);
-		/* provides configuration interfaces for building the knowledge base */
-		KEngine = new KEngineImpl(bc, container, eventManager) ;
-	}
+    private final EventsManagerImpl eventManager;
+    private final KEngineImpl KEngine;
 
-	private void start() {
-		eventManager.start() ;
-		container.start();
-		KEngine.start() ;
-	}
+    public CiliaContextImpl(BundleContext bc) {
+        bcontext = bc;
+        /* Fire events related to operating modes level chain / mediator / bindings */
+        eventManager = new EventsManagerImpl(bc);
+        container = new CiliaContainerImpl(bcontext, eventManager);
+        /* provides configuration interfaces for building the knowledge base */
+        KEngine = new KEngineImpl(bc, container, eventManager);
+    }
 
-
-	private void stop() {
-		eventManager.stop() ;
-		container.stop();
-		KEngine.stop();
-	}
-
-	/**
-	 * Get the version of the executing Cilia.
-	 * 
-	 * @return the version as an String.
-	 */
-	public String getVersion() {
-		return version;
-	}
-
-	public Date getDateStartUp() {
-		return startup ;
-	}
-
-	public Builder getBuilder() {
-		return new BuilderImpl(this, container);
-	}
+    private void start() {
+        eventManager.start();
+        container.start();
+        KEngine.start();
+    }
 
 
-	/**
-	 * Retrieve the ApplicationRuntime instance which allows to inspect the
-	 * runtime information of mediation chains.
-	 * 
-	 * @return the ApplicationSpecification instance.
-	 * */
-	public ApplicationRuntime getApplicationRuntime() {
-		return KEngine ;
-	}
+    private void stop() {
+        eventManager.stop();
+        container.stop();
+        KEngine.stop();
+    }
+
+    /**
+     * Get the version of the executing Cilia.
+     *
+     * @return the version as an String.
+     */
+    public String getVersion() {
+        return version;
+    }
+
+    public Date getDateStartUp() {
+        return startup;
+    }
+
+    public Builder getBuilder() {
+        return new BuilderImpl(this, container);
+    }
+
+
+    /**
+     * Retrieve the ApplicationRuntime instance which allows to inspect the
+     * runtime information of mediation chains.
+     *
+     * @return the ApplicationSpecification instance.
+     */
+    public ApplicationRuntime getApplicationRuntime() {
+        return KEngine;
+    }
 
 }

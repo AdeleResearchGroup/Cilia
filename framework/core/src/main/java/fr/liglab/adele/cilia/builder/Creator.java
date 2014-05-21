@@ -14,17 +14,13 @@
  */
 package fr.liglab.adele.cilia.builder;
 
-import fr.liglab.adele.cilia.exceptions.BuilderException;
-
 /**
- *
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project Team</a>
- *
  */
 public interface Creator {
-	
-	InstanceCreator mediator();
-	
-	InstanceCreator adapter();
-	
+
+    InstanceCreator mediator();
+
+    InstanceCreator adapter();
+
 }

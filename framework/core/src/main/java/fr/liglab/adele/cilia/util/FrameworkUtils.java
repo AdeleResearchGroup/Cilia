@@ -15,66 +15,66 @@
 
 package fr.liglab.adele.cilia.util;
 
-import java.util.regex.Pattern;
-
 import fr.liglab.adele.cilia.Node;
+
+import java.util.regex.Pattern;
 
 
 /**
  * Set of usefull statics methods
- * 
+ *
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project
  *         Team</a>
- * 
  */
 public final class FrameworkUtils {
 
-	private static final String ID_STRING_PATTTERN = "(\\w-*\\.*:*)+";
+    private static final String ID_STRING_PATTTERN = "(\\w-*\\.*:*)+";
 
-	/**
-	 * Ientifier composed by a-zA-Z_0-9 allowed characters are -_:.
-	 * 
-	 * @param id
-	 */
-	public static final void checkIdentifier(String id) {
-		Pattern p = Pattern.compile(FrameworkUtils.ID_STRING_PATTTERN);
-		if (!p.matcher(id).matches()) {
-			throw new IllegalArgumentException(
-					"id must be a word character + optionnal characters = {'_','.' ,'-' ,':' } id="
-							+ id);
-		}
-	}
+    /**
+     * Ientifier composed by a-zA-Z_0-9 allowed characters are -_:.
+     *
+     * @param id
+     */
+    public static final void checkIdentifier(String id) {
+        Pattern p = Pattern.compile(FrameworkUtils.ID_STRING_PATTTERN);
+        if (!p.matcher(id).matches()) {
+            throw new IllegalArgumentException(
+                    "id must be a word character + optionnal characters = {'_','.' ,'-' ,':' } id="
+                            + id
+            );
+        }
+    }
 
-	/**
-	 * @param chainId
-	 * @param mediatorId
-	 * @param uuid
-	 * @return String chainId/mediatorId/uuid
-	 */
-	public static final String makeQualifiedId(String chainId, String mediatorId,
-			String uuid) {
-		StringBuffer sb = new StringBuffer(chainId);
-		sb.append("/").append(mediatorId);
-		if (uuid != null) {
-			sb.append("/").append(uuid);
-		}
-		return sb.toString();
-	}
-	
-	public static final String makeQualifiedId(Node node) {
-		StringBuffer sb = new StringBuffer(node.chainId());
-		sb.append("/").append(node.nodeId());
-		sb.append("/").append(node.uuid());
-		return sb.toString();
-	}
-	
-	/* Data flow management ldap keys word */
-	public static final String VALUE_CURRENT = "value.current";
-	public static final String VALUE_PREVIOUS = "value.previous";
-	public static final String DELTA_ABSOLUTE = "delta.absolute";
-	public static final String DELTA_RELATIVE = "value.relative";
-	public static final String TIME_ELAPSED = "time.elapsed";
-	public static final String TIME_CURRENT = "time.current";
-	public static final String TIME_PREVIOUS = "time.previous";
-	
+    /**
+     * @param chainId
+     * @param mediatorId
+     * @param uuid
+     * @return String chainId/mediatorId/uuid
+     */
+    public static final String makeQualifiedId(String chainId, String mediatorId,
+                                               String uuid) {
+        StringBuffer sb = new StringBuffer(chainId);
+        sb.append("/").append(mediatorId);
+        if (uuid != null) {
+            sb.append("/").append(uuid);
+        }
+        return sb.toString();
+    }
+
+    public static final String makeQualifiedId(Node node) {
+        StringBuffer sb = new StringBuffer(node.chainId());
+        sb.append("/").append(node.nodeId());
+        sb.append("/").append(node.uuid());
+        return sb.toString();
+    }
+
+    /* Data flow management ldap keys word */
+    public static final String VALUE_CURRENT = "value.current";
+    public static final String VALUE_PREVIOUS = "value.previous";
+    public static final String DELTA_ABSOLUTE = "delta.absolute";
+    public static final String DELTA_RELATIVE = "value.relative";
+    public static final String TIME_ELAPSED = "time.elapsed";
+    public static final String TIME_CURRENT = "time.current";
+    public static final String TIME_PREVIOUS = "time.previous";
+
 }

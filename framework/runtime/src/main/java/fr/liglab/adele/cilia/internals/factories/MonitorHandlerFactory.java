@@ -5,12 +5,12 @@ import org.apache.felix.ipojo.HandlerManagerFactory;
 import org.apache.felix.ipojo.metadata.Element;
 import org.osgi.framework.BundleContext;
 
-public class MonitorHandlerFactory extends HandlerManagerFactory{
+public class MonitorHandlerFactory extends HandlerManagerFactory {
 
-	public MonitorHandlerFactory(BundleContext context, Element metadata)
-			throws ConfigurationException {
-		super(context, metadata);
-		
-	}
+    public MonitorHandlerFactory(BundleContext context, Element metadata)
+            throws ConfigurationException {
+        super(context, metadata);
+
+    }
 
 }

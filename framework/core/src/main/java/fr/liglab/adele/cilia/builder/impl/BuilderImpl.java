@@ -14,9 +14,6 @@
  */
 package fr.liglab.adele.cilia.builder.impl;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import fr.liglab.adele.cilia.ChainCallback;
 import fr.liglab.adele.cilia.CiliaContext;
 import fr.liglab.adele.cilia.builder.Architecture;
@@ -26,142 +23,147 @@ import fr.liglab.adele.cilia.exceptions.BuilderPerformerException;
 import fr.liglab.adele.cilia.exceptions.CiliaException;
 import fr.liglab.adele.cilia.model.CiliaContainer;
 import fr.liglab.adele.cilia.util.Const;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
- *
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project Team</a>
- *
  */
 public class BuilderImpl implements Builder {
 
-	CiliaContainer container;
+    CiliaContainer container;
 
-	CiliaContext context;
+    CiliaContext context;
 
-	ArchitectureImpl architecture = null;
-	
-	private static Logger log = LoggerFactory.getLogger(Const.LOGGER_CORE);
+    ArchitectureImpl architecture = null;
 
-	public BuilderImpl(CiliaContext context, CiliaContainer container) {
-		this.container = container;
-		this.context = context;
-	}
+    private static Logger log = LoggerFactory.getLogger(Const.LOGGER_CORE);
+
+    public BuilderImpl(CiliaContext context, CiliaContainer container) {
+        this.container = container;
+        this.context = context;
+    }
 
 
-	/* (non-Javadoc)
-	 * @see fr.liglab.adele.cilia.builder.Builder#create(java.lang.String)
-	 */
-	public Architecture create(String chainId) throws BuilderException {
-		if (null == chainId) {
-			throw new BuilderException("Unable to create chain with ID=null");
-		}
-		if (container.getChain(chainId) != null) {
-			throw new BuilderException("Unable to create new chain with an existing ID:" + chainId);
-		}
-		if (architecture != null) {
-			throw new BuilderException("Builder with existing configuration");
-		} else {
-			architecture = new ArchitectureImpl(chainId, Architecture.CREATE);
-		}
-		return architecture;
-	}
+    /* (non-Javadoc)
+     * @see fr.liglab.adele.cilia.builder.Builder#create(java.lang.String)
+     */
+    public Architecture create(String chainId) throws BuilderException {
+        if (null == chainId) {
+            throw new BuilderException("Unable to create chain with ID=null");
+        }
+        if (container.getChain(chainId) != null) {
+            throw new BuilderException("Unable to create new chain with an existing ID:" + chainId);
+        }
+        if (architecture != null) {
+            throw new BuilderException("Builder with existing configuration");
+        } else {
+            architecture = new ArchitectureImpl(chainId, Architecture.CREATE);
+        }
+        return architecture;
+    }
 
-	/* (non-Javadoc)
-	 * @see fr.liglab.adele.cilia.builder.Builder#get(java.lang.String)
-	 */
-	public Architecture get(String chainId) throws BuilderException {
-		if (null == chainId) {
-			throw new BuilderException("Unable to retrieve null chain");
-		}
-		if (architecture != null && !((ArchitectureImpl)architecture).getChainId().equalsIgnoreCase(chainId) ) {
-			throw new BuilderException("There is a Builder Configuration for a Chain with id :" + ((ArchitectureImpl)architecture).getChainId());
-		}
-		if (architecture == null) {
-			architecture =  new ArchitectureImpl(chainId, Architecture.MODIFY);
-		}
-		return architecture;
-	}
+    /* (non-Javadoc)
+     * @see fr.liglab.adele.cilia.builder.Builder#get(java.lang.String)
+     */
+    public Architecture get(String chainId) throws BuilderException {
+        if (null == chainId) {
+            throw new BuilderException("Unable to retrieve null chain");
+        }
+        if (architecture != null && !((ArchitectureImpl) architecture).getChainId().equalsIgnoreCase(chainId)) {
+            throw new BuilderException("There is a Builder Configuration for a Chain with id :" + ((ArchitectureImpl) architecture).getChainId());
+        }
+        if (architecture == null) {
+            architecture = new ArchitectureImpl(chainId, Architecture.MODIFY);
+        }
+        return architecture;
+    }
 
-	public Builder done() throws BuilderException, BuilderPerformerException {
-		setInvalid();//So it is impossible to modify again this builder.
-		if(!architecture.toCreate() && container.getChain(architecture.getChainId()) == null){
-			try {
-				log.warn("Will wait until chain is ready: " + architecture.getChainId());
-				context.getApplicationRuntime().addListener("(chain="+architecture.getChainId()+")", new ChainListenerImpl());
-			} catch (CiliaException e) {
-				e.printStackTrace();
-				throw new BuilderPerformerException(e.getMessage());
-			}
-		} else {
-			performDone();
-		}
+    public Builder done() throws BuilderException, BuilderPerformerException {
+        setInvalid();//So it is impossible to modify again this builder.
+        if (!architecture.toCreate() && container.getChain(architecture.getChainId()) == null) {
+            try {
+                log.warn("Will wait until chain is ready: " + architecture.getChainId());
+                context.getApplicationRuntime().addListener("(chain=" + architecture.getChainId() + ")", new ChainListenerImpl());
+            } catch (CiliaException e) {
+                e.printStackTrace();
+                throw new BuilderPerformerException(e.getMessage());
+            }
+        } else {
+            performDone();
+        }
 
-		return this;
-	}
+        return this;
+    }
 
-	private Builder performDone() throws BuilderException, BuilderPerformerException {
-		BuilderPerformer perf = new BuilderPerformer(architecture, container, context);
-		perf.perform();
-		return this;
+    private Builder performDone() throws BuilderException, BuilderPerformerException {
+        BuilderPerformer perf = new BuilderPerformer(architecture, container, context);
+        perf.perform();
+        return this;
 
-	}
+    }
 
-	private void setInvalid() throws BuilderException {
-		if (architecture == null) {
-			throw new BuilderException("Unable to build an invalid architecture chain: Architecture is null");
-		}
-		((ArchitectureImpl)architecture).checkValidation();
-		((ArchitectureImpl)architecture).setValid(false);
-	}
+    private void setInvalid() throws BuilderException {
+        if (architecture == null) {
+            throw new BuilderException("Unable to build an invalid architecture chain: Architecture is null");
+        }
+        ((ArchitectureImpl) architecture).checkValidation();
+        ((ArchitectureImpl) architecture).setValid(false);
+    }
 
-	/* (non-Javadoc)
-	 * @see fr.liglab.adele.cilia.builder.Builder#undo()
-	 */
-	public Builder undo() throws BuilderException {
-		throw new UnsupportedOperationException("undo operation is currently unsupported");
-	}
-	/**
-	 * Return the current chain id this builder is working on.
-	 * Return null if there is any configuration on this builder.
-	 */
-	public String current() {
-		return architecture.getChainId();
-	}
-	/**
-	 * Remove a mediation chain.
-	 * @param chainId the id of the chain to remove.
-	 * @throws BuilderException 
-	 */
-	public Builder remove(String chainId) throws BuilderException{
-		if (null == chainId) {
-			throw new BuilderException("Unable to retrieve null chain");
-		}
-		if (container.getChain(chainId) == null && architecture == null) {
-			throw new BuilderException("There is any Chain with id :" + chainId);
-		}
-		if (architecture != null && !((ArchitectureImpl)architecture).getChainId().equalsIgnoreCase(chainId) ) {
-			throw new BuilderException("There is a Builder Configuration for a Chain with id :" + ((ArchitectureImpl)architecture).getChainId());
-		}
-		if (architecture == null) {
-			architecture =  new ArchitectureImpl(chainId, Architecture.REMOVE);
-		}
-		return this;
-	}
+    /* (non-Javadoc)
+     * @see fr.liglab.adele.cilia.builder.Builder#undo()
+     */
+    public Builder undo() throws BuilderException {
+        throw new UnsupportedOperationException("undo operation is currently unsupported");
+    }
 
-	private class ChainListenerImpl implements ChainCallback {
+    /**
+     * Return the current chain id this builder is working on.
+     * Return null if there is any configuration on this builder.
+     */
+    public String current() {
+        return architecture.getChainId();
+    }
 
-		public void onAdded(String chainId) {
-			try {
-				performDone();
-			} catch (BuilderException e) {
-				e.printStackTrace();
-			} catch (BuilderPerformerException e) {
-				e.printStackTrace();
-			}
-		}
+    /**
+     * Remove a mediation chain.
+     *
+     * @param chainId the id of the chain to remove.
+     * @throws BuilderException
+     */
+    public Builder remove(String chainId) throws BuilderException {
+        if (null == chainId) {
+            throw new BuilderException("Unable to retrieve null chain");
+        }
+        if (container.getChain(chainId) == null && architecture == null) {
+            throw new BuilderException("There is any Chain with id :" + chainId);
+        }
+        if (architecture != null && !((ArchitectureImpl) architecture).getChainId().equalsIgnoreCase(chainId)) {
+            throw new BuilderException("There is a Builder Configuration for a Chain with id :" + ((ArchitectureImpl) architecture).getChainId());
+        }
+        if (architecture == null) {
+            architecture = new ArchitectureImpl(chainId, Architecture.REMOVE);
+        }
+        return this;
+    }
 
-		public void onRemoved(String chainId) {	}
+    private class ChainListenerImpl implements ChainCallback {
 
-		public void onStateChange(String chainId, boolean event) {	}
-	}
+        public void onAdded(String chainId) {
+            try {
+                performDone();
+            } catch (BuilderException e) {
+                e.printStackTrace();
+            } catch (BuilderPerformerException e) {
+                e.printStackTrace();
+            }
+        }
+
+        public void onRemoved(String chainId) {
+        }
+
+        public void onStateChange(String chainId, boolean event) {
+        }
+    }
 }

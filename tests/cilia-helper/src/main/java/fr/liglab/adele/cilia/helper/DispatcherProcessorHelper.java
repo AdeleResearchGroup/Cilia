@@ -13,26 +13,25 @@
  * limitations under the License.
  */
 /**
- * 
+ *
  */
 package fr.liglab.adele.cilia.helper;
 
-import java.util.List;
-
 import fr.liglab.adele.cilia.Data;
+
+import java.util.List;
 
 /**
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project
  *         Team</a>
- *
  */
 public interface DispatcherProcessorHelper {
 
-	void clear();
-	
-	 List<Data> getData();
-	
-	int getAmountData();
-	
-	Data getLastData();
+    void clear();
+
+    List<Data> getData();
+
+    int getAmountData();
+
+    Data getLastData();
 }

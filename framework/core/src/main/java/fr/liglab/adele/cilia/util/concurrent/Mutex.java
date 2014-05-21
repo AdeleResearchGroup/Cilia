@@ -33,7 +33,7 @@
  * overhead that would normally make this worthwhile only in cases of
  * extreme contention.
  * <pre>
- * class Node { 
+ * class Node {
  *   Object item; 
  *   Node next; 
  *   Mutex lock = new Mutex(); // each node keeps its own lock
@@ -108,59 +108,61 @@ package fr.liglab.adele.cilia.util.concurrent;
 
 public class Mutex implements Sync {
 
-	/** The lock status **/
-	protected boolean inuse_ = false;
+    /**
+     * The lock status *
+     */
+    protected boolean inuse_ = false;
 
-	public void acquire() throws InterruptedException {
-		if (Thread.interrupted())
-			throw new InterruptedException();
-		synchronized (this) {
-			try {
-				while (inuse_)
-					wait();
-				inuse_ = true;
-			} catch (InterruptedException ex) {
-				notify();
-				throw ex;
-			}
-		}
-	}
+    public void acquire() throws InterruptedException {
+        if (Thread.interrupted())
+            throw new InterruptedException();
+        synchronized (this) {
+            try {
+                while (inuse_)
+                    wait();
+                inuse_ = true;
+            } catch (InterruptedException ex) {
+                notify();
+                throw ex;
+            }
+        }
+    }
 
-	public synchronized void release() {
-		inuse_ = false;
-		notify();
-	}
+    public synchronized void release() {
+        inuse_ = false;
+        notify();
+    }
 
-	public boolean attempt(long msecs) throws InterruptedException {
-		if (Thread.interrupted())
-			throw new InterruptedException();
-		synchronized (this) {
-			if (!inuse_) {
-				inuse_ = true;
-				return true;
-			} else if (msecs <= 0)
-				return false;
-			else {
-				long waitTime = msecs;
-				long start = System.currentTimeMillis();
-				try {
-					for (;;) {
-						wait(waitTime);
-						if (!inuse_) {
-							inuse_ = true;
-							return true;
-						} else {
-							waitTime = msecs - (System.currentTimeMillis() - start);
-							if (waitTime <= 0)
-								return false;
-						}
-					}
-				} catch (InterruptedException ex) {
-					notify();
-					throw ex;
-				}
-			}
-		}
-	}
+    public boolean attempt(long msecs) throws InterruptedException {
+        if (Thread.interrupted())
+            throw new InterruptedException();
+        synchronized (this) {
+            if (!inuse_) {
+                inuse_ = true;
+                return true;
+            } else if (msecs <= 0)
+                return false;
+            else {
+                long waitTime = msecs;
+                long start = System.currentTimeMillis();
+                try {
+                    for (; ; ) {
+                        wait(waitTime);
+                        if (!inuse_) {
+                            inuse_ = true;
+                            return true;
+                        } else {
+                            waitTime = msecs - (System.currentTimeMillis() - start);
+                            if (waitTime <= 0)
+                                return false;
+                        }
+                    }
+                } catch (InterruptedException ex) {
+                    notify();
+                    throw ex;
+                }
+            }
+        }
+    }
 
 }

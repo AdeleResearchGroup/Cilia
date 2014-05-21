@@ -21,16 +21,16 @@ package fr.liglab.adele.cilia.dependency;
 
 /**
  * Object managing thread local copy of required services.
- * 
+ *
  * @author <a href="mailto:dev@felix.apache.org">Felix Project Team</a>
  */
 public class ServiceUsage extends ThreadLocal {
-    
+
     /**
      * Structure contained in the Thread Local.
      */
     public static class Usage {
-        
+
         /**
          * Stack Size.
          */
@@ -39,13 +39,13 @@ public class ServiceUsage extends ThreadLocal {
          * Object to inject.
          */
         Object m_object;
-        
+
         /**
          * Tracks the number of component method called
          * in the current thread.
          */
         int m_componentStack = 0;
-        
+
         /**
          * Increment the stack level from the first
          * service get.
@@ -53,48 +53,51 @@ public class ServiceUsage extends ThreadLocal {
         public void inc() {
             m_stack++;
         }
-        
+
         /**
          * Increment the component stack level.
          */
         public void incComponentStack() {
             m_componentStack++;
         }
-        
+
         /**
          * Decrement the stack level.
-         * @return  true if the stack is 0 after the decrement.
+         *
+         * @return true if the stack is 0 after the decrement.
          */
         public boolean dec() {
             m_stack--;
             return m_stack == 0;
         }
-        
+
         /**
          * Decrement the component stack level.
-         * @return  true if the stack is 0 after the decrement.
+         *
+         * @return true if the stack is 0 after the decrement.
          */
         public boolean decComponentStack() {
             m_componentStack--;
             return m_componentStack == 0;
         }
-        
+
         /**
          * Clear the service object array.
          */
         public void clear() {
             m_object = null;
         }
-        
+
     }
-    
+
     /**
      * Initialize the cached object.
+     *
      * @return an empty Usage object.
      * @see java.lang.ThreadLocal#initialValue()
      */
     public Object initialValue() {
         return new Usage();
-    }   
+    }
 
 }

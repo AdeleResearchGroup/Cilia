@@ -15,9 +15,9 @@
 
 package fr.liglab.adele.cilia.ea;
 
-import java.util.Dictionary;
-import java.util.Hashtable;
-
+import fr.liglab.adele.cilia.Data;
+import fr.liglab.adele.cilia.framework.AbstractCollector;
+import fr.liglab.adele.cilia.util.Const;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Filter;
 import org.osgi.framework.InvalidSyntaxException;
@@ -28,18 +28,16 @@ import org.osgi.service.event.EventHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import fr.liglab.adele.cilia.Data;
-import fr.liglab.adele.cilia.framework.AbstractCollector;
-import fr.liglab.adele.cilia.util.Const;
+import java.util.Dictionary;
+import java.util.Hashtable;
 
 
 /**
- * EventAdmin Collector. 
+ * EventAdmin Collector.
  * Collect Data objects using Event-based protocol (OSGi EventAdmin).
- * 
+ *
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project
  *         Team</a>
- * 
  */
 
 public class EventAdminCollector extends AbstractCollector implements EventHandler {
@@ -68,15 +66,12 @@ public class EventAdminCollector extends AbstractCollector implements EventHandl
      */
     /**
      * Constructor
-     * 
-     * @param bc
-     *            BundleContext
+     *
+     * @param bc BundleContext
      */
     public EventAdminCollector(BundleContext bc) {
         this.m_bundleContext = bc;
     }
-
-
 
 
     /**
@@ -97,7 +92,7 @@ public class EventAdminCollector extends AbstractCollector implements EventHandl
                     Filter filter = null;
                     filter = m_bundleContext.createFilter(ldapfilter);
                 } catch (InvalidSyntaxException e) {
-                    log.error("Error when converting filter "+ldapfilter+" in ldap syntax");
+                    log.error("Error when converting filter " + ldapfilter + " in ldap syntax");
                     log.error(e.getStackTrace().toString());
                     ldapfilter = null;
                 }
@@ -110,10 +105,10 @@ public class EventAdminCollector extends AbstractCollector implements EventHandl
             }
             m_serviceRegistration = m_bundleContext.registerService(
                     EventHandler.class.getName(), m_eventHandler, dico);
-        }else {
-        	log.error("Unable to register without topic");
+        } else {
+            log.error("Unable to register without topic");
         }
-        
+
     }
 
     /**
@@ -127,7 +122,7 @@ public class EventAdminCollector extends AbstractCollector implements EventHandl
 
     /**
      * Get the Detailed description of this Collector
-     * 
+     *
      * @return
      */
     public String getDescription() {
@@ -142,7 +137,7 @@ public class EventAdminCollector extends AbstractCollector implements EventHandl
         String[] keys = event.getPropertyNames();
         if (keys != null) {
             for (int i = 0; i < keys.length; i++) {
-               log.trace("received value:" + event.getProperty(keys[i]));
+                log.trace("received value:" + event.getProperty(keys[i]));
                 if (!keys[i].equalsIgnoreCase("event.topics")) {
                     dico.put(keys[i], event.getProperty(keys[i]));
                 }
@@ -166,7 +161,7 @@ public class EventAdminCollector extends AbstractCollector implements EventHandl
     public void setTopics(String topics) {
         m_topics = topics;
         if (m_serviceRegistration != null) {
-            m_serviceRegistration.unregister();			
+            m_serviceRegistration.unregister();
         }
         Dictionary dico = new Hashtable();
         String[] topicss = getListStrings(m_topics);
@@ -178,7 +173,7 @@ public class EventAdminCollector extends AbstractCollector implements EventHandl
 
     /**
      * Get a list of separate Strings from one String
-     * 
+     *
      * @param text
      * @return
      */
@@ -198,15 +193,15 @@ public class EventAdminCollector extends AbstractCollector implements EventHandl
         }
 
         /**
-         *  remove trailing whitespace
+         * remove trailing whitespace
          */
         private static String rtrim(String source) {
             return source.replaceAll("\\s+$", "");
         }
 
         /**
-         *  replace multiple white spaces between words with single blank 
-         */  
+         * replace multiple white spaces between words with single blank
+         */
         private static String itrim(String source) {
             String str = source.replaceAll("\\b\\s{2,}\\b", " ");
             return str.replaceAll(" ", "");

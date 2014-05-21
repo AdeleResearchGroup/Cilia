@@ -15,19 +15,17 @@
 
 package fr.liglab.adele.cilia.runtime;
 
-import java.util.Dictionary;
-
 import fr.liglab.adele.cilia.framework.IScheduler;
 import fr.liglab.adele.cilia.runtime.impl.SchedulerInstanceManager;
 
 public interface ISchedulerHandler extends IScheduler {
 
-	public void lock();
+    public void lock();
 
-	public void unlock();
-	
-	public void setSchedulerManager(SchedulerInstanceManager sm);
-	
-	//public void addCollector(String collectorType, String collectorId, Dictionary dictionary);
-	
+    public void unlock();
+
+    public void setSchedulerManager(SchedulerInstanceManager sm);
+
+    //public void addCollector(String collectorType, String collectorId, Dictionary dictionary);
+
 }

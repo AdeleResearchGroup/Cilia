@@ -18,15 +18,18 @@ import fr.liglab.adele.cilia.exceptions.BuilderException;
 import fr.liglab.adele.cilia.exceptions.BuilderPerformerException;
 
 /**
- *
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project Team</a>
- *
  */
 public interface Builder {
-	Architecture create(String chainid) throws BuilderException;
-	Builder remove(String chainId) throws BuilderException;
-	Architecture get(String chainId) throws BuilderException;
-	Builder done() throws BuilderException, BuilderPerformerException;
-	Builder undo() throws BuilderException;
-	String current();
+    Architecture create(String chainid) throws BuilderException;
+
+    Builder remove(String chainId) throws BuilderException;
+
+    Architecture get(String chainId) throws BuilderException;
+
+    Builder done() throws BuilderException, BuilderPerformerException;
+
+    Builder undo() throws BuilderException;
+
+    String current();
 }

@@ -15,20 +15,18 @@
 package fr.liglab.adele.cilia.exceptions;
 
 /**
- *
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project Team</a>
- *
  */
 public class BuilderConfigurationException extends CiliaException {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 5970121330371607764L;
+    /**
+     *
+     */
+    private static final long serialVersionUID = 5970121330371607764L;
 
-	public BuilderConfigurationException(String message) {
-		super(message);
-	}
-	
+    public BuilderConfigurationException(String message) {
+        super(message);
+    }
+
 
 }

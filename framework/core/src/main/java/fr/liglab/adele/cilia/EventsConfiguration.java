@@ -17,12 +17,11 @@ package fr.liglab.adele.cilia;
 
 /**
  * Configuration of events published by the runtime
- * 
+ *
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project
  *         Team</a>
- * 
  */
 public interface EventsConfiguration extends NodeRegistration, ChainRegistration,
-VariablesRegistration {
+        VariablesRegistration {
 
 }

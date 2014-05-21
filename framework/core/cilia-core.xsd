@@ -1,299 +1,302 @@
+<!--
+    Copyright Adele Team LIG Licensed under the Apache License, Version
+    2.0 (the "License"); you may not use this file except in compliance
+    with the License. You may obtain a copy of the License at
 
-	<!--
-		Copyright Adele Team LIG Licensed under the Apache License, Version
-		2.0 (the "License"); you may not use this file except in compliance
-		with the License. You may obtain a copy of the License at
-
-		   http://www.apache.org/licenses/LICENSE-2.0 Unless required by
-		applicable law or agreed to in writing, software distributed under the
-		License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
-		CONDITIONS OF ANY KIND, either express or implied. See the License for
-		the specific language governing permissions and limitations under the
-		License.
-	-->
+       http://www.apache.org/licenses/LICENSE-2.0 Unless required by
+    applicable law or agreed to in writing, software distributed under the
+    License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
+    CONDITIONS OF ANY KIND, either express or implied. See the License for
+    the specific language governing permissions and limitations under the
+    License.
+-->
 <xs:schema elementFormDefault="qualified" targetNamespace="fr.liglab.adele.cilia"
-	xmlns="fr.liglab.adele.cilia" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+           xmlns="fr.liglab.adele.cilia" xmlns:xs="http://www.w3.org/2001/XMLSchema">
 
-	<!--
-		xs:import namespace="org.apache.felix.ipojo"
-		schemaLocation="http://people.apache.org/~clement/ipojo/schemas/core.xsd"/
-	-->
+    <!--
+        xs:import namespace="org.apache.felix.ipojo"
+        schemaLocation="http://people.apache.org/~clement/ipojo/schemas/core.xsd"/
+    -->
 
-	<xs:annotation>
-		<xs:documentation></xs:documentation>
-	</xs:annotation>
-	<xs:element name="cilia">
-		<xs:complexType>
-			<xs:annotation>
-				<xs:documentation>Cilia top level element.</xs:documentation>
-			</xs:annotation>
-			<xs:choice minOccurs="0" maxOccurs="unbounded">
-				<xs:element ref="mediator" minOccurs="0" maxOccurs="unbounded">
-					<xs:annotation>
-						<xs:documentation>The mediator type declarations.
-						</xs:documentation>
-					</xs:annotation>
-				</xs:element>
-				<xs:element ref="processor" minOccurs="0" maxOccurs="unbounded">
-					<xs:annotation>
-						<xs:documentation>The processor declarations
-						</xs:documentation>
-					</xs:annotation>
-				</xs:element>
-				<xs:element ref="scheduler" minOccurs="0" maxOccurs="unbounded">
-					<xs:annotation>
-						<xs:documentation>The scheduler declarations
-						</xs:documentation>
-					</xs:annotation>
-				</xs:element>
-				<xs:element ref="dispatcher" minOccurs="0" maxOccurs="unbounded">
-					<xs:annotation>
-						<xs:documentation>The dispatcher declarations
-						</xs:documentation>
-					</xs:annotation>
-				</xs:element>
-				<xs:element ref="sender" minOccurs="0" maxOccurs="unbounded">
-					<xs:annotation>
-						<xs:documentation>The sender declarations
-						</xs:documentation>
-					</xs:annotation>
-				</xs:element>
-				<xs:element ref="collector" minOccurs="0" maxOccurs="unbounded">
-					<xs:annotation>
-						<xs:documentation>The processor declarations
-						</xs:documentation>
-					</xs:annotation>
-				</xs:element>
-				<xs:element ref="binding" minOccurs="0" maxOccurs="unbounded">
-					<xs:annotation>
-						<xs:documentation>The processor declarations
-						</xs:documentation>
-					</xs:annotation>
-				</xs:element>
-				<xs:any namespace="##other" processContents="lax" minOccurs="0"
-					maxOccurs="unbounded">
-				</xs:any>
-			</xs:choice>
-		</xs:complexType>
-	</xs:element>
-	<xs:element name="mediator" type="MediatorType" />
-	<xs:element name="processor" type="ProcessorType" />
-	<xs:element name="scheduler" type="SchedulerType" />
-	<xs:element name="dispatcher" type="DispatcherType" />
-	<xs:element name="sender" type="SenderType" />
-	<xs:element name="collector" type="CollectorType" />
-	<xs:element name="binding" type="BindingType" />
-	<xs:complexType name="MediatorType">
-		<xs:sequence>
-			<xs:element name="scheduler" type="schedulerChoice"
-				minOccurs="1" maxOccurs="1">
-			</xs:element>
-			<xs:element name="processor" type="processorChoice"
-				minOccurs="1" maxOccurs="1">
-			</xs:element>
-			<xs:element name="dispatcher" type="dispatcherChoice"
-				minOccurs="1" maxOccurs="1">
-			</xs:element>
-		</xs:sequence>
-		<xs:attribute name="name" type="xs:string" use="required" />
-		<xs:attribute name="category" type="xs:string" use="optional" />
-		<xs:attribute name="namespace" type="xs:string" use="optional" />
-	</xs:complexType>
-	<xs:complexType name="processorChoice">
-		<xs:attribute name="name" type="xs:string" use="required"></xs:attribute>
-		<xs:attribute name="namespace" type="xs:string" use="optional">
-		</xs:attribute>
-	</xs:complexType>
-	<xs:complexType name="schedulerChoice">
-		<xs:attribute name="name" type="xs:string" use="required"></xs:attribute>
-		<xs:attribute name="namespace" type="xs:string" use="optional">
-		</xs:attribute>
-	</xs:complexType>
-	<xs:complexType name="dispatcherChoice">
-		<xs:attribute name="name" type="xs:string" use="required"></xs:attribute>
-		<xs:attribute name="namespace" type="xs:string" use="optional">
-		</xs:attribute>
-	</xs:complexType>
+    <xs:annotation>
+        <xs:documentation></xs:documentation>
+    </xs:annotation>
+    <xs:element name="cilia">
+        <xs:complexType>
+            <xs:annotation>
+                <xs:documentation>Cilia top level element.</xs:documentation>
+            </xs:annotation>
+            <xs:choice minOccurs="0" maxOccurs="unbounded">
+                <xs:element ref="mediator" minOccurs="0" maxOccurs="unbounded">
+                    <xs:annotation>
+                        <xs:documentation>The mediator type declarations.
+                        </xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element ref="processor" minOccurs="0" maxOccurs="unbounded">
+                    <xs:annotation>
+                        <xs:documentation>The processor declarations
+                        </xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element ref="scheduler" minOccurs="0" maxOccurs="unbounded">
+                    <xs:annotation>
+                        <xs:documentation>The scheduler declarations
+                        </xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element ref="dispatcher" minOccurs="0" maxOccurs="unbounded">
+                    <xs:annotation>
+                        <xs:documentation>The dispatcher declarations
+                        </xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element ref="sender" minOccurs="0" maxOccurs="unbounded">
+                    <xs:annotation>
+                        <xs:documentation>The sender declarations
+                        </xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element ref="collector" minOccurs="0" maxOccurs="unbounded">
+                    <xs:annotation>
+                        <xs:documentation>The processor declarations
+                        </xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element ref="binding" minOccurs="0" maxOccurs="unbounded">
+                    <xs:annotation>
+                        <xs:documentation>The processor declarations
+                        </xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <xs:any namespace="##other" processContents="lax" minOccurs="0"
+                        maxOccurs="unbounded">
+                </xs:any>
+            </xs:choice>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="mediator" type="MediatorType"/>
+    <xs:element name="processor" type="ProcessorType"/>
+    <xs:element name="scheduler" type="SchedulerType"/>
+    <xs:element name="dispatcher" type="DispatcherType"/>
+    <xs:element name="sender" type="SenderType"/>
+    <xs:element name="collector" type="CollectorType"/>
+    <xs:element name="binding" type="BindingType"/>
+    <xs:complexType name="MediatorType">
+        <xs:sequence>
+            <xs:element name="scheduler" type="schedulerChoice"
+                        minOccurs="1" maxOccurs="1">
+            </xs:element>
+            <xs:element name="processor" type="processorChoice"
+                        minOccurs="1" maxOccurs="1">
+            </xs:element>
+            <xs:element name="dispatcher" type="dispatcherChoice"
+                        minOccurs="1" maxOccurs="1">
+            </xs:element>
+        </xs:sequence>
+        <xs:attribute name="name" type="xs:string" use="required"/>
+        <xs:attribute name="category" type="xs:string" use="optional"/>
+        <xs:attribute name="namespace" type="xs:string" use="optional"/>
+    </xs:complexType>
+    <xs:complexType name="processorChoice">
+        <xs:attribute name="name" type="xs:string" use="required"></xs:attribute>
+        <xs:attribute name="namespace" type="xs:string" use="optional">
+        </xs:attribute>
+    </xs:complexType>
+    <xs:complexType name="schedulerChoice">
+        <xs:attribute name="name" type="xs:string" use="required"></xs:attribute>
+        <xs:attribute name="namespace" type="xs:string" use="optional">
+        </xs:attribute>
+    </xs:complexType>
+    <xs:complexType name="dispatcherChoice">
+        <xs:attribute name="name" type="xs:string" use="required"></xs:attribute>
+        <xs:attribute name="namespace" type="xs:string" use="optional">
+        </xs:attribute>
+    </xs:complexType>
 
-	<xs:complexType name="ProcessorType">
-		<xs:complexContent>
-			<xs:extension base="ComponentType">
-				<xs:attribute name="classname" type="xs:string" use="required" />
-				<xs:attribute name="name" type="xs:string" use="required" />
-				<xs:attribute name="namespace" type="xs:string" use="optional" />
-			</xs:extension>
-		</xs:complexContent>
-	</xs:complexType>
+    <xs:complexType name="ProcessorType">
+        <xs:complexContent>
+            <xs:extension base="ComponentType">
+                <xs:attribute name="classname" type="xs:string" use="required"/>
+                <xs:attribute name="name" type="xs:string" use="required"/>
+                <xs:attribute name="namespace" type="xs:string" use="optional"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
 
-	<xs:complexType name="SchedulerType">
-		<xs:complexContent>
-			<xs:extension base="ComponentType">
-				<xs:attribute name="classname" type="xs:string" use="required" />
-				<xs:attribute name="name" type="xs:string" use="required" />
-				<xs:attribute name="namespace" type="xs:string" use="optional" />
-			</xs:extension>
-		</xs:complexContent>
-	</xs:complexType>
+    <xs:complexType name="SchedulerType">
+        <xs:complexContent>
+            <xs:extension base="ComponentType">
+                <xs:attribute name="classname" type="xs:string" use="required"/>
+                <xs:attribute name="name" type="xs:string" use="required"/>
+                <xs:attribute name="namespace" type="xs:string" use="optional"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
 
-	<xs:complexType name="DispatcherType">
-		<xs:complexContent>
-			<xs:extension base="ComponentType">
-				<xs:attribute name="classname" type="xs:string" use="required" />
-				<xs:attribute name="name" type="xs:string" use="required" />
-				<xs:attribute name="namespace" type="xs:string" use="optional" />
-			</xs:extension>
-		</xs:complexContent>
-	</xs:complexType>
+    <xs:complexType name="DispatcherType">
+        <xs:complexContent>
+            <xs:extension base="ComponentType">
+                <xs:attribute name="classname" type="xs:string" use="required"/>
+                <xs:attribute name="name" type="xs:string" use="required"/>
+                <xs:attribute name="namespace" type="xs:string" use="optional"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
 
-	<xs:complexType name="SenderType">
-		<xs:complexContent>
-			<xs:extension base="ComponentType">
-				<xs:attribute name="classname" type="xs:string" use="required" />
-				<xs:attribute name="name" type="xs:string" use="required" />
-				<xs:attribute name="namespace" type="xs:string" use="optional" />
-			</xs:extension>
-		</xs:complexContent>
-	</xs:complexType>
+    <xs:complexType name="SenderType">
+        <xs:complexContent>
+            <xs:extension base="ComponentType">
+                <xs:attribute name="classname" type="xs:string" use="required"/>
+                <xs:attribute name="name" type="xs:string" use="required"/>
+                <xs:attribute name="namespace" type="xs:string" use="optional"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
 
-	<xs:complexType name="CollectorType">
-		<xs:complexContent>
-			<xs:extension base="ComponentType">
-				<xs:attribute name="classname" type="xs:string" use="required" />
-				<xs:attribute name="name" type="xs:string" use="required" />
-				<xs:attribute name="namespace" type="xs:string" use="optional" />
-			</xs:extension>
-		</xs:complexContent>
-	</xs:complexType>
-	<xs:complexType name="BindingType">
-		<xs:complexContent>
-			<xs:extension base="ComponentType">
-				<xs:choice>
-					<xs:element name="collector" type="collectorChoice"
-						minOccurs="1" maxOccurs="1">
-					</xs:element>
-					<xs:element name="sender" type="senderChoice" minOccurs="1"
-						maxOccurs="1">
-					</xs:element>
-				</xs:choice>
-				<xs:attribute name="classname" type="xs:string" use="optional" />
-				<xs:attribute name="name" type="xs:string" use="required" />
-				<xs:attribute name="namespace" type="xs:string" use="optional" />
-			</xs:extension>
-		</xs:complexContent>
-	</xs:complexType>
+    <xs:complexType name="CollectorType">
+        <xs:complexContent>
+            <xs:extension base="ComponentType">
+                <xs:attribute name="classname" type="xs:string" use="required"/>
+                <xs:attribute name="name" type="xs:string" use="required"/>
+                <xs:attribute name="namespace" type="xs:string" use="optional"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="BindingType">
+        <xs:complexContent>
+            <xs:extension base="ComponentType">
+                <xs:choice>
+                    <xs:element name="collector" type="collectorChoice"
+                                minOccurs="1" maxOccurs="1">
+                    </xs:element>
+                    <xs:element name="sender" type="senderChoice" minOccurs="1"
+                                maxOccurs="1">
+                    </xs:element>
+                </xs:choice>
+                <xs:attribute name="classname" type="xs:string" use="optional"/>
+                <xs:attribute name="name" type="xs:string" use="required"/>
+                <xs:attribute name="namespace" type="xs:string" use="optional"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
 
-	<xs:complexType name="collectorChoice">
-		<xs:attribute name="name" type="xs:string" use="required"></xs:attribute>
-		<xs:attribute name="namespace" type="xs:string" use="optional">
-		</xs:attribute>
-	</xs:complexType>
-	<xs:complexType name="senderChoice">
-		<xs:attribute name="name" type="xs:string" use="required"></xs:attribute>
-		<xs:attribute name="namespace" type="xs:string" use="optional">
-		</xs:attribute>
-	</xs:complexType>
+    <xs:complexType name="collectorChoice">
+        <xs:attribute name="name" type="xs:string" use="required"></xs:attribute>
+        <xs:attribute name="namespace" type="xs:string" use="optional">
+        </xs:attribute>
+    </xs:complexType>
+    <xs:complexType name="senderChoice">
+        <xs:attribute name="name" type="xs:string" use="required"></xs:attribute>
+        <xs:attribute name="namespace" type="xs:string" use="optional">
+        </xs:attribute>
+    </xs:complexType>
 
-	<xs:complexType name="ComponentType">
-		<xs:annotation>
-			<xs:documentation>Declares an atomic (i.e. primitive) component type.
-			</xs:documentation>
-		</xs:annotation>
-		<xs:choice minOccurs="0" maxOccurs="unbounded">
-			<xs:element ref="callback" minOccurs="0" maxOccurs="unbounded">
-				<xs:annotation>
-					<xs:documentation>Describes the method(s) to invoke when the
-						component's state
-						changes.</xs:documentation>
-				</xs:annotation>
-			</xs:element>
-			<xs:element ref="properties" minOccurs="1" maxOccurs="1">
-				<xs:annotation>
-					<xs:documentation>List of properties.</xs:documentation>
-				</xs:annotation>
-			</xs:element>
-			<xs:any namespace="##other" processContents="lax" minOccurs="0"
-				maxOccurs="unbounded">
-			</xs:any>
-		</xs:choice>
-	</xs:complexType>
-	<xs:element name="callback" type="CallbackType" id="callback" />
-	<xs:complexType name="CallbackType">
-		<xs:annotation>
-			<xs:documentation>Lifecycle Callback. Allows a POJO to be notified
-				when the instance becomes
-				valid or invalid.</xs:documentation>
-		</xs:annotation>
-		<xs:attribute name="method" type="xs:string" use="required">
-			<xs:annotation>
-				<xs:documentation>Specifies the method to call on the transition.
-				</xs:documentation>
-			</xs:annotation>
-		</xs:attribute>
-		<xs:attribute name="transition" use="required">
-			<xs:annotation>
-				<xs:documentation>Specifies the transition when the callback needs
-					to be
-					invoked.</xs:documentation>
-			</xs:annotation>
-			<xs:simpleType>
-				<xs:annotation>
-					<xs:documentation>Lifecycle transition state. "validate" means that
-						the component's
-						instance was invalid and becomes valid,
-						"invalidate" means that the
-						component's intance
-						was valid and
-						becomes invalid.</xs:documentation>
-				</xs:annotation>
-				<xs:restriction base="xs:string">
-					<xs:enumeration value="validate" />
-					<xs:enumeration value="invalidate" />
-				</xs:restriction>
-			</xs:simpleType>
-		</xs:attribute>
-	</xs:complexType>
-	
-	<xs:element name="properties" type="PropertiesType" id="properties" />
-	<xs:complexType name="PropertiesType">
-	<xs:sequence minOccurs="0" maxOccurs="unbounded">
-      <xs:element name="property" type="PropertyType">
+    <xs:complexType name="ComponentType">
         <xs:annotation>
-          <xs:documentation>The list of properties.</xs:documentation>
+            <xs:documentation>Declares an atomic (i.e. primitive) component type.
+            </xs:documentation>
         </xs:annotation>
-      </xs:element>
-    </xs:sequence>
-	</xs:complexType>
-	
-	<xs:element name="property" type="PropertyType" id="property" />
-	<xs:complexType name="PropertyType">
-		<xs:attribute name="name" type="xs:string" use="required">
-			<xs:annotation>
-				<xs:documentation>Specifies the property name.
-				</xs:documentation>
-			</xs:annotation>
-		</xs:attribute>
-		<xs:attribute name="value" type="xs:string" use="optional">
-			<xs:annotation>
-				<xs:documentation>Specifies the property default value.</xs:documentation>
-			</xs:annotation>
-		</xs:attribute>
-				<xs:attribute name="field" type="xs:string" use="optional">
-			<xs:annotation>
-				<xs:documentation>Specifies POJO field.</xs:documentation>
-			</xs:annotation>
-		</xs:attribute>
-		<xs:attribute name="method" type="xs:string" use="optional">
-			<xs:annotation>
-				<xs:documentation>Specifies the method to use when injecting value.</xs:documentation>
-			</xs:annotation>
-		</xs:attribute>
-		<xs:attribute name="service" type="xs:boolean" use="optional">
-			<xs:annotation>
-				<xs:documentation>Specifies if the property is a required service or not.</xs:documentation>
-			</xs:annotation>
-		</xs:attribute>
-			</xs:complexType>
-	
+        <xs:choice minOccurs="0" maxOccurs="unbounded">
+            <xs:element ref="callback" minOccurs="0" maxOccurs="unbounded">
+                <xs:annotation>
+                    <xs:documentation>Describes the method(s) to invoke when the
+                        component's state
+                        changes.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element ref="properties" minOccurs="1" maxOccurs="1">
+                <xs:annotation>
+                    <xs:documentation>List of properties.</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:any namespace="##other" processContents="lax" minOccurs="0"
+                    maxOccurs="unbounded">
+            </xs:any>
+        </xs:choice>
+    </xs:complexType>
+    <xs:element name="callback" type="CallbackType" id="callback"/>
+    <xs:complexType name="CallbackType">
+        <xs:annotation>
+            <xs:documentation>Lifecycle Callback. Allows a POJO to be notified
+                when the instance becomes
+                valid or invalid.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:attribute name="method" type="xs:string" use="required">
+            <xs:annotation>
+                <xs:documentation>Specifies the method to call on the transition.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="transition" use="required">
+            <xs:annotation>
+                <xs:documentation>Specifies the transition when the callback needs
+                    to be
+                    invoked.
+                </xs:documentation>
+            </xs:annotation>
+            <xs:simpleType>
+                <xs:annotation>
+                    <xs:documentation>Lifecycle transition state. "validate" means that
+                        the component's
+                        instance was invalid and becomes valid,
+                        "invalidate" means that the
+                        component's intance
+                        was valid and
+                        becomes invalid.
+                    </xs:documentation>
+                </xs:annotation>
+                <xs:restriction base="xs:string">
+                    <xs:enumeration value="validate"/>
+                    <xs:enumeration value="invalidate"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+    </xs:complexType>
+
+    <xs:element name="properties" type="PropertiesType" id="properties"/>
+    <xs:complexType name="PropertiesType">
+        <xs:sequence minOccurs="0" maxOccurs="unbounded">
+            <xs:element name="property" type="PropertyType">
+                <xs:annotation>
+                    <xs:documentation>The list of properties.</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:element name="property" type="PropertyType" id="property"/>
+    <xs:complexType name="PropertyType">
+        <xs:attribute name="name" type="xs:string" use="required">
+            <xs:annotation>
+                <xs:documentation>Specifies the property name.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="value" type="xs:string" use="optional">
+            <xs:annotation>
+                <xs:documentation>Specifies the property default value.</xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="field" type="xs:string" use="optional">
+            <xs:annotation>
+                <xs:documentation>Specifies POJO field.</xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="method" type="xs:string" use="optional">
+            <xs:annotation>
+                <xs:documentation>Specifies the method to use when injecting value.</xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="service" type="xs:boolean" use="optional">
+            <xs:annotation>
+                <xs:documentation>Specifies if the property is a required service or not.</xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+    </xs:complexType>
+
 
 </xs:schema>
 

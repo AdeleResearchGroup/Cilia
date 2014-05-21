@@ -13,7 +13,7 @@ public class MyData {
 
     private Date creationDate;
 
-    private Map content  = new Hashtable();
+    private Map content = new Hashtable();
 
     private String name;
 
@@ -22,11 +22,11 @@ public class MyData {
         creationDate = new Date();
     }
 
-    public Object get(Object key){
-        return  content.get(key);
+    public Object get(Object key) {
+        return content.get(key);
     }
 
-    public Object put(Object key, Object value){
+    public Object put(Object key, Object value) {
         return content.put(key, value);
     }
 

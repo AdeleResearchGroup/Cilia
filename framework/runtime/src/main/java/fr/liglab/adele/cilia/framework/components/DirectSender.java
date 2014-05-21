@@ -22,18 +22,20 @@ import fr.liglab.adele.cilia.framework.ISender;
 /**
  * This class is the implementation of the DirectSender component
  * for the Cilia compendium.
- * It need the reference of the Collector where it will delivery the information.  
- * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project Team</a>
+ * It need the reference of the Collector where it will delivery the information.
  *
+ * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project Team</a>
  */
 public class DirectSender implements ISender {
     /**
      * The sender must have a collector reference to give the data.
      */
     IDirectCollector collector;
+
     /**
      * It will send the given data to the collector
      * associated to this sender.
+     *
      * @param data Data to send.
      */
     public boolean send(Data data) {

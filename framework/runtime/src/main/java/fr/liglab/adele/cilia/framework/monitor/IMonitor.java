@@ -14,20 +14,20 @@
  */
 package fr.liglab.adele.cilia.framework.monitor;
 
-import java.util.List;
-
 import fr.liglab.adele.cilia.Data;
+
+import java.util.List;
 
 public interface IMonitor extends IProcessorMonitor, IServiceMonitor, IFieldMonitor {
 
-	void onCollect(Data data);
+    void onCollect(Data data);
 
-	void onProcessEntry(List data);
+    void onProcessEntry(List data);
 
-	void onProcessExit(List data);
+    void onProcessExit(List data);
 
-	void onProcessError(List data, Exception e);
+    void onProcessError(List data, Exception e);
 
-	void onDispatch(List data);
+    void onDispatch(List data);
 
 }

@@ -12,52 +12,53 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
-	<modelVersion>4.0.0</modelVersion>
-	<parent>
-		<groupId>fr.liglab.adele.cilia</groupId>
-		<artifactId>cilia-project</artifactId>
-		<version>1.7.5-SNAPSHOT</version>
-		<relativePath>../parent/</relativePath>
-	</parent>
-	<artifactId>cilia-tests-reactor</artifactId>
-	<name>${productName} :: Reactor Tests</name>
-	<packaging>pom</packaging>
-  <profiles>
-    <profile>
-	  		<id>test</id>
-         <modules>
-		        <module>cilia-helper</module>
-		        <module>runtime</module>
-		        <module>ea-it</module>
-        </modules>
-    </profile>
-    <profile>
-			    <id>all</id>
-			    <activation>
-			      <activeByDefault>true</activeByDefault>
-			    </activation>
-			    <modules>
-		        <module>cilia-helper</module>
-		        <module>runtime</module>
-		        <module>ea-it</module>
-		        <module>tcp-it</module>
-          <!--
-		        <module>jms-it</module>
-          -->
-          </modules>
-    </profile>
-  </profiles>
-  <build>
-    <plugins>
-      <plugin>
-        <artifactId>maven-deploy-plugin</artifactId>
-		    <version>2.7</version>
-        <configuration>
-          <skip>true</skip>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>fr.liglab.adele.cilia</groupId>
+        <artifactId>cilia-project</artifactId>
+        <version>1.7.5-SNAPSHOT</version>
+        <relativePath>../parent/</relativePath>
+    </parent>
+    <artifactId>cilia-tests-reactor</artifactId>
+    <name>${productName} :: Reactor Tests</name>
+    <packaging>pom</packaging>
+    <profiles>
+        <profile>
+            <id>test</id>
+            <modules>
+                <module>cilia-helper</module>
+                <module>runtime</module>
+                <module>ea-it</module>
+            </modules>
+        </profile>
+        <profile>
+            <id>all</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <modules>
+                <module>cilia-helper</module>
+                <module>runtime</module>
+                <module>ea-it</module>
+                <module>tcp-it</module>
+                <!--
+                      <module>jms-it</module>
+                -->
+            </modules>
+        </profile>
+    </profiles>
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-deploy-plugin</artifactId>
+                <version>2.7</version>
+                <configuration>
+                    <skip>true</skip>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 </project>

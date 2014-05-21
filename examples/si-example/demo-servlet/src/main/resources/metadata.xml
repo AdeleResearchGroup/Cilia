@@ -1,17 +1,14 @@
 <ipojo>
-	<component classname="fr.liglab.adele.cilia.demo.servlet.AddClientServlet"
-		name="addClientServlet">
-	
-		<requires field="m_httpService" optional="true">
-			<callback type="bind" method="bindHttpService" />
-			<callback type="unbind" method="unbindHttpService" />
-		</requires>
-	</component>
-	<instance name="Add Client" component="addClientServlet">
-	</instance>
-	
+    <component classname="fr.liglab.adele.cilia.demo.servlet.AddClientServlet"
+               name="addClientServlet">
 
-
+        <requires field="m_httpService" optional="true">
+            <callback type="bind" method="bindHttpService"/>
+            <callback type="unbind" method="unbindHttpService"/>
+        </requires>
+    </component>
+    <instance name="Add Client" component="addClientServlet">
+    </instance>
 
 
 </ipojo> 

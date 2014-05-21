@@ -15,65 +15,66 @@
 package fr.liglab.adele.cilia.ext;
 
 
-
 /**
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project Team</a>
- *
  */
 public class RouteConfigurationImpl {
 
-	private String condition;
+    private String condition;
 
-	private String ports;
-	
-	public RouteConfigurationImpl(){};
+    private String ports;
 
-	/* (non-Javadoc)
-	 * @see fr.liglab.adele.cilia.component.dispatcher.evaluator.RouteConfiguration#condition(java.lang.String)
-	 */
-	public void condition(String cond) {
-		condition = cond;
-	}
+    public RouteConfigurationImpl() {
+    }
 
-	/* (non-Javadoc)
-	 * @see fr.liglab.adele.cilia.component.dispatcher.evaluator.RouteConfiguration#port(java.lang.String[])
-	 */
-	public void port(String port) {
-		ports = port;
-	}
+    ;
 
-	/* (non-Javadoc)
-	 * @see fr.liglab.adele.cilia.component.dispatcher.evaluator.RouteConfiguration#getCondition()
-	 */
-	public String getCondition() {
-		return condition;
-	}
+    /* (non-Javadoc)
+     * @see fr.liglab.adele.cilia.component.dispatcher.evaluator.RouteConfiguration#condition(java.lang.String)
+     */
+    public void condition(String cond) {
+        condition = cond;
+    }
 
-	/* (non-Javadoc)
-	 * @see fr.liglab.adele.cilia.component.dispatcher.evaluator.RouteConfiguration#getPort()
-	 */
-	public String getPort() {
-		return ports;
-	}
+    /* (non-Javadoc)
+     * @see fr.liglab.adele.cilia.component.dispatcher.evaluator.RouteConfiguration#port(java.lang.String[])
+     */
+    public void port(String port) {
+        ports = port;
+    }
 
-	public boolean equals(Object obj) {
-		if (this == obj) return true;
-		if (!(obj instanceof RouteConfigurationImpl)) return false;
-		RouteConfigurationImpl e = (RouteConfigurationImpl) obj;
-		if (condition == null && e.getCondition() == null) {
-			return true;
-		}
-		if (condition != null && e.getCondition() == null) {
-			return false;
-		}
-		return (condition.compareTo(e.getCondition()) == 0);
-	}
+    /* (non-Javadoc)
+     * @see fr.liglab.adele.cilia.component.dispatcher.evaluator.RouteConfiguration#getCondition()
+     */
+    public String getCondition() {
+        return condition;
+    }
 
-	public int hashcode(){
-		if (condition == null) {
-			return super.hashCode();
-		}
-		return condition.hashCode();
-	}
+    /* (non-Javadoc)
+     * @see fr.liglab.adele.cilia.component.dispatcher.evaluator.RouteConfiguration#getPort()
+     */
+    public String getPort() {
+        return ports;
+    }
+
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (!(obj instanceof RouteConfigurationImpl)) return false;
+        RouteConfigurationImpl e = (RouteConfigurationImpl) obj;
+        if (condition == null && e.getCondition() == null) {
+            return true;
+        }
+        if (condition != null && e.getCondition() == null) {
+            return false;
+        }
+        return (condition.compareTo(e.getCondition()) == 0);
+    }
+
+    public int hashcode() {
+        if (condition == null) {
+            return super.hashCode();
+        }
+        return condition.hashCode();
+    }
 
 }

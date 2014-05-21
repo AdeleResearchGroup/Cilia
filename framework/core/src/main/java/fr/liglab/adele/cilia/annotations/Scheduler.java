@@ -9,6 +9,7 @@ import fr.liglab.adele.cilia.util.Const;
  */
 public @interface Scheduler {
     String name();
+
     String namespace() default Const.CILIA_NAMESPACE;
 
 }

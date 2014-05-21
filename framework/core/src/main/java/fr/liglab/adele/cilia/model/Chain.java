@@ -19,53 +19,56 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * 
- *
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project Team</a>
- *
  */
 //@SuppressWarnings("rawtypes")
-public interface Chain extends Component{
-	/**
-	 * Obtain the mediator model which has the given identificator.
-	 * @param mediatorId MediatorImpl identificator.
-	 * @return the mediator which has the given identificator.
-	 */
-	Mediator getMediator(String mediatorId);
+public interface Chain extends Component {
+    /**
+     * Obtain the mediator model which has the given identificator.
+     *
+     * @param mediatorId MediatorImpl identificator.
+     * @return the mediator which has the given identificator.
+     */
+    Mediator getMediator(String mediatorId);
 
-	/**
-	 * Get all the mediators models added to the chain model.
-	 * @return
-	 */
-	Set<Mediator> getMediators();
+    /**
+     * Get all the mediators models added to the chain model.
+     *
+     * @return
+     */
+    Set<Mediator> getMediators();
 
-	/**
-	 * Obtain the adaptor model which has the given identificator.
-	 * @param mediatorId MediatorImpl identificator.
-	 * @return the mediator which has the given identificator.
-	 */
-	Adapter getAdapter(String adapterId);
+    /**
+     * Obtain the adaptor model which has the given identificator.
+     *
+     * @param mediatorId MediatorImpl identificator.
+     * @return the mediator which has the given identificator.
+     */
+    Adapter getAdapter(String adapterId);
 
-	/**
-	 * Get all the mediators models added to the chain model.
-	 * @return
-	 */
-	Set<Adapter> getAdapters();
+    /**
+     * Get all the mediators models added to the chain model.
+     *
+     * @return
+     */
+    Set<Adapter> getAdapters();
 
-	/**
-	 * Get all the bindings added to the chain model.
-	 * @return the added bindings.
-	 */
-	Set<Binding> getBindings();
+    /**
+     * Get all the bindings added to the chain model.
+     *
+     * @return the added bindings.
+     */
+    Set<Binding> getBindings();
 
-	/**
-	 * Obtain an array of all the bindings asociated to the given mediators.
-	 * @param source source mediator which contains the searched bindings.
-	 * @param target target mediator which contains the searched bindings.
-	 * @return the array of bindings.
-	 */
-	Binding[] getBindings(MediatorComponent source, MediatorComponent target);
-	
-	Map toMap();
+    /**
+     * Obtain an array of all the bindings asociated to the given mediators.
+     *
+     * @param source source mediator which contains the searched bindings.
+     * @param target target mediator which contains the searched bindings.
+     * @return the array of bindings.
+     */
+    Binding[] getBindings(MediatorComponent source, MediatorComponent target);
+
+    Map toMap();
 
 }

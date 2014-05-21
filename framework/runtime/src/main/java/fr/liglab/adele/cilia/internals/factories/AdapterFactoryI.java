@@ -21,5 +21,5 @@ import fr.liglab.adele.cilia.model.impl.PatternType;
  *         Team</a>
  */
 public interface AdapterFactoryI {
-	PatternType getPattern();
+    PatternType getPattern();
 }

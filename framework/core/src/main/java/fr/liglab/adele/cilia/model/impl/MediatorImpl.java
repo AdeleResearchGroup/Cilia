@@ -15,65 +15,54 @@
 
 package fr.liglab.adele.cilia.model.impl;
 
-import java.util.Dictionary;
-
 import fr.liglab.adele.cilia.model.Chain;
 import fr.liglab.adele.cilia.model.Mediator;
 
+import java.util.Dictionary;
+
 /**
  * This class is a mediator representation model.
- * 
+ *
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project
  *         Team</a>
- * 
  */
 public class MediatorImpl extends MediatorComponentImpl implements Mediator {
-	/**
-	 * 
-	 * Creates a new mediator representation model.
-	 * 
-	 * @param id
-	 *            identificator of the new mediator.
-	 * @param type
-	 *            type of the mediator representation model.
-	 * @param nspace
-	 *            classname of the mediator representation model.
-	 * @param properties
-	 *            new properties to add to the mediator representation model.
-	 * @param chain
-	 *            ChainImpl where this mediator will be.
-	 */
+    /**
+     * Creates a new mediator representation model.
+     *
+     * @param id         identificator of the new mediator.
+     * @param type       type of the mediator representation model.
+     * @param nspace     classname of the mediator representation model.
+     * @param properties new properties to add to the mediator representation model.
+     * @param chain      ChainImpl where this mediator will be.
+     */
 
-	public MediatorImpl(String id, String type, String nspace, String catego, String version,
-			Dictionary properties, Chain chain) {
-		super(id, type, nspace, catego, version, properties, chain);
-		setChain(chain);
-	}
+    public MediatorImpl(String id, String type, String nspace, String catego, String version,
+                        Dictionary properties, Chain chain) {
+        super(id, type, nspace, catego, version, properties, chain);
+        setChain(chain);
+    }
 
-	/**
-	 * 
-	 * Creates a new mediator representation model.
-	 * 
-	 * @param id
-	 *            identificator of the new mediator.
-	 * @param type
-	 *            type of the mediator representation model.
-	 */
-	public MediatorImpl(String id, String type) {
-		super(id, type, null, null, null, null, null);
-	}
+    /**
+     * Creates a new mediator representation model.
+     *
+     * @param id   identificator of the new mediator.
+     * @param type type of the mediator representation model.
+     */
+    public MediatorImpl(String id, String type) {
+        super(id, type, null, null, null, null, null);
+    }
 
-	/**
-	 * Set the chain representation model which will contain this mediator.
-	 * 
-	 * @param chain
-	 *            chain which will contain this mediator.
-	 */
-	public void setChain(Chain chain) {
-		synchronized (lockObject) {
-			super.chain = chain;
-		}
-	}
+    /**
+     * Set the chain representation model which will contain this mediator.
+     *
+     * @param chain chain which will contain this mediator.
+     */
+    public void setChain(Chain chain) {
+        synchronized (lockObject) {
+            super.chain = chain;
+        }
+    }
 
 
 }

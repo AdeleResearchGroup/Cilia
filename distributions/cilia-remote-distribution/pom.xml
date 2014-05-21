@@ -7,62 +7,63 @@
 	OR CONDITIONS OF ANY KIND, either express or implied. See the License for 
 	the specific language governing permissions and limitations under the License. -->
 
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-	<modelVersion>4.0.0</modelVersion>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
 
-	<!-- Project parent -->
-   <parent>
-      <groupId>fr.liglab.adele.cilia</groupId>
-      <artifactId>cilia-project</artifactId>
-      <version>1.7.5-SNAPSHOT</version>
-      <relativePath>../../parent</relativePath>
-   </parent>
+    <!-- Project parent -->
+    <parent>
+        <groupId>fr.liglab.adele.cilia</groupId>
+        <artifactId>cilia-project</artifactId>
+        <version>1.7.5-SNAPSHOT</version>
+        <relativePath>../../parent</relativePath>
+    </parent>
 
-   <artifactId>cilia-remote-distribution</artifactId>
-   <packaging>osgi-distribution</packaging>
-   <name>Cilia :: Distribution with RoSe</name>
+    <artifactId>cilia-remote-distribution</artifactId>
+    <packaging>osgi-distribution</packaging>
+    <name>Cilia :: Distribution with RoSe</name>
 
 
-	<!-- Project dependencies -->
-	<dependencies>
-      <dependency>
-         <groupId>fr.liglab.adele.cilia</groupId>
-         <artifactId>cilia-distribution</artifactId>
-         <type>osgi-distribution</type>
-         <version>${project.version}</version>
-      </dependency>
-      <dependency>
-         <groupId>org.apache.felix</groupId>
-         <artifactId>org.apache.felix.http.jetty</artifactId>
-         <version>${jettyFelixVersion}</version>
-      </dependency>
-		<dependency>
-			<groupId>fr.liglab.adele.cilia</groupId>
-			<artifactId>cilia-remote.dp</artifactId>
-			<type>deployment-package</type>
-			<version>${project.version}</version>
-		</dependency>
-      <dependency>
-         <groupId>org.ow2.chameleon.rose</groupId>
-         <artifactId>rose-core</artifactId>
-      </dependency>
-      <dependency>
-         <groupId>fr.liglab.adele.common</groupId>
-         <artifactId>rose-chameleon-deployer-configurator</artifactId>
-         <version>${adeleCommonVersion}</version>
-      </dependency>
-	</dependencies>
-   <build>
-      <plugins>
-         <plugin>
+    <!-- Project dependencies -->
+    <dependencies>
+        <dependency>
+            <groupId>fr.liglab.adele.cilia</groupId>
+            <artifactId>cilia-distribution</artifactId>
+            <type>osgi-distribution</type>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.felix</groupId>
+            <artifactId>org.apache.felix.http.jetty</artifactId>
+            <version>${jettyFelixVersion}</version>
+        </dependency>
+        <dependency>
+            <groupId>fr.liglab.adele.cilia</groupId>
+            <artifactId>cilia-remote.dp</artifactId>
+            <type>deployment-package</type>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.ow2.chameleon.rose</groupId>
+            <artifactId>rose-core</artifactId>
+        </dependency>
+        <dependency>
             <groupId>fr.liglab.adele.common</groupId>
-            <artifactId>maven-osgi-distribution-plugin</artifactId>
-            <extensions>true</extensions>
-            <configuration>
-               <defaultOutputDirectory>runtime</defaultOutputDirectory>
-               <flattenDP>true</flattenDP>
-            </configuration>
-         </plugin>
-      </plugins>
-   </build>
+            <artifactId>rose-chameleon-deployer-configurator</artifactId>
+            <version>${adeleCommonVersion}</version>
+        </dependency>
+    </dependencies>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>fr.liglab.adele.common</groupId>
+                <artifactId>maven-osgi-distribution-plugin</artifactId>
+                <extensions>true</extensions>
+                <configuration>
+                    <defaultOutputDirectory>runtime</defaultOutputDirectory>
+                    <flattenDP>true</flattenDP>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 </project>

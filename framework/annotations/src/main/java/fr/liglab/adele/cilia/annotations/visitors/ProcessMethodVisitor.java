@@ -14,7 +14,7 @@ import org.objectweb.asm.tree.MethodNode;
  * Date: 7/1/13
  * Time: 3:37 PM
  */
-public class ProcessMethodVisitor  extends EmptyVisitor implements AnnotationVisitor {
+public class ProcessMethodVisitor extends EmptyVisitor implements AnnotationVisitor {
 
     private String NAMESPACE = "fr.liglab.adele.cilia";
 
@@ -26,16 +26,15 @@ public class ProcessMethodVisitor  extends EmptyVisitor implements AnnotationVis
         this.context = context;
         MethodNode node = (MethodNode) context.getNode();
         Type[] parameters = Type.getArgumentTypes(node.desc);
-        Type returnType =  Type.getReturnType(node.desc);
+        Type returnType = Type.getReturnType(node.desc);
         method.addAttribute(new Attribute("name", node.name));
-        if (parameters.length != 1){
+        if (parameters.length != 1) {
             throw new RuntimeException("Unable to handle more than one parameter in Processor" + node.name);
         }
         method.addAttribute(new Attribute("in.data.type", parameters[0].getClassName()));
         method.addAttribute(new Attribute("out.data.type", returnType.getClassName()));
 
     }
-
 
 
     /**

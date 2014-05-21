@@ -15,12 +15,10 @@
 package fr.liglab.adele.cilia.builder;
 
 /**
- *
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project Team</a>
- *
  */
 public interface ConfiguratorReturner {
-	
-	MediatorConfigurator configure();
-	
+
+    MediatorConfigurator configure();
+
 }

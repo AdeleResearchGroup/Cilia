@@ -16,42 +16,40 @@
 
 package fr.liglab.adele.cilia.framework.components;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Dictionary;
-import java.util.Hashtable;
-import java.util.List;
-import java.util.Random;
-
 import fr.liglab.adele.cilia.Data;
 import fr.liglab.adele.cilia.framework.AbstractPullCollector;
 
-public class RandomNumberCollector extends AbstractPullCollector  {
+import java.io.IOException;
+import java.util.*;
 
-	private final Random random = new Random();
+public class RandomNumberCollector extends AbstractPullCollector {
 
-	@Override
-	protected List<Data> pullData() throws IOException {
-		List<Data> list = new ArrayList<Data>(1);
-		long number = random.nextInt() % 100;
-		Dictionary<String, Object> metadata = new Hashtable<String, Object>();
-		Data data = new Data(new Long(number),"random_number", metadata);
-		list.add(data);
-		return list;
-	}
-	public void delay(long iDelay) {
-		super.delay(iDelay);
-	}
+    private final Random random = new Random();
 
-	public void period(long lperiod) {
-		super.period(lperiod);
-	}
-	
-	public void start(){
-		super.start();
-	}
-	public void stop(){
-		super.stop();
-	}
+    @Override
+    protected List<Data> pullData() throws IOException {
+        List<Data> list = new ArrayList<Data>(1);
+        long number = random.nextInt() % 100;
+        Dictionary<String, Object> metadata = new Hashtable<String, Object>();
+        Data data = new Data(new Long(number), "random_number", metadata);
+        list.add(data);
+        return list;
+    }
+
+    public void delay(long iDelay) {
+        super.delay(iDelay);
+    }
+
+    public void period(long lperiod) {
+        super.period(lperiod);
+    }
+
+    public void start() {
+        super.start();
+    }
+
+    public void stop() {
+        super.stop();
+    }
 
 }

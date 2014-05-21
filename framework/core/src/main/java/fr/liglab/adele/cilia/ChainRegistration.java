@@ -20,32 +20,27 @@ import fr.liglab.adele.cilia.exceptions.CiliaInvalidSyntaxException;
 
 /**
  * Registration to events level chain
- * 
+ *
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project
  *         Team</a>
- * 
  */
 public interface ChainRegistration {
-	/**
-	 * Adds a listener
-	 * 
-	 * @param ldapfilter
-	 *            ldap keywords :uuid,chain, node	 
-	 * @param listener
-	 *            , listener to add
-	 * @throws CiliaIllegalParameterException , null or wrong parameter
-	 * @throws CiliaInvalidSyntaxException, ldap syntax error
-	 * 
-	 */
-	void addListener(String ldapFilter, ChainCallback listener)
-			throws CiliaIllegalParameterException, CiliaInvalidSyntaxException;
+    /**
+     * Adds a listener
+     *
+     * @param ldapfilter ldap keywords :uuid,chain, node
+     * @param listener   , listener to add
+     * @throws CiliaIllegalParameterException , null or wrong parameter
+     * @throws CiliaInvalidSyntaxException,   ldap syntax error
+     */
+    void addListener(String ldapFilter, ChainCallback listener)
+            throws CiliaIllegalParameterException, CiliaInvalidSyntaxException;
 
-	/**
-	 * Removes a listener
-	 * 
-	 * @param listener
-	 *            , listener to remove
-	 * @throws CiliaIllegalParameterException is listener is null
-	 */
-	void removeListener(ChainCallback listener) throws CiliaIllegalParameterException;
+    /**
+     * Removes a listener
+     *
+     * @param listener , listener to remove
+     * @throws CiliaIllegalParameterException is listener is null
+     */
+    void removeListener(ChainCallback listener) throws CiliaIllegalParameterException;
 }

@@ -15,61 +15,55 @@
 
 package fr.liglab.adele.cilia.framework.data;
 
+import fr.liglab.adele.cilia.Data;
+import fr.liglab.adele.cilia.exceptions.CiliaException;
+import org.w3c.dom.Document;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.xpath.*;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.xpath.XPath;
-import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathExpression;
-import javax.xml.xpath.XPathExpressionException;
-import javax.xml.xpath.XPathFactory;
-
-import org.w3c.dom.Document;
-import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
-
-import fr.liglab.adele.cilia.exceptions.CiliaException;
-import fr.liglab.adele.cilia.Data;
 /**
  * XPATH Cilia expression parser to be used in data
- * @author torito
  *
+ * @author torito
  */
-public class ExpressionXPATH  implements CiliaExpression {
-    
-   /**
+public class ExpressionXPATH implements CiliaExpression {
+
+    /**
      * Evaluate the given expression and see if it match with the given data.
+     *
      * @param expression ldap expression.
-     * @param data Data to analize
+     * @param data       Data to analize
      * @return true if the expression match with the Data. False if not.
      */
     public boolean evaluateBooleanExpression(String expr, Data data) {
-        List res =  (List) evaluateExpression (expr, data);
+        List res = (List) evaluateExpression(expr, data);
         if (res.size() > 0)
             return true;
         return false;
     }
 
-    
-    
+
     /**
-     * 
      * @param expression Expression string to use.
-     * @param data which contains content to parse.
+     * @param data       which contains content to parse.
      * @return
      */
     public List evaluateExpression(String expression, Data data) {
 
         String content = (String) data.getContent();
-        ByteArrayInputStream is  = new ByteArrayInputStream (content.getBytes());
-        DocumentBuilderFactory domFactory = 
-            DocumentBuilderFactory.newInstance();
-        domFactory.setNamespaceAware(true); 
+        ByteArrayInputStream is = new ByteArrayInputStream(content.getBytes());
+        DocumentBuilderFactory domFactory =
+                DocumentBuilderFactory.newInstance();
+        domFactory.setNamespaceAware(true);
         DocumentBuilder builder = null;
         try {
             builder = domFactory.newDocumentBuilder();
@@ -94,7 +88,7 @@ public class ExpressionXPATH  implements CiliaExpression {
         Object result = null;
         try {
             result = expr.evaluate(doc, XPathConstants.NODESET);
-            
+
         } catch (XPathExpressionException e) {
             e.printStackTrace();
         }
@@ -108,8 +102,8 @@ public class ExpressionXPATH  implements CiliaExpression {
                 e.printStackTrace();
             }
         }
-        
-        
+
+
         return resultData;
     }
 
@@ -120,13 +114,17 @@ public class ExpressionXPATH  implements CiliaExpression {
     public String resolveVariables(String expr, Data data) {
         return expr;
     }
+
     /**
-     * 
+     *
      */
-    public void start() { }
+    public void start() {
+    }
+
     /**
-     * 
+     *
      */
-    public void stop() {}
+    public void stop() {
+    }
 
 }

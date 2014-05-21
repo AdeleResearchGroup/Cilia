@@ -20,38 +20,42 @@ import java.util.Map;
 
 public interface Binding extends Component {
 
-	/**
-	 * Get the parent chain.
-	 * @return the parent chain.
-	 */
-	Chain getChain();
+    /**
+     * Get the parent chain.
+     *
+     * @return the parent chain.
+     */
+    Chain getChain();
 
-	/**
-	 * Get the source mediator port in this binding.  
-	 * @return the source mediator port.
-	 */
-	Port getSourcePort();
+    /**
+     * Get the source mediator port in this binding.
+     *
+     * @return the source mediator port.
+     */
+    Port getSourcePort();
 
-	/**
-	 * Get the target mediator port asociated to this binding. 
-	 * @return the target mediator port.
-	 */
-	Port getTargetPort();
+    /**
+     * Get the target mediator port asociated to this binding.
+     *
+     * @return the target mediator port.
+     */
+    Port getTargetPort();
 
-	/**
-	 * Get the source mediator model.  
-	 * @return the source mediator model.
-	 */
-	MediatorComponent getSourceMediator();
+    /**
+     * Get the source mediator model.
+     *
+     * @return the source mediator model.
+     */
+    MediatorComponent getSourceMediator();
 
-	/**
-	 * Get the target mediator model.
-	 * @return the target mediator model.
-	 */
-	MediatorComponent getTargetMediator();
-	
-	Map toMap();
+    /**
+     * Get the target mediator model.
+     *
+     * @return the target mediator model.
+     */
+    MediatorComponent getTargetMediator();
 
+    Map toMap();
 
 
 }

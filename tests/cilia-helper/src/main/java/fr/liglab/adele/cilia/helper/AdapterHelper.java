@@ -18,78 +18,78 @@ import fr.liglab.adele.cilia.Data;
 import fr.liglab.adele.cilia.framework.AbstractAsyncIOAdapter;
 
 /**
- *
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project Team</a>
- *
  */
 public class AdapterHelper extends AbstractAsyncIOAdapter implements MediatorTestHelper {
 
-	/**
-	 * Get last the port name where the mediator send data.
-	 */
-	public synchronized String lastExitPort() {
-		return getLastData().getLastReceivingPort();
-	}
+    /**
+     * Get last the port name where the mediator send data.
+     */
+    public synchronized String lastExitPort() {
+        return getLastData().getLastReceivingPort();
+    }
 
-	/**
-	 * See if mediator has finish to process data.
-	 */
-	public synchronized boolean hasFinishToProcess() {
-		return super.hasData();
-	}
+    /**
+     * See if mediator has finish to process data.
+     */
+    public synchronized boolean hasFinishToProcess() {
+        return super.hasData();
+    }
 
-	/**
-	 * Inject a single Data to the mediator.
-	 * @param the data to inject.
-	 * @return true if is injected, false if not.
-	 */
-	public boolean injectData(Data data) {
-		try{
-			dispatchData(data);
-		} catch (Exception e) {
-			e.printStackTrace();
-			return false;
-		}
-		return true;
-	}
+    /**
+     * Inject a single Data to the mediator.
+     *
+     * @param the data to inject.
+     * @return true if is injected, false if not.
+     */
+    public boolean injectData(Data data) {
+        try {
+            dispatchData(data);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+    }
 
-	/**
-	 * Inject an array of data to the mediator.
-	 * @param data, the array of data to inject.
-	 * @return true if the array is injected, false if some data is not well injected.
-	 */
-	public boolean notifyData(Data[] data) {
-		boolean injected = false;
-		for (int i = 0; i < data.length; i ++){
-			injected = injectData(data[i]);
-			if (!injected) {
-				return false;
-			}
-		}
-		return true;
-	}
+    /**
+     * Inject an array of data to the mediator.
+     *
+     * @param data, the array of data to inject.
+     * @return true if the array is injected, false if some data is not well injected.
+     */
+    public boolean notifyData(Data[] data) {
+        boolean injected = false;
+        for (int i = 0; i < data.length; i++) {
+            injected = injectData(data[i]);
+            if (!injected) {
+                return false;
+            }
+        }
+        return true;
+    }
 
-	/**
-	 * Get the last received Data.
-	 */
-	public synchronized Data getLastData() {
-		return super.currentData.get(currentData.size()-1);
-	}
+    /**
+     * Get the last received Data.
+     */
+    public synchronized Data getLastData() {
+        return super.currentData.get(currentData.size() - 1);
+    }
 
-	/**
-	 * Get the amount of data treated and delivered by the mediator.
-	 */
-	public synchronized int getAmountData() {
-		return super.currentData.size();
-		
-	}
-	
-	public void receiveData(Data data) {
-		super.receiveData(data);
-	}
+    /**
+     * Get the amount of data treated and delivered by the mediator.
+     */
+    public synchronized int getAmountData() {
+        return super.currentData.size();
 
-	public  Data dispatchData(Data data) {
-		return super.dispatchData(data);
-	}
-	
+    }
+
+    public void receiveData(Data data) {
+        super.receiveData(data);
+    }
+
+    public Data dispatchData(Data data) {
+        return super.dispatchData(data);
+    }
+
 }

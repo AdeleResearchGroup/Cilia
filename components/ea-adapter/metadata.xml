@@ -1,5 +1,4 @@
-
-<!-- Copyright Adele Team LIG Licensed under the Apache License, Version 
+<!-- Copyright Adele Team LIG Licensed under the Apache License, Version
 	2.0 (the "License"); you may not use this file except in compliance with 
 	the License. You may obtain a copy of the License at    http://www.apache.org/licenses/LICENSE-2.0 
 	Unless required by applicable law or agreed to in writing, software distributed 
@@ -8,41 +7,41 @@
 	the specific language governing permissions and limitations under the License. -->
 
 <cilia>
-	<sender classname="fr.liglab.adele.cilia.ea.EventAdminSender"
-		name="ea-sender" architecture="true">
-		<properties>
-			<property name="topic" field="m_topic" />
-		</properties>
-		<requires field="m_eventAdmin" />
-	</sender>
+    <sender classname="fr.liglab.adele.cilia.ea.EventAdminSender"
+            name="ea-sender" architecture="true">
+        <properties>
+            <property name="topic" field="m_topic"/>
+        </properties>
+        <requires field="m_eventAdmin"/>
+    </sender>
 
-	<collector classname="fr.liglab.adele.cilia.ea.EventAdminCollector"
-		name="ea-collector" architecture="true">
-		<properties>
-			<property name="topic" field="m_topics" />
-			<property name="filter" field="ldapfilter" />
-		</properties>
-		<callback transition="validate" method="started" />
-		<callback transition="invalidate" method="stopped" />
-	</collector>
+    <collector classname="fr.liglab.adele.cilia.ea.EventAdminCollector"
+               name="ea-collector" architecture="true">
+        <properties>
+            <property name="topic" field="m_topics"/>
+            <property name="filter" field="ldapfilter"/>
+        </properties>
+        <callback transition="validate" method="started"/>
+        <callback transition="invalidate" method="stopped"/>
+    </collector>
 
-	<linker classname="fr.liglab.adele.cilia.ea.EABindingService"
-		name="event-admin">
-		<collector name="ea-collector" />
-		<sender name="ea-sender" />
-	</linker>
+    <linker classname="fr.liglab.adele.cilia.ea.EABindingService"
+            name="event-admin">
+        <collector name="ea-collector"/>
+        <sender name="ea-sender"/>
+    </linker>
 
-	<adapter name="event-admin-out-adapter" pattern="out-only">
-		<sender type="ea-sender" />
-		<ports>
-			<in-port name="unique" type="*" />
-		</ports>
-	</adapter>
+    <adapter name="event-admin-out-adapter" pattern="out-only">
+        <sender type="ea-sender"/>
+        <ports>
+            <in-port name="unique" type="*"/>
+        </ports>
+    </adapter>
 
-	<adapter name="event-admin-in-adapter" pattern="in-only">
-		<collector type="ea-collector" />
-		<ports>
-			<out-port name="unique" type="*" />
-		</ports>
-	</adapter>
+    <adapter name="event-admin-in-adapter" pattern="in-only">
+        <collector type="ea-collector"/>
+        <ports>
+            <out-port name="unique" type="*"/>
+        </ports>
+    </adapter>
 </cilia>

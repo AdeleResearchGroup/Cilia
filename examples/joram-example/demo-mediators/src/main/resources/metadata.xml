@@ -1,25 +1,25 @@
 <cilia xmlns:cilia="fr.liglab.adele.cilia">
 
-	<mediator-component name="DemoPrefixMediator" namespace="fr.examples.jms"
-		category="Enricher">
-		<ports>
-			<in-port name="unique" type="*" />
-			<out-port name="unique" type="*" />
-		</ports>
-		<cilia:processor name="PrefixEnricherProcessor" namespace="fr.liglab.adele.cilia"/>
-		<cilia:scheduler name="immediate-scheduler" namespace="fr.liglab.adele.cilia" />
-		<cilia:dispatcher name="multicast-dispatcher" namespace="fr.liglab.adele.cilia"/>
-	</mediator-component>
+    <mediator-component name="DemoPrefixMediator" namespace="fr.examples.jms"
+                        category="Enricher">
+        <ports>
+            <in-port name="unique" type="*"/>
+            <out-port name="unique" type="*"/>
+        </ports>
+        <cilia:processor name="PrefixEnricherProcessor" namespace="fr.liglab.adele.cilia"/>
+        <cilia:scheduler name="immediate-scheduler" namespace="fr.liglab.adele.cilia"/>
+        <cilia:dispatcher name="multicast-dispatcher" namespace="fr.liglab.adele.cilia"/>
+    </mediator-component>
 
-	<mediator-component name="DemoSufixMediator" namespace="fr.examples.jms"
-		category="Enricher">
-		<ports>
-			<in-port name="unique" type="*" />
-			<out-port name="unique" type="*" />
-		</ports>
-		<cilia:processor name="SufixEnricherProcessor" namespace="fr.liglab.adele.cilia"/>
-		<cilia:scheduler name="immediate-scheduler" namespace="fr.liglab.adele.cilia" />
-		<cilia:dispatcher name="multicast-dispatcher" namespace="fr.liglab.adele.cilia"/>
-	</mediator-component>
-	
+    <mediator-component name="DemoSufixMediator" namespace="fr.examples.jms"
+                        category="Enricher">
+        <ports>
+            <in-port name="unique" type="*"/>
+            <out-port name="unique" type="*"/>
+        </ports>
+        <cilia:processor name="SufixEnricherProcessor" namespace="fr.liglab.adele.cilia"/>
+        <cilia:scheduler name="immediate-scheduler" namespace="fr.liglab.adele.cilia"/>
+        <cilia:dispatcher name="multicast-dispatcher" namespace="fr.liglab.adele.cilia"/>
+    </mediator-component>
+
 </cilia> 

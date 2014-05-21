@@ -14,99 +14,99 @@
 
 package fr.liglab.adele.cilia.knowledge.configuration;
 
-import java.util.Map;
-
 import fr.liglab.adele.cilia.exceptions.CiliaIllegalParameterException;
 import fr.liglab.adele.cilia.exceptions.CiliaInvalidSyntaxException;
 import fr.liglab.adele.cilia.exceptions.CiliaParserException;
 import fr.liglab.adele.cilia.model.MediatorComponent;
 
+import java.util.Map;
+
 public class ParserConfiguration {
-	MediatorComponent mc;
-	@SuppressWarnings("rawtypes")
-	Map config;
+    MediatorComponent mc;
+    @SuppressWarnings("rawtypes")
+    Map config;
 
-	public ParserConfiguration(MediatorComponent mc) {
-		this.mc = mc;
-		config = ConfigurationHelper.getRootConfig(mc);
-	}
+    public ParserConfiguration(MediatorComponent mc) {
+        this.mc = mc;
+        config = ConfigurationHelper.getRootConfig(mc);
+    }
 
-	public void addVariable(String variableId, boolean enable)
-			throws CiliaParserException {
-		try {
-			ConfigurationHelper.checkStateVarId(variableId);
-			ConfigurationHelper.storeEnable(config, variableId, enable);
-		} catch (CiliaIllegalParameterException e) {
-			throw new CiliaParserException("Variable [" + variableId + "] is undefined, "+e.getMessage());
-		}
-	}
+    public void addVariable(String variableId, boolean enable)
+            throws CiliaParserException {
+        try {
+            ConfigurationHelper.checkStateVarId(variableId);
+            ConfigurationHelper.storeEnable(config, variableId, enable);
+        } catch (CiliaIllegalParameterException e) {
+            throw new CiliaParserException("Variable [" + variableId + "] is undefined, " + e.getMessage());
+        }
+    }
 
-	public void addSetUp(String variableId, String queue, String dataFlow)
-			throws CiliaParserException {
-		try {
-			int q = Integer.parseInt(queue);
-			ConfigurationHelper.checkQueueSize(q);
-			ConfigurationHelper.checkDataFlowFilter(dataFlow);
-			/* store if no error */
-			ConfigurationHelper.getModelMonitoring(mc).setQueueSize(variableId, q);
-			ConfigurationHelper.storeDataFlowControl(config, variableId, dataFlow);
-		} catch (CiliaIllegalParameterException e) {
-			throw new CiliaParserException("Variable " + variableId
-					+ " Setup is not valid ,"+e.getMessage());
+    public void addSetUp(String variableId, String queue, String dataFlow)
+            throws CiliaParserException {
+        try {
+            int q = Integer.parseInt(queue);
+            ConfigurationHelper.checkQueueSize(q);
+            ConfigurationHelper.checkDataFlowFilter(dataFlow);
+            /* store if no error */
+            ConfigurationHelper.getModelMonitoring(mc).setQueueSize(variableId, q);
+            ConfigurationHelper.storeDataFlowControl(config, variableId, dataFlow);
+        } catch (CiliaIllegalParameterException e) {
+            throw new CiliaParserException("Variable " + variableId
+                    + " Setup is not valid ," + e.getMessage());
 
-		} catch (CiliaInvalidSyntaxException e) {
-			throw new CiliaParserException("Variable " + variableId
-					+ " Setup is not valid ,"+e.getMessage());
-		}
-	}
+        } catch (CiliaInvalidSyntaxException e) {
+            throw new CiliaParserException("Variable " + variableId
+                    + " Setup is not valid ," + e.getMessage());
+        }
+    }
 
-	public void addThreshold(String variableId, String low, String veryLow, String high,
-			String veryHigh) throws CiliaParserException {
-		double dlow, dhigh, dverylow, dveryhigh;
-		try {
-			if (low != null) {
-				dlow = Integer.parseInt(low);
-			} else
-				dlow = Double.NaN;
+    public void addThreshold(String variableId, String low, String veryLow, String high,
+                             String veryHigh) throws CiliaParserException {
+        double dlow, dhigh, dverylow, dveryhigh;
+        try {
+            if (low != null) {
+                dlow = Integer.parseInt(low);
+            } else
+                dlow = Double.NaN;
 
-			if (veryLow != null) {
-				dverylow = Integer.parseInt(veryLow);
-			} else
-				dverylow = Double.NaN;
+            if (veryLow != null) {
+                dverylow = Integer.parseInt(veryLow);
+            } else
+                dverylow = Double.NaN;
 
-			if (high != null) {
-				dhigh = Integer.parseInt(high);
-			} else
-				dhigh = Double.NaN;
+            if (high != null) {
+                dhigh = Integer.parseInt(high);
+            } else
+                dhigh = Double.NaN;
 
-			if (veryHigh != null) {
-				dveryhigh = Integer.parseInt(veryHigh);
-			} else
-				dveryhigh = Double.NaN;
+            if (veryHigh != null) {
+                dveryhigh = Integer.parseInt(veryHigh);
+            } else
+                dveryhigh = Double.NaN;
 
 			/* Store if no error */
 
-			if (dlow != Double.NaN) {
-				ConfigurationHelper.getModelMonitoring(mc).setLow(variableId, dlow);
-			}
-			if (dverylow != Double.NaN) {
-				ConfigurationHelper.getModelMonitoring(mc).setVeryLow(variableId,
-						dverylow);
-			}
-			if (dhigh != Double.NaN) {
-				ConfigurationHelper.getModelMonitoring(mc).setHigh(variableId, dhigh);
-			}
-			if (dveryhigh != Double.NaN) {
-				ConfigurationHelper.getModelMonitoring(mc).setVeryHigh(variableId,
-						dveryhigh);
-			}
-		} catch (NumberFormatException e) {
-			throw new CiliaParserException("Variable " + variableId
-					+ " threshold is not valid ,"+e.getMessage());
-		}
-	}
+            if (dlow != Double.NaN) {
+                ConfigurationHelper.getModelMonitoring(mc).setLow(variableId, dlow);
+            }
+            if (dverylow != Double.NaN) {
+                ConfigurationHelper.getModelMonitoring(mc).setVeryLow(variableId,
+                        dverylow);
+            }
+            if (dhigh != Double.NaN) {
+                ConfigurationHelper.getModelMonitoring(mc).setHigh(variableId, dhigh);
+            }
+            if (dveryhigh != Double.NaN) {
+                ConfigurationHelper.getModelMonitoring(mc).setVeryHigh(variableId,
+                        dveryhigh);
+            }
+        } catch (NumberFormatException e) {
+            throw new CiliaParserException("Variable " + variableId
+                    + " threshold is not valid ," + e.getMessage());
+        }
+    }
 
-	public void configure() {
-		ConfigurationHelper.storeRootConfig(mc, config);
-	}
+    public void configure() {
+        ConfigurationHelper.storeRootConfig(mc, config);
+    }
 }

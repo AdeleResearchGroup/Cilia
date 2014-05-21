@@ -18,18 +18,19 @@ import java.io.File;
 
 /**
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project Team</a>
- *
  */
 public interface CiliaFileManager {
-	/**
-	 * Start a mediation chain.
-	 * @param chains The chain identifier to start.
-	 */
-	public void loadChain(File chains);
+    /**
+     * Start a mediation chain.
+     *
+     * @param chains The chain identifier to start.
+     */
+    public void loadChain(File chains);
 
-	/**
-	 * Start a mediation chain.
-	 * @param chainId The chain identifier to start.
-	 */
-	public void unloadChain(File chains);
+    /**
+     * Start a mediation chain.
+     *
+     * @param chainId The chain identifier to start.
+     */
+    public void unloadChain(File chains);
 }

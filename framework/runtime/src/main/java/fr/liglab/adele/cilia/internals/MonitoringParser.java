@@ -15,82 +15,80 @@
 
 package fr.liglab.adele.cilia.internals;
 
-import org.w3c.dom.Node;
-
 import fr.liglab.adele.cilia.exceptions.CiliaParserException;
 import fr.liglab.adele.cilia.knowledge.configuration.ParserConfiguration;
 import fr.liglab.adele.cilia.model.Component;
 import fr.liglab.adele.cilia.model.MediatorComponent;
 import fr.liglab.adele.cilia.util.CiliaExtenderParser;
+import org.w3c.dom.Node;
 
 /**
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project
  *         Team</a>
- * 
  */
 public class MonitoringParser extends DomExtenderParser implements CiliaExtenderParser {
 
-	public MonitoringParser() {
-		NAME = "state-variable";
-	}
+    public MonitoringParser() {
+        NAME = "state-variable";
+    }
 
-	public boolean canHandle(Object elementDescription) {
-		Node disp = getNode("monitoring", elementDescription);
-		if (disp == null) {
-			return false;
-		}
-		return true;
-	}
+    public boolean canHandle(Object elementDescription) {
+        Node disp = getNode("monitoring", elementDescription);
+        if (disp == null) {
+            return false;
+        }
+        return true;
+    }
 
-	private boolean getAttributeBoolean(Node node, String attribute) {
-		String enableStr = getAttributeValue(node, attribute);
-		boolean enable = false;
-		if ((enableStr != null) && (enableStr.equalsIgnoreCase("true")))
-			enable = true;
-		else
-			enable = false;
-		return enable;
-	}
+    private boolean getAttributeBoolean(Node node, String attribute) {
+        String enableStr = getAttributeValue(node, attribute);
+        boolean enable = false;
+        if ((enableStr != null) && (enableStr.equalsIgnoreCase("true")))
+            enable = true;
+        else
+            enable = false;
+        return enable;
+    }
 
-	public Component getComponent(Object componentDescription, Component currentComponent)
-			throws CiliaParserException {
-		ParserConfiguration monitoringConfig;
-		Node node = getNode("monitoring", componentDescription);
-		
-		do {
-			monitoringConfig = new ParserConfiguration(
-					(MediatorComponent) currentComponent);
-			String variableId = getAttributeValue(node, "id");
-			boolean enable = getAttributeBoolean(node, "enable");
+    public Component getComponent(Object componentDescription, Component currentComponent)
+            throws CiliaParserException {
+        ParserConfiguration monitoringConfig;
+        Node node = getNode("monitoring", componentDescription);
 
-			monitoringConfig.addVariable(variableId, enable);
-			Node child = node.getFirstChild();
-			/* tag setup and tag Threshold */
-			while (child != null) {
-				if (child.getLocalName() != null
-						&& child.getLocalName().equalsIgnoreCase("setup")) {
-					String queue = getAttributeValue(child, "queue");
-					String dataflow = getAttributeValue(child, "flow-control");
-					monitoringConfig.addSetUp(variableId, queue, dataflow);
-				} else {
-					if (child.getLocalName() != null
-							&& child.getLocalName().equalsIgnoreCase("threshold")) {
-						String low = getAttributeValue(child, "low");
-						String veryLow = getAttributeValue(child, "very-low");
-						String high = getAttributeValue(child, "high");
-						String veryhigh = getAttributeValue(child, "very-high");
-						monitoringConfig.addThreshold(variableId, low, veryLow, high,
-								veryhigh);
-					}
-				}
-				child = nextElementSibling(child);
-			}
-			node = nextElementSibling(node);
-		} while (node != null);
-		
-		monitoringConfig.configure();
+        do {
+            monitoringConfig = new ParserConfiguration(
+                    (MediatorComponent) currentComponent);
+            String variableId = getAttributeValue(node, "id");
+            boolean enable = getAttributeBoolean(node, "enable");
 
-		return currentComponent;
-	}
+            monitoringConfig.addVariable(variableId, enable);
+            Node child = node.getFirstChild();
+            /* tag setup and tag Threshold */
+            while (child != null) {
+                if (child.getLocalName() != null
+                        && child.getLocalName().equalsIgnoreCase("setup")) {
+                    String queue = getAttributeValue(child, "queue");
+                    String dataflow = getAttributeValue(child, "flow-control");
+                    monitoringConfig.addSetUp(variableId, queue, dataflow);
+                } else {
+                    if (child.getLocalName() != null
+                            && child.getLocalName().equalsIgnoreCase("threshold")) {
+                        String low = getAttributeValue(child, "low");
+                        String veryLow = getAttributeValue(child, "very-low");
+                        String high = getAttributeValue(child, "high");
+                        String veryhigh = getAttributeValue(child, "very-high");
+                        monitoringConfig.addThreshold(variableId, low, veryLow, high,
+                                veryhigh);
+                    }
+                }
+                child = nextElementSibling(child);
+            }
+            node = nextElementSibling(node);
+        } while (node != null);
+
+        monitoringConfig.configure();
+
+        return currentComponent;
+    }
 
 }

@@ -17,10 +17,8 @@ package fr.liglab.adele.cilia.builder;
 import java.util.Map;
 
 /**
- *
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project Team</a>
- *
  */
 public interface BinderConfigurator {
-	Architecture configure(Map props);
+    Architecture configure(Map props);
 }

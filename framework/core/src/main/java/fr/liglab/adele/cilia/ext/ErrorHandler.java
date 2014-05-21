@@ -14,87 +14,85 @@
  */
 package fr.liglab.adele.cilia.ext;
 
+import fr.liglab.adele.cilia.model.impl.MediatorComponentImpl;
+
 import java.util.HashMap;
 import java.util.Map;
 
-import fr.liglab.adele.cilia.model.impl.MediatorComponentImpl;
-
 /**
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project Team</a>
- *
  */
 //@SuppressWarnings({"rawtypes","unchecked"})
 public class ErrorHandler {
-	
-	private final static String RULES = "rules";
+
+    private final static String RULES = "rules";
 
 
-	private MediatorComponentImpl mediator;
+    private MediatorComponentImpl mediator;
 
-	private final Object lockObject = new Object();
+    private final Object lockObject = new Object();
 
-	private RouteConfigurationImpl currentConfiguration;
+    private RouteConfigurationImpl currentConfiguration;
 
-	public ErrorHandler(MediatorComponentImpl mediator) {
-		this.mediator = mediator;
-	}
-
-
-	public ErrorHandler condition(String condition) {
-		synchronized (lockObject) {
-			if (currentConfiguration == null) {
-				currentConfiguration = new RouteConfigurationImpl();
-			}
-			currentConfiguration.condition(condition);
-		}
-		return done();
-	}
-	/**
-	 * 
-	 * @param listPort coma separated ports.
-	 * @return
-	 */
-	public ErrorHandler to(String listPort){
-		synchronized (lockObject) {
-			if (currentConfiguration == null) {
-				currentConfiguration = new RouteConfigurationImpl();
-			}
-			currentConfiguration.port(listPort);
-		}
-		return done();
-	}
-
-	private ErrorHandler done(){
-		Map configurations = null;
-		boolean modified = false;
-		synchronized (lockObject) {
-			configurations = configurations();
-			if (currentConfiguration != null && currentConfiguration.getCondition() != null && currentConfiguration.getPort() != null) {
-				configurations.put(currentConfiguration.getCondition(),currentConfiguration.getPort());
-				modified = true;
-			}
-			if (modified) {
-				currentConfiguration = null;
-			}
-		}
-		if (modified) { // it is tested outside the sync block.
-			mediator.setProperty(RULES, new HashMap(configurations));
-		}
-		return this;
-	}
+    public ErrorHandler(MediatorComponentImpl mediator) {
+        this.mediator = mediator;
+    }
 
 
+    public ErrorHandler condition(String condition) {
+        synchronized (lockObject) {
+            if (currentConfiguration == null) {
+                currentConfiguration = new RouteConfigurationImpl();
+            }
+            currentConfiguration.condition(condition);
+        }
+        return done();
+    }
 
-	public Map configurations(){
-		Map configurations = null;
-		synchronized (lockObject) {
-			Object prop = mediator.getProperty(RULES);
-			if (prop != null && prop instanceof Map) {
-				configurations = (Map)prop;
-			} else {
-				configurations = new HashMap();
-			}
-		}
-		return configurations;
-	}
+    /**
+     * @param listPort coma separated ports.
+     * @return
+     */
+    public ErrorHandler to(String listPort) {
+        synchronized (lockObject) {
+            if (currentConfiguration == null) {
+                currentConfiguration = new RouteConfigurationImpl();
+            }
+            currentConfiguration.port(listPort);
+        }
+        return done();
+    }
+
+    private ErrorHandler done() {
+        Map configurations = null;
+        boolean modified = false;
+        synchronized (lockObject) {
+            configurations = configurations();
+            if (currentConfiguration != null && currentConfiguration.getCondition() != null && currentConfiguration.getPort() != null) {
+                configurations.put(currentConfiguration.getCondition(), currentConfiguration.getPort());
+                modified = true;
+            }
+            if (modified) {
+                currentConfiguration = null;
+            }
+        }
+        if (modified) { // it is tested outside the sync block.
+            mediator.setProperty(RULES, new HashMap(configurations));
+        }
+        return this;
+    }
+
+
+    public Map configurations() {
+        Map configurations = null;
+        synchronized (lockObject) {
+            Object prop = mediator.getProperty(RULES);
+            if (prop != null && prop instanceof Map) {
+                configurations = (Map) prop;
+            } else {
+                configurations = new HashMap();
+            }
+        }
+        return configurations;
+    }
 }

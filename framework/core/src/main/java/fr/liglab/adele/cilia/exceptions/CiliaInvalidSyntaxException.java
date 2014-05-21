@@ -17,31 +17,31 @@ package fr.liglab.adele.cilia.exceptions;
 
 /**
  * LDAP filter syntax error
- * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project Team</a>
  *
+ * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project Team</a>
  */
 public class CiliaInvalidSyntaxException extends CiliaException {
 
-	private static final long serialVersionUID = -8052313164264819869L;
-	/**
-	 * The invalid filter string.
-	 */
-	private final String	filter;
+    private static final long serialVersionUID = -8052313164264819869L;
+    /**
+     * The invalid filter string.
+     */
+    private final String filter;
 
-	public CiliaInvalidSyntaxException(String msg, String filter) {
-		super(msg);
-		this.filter = filter;
-	}
-
-
-	public CiliaInvalidSyntaxException(String msg, String filter, Throwable cause) {
-		super(msg, cause);
-		this.filter = filter;
-	}
+    public CiliaInvalidSyntaxException(String msg, String filter) {
+        super(msg);
+        this.filter = filter;
+    }
 
 
-	public String getFilter() {
-		return filter;
-	}
+    public CiliaInvalidSyntaxException(String msg, String filter, Throwable cause) {
+        super(msg, cause);
+        this.filter = filter;
+    }
+
+
+    public String getFilter() {
+        return filter;
+    }
 
 }

@@ -20,52 +20,46 @@ import fr.liglab.adele.cilia.exceptions.CiliaInvalidSyntaxException;
 
 /**
  * Listener data received
- * 
+ *
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project
  *         Team</a>
- * 
  */
 public interface VariablesRegistration {
 
-	/**
-	 * inserts a listener
-	 * 
-	 * @param ldapfilter
-	 *            ldap keywords :uuid, chain, node,variable
-	 * @param listener
-	 *            ,
-	 * @throws CiliaIllegalParameterException
-	 * @throws InvalidSyntaxException
-	 * @throws CiliaInvalidSyntaxException
-	 */
-	void addListener(String ldapfilter, ThresholdsCallback listener)
-			throws CiliaIllegalParameterException, CiliaInvalidSyntaxException;
+    /**
+     * inserts a listener
+     *
+     * @param ldapfilter ldap keywords :uuid, chain, node,variable
+     * @param listener   ,
+     * @throws CiliaIllegalParameterException
+     * @throws InvalidSyntaxException
+     * @throws CiliaInvalidSyntaxException
+     */
+    void addListener(String ldapfilter, ThresholdsCallback listener)
+            throws CiliaIllegalParameterException, CiliaInvalidSyntaxException;
 
-	/**
-	 * 
-	 * @param ldapfilter
- 	 *            ldap keywords :uuid,chain, node,variable
-	 * @param listener
-	 * @throws CiliaIllegalParameterException
-	 * @throws InvalidSyntaxException
-	 * @throws CiliaInvalidSyntaxException
-	 */
-	void addListener(String ldapfilter, VariableCallback listener)
-			throws CiliaIllegalParameterException, CiliaInvalidSyntaxException;
+    /**
+     * @param ldapfilter ldap keywords :uuid,chain, node,variable
+     * @param listener
+     * @throws CiliaIllegalParameterException
+     * @throws InvalidSyntaxException
+     * @throws CiliaInvalidSyntaxException
+     */
+    void addListener(String ldapfilter, VariableCallback listener)
+            throws CiliaIllegalParameterException, CiliaInvalidSyntaxException;
 
-	/**
-	 * Removes a threshold listener
-	 * 
-	 * @param listener
-	 *            , listener to remove
-	 */
-	void removeListener(ThresholdsCallback listener)
-			throws CiliaIllegalParameterException;
+    /**
+     * Removes a threshold listener
+     *
+     * @param listener , listener to remove
+     */
+    void removeListener(ThresholdsCallback listener)
+            throws CiliaIllegalParameterException;
 
-	/**
-	 * Removes a Measure listener
-	 * 
-	 * @param listener
-	 */
-	void removeListener(VariableCallback listener) throws CiliaIllegalParameterException;
+    /**
+     * Removes a Measure listener
+     *
+     * @param listener
+     */
+    void removeListener(VariableCallback listener) throws CiliaIllegalParameterException;
 }

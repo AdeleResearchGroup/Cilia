@@ -14,60 +14,57 @@
  */
 package fr.liglab.adele.cilia.framework;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-
+import fr.liglab.adele.cilia.Data;
+import fr.liglab.adele.cilia.exceptions.CiliaException;
+import fr.liglab.adele.cilia.util.Const;
 import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import fr.liglab.adele.cilia.Data;
-import fr.liglab.adele.cilia.exceptions.CiliaException;
-import fr.liglab.adele.cilia.util.Const;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+
 /**
- * 
- *
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project Team</a>
- *
  */
-public abstract class AbstractDispatcher implements IDispatcher{
+public abstract class AbstractDispatcher implements IDispatcher {
 
-	IDispatcher dispatcher;
-	
-	protected BundleContext bcontext;
+    IDispatcher dispatcher;
 
-	protected static Logger log= LoggerFactory.getLogger(Const.LOGGER_APPLICATION);
+    protected BundleContext bcontext;
 
-	public AbstractDispatcher(BundleContext context) {
-		bcontext = context;
-	}
+    protected static Logger log = LoggerFactory.getLogger(Const.LOGGER_APPLICATION);
 
-	public void setDispatcher(IDispatcher hdispatcher) {
-		dispatcher = hdispatcher;
-	}
+    public AbstractDispatcher(BundleContext context) {
+        bcontext = context;
+    }
 
-
-	public abstract void dispatch(Data data) throws CiliaException  ;
-
-	public List getSendersIds() {
-		return dispatcher.getSendersIds();
-	}
+    public void setDispatcher(IDispatcher hdispatcher) {
+        dispatcher = hdispatcher;
+    }
 
 
-	public void send(String portname, Data data) throws CiliaException {
-		dispatcher.send(portname, data);
-	}
+    public abstract void dispatch(Data data) throws CiliaException;
 
-	public void send(String portname, Properties properties, Data data)
-			throws CiliaException {
-		dispatcher.send(portname, properties, data);
-	}
+    public List getSendersIds() {
+        return dispatcher.getSendersIds();
+    }
 
-	public void fireEvent(Map info) {
-		log.debug("fireEvent " + info);
-		if (dispatcher != null)
-			dispatcher.fireEvent(info);
-	}
-	
+
+    public void send(String portname, Data data) throws CiliaException {
+        dispatcher.send(portname, data);
+    }
+
+    public void send(String portname, Properties properties, Data data)
+            throws CiliaException {
+        dispatcher.send(portname, properties, data);
+    }
+
+    public void fireEvent(Map info) {
+        log.debug("fireEvent " + info);
+        if (dispatcher != null)
+            dispatcher.fireEvent(info);
+    }
+
 }

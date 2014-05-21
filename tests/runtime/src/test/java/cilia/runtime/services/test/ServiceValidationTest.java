@@ -20,52 +20,50 @@ import static org.junit.Assert.assertNotNull;
 @RunWith(ChameleonRunner.class)
 public class ServiceValidationTest {
 
-	@Inject
-	private BundleContext context;
+    @Inject
+    private BundleContext context;
 
 
-	private OSGiHelper osgi;
+    private OSGiHelper osgi;
 
-	@Before
-	public void setUp() {
-		osgi = new OSGiHelper(context);
-	}
+    @Before
+    public void setUp() {
+        osgi = new OSGiHelper(context);
+    }
 
-	@After
-	public void tearDown() {
-		osgi.dispose();
-	}
+    @After
+    public void tearDown() {
+        osgi.dispose();
+    }
 
 
+    @Test
+    public void CiliaContextvalidation() {
+        CiliaHelper.waitSomeTime(2000);
+        ServiceReference sr[] = null;
+        sr = osgi.getServiceReferences(CiliaContext.class.getName(), null);
+        assertNotNull(sr[0]);
+        CiliaContext ccontext = (CiliaContext) context.getService(sr[0]);
+        assertNotNull(ccontext);
+    }
 
-	
-	@Test
-	public void CiliaContextvalidation() {
-		CiliaHelper.waitSomeTime(2000);
-		ServiceReference sr[] = null;
-		sr = osgi.getServiceReferences(CiliaContext.class.getName(), null);
-		assertNotNull(sr[0]);
-		CiliaContext ccontext = (CiliaContext) context.getService(sr[0]);
-		assertNotNull(ccontext);
-	}
-	
-	@Test
-	public void CiliaFileManagervalidation() {
-		CiliaHelper.waitSomeTime(2000);
-		ServiceReference sr[] = null;
-		sr = osgi.getServiceReferences (CiliaFileManager.class.getName(), null);
-		assertNotNull(sr[0]);
-		CiliaFileManager parser = (CiliaFileManager) context.getService(sr[0]);
-		assertNotNull(parser);
-	}
-	
-	@Test
-	public void ChainParservalidation() {
-		CiliaHelper.waitSomeTime(2000);
-		ServiceReference sr[] = null;
-		sr = osgi.getServiceReferences (ChainParser.class.getName(), null);
-		assertNotNull(sr[0]);
-		ChainParser parser = (ChainParser) context.getService(sr[0]);
-		assertNotNull(parser);
-	}
+    @Test
+    public void CiliaFileManagervalidation() {
+        CiliaHelper.waitSomeTime(2000);
+        ServiceReference sr[] = null;
+        sr = osgi.getServiceReferences(CiliaFileManager.class.getName(), null);
+        assertNotNull(sr[0]);
+        CiliaFileManager parser = (CiliaFileManager) context.getService(sr[0]);
+        assertNotNull(parser);
+    }
+
+    @Test
+    public void ChainParservalidation() {
+        CiliaHelper.waitSomeTime(2000);
+        ServiceReference sr[] = null;
+        sr = osgi.getServiceReferences(ChainParser.class.getName(), null);
+        assertNotNull(sr[0]);
+        ChainParser parser = (ChainParser) context.getService(sr[0]);
+        assertNotNull(parser);
+    }
 }

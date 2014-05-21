@@ -18,5 +18,5 @@ package fr.liglab.adele.cilia.model;
 import fr.liglab.adele.cilia.model.impl.PatternType;
 
 public interface Adapter extends MediatorComponent {
-	PatternType getPattern() ;
+    PatternType getPattern();
 }

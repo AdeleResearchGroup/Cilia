@@ -14,30 +14,29 @@
  */
 package fr.liglab.adele.cilia.framework.components;
 
+import fr.liglab.adele.cilia.Data;
+
 import java.util.Enumeration;
 import java.util.Hashtable;
 
-import fr.liglab.adele.cilia.Data;
-
 /**
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project Team</a>
- *
  */
 @SuppressWarnings("rawtypes")
 public class SimpleEnricherProcessor {
 
-	private Hashtable content;
+    private Hashtable content;
 
-	public Data process(final Data data){
-		if (content == null){
-			return data;
-		}
-		Enumeration e = content.keys();
-		while(e.hasMoreElements()){
-			String key = String.valueOf(e.nextElement());
-			Object value = content.get(key); 
-			data.setProperty(key, value);
-		}
-		return data;
-	}
+    public Data process(final Data data) {
+        if (content == null) {
+            return data;
+        }
+        Enumeration e = content.keys();
+        while (e.hasMoreElements()) {
+            String key = String.valueOf(e.nextElement());
+            Object value = content.get(key);
+            data.setProperty(key, value);
+        }
+        return data;
+    }
 }

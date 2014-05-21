@@ -1,7 +1,10 @@
 package fr.liglab.adele.cilia.specification;
 
 
-import fr.liglab.adele.cilia.model.impl.*;
+import fr.liglab.adele.cilia.model.impl.AdapterImpl;
+import fr.liglab.adele.cilia.model.impl.ComponentImpl;
+import fr.liglab.adele.cilia.model.impl.PortImpl;
+import fr.liglab.adele.cilia.model.impl.PortType;
 import fr.liglab.adele.cilia.util.Const;
 
 import java.util.HashMap;

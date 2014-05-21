@@ -15,53 +15,56 @@
 
 package fr.liglab.adele.cilia.model;
 
-import java.util.Set;
-
 import fr.liglab.adele.cilia.ChainListener;
-import fr.liglab.adele.cilia.builder.Builder;
 import fr.liglab.adele.cilia.model.impl.ChainRuntime;
 import fr.liglab.adele.cilia.specification.MediatorSpecification;
-import fr.liglab.adele.cilia.util.concurrent.ReadWriteLock;
+
+import java.util.Set;
 
 /**
  * CiliaAdmin: the Control interface of all the mediators within the Gateway
- * 
+ *
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project
  *         Team</a>
- *         
- * CiliaContext - static
- * getBuilder(); //start/stop
- * getApplication(); 
- * getRuntime();
+ *         <p/>
+ *         CiliaContext - static
+ *         getBuilder(); //start/stop
+ *         getApplication();
+ *         getRuntime();
  */
 //@SuppressWarnings("rawtypes")
 public interface CiliaContainer {
 
-	Chain addChain(Chain chain) ;
-	
-	Chain getChain(String chainId) ;
-	
-	Set getAllChains() ;
-	
-	void startChain(Chain chain) ;
-	void startChain(String chainId);
-	void stopChain(Chain chain) ;
-	void stopChain(String chainId);
-	void removeChain(Chain chain) ;
-	void removeChain(String chainId);
-	
-	void addChainListener(String chainId, ChainListener listener);
-	
-	void removeChainListener(String chainId, ChainListener listener);
-	
-	
-	void start();
-	
-	void stop();
-	
-	MediatorSpecification createMediatorSpecification(String name, String namespace, String category);
-	
-	/*  Runtime informations , level chain */
-	ChainRuntime getChainRuntime(String chainId) ;
-	
+    Chain addChain(Chain chain);
+
+    Chain getChain(String chainId);
+
+    Set getAllChains();
+
+    void startChain(Chain chain);
+
+    void startChain(String chainId);
+
+    void stopChain(Chain chain);
+
+    void stopChain(String chainId);
+
+    void removeChain(Chain chain);
+
+    void removeChain(String chainId);
+
+    void addChainListener(String chainId, ChainListener listener);
+
+    void removeChainListener(String chainId, ChainListener listener);
+
+
+    void start();
+
+    void stop();
+
+    MediatorSpecification createMediatorSpecification(String name, String namespace, String category);
+
+    /*  Runtime informations , level chain */
+    ChainRuntime getChainRuntime(String chainId);
+
 }

@@ -15,30 +15,32 @@
 
 package fr.liglab.adele.cilia.framework;
 
-import java.util.Dictionary;
+import fr.liglab.adele.cilia.Data;
+import fr.liglab.adele.cilia.exceptions.CiliaException;
+
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-
-import fr.liglab.adele.cilia.Data;
-import fr.liglab.adele.cilia.exceptions.CiliaException;
 
 
 /**
  * Dispatcher interface.
  *
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project Team</a>
- *
  */
 public interface IDispatcher {
-	
-	void dispatch(Data dataSet) throws CiliaException;
-	//ISender getSender(String name);
-	//void addSender(String senderName, String senderId, Dictionary props);
-	List getSendersIds();
-	//void removeSender(String portname, String senderName);
-	void send(String senderName, Data data ) throws CiliaException;
-	void send(String senderName, Properties properties,  Data data ) throws CiliaException;
-	public void fireEvent(Map map);
-	//String getName();
+
+    void dispatch(Data dataSet) throws CiliaException;
+
+    //ISender getSender(String name);
+    //void addSender(String senderName, String senderId, Dictionary props);
+    List getSendersIds();
+
+    //void removeSender(String portname, String senderName);
+    void send(String senderName, Data data) throws CiliaException;
+
+    void send(String senderName, Properties properties, Data data) throws CiliaException;
+
+    public void fireEvent(Map map);
+    //String getName();
 }

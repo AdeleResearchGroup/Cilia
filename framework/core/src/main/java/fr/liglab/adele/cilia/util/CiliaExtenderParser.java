@@ -19,22 +19,23 @@ import fr.liglab.adele.cilia.model.Component;
 
 /**
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project Team</a>
- *
  */
 public interface CiliaExtenderParser {
-	/**
-	 * Creates or modifies a ComponentImpl based on the component description.
-	 * @param componentDescription
-	 * @return
-	 */
-	Component getComponent(Object componentDescription, Component currentComponent) throws CiliaParserException; 
+    /**
+     * Creates or modifies a ComponentImpl based on the component description.
+     *
+     * @param componentDescription
+     * @return
+     */
+    Component getComponent(Object componentDescription, Component currentComponent) throws CiliaParserException;
 
-	/**
-	 * See if the parser could handle the component description
-	 * @return
-	 */
-	boolean canHandle(Object mediatorDescription);
-	
-	
+    /**
+     * See if the parser could handle the component description
+     *
+     * @return
+     */
+    boolean canHandle(Object mediatorDescription);
+
+
 }
 

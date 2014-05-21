@@ -15,32 +15,30 @@
 
 package fr.liglab.adele.cilia.framework;
 
-import java.util.Dictionary;
+import fr.liglab.adele.cilia.Data;
+
 import java.util.List;
 import java.util.Map;
-
-import fr.liglab.adele.cilia.Data;
 
 
 public interface IScheduler {
     /**
-     * 
      * @param data notified data.
      */
-	public void notifyData(Data data);
-	
-	public void process(List/*<Data>*/ dataSet);
-	
-	public List getSourcesIds();
-	
-	//
+    public void notifyData(Data data);
 
-	public void fireEvent(Map map);
-	
-	public Map getData();
-	
-	/* init , application level */
-	public void init() ;
-	
+    public void process(List/*<Data>*/ dataSet);
+
+    public List getSourcesIds();
+
+    //
+
+    public void fireEvent(Map map);
+
+    public Map getData();
+
+    /* init , application level */
+    public void init();
+
 
 }

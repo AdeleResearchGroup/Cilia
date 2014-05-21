@@ -17,77 +17,72 @@ package fr.liglab.adele.cilia.runtime;
 
 import java.util.Dictionary;
 
-import org.apache.felix.ipojo.InstanceManager;
-
 /**
- * 
- *
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project Team</a>
- *
  */
 @SuppressWarnings("rawtypes")
 public interface CiliaInstance {
 
 
-	/**
-	 * Start the instance
-	 */
-	public void start();
+    /**
+     * Start the instance
+     */
+    public void start();
 
-	/**
-	 * Stop the instance
-	 */
-	public void stop();
+    /**
+     * Stop the instance
+     */
+    public void stop();
 
-	/**
-	 * Refresh the instance state
-	 */
-	public void refresh();
+    /**
+     * Refresh the instance state
+     */
+    public void refresh();
 
-	/**
-	 * Get the instance state
-	 * 
-	 * @return
-	 */
-	public int getState();
-
-
-	/**
-	 * Get the name associated to this instance
-	 * 
-	 * @return
-	 */
-	public String getName();
+    /**
+     * Get the instance state
+     *
+     * @return
+     */
+    public int getState();
 
 
-	/**
-	 * Get the instance's runtime properties
-	 * 
-	 * @return
-	 */
-	public Dictionary getInstanceProperties();
+    /**
+     * Get the name associated to this instance
+     *
+     * @return
+     */
+    public String getName();
 
-	/**
-	 * Get instance property
-	 * 
-	 * @return
-	 */
-	public Object getInstanceProperty(Object key);
-	
-	/**
-	 * Update the instance's runtime properties
-	 * 
-	 * @param properties
-	 */
-	public void updateInstanceProperties(Dictionary properties);
 
-	
-	/**
-	 * Get the object wrapped by this instance
-	 * 
-	 * @return
-	 */
-	public Object getObject();
-	
-	
+    /**
+     * Get the instance's runtime properties
+     *
+     * @return
+     */
+    public Dictionary getInstanceProperties();
+
+    /**
+     * Get instance property
+     *
+     * @return
+     */
+    public Object getInstanceProperty(Object key);
+
+    /**
+     * Update the instance's runtime properties
+     *
+     * @param properties
+     */
+    public void updateInstanceProperties(Dictionary properties);
+
+
+    /**
+     * Get the object wrapped by this instance
+     *
+     * @return
+     */
+    public Object getObject();
+
+
 }

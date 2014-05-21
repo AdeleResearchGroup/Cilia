@@ -1,16 +1,16 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
-	<modelVersion>4.0.0</modelVersion>
-	<parent>
-		<groupId>fr.liglab.adele.cilia</groupId>
-		<artifactId>cilia-project</artifactId>
-		<version>1.7.5-SNAPSHOT</version>
-		<relativePath>../../parent</relativePath>
-	</parent>
-	<artifactId>tcp-test</artifactId>
-	<name>${productName} :: TCP Adapter Tests</name>
-	<packaging>jar</packaging>
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>fr.liglab.adele.cilia</groupId>
+        <artifactId>cilia-project</artifactId>
+        <version>1.7.5-SNAPSHOT</version>
+        <relativePath>../../parent</relativePath>
+    </parent>
+    <artifactId>tcp-test</artifactId>
+    <name>${productName} :: TCP Adapter Tests</name>
+    <packaging>jar</packaging>
 
     <properties>
         <exam.version>3.0.0</exam.version>
@@ -143,17 +143,23 @@
                                 <artifactItem>
                                     <groupId>${distrib.groupId}</groupId>
                                     <artifactId>cilia-helper</artifactId>
-                                    <outputDirectory>${project.build.directory}/distribution/${distrib.artifactId}/runtime</outputDirectory>
+                                    <outputDirectory>
+                                        ${project.build.directory}/distribution/${distrib.artifactId}/runtime
+                                    </outputDirectory>
                                 </artifactItem>
                                 <artifactItem>
                                     <groupId>${distrib.groupId}</groupId>
                                     <artifactId>tcp-adapter</artifactId>
-                                    <outputDirectory>${project.build.directory}/distribution/${distrib.artifactId}/runtime</outputDirectory>
+                                    <outputDirectory>
+                                        ${project.build.directory}/distribution/${distrib.artifactId}/runtime
+                                    </outputDirectory>
                                 </artifactItem>
                                 <artifactItem>
                                     <groupId>org.ow2.chameleon.testing</groupId>
                                     <artifactId>osgi-helpers</artifactId>
-                                    <outputDirectory>${project.build.directory}/distribution/${distrib.artifactId}/runtime</outputDirectory>
+                                    <outputDirectory>
+                                        ${project.build.directory}/distribution/${distrib.artifactId}/runtime
+                                    </outputDirectory>
                                 </artifactItem>
                             </artifactItems>
                         </configuration>

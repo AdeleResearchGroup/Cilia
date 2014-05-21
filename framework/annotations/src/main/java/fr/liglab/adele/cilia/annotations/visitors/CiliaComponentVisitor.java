@@ -27,38 +27,37 @@ import org.objectweb.asm.commons.EmptyVisitor;
  *         Team</a>
  */
 public class CiliaComponentVisitor extends EmptyVisitor implements AnnotationVisitor {
-	
-	private String NAMESPACE = "fr.liglab.adele.cilia";
-	
-	private Element component;
-	
-	private ComponentWorkbench workbench;
 
-	 public CiliaComponentVisitor(String component, BindingContext context) {
-         this.component = new Element(component, null);
-	     this.workbench = context.getWorkbench();
-	    }
+    private String NAMESPACE = "fr.liglab.adele.cilia";
 
-	    /**
-	     * Visit @Processor annotation attributes.
-	     */
-	    public void visit(String name, Object value) {
-	        if (name.equals("name")) {
-	        	component.addAttribute(new Attribute("name", value.toString()));
-	            return;
-	        }
-            else if (name.equals("namespace")) {
-                component.addAttribute(new Attribute("namespace", value.toString()));
-                return;
-            }
-	    }
+    private Element component;
+
+    private ComponentWorkbench workbench;
+
+    public CiliaComponentVisitor(String component, BindingContext context) {
+        this.component = new Element(component, null);
+        this.workbench = context.getWorkbench();
+    }
+
+    /**
+     * Visit @Processor annotation attributes.
+     */
+    public void visit(String name, Object value) {
+        if (name.equals("name")) {
+            component.addAttribute(new Attribute("name", value.toString()));
+            return;
+        } else if (name.equals("namespace")) {
+            component.addAttribute(new Attribute("namespace", value.toString()));
+            return;
+        }
+    }
 
 
     /**
-	     * Append to the "component" element computed attribute.
-	     */
-	    public void visitEnd() {
-            component.addAttribute(new Attribute("classname", workbench.getClassNode().name.replace("/", ".")));
-            workbench.setRoot(component);
-	    }
+     * Append to the "component" element computed attribute.
+     */
+    public void visitEnd() {
+        component.addAttribute(new Attribute("classname", workbench.getClassNode().name.replace("/", ".")));
+        workbench.setRoot(component);
+    }
 }

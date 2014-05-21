@@ -18,20 +18,19 @@ import java.util.Dictionary;
 
 /**
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project Team</a>
- *
  */
 public class CollectorImpl extends ConnectingComponent {
 
-	/**
-	 * @param id
-	 * @param type
-	 * @param nspace
-	 * @param properties
-	 */
-	public CollectorImpl(String id, String type, String nspace,String portname,
-			Dictionary properties) {
-		super(id, type, nspace, portname, properties);
-		// TODO Auto-generated constructor stub
-	}
+    /**
+     * @param id
+     * @param type
+     * @param nspace
+     * @param properties
+     */
+    public CollectorImpl(String id, String type, String nspace, String portname,
+                         Dictionary properties) {
+        super(id, type, nspace, portname, properties);
+        // TODO Auto-generated constructor stub
+    }
 
 }

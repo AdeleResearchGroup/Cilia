@@ -15,21 +15,21 @@
 
 package fr.liglab.adele.cilia.framework;
 
-import java.util.Dictionary;
-import java.util.Properties;
-
 import fr.liglab.adele.cilia.exceptions.CiliaException;
 import fr.liglab.adele.cilia.model.Binding;
 
+import java.util.Dictionary;
+import java.util.Properties;
+
 
 public class GenericBindingService extends AbstractBindingService implements
-CiliaBindingService{
+        CiliaBindingService {
 
     public Dictionary getProperties(Dictionary collectorProperties,
-            Dictionary senderProperties, Binding b) throws CiliaException {
-        
+                                    Dictionary senderProperties, Binding b) throws CiliaException {
+
         Dictionary properties = new Properties();
-        
+
         if (collectorProperties != null) {
             properties.put(CILIA_COLLECTOR_PROPERTIES, collectorProperties);
         }

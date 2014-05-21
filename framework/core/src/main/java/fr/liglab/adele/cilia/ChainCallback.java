@@ -17,34 +17,30 @@ package fr.liglab.adele.cilia;
 
 /**
  * callback events level chain
- * 
+ *
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project
  *         Team</a>
- * 
  */
 public interface ChainCallback {
 
-	/**
-	 * Callback upon new chain arrival
-	 * 
-	 * @param chaindId
-	 *            chain identificator
-	 */
-	void onAdded(String chainId);
+    /**
+     * Callback upon new chain arrival
+     *
+     * @param chaindId chain identificator
+     */
+    void onAdded(String chainId);
 
-	/**
-	 * Callback upon chain departure
-	 * 
-	 * @param chaindId
-	 *            chain identificator
-	 */
-	void onRemoved(String chainId);
+    /**
+     * Callback upon chain departure
+     *
+     * @param chaindId chain identificator
+     */
+    void onRemoved(String chainId);
 
-	/**
-	 * 
-	 * @param chainId  chain idenficator
-	 * @param event true started , false stopped 
-	 */
-	void onStateChange(String chainId,boolean event );
+    /**
+     * @param chainId chain idenficator
+     * @param event   true started , false stopped
+     */
+    void onStateChange(String chainId, boolean event);
 
 }

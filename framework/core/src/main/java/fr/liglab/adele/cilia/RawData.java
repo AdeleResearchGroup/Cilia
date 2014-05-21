@@ -15,62 +15,59 @@
 
 package fr.liglab.adele.cilia;
 
-import java.util.Map;
-
 import fr.liglab.adele.cilia.exceptions.CiliaIllegalParameterException;
 import fr.liglab.adele.cilia.exceptions.CiliaIllegalStateException;
 import fr.liglab.adele.cilia.exceptions.CiliaRuntimeException;
 
+import java.util.Map;
+
 /**
  * Management of dynamic data values
- * 
+ *
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project
  *         Team</a>
- * 
  */
 public interface RawData extends Node {
 
-	/**
-	 * validity of a mediator
-	 * 
-	 * @return true if the mediator is valid
-	 */
-	boolean isValid() throws CiliaIllegalStateException;
+    /**
+     * validity of a mediator
+     *
+     * @return true if the mediator is valid
+     */
+    boolean isValid() throws CiliaIllegalStateException;
 
-	/**
-	 * 
-	 * @return list of state variables enabled
-	 */
-	String[] getAllEnabledVariable() throws CiliaIllegalStateException;
+    /**
+     * @return list of state variables enabled
+     */
+    String[] getAllEnabledVariable() throws CiliaIllegalStateException;
 
-	/**
-	 * @param variableId
-	 * @return true if state enable , false disable
-	 * @throws CiliaIllegalStateException
-	 * @throws CiliaIllegalParameterException
-	 */
-	boolean getStateVariableState(String variableId) throws CiliaIllegalStateException,
-			CiliaIllegalParameterException;
+    /**
+     * @param variableId
+     * @return true if state enable , false disable
+     * @throws CiliaIllegalStateException
+     * @throws CiliaIllegalParameterException
+     */
+    boolean getStateVariableState(String variableId) throws CiliaIllegalStateException,
+            CiliaIllegalParameterException;
 
-	/**
-	 * @param variableId
-	 * @return list of measures stored
-	 * @throws CiliaRuntimeException
-	 */
-	Measure[] measures(String variableId) throws CiliaIllegalParameterException,
-			CiliaIllegalStateException;
+    /**
+     * @param variableId
+     * @return list of measures stored
+     * @throws CiliaRuntimeException
+     */
+    Measure[] measures(String variableId) throws CiliaIllegalParameterException,
+            CiliaIllegalStateException;
 
-	/**
-	 * checks if the measure is out of bounds
-	 * 
-	 * @return ThresholdsCallback.NONE ,
-	 *         ThresholdsCallback.VERY_LOW,ThresholdsCallback.LOW
-	 *         ThresholdsCallback.HIGH, ThresholdsCallback.VERY_HIGH
-	 * 
-	 */
-	int viability(String variableId, Measure measure)
-			throws CiliaIllegalParameterException, CiliaIllegalStateException;
+    /**
+     * checks if the measure is out of bounds
+     *
+     * @return ThresholdsCallback.NONE ,
+     * ThresholdsCallback.VERY_LOW,ThresholdsCallback.LOW
+     * ThresholdsCallback.HIGH, ThresholdsCallback.VERY_HIGH
+     */
+    int viability(String variableId, Measure measure)
+            throws CiliaIllegalParameterException, CiliaIllegalStateException;
 
-	Map toMap();
+    Map toMap();
 
 }

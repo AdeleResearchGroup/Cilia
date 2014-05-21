@@ -17,7 +17,7 @@ package fr.liglab.adele.cilia.framework.monitor;
 import java.util.Map;
 
 public interface INotifier {
-	
-	public void fireEvent(Map info);
-	
+
+    public void fireEvent(Map info);
+
 }

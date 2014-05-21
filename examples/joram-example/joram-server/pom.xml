@@ -1,68 +1,68 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
-  <modelVersion>4.0.0</modelVersion>
-  <artifactId>joram-server</artifactId>
-  <packaging>pom</packaging>
-  <name>JORAM :: joram-server</name>
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>joram-server</artifactId>
+    <packaging>pom</packaging>
+    <name>JORAM :: joram-server</name>
 
-  <parent>
-    <artifactId>cilia-JMS-demo-reactor</artifactId>
-    <groupId>fr.liglab.adele.cilia</groupId>
-    <version>1.7.5-SNAPSHOT</version>
-  </parent>
-  
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-dependency-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>unpack</id>
-            <phase>package</phase>
-            <goals>
-              <goal>unpack</goal>
-            </goals>
-            <configuration>
-              <artifactItems>
-                <artifactItem>
-                  <groupId>org.ow2.joram</groupId>
-                  <artifactId>joram-assembly</artifactId>
-                  <type>zip</type>
-                  <excludes>**/pom.*,**/META-INF/**</excludes>
-                </artifactItem>
-                <artifactItem>
-                  <groupId>org.ow2.joram</groupId>
-                  <artifactId>joram-samples</artifactId>
-                  <type>zip</type>
-                  <excludes>**/pom.*,**/META-INF/**</excludes>
-                </artifactItem>
-              </artifactItems>
-              <outputDirectory>.</outputDirectory>
-              <overWriteReleases>false</overWriteReleases>
-              <overWriteSnapshots>true</overWriteSnapshots>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-    </plugins>
-  </build>
+    <parent>
+        <artifactId>cilia-JMS-demo-reactor</artifactId>
+        <groupId>fr.liglab.adele.cilia</groupId>
+        <version>1.7.5-SNAPSHOT</version>
+    </parent>
 
-  <dependencies>
-    <dependency>
-      <groupId>org.ow2.joram</groupId>
-      <artifactId>joram-assembly</artifactId>
-      <version>${joram.version}</version>
-      <type>zip</type>
-    </dependency>
-    
-    <dependency>
-      <groupId>org.ow2.joram</groupId>
-      <artifactId>joram-samples</artifactId>
-      <version>${joram.version}</version>
-      <type>zip</type>
-    </dependency>
-  </dependencies>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>unpack</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>unpack</goal>
+                        </goals>
+                        <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>org.ow2.joram</groupId>
+                                    <artifactId>joram-assembly</artifactId>
+                                    <type>zip</type>
+                                    <excludes>**/pom.*,**/META-INF/**</excludes>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>org.ow2.joram</groupId>
+                                    <artifactId>joram-samples</artifactId>
+                                    <type>zip</type>
+                                    <excludes>**/pom.*,**/META-INF/**</excludes>
+                                </artifactItem>
+                            </artifactItems>
+                            <outputDirectory>.</outputDirectory>
+                            <overWriteReleases>false</overWriteReleases>
+                            <overWriteSnapshots>true</overWriteSnapshots>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.ow2.joram</groupId>
+            <artifactId>joram-assembly</artifactId>
+            <version>${joram.version}</version>
+            <type>zip</type>
+        </dependency>
+
+        <dependency>
+            <groupId>org.ow2.joram</groupId>
+            <artifactId>joram-samples</artifactId>
+            <version>${joram.version}</version>
+            <type>zip</type>
+        </dependency>
+    </dependencies>
 </project>

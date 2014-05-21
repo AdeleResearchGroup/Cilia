@@ -1,15 +1,16 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
-		"http://www.w3.org/TR/html4/strict.dtd">
+        "http://www.w3.org/TR/html4/strict.dtd">
 <html>
-	<head>
-		<title>Client Consommation</title>
-		<link href="http://demos.dojotoolkit.org/demos/form/demo.css" type="text/css" rel="stylesheet">
-		<script type="text/javascript" src="http://localhost:8080/dojotoolkit/dojo/dojo.js" charset="utf-8" djConfig="parseOnLoad: true"></script>
-		<script type="text/javascript" src="src.js" charset="utf-8"> </script>
-		<script type="text/javascript" src="xmlrpc.js" charset="utf-8"> </script>
-		
-		
-		  <script type="text/javascript">
+<head>
+    <title>Client Consommation</title>
+    <link href="http://demos.dojotoolkit.org/demos/form/demo.css" type="text/css" rel="stylesheet">
+    <script type="text/javascript" src="http://localhost:8080/dojotoolkit/dojo/dojo.js" charset="utf-8"
+            djConfig="parseOnLoad: true"></script>
+    <script type="text/javascript" src="src.js" charset="utf-8"></script>
+    <script type="text/javascript" src="xmlrpc.js" charset="utf-8"></script>
+
+
+    <script type="text/javascript">
       dojo.require("dojo._base.html");
       dojo.require("dojox.cometd");
       dojo.require("dojox.cometd.callbackPollTransport");
@@ -134,118 +135,121 @@
 			//alert("loading");
         }
           
-  </script>
-		
-	</head>
 
-	<body class="tundra">
-		<div dojoType="dojo.data.ItemFileReadStore" jsId="stateStore"
-			url="states.json"></div>
 
-		<h2 class="pageSubContentTitle">Suivi de consommation client : Orange</h2>
+
+    </script>
+
+</head>
+
+<body class="tundra">
+<div dojoType="dojo.data.ItemFileReadStore" jsId="stateStore"
+     url="states.json"></div>
+
+<h2 class="pageSubContentTitle">Suivi de consommation client : Orange</h2>
 <!--		 <form dojoType="dijit.form.Form" id="myForm" > -->
-			
-			<div class="formQuestion">
-				<span>Informations Client</span>
-			</div>
-			<div class="formAnswer">
-				<label class="firstLabel" for="name">Nom *</label>
-				<input type="text" id="name" name="name" class="medium"
-					dojoType="dijit.form.ValidationTextBox"
-					required="true" 
-					ucfirst="true" invalidMessage=""/>
-				<br>
 
-				<label class="firstLabel" for="address">Addresse *</label>
-				<input type="text" id="address" name="address" class="long"
-					dojoType="dijit.form.ValidationTextBox"
-					required="true"
-					ucfirst="true" />
-				<br>
-
-				<label class="firstLabel" for="city">Ville *</label>
-			 	<select dojoType="dijit.form.ComboBox"
-			 			value=""
-						autocomplete="true"
-						hasDownArrow="false"
-						name="city"
-						id="city"
-				>
-					<option></option>
-					<option>Grenoble</option>
-					<option>Lyon</option>
-					<option>Paris</option>
-					<option>Marseille</option>
-					<option>Nice</option>
-				</select>
-
-				<label class="secondLabel" for="state">Département</label>
-			 	<select dojoType="dijit.form.ComboBox"
-			 			value=""
-						autocomplete="true"
-						hasDownArrow="false"
-						name="state"
-						id="state"
-				>
-					<option></option>
-					<option>Isère</option>
-					<option>Vienne</option>
-					<option>Paris</option>
-					<option>Guadeloupe</option>
-					<option>Guyane</option>
-				</select>
-				<label class="secondLabel" for="zip">Code Postal *</label>
-				<input type="text" id="zip" name="zip" class="short"
-					dojoType="dijit.form.ValidationTextBox"
-					trim="true" 
-					required="true"
-					regExp="[0-9][0-9][0-9][0-9][0-9]"
-					invalidMessage="5 digit zipcode (ex: 38100)"/>
-				<br>
-
-				<label class="firstLabel" for="dob">Date de naissance *</label>
-				<input id="dob" name="dateOfBirth" dojoType="dijit.form.DateTextBox" required=true/>
-				
-			</div>
 <div class="formQuestion">
-				<span>Consommation Client</span>
-			</div>
-			<div class="formAnswer">
+    <span>Informations Client</span>
+</div>
+<div class="formAnswer">
+    <label class="firstLabel" for="name">Nom *</label>
+    <input type="text" id="name" name="name" class="medium"
+           dojoType="dijit.form.ValidationTextBox"
+           required="true"
+           ucfirst="true" invalidMessage=""/>
+    <br>
 
-			
-				<input dojoType="dijit.form.CheckBox"
-			 			value="Fix"
-						id="cbfix"
-						name="cbfix"
-				>
-				<label for="cbfix">Fixe</label>
-				<br>
-				<input dojoType="dijit.form.CheckBox"
-			 			value="Internet"
-						id="cbinternet"
-						name="cbinternet"
-				>
-				<label for="cbinternet">Internet</label>
-				<br>
-				<input dojoType="dijit.form.CheckBox"
-			 			value="Mobile"
-						id="cbmobile"
-						name="cbmobile"
-				>
-				<label for="cbmobile">Mobile</label>	
-				<br>
-				<label class="firstLabel" for="debut">Debut *</label>
-				<input id="debut" name="debut" dojoType="dijit.form.DateTextBox" required=true/>
-				<br>
-				<label class="firstLabel" for="debut">Fin *</label>
-				<input id="fin" name="fin" dojoType="dijit.form.DateTextBox" required=true/>			
-			</div>
-		  	<center> 
-			  <input id="test" class="qbutton" value="Confirmer" onclick="getConso();" type="submit"/>
-			</center>
- 
-		 <div id="reponse" name="reponse"> </div>
- 
-	</body>
+    <label class="firstLabel" for="address">Addresse *</label>
+    <input type="text" id="address" name="address" class="long"
+           dojoType="dijit.form.ValidationTextBox"
+           required="true"
+           ucfirst="true"/>
+    <br>
+
+    <label class="firstLabel" for="city">Ville *</label>
+    <select dojoType="dijit.form.ComboBox"
+            value=""
+            autocomplete="true"
+            hasDownArrow="false"
+            name="city"
+            id="city"
+            >
+        <option></option>
+        <option>Grenoble</option>
+        <option>Lyon</option>
+        <option>Paris</option>
+        <option>Marseille</option>
+        <option>Nice</option>
+    </select>
+
+    <label class="secondLabel" for="state">Département</label>
+    <select dojoType="dijit.form.ComboBox"
+            value=""
+            autocomplete="true"
+            hasDownArrow="false"
+            name="state"
+            id="state"
+            >
+        <option></option>
+        <option>Isère</option>
+        <option>Vienne</option>
+        <option>Paris</option>
+        <option>Guadeloupe</option>
+        <option>Guyane</option>
+    </select>
+    <label class="secondLabel" for="zip">Code Postal *</label>
+    <input type="text" id="zip" name="zip" class="short"
+           dojoType="dijit.form.ValidationTextBox"
+           trim="true"
+           required="true"
+           regExp="[0-9][0-9][0-9][0-9][0-9]"
+           invalidMessage="5 digit zipcode (ex: 38100)"/>
+    <br>
+
+    <label class="firstLabel" for="dob">Date de naissance *</label>
+    <input id="dob" name="dateOfBirth" dojoType="dijit.form.DateTextBox" required=true/>
+
+</div>
+<div class="formQuestion">
+    <span>Consommation Client</span>
+</div>
+<div class="formAnswer">
+
+
+    <input dojoType="dijit.form.CheckBox"
+           value="Fix"
+           id="cbfix"
+           name="cbfix"
+            >
+    <label for="cbfix">Fixe</label>
+    <br>
+    <input dojoType="dijit.form.CheckBox"
+           value="Internet"
+           id="cbinternet"
+           name="cbinternet"
+            >
+    <label for="cbinternet">Internet</label>
+    <br>
+    <input dojoType="dijit.form.CheckBox"
+           value="Mobile"
+           id="cbmobile"
+           name="cbmobile"
+            >
+    <label for="cbmobile">Mobile</label>
+    <br>
+    <label class="firstLabel" for="debut">Debut *</label>
+    <input id="debut" name="debut" dojoType="dijit.form.DateTextBox" required=true/>
+    <br>
+    <label class="firstLabel" for="debut">Fin *</label>
+    <input id="fin" name="fin" dojoType="dijit.form.DateTextBox" required=true/>
+</div>
+<center>
+    <input id="test" class="qbutton" value="Confirmer" onclick="getConso();" type="submit"/>
+</center>
+
+<div id="reponse" name="reponse"></div>
+
+</body>
 </html>
 

@@ -1,159 +1,163 @@
 package fr.liglab.adele.cilia.internals.controller;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import fr.liglab.adele.cilia.model.Component;
 import fr.liglab.adele.cilia.model.impl.CollectorImpl;
 import fr.liglab.adele.cilia.model.impl.SenderImpl;
 
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class CreatorThread implements Runnable {
 
-	private boolean m_started = true;
+    private boolean m_started = true;
 
-	private Thread thread;
+    private Thread thread;
 
-	private AuxiliarThread auxiliarThread;
+    private AuxiliarThread auxiliarThread;
 
-	private List waitedModels = new ArrayList();
-
-
-	public CreatorThread() {
-		thread = new Thread(this);
-	}
-
-	protected void initializeAuxiliar() {
-		auxiliarThread = new AuxiliarThread(this);
-		auxiliarThread.initialize();
-	}
-	
-	protected void shutdownAuxiliar(){
-		auxiliarThread.shutdown();
-	}
-	
-	public synchronized void initialize(){
-		m_started = true;	
-		thread.start();
-		initializeAuxiliar();
-	}
-	
-	
-
-	public synchronized void shutdown(){
-		m_started = false;
-		waitedModels.clear();
-		notifyAll();
-		shutdownAuxiliar();
-	}
+    private List waitedModels = new ArrayList();
 
 
-	public void addSender(MediatorControllerImpl mediator, Component sender, boolean postpone) {
-		ControllerPair controller = new ControllerPair(mediator, sender);
-		addTask(controller, postpone);
-	}
+    public CreatorThread() {
+        thread = new Thread(this);
+    }
+
+    protected void initializeAuxiliar() {
+        auxiliarThread = new AuxiliarThread(this);
+        auxiliarThread.initialize();
+    }
+
+    protected void shutdownAuxiliar() {
+        auxiliarThread.shutdown();
+    }
+
+    public synchronized void initialize() {
+        m_started = true;
+        thread.start();
+        initializeAuxiliar();
+    }
 
 
-	public void addCollector(MediatorControllerImpl mediator, Component collector, boolean postpone) {
-		ControllerPair controller = new ControllerPair(mediator, collector);
-		addTask(controller, postpone);
-	}
+    public synchronized void shutdown() {
+        m_started = false;
+        waitedModels.clear();
+        notifyAll();
+        shutdownAuxiliar();
+    }
 
-	protected void addTask(ControllerPair pair) {
-		addTask(pair, false);
-	}
 
-	protected synchronized void addTask(ControllerPair pair, boolean postpone) {
-		if (postpone) {
-			auxiliarThread.addTask(pair);
-		} else {
-			waitedModels.add(pair);
-			notifyAll();
-		}
-	}
+    public void addSender(MediatorControllerImpl mediator, Component sender, boolean postpone) {
+        ControllerPair controller = new ControllerPair(mediator, sender);
+        addTask(controller, postpone);
+    }
 
-	protected void startTask(ControllerPair pair) {
-		MediatorControllerImpl controller = pair.getController();
-		Component comp = pair.getModel();
-		if (comp instanceof SenderImpl) {
-			controller.createSender((SenderImpl)comp);
-		} else if (comp instanceof CollectorImpl) {
-			controller.createCollector((CollectorImpl)comp);
-		}
-	}
 
-	public void run() {
-		boolean started;
-		synchronized (this) {
-			started = m_started;
-		}
-		while (started) {
-			ControllerPair pair;
-			synchronized (this) {
-				while ((m_started && waitedModels.isEmpty()) ) {
-					try {
-						wait();
-					} catch (InterruptedException e) {
-						// Interruption, re-check the condition
-					}
-				}
-				if (!m_started) {
-					return; // The thread must be stopped immediately.
-				} else {
-					pair =  (ControllerPair)waitedModels.remove(0);
-				}
-			}
-			try {
-				startTask(pair);
-			} catch (Throwable e) {
-				e.printStackTrace();
-			}
-			synchronized (this) {
-				started = m_started;
-			}
-		}
-	}
+    public void addCollector(MediatorControllerImpl mediator, Component collector, boolean postpone) {
+        ControllerPair controller = new ControllerPair(mediator, collector);
+        addTask(controller, postpone);
+    }
 
-	private class AuxiliarThread extends CreatorThread {
-		CreatorThread creator;
-		long time = 1000;
-		public AuxiliarThread(CreatorThread creat) {
-			super();
-			creator = creat;
-		}
+    protected void addTask(ControllerPair pair) {
+        addTask(pair, false);
+    }
 
-		protected void startTask(ControllerPair pair) {
-			try {
-				synchronized (this) {
-					long currentTime = System.currentTimeMillis();
-					while(System.currentTimeMillis() - currentTime < time ) {
-						wait(time);
-					}
-				}
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-			creator.addTask(pair);
-		}
-		
-		protected void initializeAuxiliar() {}
-		
-		protected void shutdownAuxiliar() {}
-	}
+    protected synchronized void addTask(ControllerPair pair, boolean postpone) {
+        if (postpone) {
+            auxiliarThread.addTask(pair);
+        } else {
+            waitedModels.add(pair);
+            notifyAll();
+        }
+    }
 
-	private class ControllerPair {
-		MediatorControllerImpl mediator;
-		Component model;
-		public ControllerPair(MediatorControllerImpl controller, Component component) {
-			mediator = controller;
-			model = component;
-		}
-		public MediatorControllerImpl getController(){
-			return mediator;
-		}
-		public Component getModel() {
-			return model;
-		}
-	}
+    protected void startTask(ControllerPair pair) {
+        MediatorControllerImpl controller = pair.getController();
+        Component comp = pair.getModel();
+        if (comp instanceof SenderImpl) {
+            controller.createSender((SenderImpl) comp);
+        } else if (comp instanceof CollectorImpl) {
+            controller.createCollector((CollectorImpl) comp);
+        }
+    }
+
+    public void run() {
+        boolean started;
+        synchronized (this) {
+            started = m_started;
+        }
+        while (started) {
+            ControllerPair pair;
+            synchronized (this) {
+                while ((m_started && waitedModels.isEmpty())) {
+                    try {
+                        wait();
+                    } catch (InterruptedException e) {
+                        // Interruption, re-check the condition
+                    }
+                }
+                if (!m_started) {
+                    return; // The thread must be stopped immediately.
+                } else {
+                    pair = (ControllerPair) waitedModels.remove(0);
+                }
+            }
+            try {
+                startTask(pair);
+            } catch (Throwable e) {
+                e.printStackTrace();
+            }
+            synchronized (this) {
+                started = m_started;
+            }
+        }
+    }
+
+    private class AuxiliarThread extends CreatorThread {
+        CreatorThread creator;
+        long time = 1000;
+
+        public AuxiliarThread(CreatorThread creat) {
+            super();
+            creator = creat;
+        }
+
+        protected void startTask(ControllerPair pair) {
+            try {
+                synchronized (this) {
+                    long currentTime = System.currentTimeMillis();
+                    while (System.currentTimeMillis() - currentTime < time) {
+                        wait(time);
+                    }
+                }
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            creator.addTask(pair);
+        }
+
+        protected void initializeAuxiliar() {
+        }
+
+        protected void shutdownAuxiliar() {
+        }
+    }
+
+    private class ControllerPair {
+        MediatorControllerImpl mediator;
+        Component model;
+
+        public ControllerPair(MediatorControllerImpl controller, Component component) {
+            mediator = controller;
+            model = component;
+        }
+
+        public MediatorControllerImpl getController() {
+            return mediator;
+        }
+
+        public Component getModel() {
+            return model;
+        }
+    }
 }

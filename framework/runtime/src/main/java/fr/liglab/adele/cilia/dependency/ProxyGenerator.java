@@ -19,18 +19,15 @@
 package fr.liglab.adele.cilia.dependency;
 
 
+import org.objectweb.asm.*;
+
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-
-import org.objectweb.asm.ClassWriter;
-import org.objectweb.asm.Label;
-import org.objectweb.asm.MethodVisitor;
-import org.objectweb.asm.Opcodes;
-import org.objectweb.asm.Type;
 
 /**
  * Generates proxy class delegating operation invocations thanks to a
  * a dependency.
+ *
  * @author <a href="mailto:dev@felix.apache.org">Felix Project Team</a>
  */
 public class ProxyGenerator implements Opcodes {
@@ -52,6 +49,7 @@ public class ProxyGenerator implements Opcodes {
 
     /**
      * Gets the internal names of the given class objects.
+     *
      * @param classes the classes
      * @return the array containing internal names of the given class array.
      */
@@ -65,6 +63,7 @@ public class ProxyGenerator implements Opcodes {
 
     /**
      * Generates a proxy class.
+     *
      * @param spec the proxied service specification
      * @return the byte[] for the generated proxy class.
      */
@@ -74,15 +73,15 @@ public class ProxyGenerator implements Opcodes {
         String[] itfs = new String[0];
         String parent = "java/lang/Object";
         if (spec.isInterface()) {
-        	itfs = new String[] {internalClassName};  // Implemented interface.
+            itfs = new String[]{internalClassName};  // Implemented interface.
         } else {
-        	parent = internalClassName;
+            parent = internalClassName;
         }
         String className = internalClassName + "$$Proxy"; // Unique name.
 
         // Turn around the VM changes (FELIX-2716) about java.* classes.
         if (className.startsWith("java/")) {
-        	className = "$" + className;
+            className = "$" + className;
         }
 
         Method[] methods = spec.getMethods(); // Method to delegate
@@ -108,13 +107,14 @@ public class ProxyGenerator implements Opcodes {
 
     /**
      * Generates a delegated method.
-     * @param cw the class writer
-     * @param method the method object to delegate
+     *
+     * @param cw        the class writer
+     * @param method    the method object to delegate
      * @param className the generated class name
-     * @param itfName the internal specification class name
+     * @param itfName   the internal specification class name
      */
     private static void generateDelegator(ClassWriter cw, Method method,
-            String className, String itfName) {
+                                          String className, String itfName) {
         String methodName = method.getName();
         String desc = Type.getMethodDescriptor(method);
         String[] exceptions = getInternalClassNames(method.getExceptionTypes());
@@ -182,7 +182,8 @@ public class ProxyGenerator implements Opcodes {
     /**
      * Generates the constructors. The constructor receives a dependency
      * and set the {@link ProxyGenerator#DEPENDENCY} field.
-     * @param cw the class writer
+     *
+     * @param cw        the class writer
      * @param className the generated class name.
      */
     private static void generateConstructor(ClassWriter cw, String className, String parent) {
@@ -202,6 +203,7 @@ public class ProxyGenerator implements Opcodes {
 
     /**
      * Adds the dependency field {@link ProxyGenerator#DEPENDENCY}.
+     *
      * @param cw the class writer
      */
     private static void addDependencyField(ClassWriter cw) {

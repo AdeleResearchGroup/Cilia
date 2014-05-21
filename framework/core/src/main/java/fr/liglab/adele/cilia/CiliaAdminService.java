@@ -20,20 +20,21 @@ import fr.liglab.adele.cilia.exceptions.CiliaIllegalParameterException;
 /**
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project
  *         Team</a>
- * 
  */
-public interface CiliaAdminService extends AdminChain, AdminComponent, AdminBinding{
+public interface CiliaAdminService extends AdminChain, AdminComponent, AdminBinding {
 
-	/**
-	 * Initialize a mediation chain.
-	 * @param chainId
-	 */
-	void startChain(String chainId) throws CiliaIllegalParameterException;
-	
-	/**
-	 * Stop a mediation chain
-	 * @param chainId
-	 */
-	void stopChain(String chainId) throws CiliaIllegalParameterException;
-	
+    /**
+     * Initialize a mediation chain.
+     *
+     * @param chainId
+     */
+    void startChain(String chainId) throws CiliaIllegalParameterException;
+
+    /**
+     * Stop a mediation chain
+     *
+     * @param chainId
+     */
+    void stopChain(String chainId) throws CiliaIllegalParameterException;
+
 }

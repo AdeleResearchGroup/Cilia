@@ -15,136 +15,119 @@
 
 package fr.liglab.adele.cilia;
 
-import java.util.Map;
-
 import fr.liglab.adele.cilia.exceptions.CiliaIllegalParameterException;
 import fr.liglab.adele.cilia.exceptions.CiliaIllegalStateException;
 import fr.liglab.adele.cilia.exceptions.CiliaInvalidSyntaxException;
 
+import java.util.Map;
+
 /**
  * Monitoring Configuration
- * 
+ *
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project
  *         Team</a>
- * 
  */
 public interface SetUp extends Node {
 
-	/**
-	 * 
-	 * @return Categories of state variables variables
-	 */
-	String[] getCategories() ;
+    /**
+     * @return Categories of state variables variables
+     */
+    String[] getCategories();
 
-	/**
-	 * 
-	 * @param category
-	 *          
-	 * @return list of variable per category of all state variable name if
-	 *         category is null
-	 */
-	String[] getVariableNameByCategory(String category) ;
-	
-	/**
+    /**
+     * @param category
+     * @return list of variable per category of all state variable name if
+     * category is null
+     */
+    String[] getVariableNameByCategory(String category);
 
-	 *          
-	 * @return all variable name  
-	 */
-	String[] getAllVariablesName()  ;
+    /**
+     * @return all variable name
+     */
+    String[] getAllVariablesName();
 
 
-	/**
-	 * Configure the monitoring on this object
-	 * 
-	 * @param variableId
-	 *            , name of the variable to configure
-	 * @param queueSize
-	 *            , number of monitored value stored ( circular queue)
-	 * @param LdapFilter
-	 *            , data control flow management
-	 * @param enable
-	 *            , true values are published
-	 * @return true if action done , false otherwhise
-	 * @throws CiliaInvalidSyntaxException
-	 * @throws CiliaIllegalStateException
-	 */
-	void setMonitoring(String variableId, int queueSize, String LdapFilter, boolean enable)
-			throws CiliaIllegalParameterException, CiliaInvalidSyntaxException,
-			CiliaIllegalStateException;
+    /**
+     * Configure the monitoring on this object
+     *
+     * @param variableId , name of the variable to configure
+     * @param queueSize  , number of monitored value stored ( circular queue)
+     * @param LdapFilter , data control flow management
+     * @param enable     , true values are published
+     * @return true if action done , false otherwhise
+     * @throws CiliaInvalidSyntaxException
+     * @throws CiliaIllegalStateException
+     */
+    void setMonitoring(String variableId, int queueSize, String LdapFilter, boolean enable)
+            throws CiliaIllegalParameterException, CiliaInvalidSyntaxException,
+            CiliaIllegalStateException;
 
-	/**
-	 * Configure the monitoring on this object ( others parameters are not
-	 * modified )
-	 * 
-	 * @param variableId
-	 *            , name of the variable to configure
-	 * @param queueSize
-	 *            , number of monitored values stored ( circular queue)
-	 * @return true if action done , false otherwhise
-	 * @throws CiliaIllegalStateException
-	 */
-	void setMonitoring(String variableId, int queueSize)
-			throws CiliaIllegalParameterException, CiliaIllegalStateException;
+    /**
+     * Configure the monitoring on this object ( others parameters are not
+     * modified )
+     *
+     * @param variableId , name of the variable to configure
+     * @param queueSize  , number of monitored values stored ( circular queue)
+     * @return true if action done , false otherwhise
+     * @throws CiliaIllegalStateException
+     */
+    void setMonitoring(String variableId, int queueSize)
+            throws CiliaIllegalParameterException, CiliaIllegalStateException;
 
-	/**
-	 * Configure the monitoring on this object
-	 * 
-	 * @param variableId
-	 *            , name of the variable to configure
-	 * @param LdapFilter
-	 *            , data control flow management
-	 * @return true if action done , false otherwhise
-	 * @throws CiliaInvalidSyntaxException
-	 * @throws CiliaIllegalStateException
-	 */
-	void setMonitoring(String variableId, String LdapFilter)
-			throws CiliaIllegalParameterException, CiliaInvalidSyntaxException,
-			CiliaIllegalStateException;
+    /**
+     * Configure the monitoring on this object
+     *
+     * @param variableId , name of the variable to configure
+     * @param LdapFilter , data control flow management
+     * @return true if action done , false otherwhise
+     * @throws CiliaInvalidSyntaxException
+     * @throws CiliaIllegalStateException
+     */
+    void setMonitoring(String variableId, String LdapFilter)
+            throws CiliaIllegalParameterException, CiliaInvalidSyntaxException,
+            CiliaIllegalStateException;
 
-	/**
-	 * Enable/disable
-	 * 
-	 * @param variableId
-	 *            , name of the variable to configure
-	 * @param enable
-	 *            , true values are published
-	 * @return true if action done , false otherwhise
-	 * @throws CiliaIllegalStateException
-	 */
-	void setMonitoring(String variableId, boolean enable)
-			throws CiliaIllegalParameterException, CiliaIllegalStateException;
+    /**
+     * Enable/disable
+     *
+     * @param variableId , name of the variable to configure
+     * @param enable     , true values are published
+     * @return true if action done , false otherwhise
+     * @throws CiliaIllegalStateException
+     */
+    void setMonitoring(String variableId, boolean enable)
+            throws CiliaIllegalParameterException, CiliaIllegalStateException;
 
-	/**
-	 * 
-	 * @param variableId
-	 * @return number of objects stored
-	 * @throws CiliaIllegalStateException
-	 */
-	int getQueueSize(String variableId) throws CiliaIllegalParameterException,
-			CiliaIllegalStateException;
+    /**
+     * @param variableId
+     * @return number of objects stored
+     * @throws CiliaIllegalStateException
+     */
+    int getQueueSize(String variableId) throws CiliaIllegalParameterException,
+            CiliaIllegalStateException;
 
-	/**
-	 * @param variableId
-	 * @return ldap filter for the flow control
-	 * @throws CiliaIllegalParameterException
-	 * @throws CiliaIllegalStateException
-	 */
-	String getFlowControl(String variableId) throws CiliaIllegalParameterException,
-			CiliaIllegalStateException;
+    /**
+     * @param variableId
+     * @return ldap filter for the flow control
+     * @throws CiliaIllegalParameterException
+     * @throws CiliaIllegalStateException
+     */
+    String getFlowControl(String variableId) throws CiliaIllegalParameterException,
+            CiliaIllegalStateException;
 
-	/**
-	 * @return list of state variables enabled
-	 */
-	String[] getAllEnabledVariable() throws CiliaIllegalStateException;
+    /**
+     * @return list of state variables enabled
+     */
+    String[] getAllEnabledVariable() throws CiliaIllegalStateException;
 
-	/**
-	 * @param variableId
-	 * @return true if state enable , false disable
-	 * @throws CiliaIllegalStateException
-	 * @throws CiliaIllegalParameterException
-	 */
-	boolean getStateVariableState(String variableId) throws CiliaIllegalStateException,
-			CiliaIllegalParameterException;
+    /**
+     * @param variableId
+     * @return true if state enable , false disable
+     * @throws CiliaIllegalStateException
+     * @throws CiliaIllegalParameterException
+     */
+    boolean getStateVariableState(String variableId) throws CiliaIllegalStateException,
+            CiliaIllegalParameterException;
 
-	Map toMap();
+    Map toMap();
 }

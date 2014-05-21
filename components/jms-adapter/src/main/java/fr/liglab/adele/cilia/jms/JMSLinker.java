@@ -14,23 +14,21 @@
  */
 package fr.liglab.adele.cilia.jms;
 
-import java.util.Dictionary;
-import java.util.Properties;
-
 import fr.liglab.adele.cilia.framework.CiliaBindingService;
 import fr.liglab.adele.cilia.framework.GenericBindingService;
 import fr.liglab.adele.cilia.model.Binding;
 
+import java.util.Dictionary;
+import java.util.Properties;
+
 /**
- *
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project Team</a>
- *
  */
-public class JMSLinker extends GenericBindingService implements CiliaBindingService{
-	protected static final String TOPIC = "jms.topic";
+public class JMSLinker extends GenericBindingService implements CiliaBindingService {
+    protected static final String TOPIC = "jms.topic";
 
     public Dictionary getProperties(Dictionary collectorProperties,
-            Dictionary senderProperties, Binding b) {
+                                    Dictionary senderProperties, Binding b) {
         Dictionary properties = new Properties();
 
         String topic = getTopic(b);
@@ -48,10 +46,10 @@ public class JMSLinker extends GenericBindingService implements CiliaBindingServ
 
     private String getTopic(Binding b) {
         if (b.getProperty(TOPIC) != null) {
-            String topic = (String)b.getProperty(TOPIC);
+            String topic = (String) b.getProperty(TOPIC);
             return topic;
         }
-        
+
         StringBuffer topic = new StringBuffer();
         topic.append(b.getChain().getId());
         if (b.getSourceMediator() != null) {

@@ -13,62 +13,61 @@
  * limitations under the License.
  */
 /**
- * 
+ *
  */
 package fr.liglab.adele.cilia.helper.impl;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import org.osgi.framework.BundleContext;
 
 import fr.liglab.adele.cilia.Data;
 import fr.liglab.adele.cilia.exceptions.CiliaException;
 import fr.liglab.adele.cilia.framework.AbstractDispatcher;
 import fr.liglab.adele.cilia.helper.DispatcherProcessorHelper;
+import org.osgi.framework.BundleContext;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project
  *         Team</a>
- *
  */
 public class DispatcherProcessorHelperImpl extends AbstractDispatcher implements DispatcherProcessorHelper {
 
-	List<Data> receivedData = new ArrayList<Data>();
-	/**
-	 * @param context
-	 */
-	public DispatcherProcessorHelperImpl(BundleContext context) {
-		super(context);
-	}
+    List<Data> receivedData = new ArrayList<Data>();
 
-	@Override
-	public void dispatch(Data data) throws CiliaException {
-		receivedData.add(data);
-	}
+    /**
+     * @param context
+     */
+    public DispatcherProcessorHelperImpl(BundleContext context) {
+        super(context);
+    }
 
-	
-	public void clear() {
-		receivedData.clear();
-	}
-
-	public List<Data> getData() {
-		List<Data> data = new ArrayList<Data>(receivedData);
-		clear();
-		return data;
-	}
-
-	
-	public int getAmountData() {
-		return receivedData.size();
-	}
+    @Override
+    public void dispatch(Data data) throws CiliaException {
+        receivedData.add(data);
+    }
 
 
-	public Data getLastData() {
-		if (getAmountData() == 0) {
-			return null;
-		}
-		return receivedData.get(getAmountData()-1);
-	}
+    public void clear() {
+        receivedData.clear();
+    }
+
+    public List<Data> getData() {
+        List<Data> data = new ArrayList<Data>(receivedData);
+        clear();
+        return data;
+    }
+
+
+    public int getAmountData() {
+        return receivedData.size();
+    }
+
+
+    public Data getLastData() {
+        if (getAmountData() == 0) {
+            return null;
+        }
+        return receivedData.get(getAmountData() - 1);
+    }
 
 }

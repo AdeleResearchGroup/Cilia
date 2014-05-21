@@ -17,18 +17,16 @@ package fr.liglab.adele.cilia.builder.impl;
 import fr.liglab.adele.cilia.builder.Architecture;
 
 /**
- *
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project Team</a>
- *
  */
-public class UnBinderImpl extends BinderImpl{
+public class UnBinderImpl extends BinderImpl {
 
-	/**
-	 * @param arch
-	 */
-	protected UnBinderImpl(Architecture arch) {
-		super(arch);
-	}
+    /**
+     * @param arch
+     */
+    protected UnBinderImpl(Architecture arch) {
+        super(arch);
+    }
 
 
 }

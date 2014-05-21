@@ -15,10 +15,8 @@
 package fr.liglab.adele.cilia.builder;
 
 /**
- *
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project Team</a>
- *
  */
 public interface InstanceModifier {
-	MediatorConfigurator id(String id);
+    MediatorConfigurator id(String id);
 }

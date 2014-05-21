@@ -16,16 +16,15 @@
 package fr.liglab.adele.cilia.model;
 
 public interface ModelExtension {
-	/**
-	 * 
-	 * @return the model "main"
-	 */
-	MediatorComponent getModel();
+    /**
+     * @return the model "main"
+     */
+    MediatorComponent getModel();
 
-	/**
-	 * Store the reference model "main"
-	 * 
-	 * @param model
-	 */
-	void setModel(MediatorComponent model);
+    /**
+     * Store the reference model "main"
+     *
+     * @param model
+     */
+    void setModel(MediatorComponent model);
 }

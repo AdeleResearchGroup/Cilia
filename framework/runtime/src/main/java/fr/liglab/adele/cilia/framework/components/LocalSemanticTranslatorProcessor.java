@@ -14,47 +14,47 @@
  */
 package fr.liglab.adele.cilia.framework.components;
 
+import fr.liglab.adele.cilia.Data;
+import fr.liglab.adele.cilia.util.Const;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import fr.liglab.adele.cilia.Data;
-import fr.liglab.adele.cilia.util.Const;
 /**
- * 
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project
  *         Team</a>
- *
  */
 public class LocalSemanticTranslatorProcessor {
-	/**
-	 * The dictionary containing words to be changed.
-	 */
-	private Map<String, String> dictionary;
-	
-	private static final Logger logger = LoggerFactory.getLogger(Const.LOGGER_APPLICATION);
-	/**
-	 * Will translate words on the content of a data.
-	 * @param dataSet The data to be modified.
-	 * @return The same data with the modified content.
-	 */
-	public Data process(Data dataSet) {
-		String translatedContent;
-		if (dictionary == null) { // If any configuration has been given, it returns the same content.
-			logger.warn("Translator will return the same received Data. Dictionary is null");
-			return dataSet;
-		}
-		translatedContent=(String) dataSet.getContent();
-		Iterator<Entry<String, String>> it = dictionary.entrySet().iterator();
-		while (it.hasNext()) {
-			Entry<String, String> pairs = it.next();
-			translatedContent = translatedContent.replaceAll(pairs.getKey(),pairs.getValue());
-		}
-		dataSet.setContent(translatedContent);
-		
-		return dataSet;
-	}
+    /**
+     * The dictionary containing words to be changed.
+     */
+    private Map<String, String> dictionary;
+
+    private static final Logger logger = LoggerFactory.getLogger(Const.LOGGER_APPLICATION);
+
+    /**
+     * Will translate words on the content of a data.
+     *
+     * @param dataSet The data to be modified.
+     * @return The same data with the modified content.
+     */
+    public Data process(Data dataSet) {
+        String translatedContent;
+        if (dictionary == null) { // If any configuration has been given, it returns the same content.
+            logger.warn("Translator will return the same received Data. Dictionary is null");
+            return dataSet;
+        }
+        translatedContent = (String) dataSet.getContent();
+        Iterator<Entry<String, String>> it = dictionary.entrySet().iterator();
+        while (it.hasNext()) {
+            Entry<String, String> pairs = it.next();
+            translatedContent = translatedContent.replaceAll(pairs.getKey(), pairs.getValue());
+        }
+        dataSet.setContent(translatedContent);
+
+        return dataSet;
+    }
 }

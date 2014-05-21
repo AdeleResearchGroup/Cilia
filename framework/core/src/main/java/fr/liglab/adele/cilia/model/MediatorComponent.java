@@ -14,98 +14,93 @@
  */
 package fr.liglab.adele.cilia.model;
 
-import java.util.Map;
-
 import fr.liglab.adele.cilia.Node;
+
+import java.util.Map;
 
 /**
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project Team</a>
- *
  */
-public interface MediatorComponent extends Node,Component { 
-    
+public interface MediatorComponent extends Node, Component {
+
     public enum State {
-    	  /**
+        /**
          * Component Instance State : DISPOSED. The component instance was disposed.
          */
-    	DISPOSED,
+        DISPOSED,
         /**
          * Component Instance State : STOPPED. The component instance is not
          * started.
          */
-    	STOPPED, 
+        STOPPED,
         /**
          * Component Instance State : VALID. The component instance is resolved when it is
          * running and all its attached handlers are valid.
          */
-    	INVALID, 
+        INVALID,
         /**
          * Component Instance State : VALID. The component instance is resolved when it is
          * running and all its attached handlers are valid.
          */
-    	VALID
+        VALID
     }
-    
-	/**
-	 * 
-	 * @return
-	 */
-	Chain getChain();
 
-	/**
-	 * @param name
-	 *            PortImpl Name to create.
-	 * @return the PortImpl with the given port Name.
-	 */
-	Port getInPort(String name);
+    /**
+     * @return
+     */
+    Chain getChain();
 
-	Port getOutPort(String name);
+    /**
+     * @param name PortImpl Name to create.
+     * @return the PortImpl with the given port Name.
+     */
+    Port getInPort(String name);
 
-	/**
-	 * @return the category
-	 */
-	String getCategory();
+    Port getOutPort(String name);
 
-	/**
-	 * Get an array of all the bindings added to the mediator.
-	 * 
-	 * @return
-	 */
-	Binding[] getInBindings();
+    /**
+     * @return the category
+     */
+    String getCategory();
 
-	Binding[] getOutBindings();
+    /**
+     * Get an array of all the bindings added to the mediator.
+     *
+     * @return
+     */
+    Binding[] getInBindings();
 
-	
-	/**
-	 * @param outPort
-	 * @return
-	 */
-	Binding[] getBinding(Port outPort);
+    Binding[] getOutBindings();
 
 
-	/**
-	 * 
-	 * @return list of extended model 
-	 */
-	String[] extendedModelName() ;
-	
-	/**
-	 * 
-	 * @param modelName
-	 * @return Model extended or null if modelName doesn't exist
-	 */
-	ModelExtension getModel(String modelName) ;
-	
-	void addModel(String modelName,ModelExtension modelExtension) ;
-	
-	void removeModel(String modelName) ;
-	
-	
-	State getState();
-	
-	String getVersion();
-	
-	Map toMap();
-	
-	boolean isRunning();
+    /**
+     * @param outPort
+     * @return
+     */
+    Binding[] getBinding(Port outPort);
+
+
+    /**
+     * @return list of extended model
+     */
+    String[] extendedModelName();
+
+    /**
+     * @param modelName
+     * @return Model extended or null if modelName doesn't exist
+     */
+    ModelExtension getModel(String modelName);
+
+    void addModel(String modelName, ModelExtension modelExtension);
+
+    void removeModel(String modelName);
+
+
+    State getState();
+
+    String getVersion();
+
+    Map toMap();
+
+    boolean isRunning();
 }

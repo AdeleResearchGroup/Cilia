@@ -21,33 +21,32 @@ import fr.liglab.adele.cilia.Node;
 /**
  * Privates constants and static methods used for runtime (dynamic and
  * application)
- * 
+ *
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project
  *         Team</a>
- * 
  */
 public interface FirerEvents {
-	
-	public static final int EVT_NONE = 0;
-	public static final int EVT_ARRIVAL = 1;
-	public static final int EVT_DEPARTURE = 2;
-	public static final int EVT_MODIFIED = 3;
-	public static final int EVT_STARTED = 4;
-	public static final int EVT_STOPPED = 5;
-	public static final int EVT_BIND = 6;
-	public static final int EVT_UNBIND = 7;
-	public static final int EVT_VALID = 8;
-	public static final int EVT_INVALID = 9;
-	
-	void fireEventNode(int event, Node node) ;
-	
-	void fireEventNode(int event, Node from, Node to) ;
-	
-	void fireEventChain(int evt, String chainId) ;
-	
-	void fireEventMeasure(Node node, String variableId, Measure m) ;
-	
-	void fireThresholdEvent(Node node, String variableId, Measure measure, int evt) ;
-	
-	void fireEventVariableStatus(Node node, String variableId, boolean enable) ;
+
+    public static final int EVT_NONE = 0;
+    public static final int EVT_ARRIVAL = 1;
+    public static final int EVT_DEPARTURE = 2;
+    public static final int EVT_MODIFIED = 3;
+    public static final int EVT_STARTED = 4;
+    public static final int EVT_STOPPED = 5;
+    public static final int EVT_BIND = 6;
+    public static final int EVT_UNBIND = 7;
+    public static final int EVT_VALID = 8;
+    public static final int EVT_INVALID = 9;
+
+    void fireEventNode(int event, Node node);
+
+    void fireEventNode(int event, Node from, Node to);
+
+    void fireEventChain(int evt, String chainId);
+
+    void fireEventMeasure(Node node, String variableId, Measure m);
+
+    void fireThresholdEvent(Node node, String variableId, Measure measure, int evt);
+
+    void fireEventVariableStatus(Node node, String variableId, boolean enable);
 }

@@ -9,5 +9,6 @@ import fr.liglab.adele.cilia.util.Const;
  */
 public @interface Dispatcher {
     String name();
+
     String namespace() default Const.CILIA_NAMESPACE;
 }

@@ -15,180 +15,167 @@
 
 package fr.liglab.adele.cilia.runtime.impl;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Dictionary;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Observable;
-import java.util.Observer;
-import java.util.Set;
-
+import fr.liglab.adele.cilia.runtime.CiliaInstance;
+import fr.liglab.adele.cilia.runtime.CiliaInstanceWrapper;
+import fr.liglab.adele.cilia.util.Const;
 import org.apache.felix.ipojo.ComponentInstance;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import fr.liglab.adele.cilia.runtime.CiliaInstance;
-import fr.liglab.adele.cilia.runtime.CiliaInstanceWrapper;
-import fr.liglab.adele.cilia.util.Const;
+import java.util.*;
 
 
 /**
- * This class is in charge to handle several CiliaInstance. It is used to 
- * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project Team</a>
- * 
+ * This class is in charge to handle several CiliaInstance. It is used to
  *
+ * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project Team</a>
  */
 @SuppressWarnings({"rawtypes", "unchecked"})
-public abstract class CiliaInstanceManagerSet implements Observer{
+public abstract class CiliaInstanceManagerSet implements Observer {
 
 
-	private Map /*<String,List<CiliaInstance>>*/instances ;
+    private Map /*<String,List<CiliaInstance>>*/instances;
 
-	private Boolean generalState = null;
+    private Boolean generalState = null;
 
-	protected final Object lockObject = new Object();
-	
-	protected Logger logger = LoggerFactory.getLogger(Const.LOGGER_RUNTIME); 
+    protected final Object lockObject = new Object();
 
-	public CiliaInstanceManagerSet(){
-		instances = Collections.synchronizedMap(new HashMap()) ;
-	}
+    protected Logger logger = LoggerFactory.getLogger(Const.LOGGER_RUNTIME);
 
-	protected void addInstance(String key, Object _obj) {
-		List instancesList = null;
-		synchronized (lockObject) {
-			if(instances.containsKey(key)) {
-				instancesList = (List)instances.get(key);
-			}
-			else {
-				instancesList = new ArrayList();
-				instances.put(key, instancesList);
-			}
-			CiliaInstanceWrapper aci = (CiliaInstanceWrapper) _obj;
-			aci.addObserver(this);
-			instancesList.add(aci);
-		}
-	}
+    public CiliaInstanceManagerSet() {
+        instances = Collections.synchronizedMap(new HashMap());
+    }
 
-	public boolean checkAvailability() {
-		boolean valid = true;
-		Integer state ;
-		CiliaInstance component = null;
-		synchronized (lockObject) {
-			Iterator it = instances.keySet().iterator();
-			while (it.hasNext()) {
-				List instanceList = (List) instances.get(it.next());
-				Iterator componentsInstances = instanceList.iterator();
-				while(componentsInstances.hasNext()) {
-					component = (CiliaInstance) componentsInstances.next();
-					if (component.getState() != ComponentInstance.VALID) {
-						valid = false;
-					}
-				}
-			}
-		}
-		if(valid){
-			state = ComponentInstance.VALID;
-		} else {
-			state = ComponentInstance.INVALID;
-		}
-		generalState =  Boolean.valueOf(valid);
+    protected void addInstance(String key, Object _obj) {
+        List instancesList = null;
+        synchronized (lockObject) {
+            if (instances.containsKey(key)) {
+                instancesList = (List) instances.get(key);
+            } else {
+                instancesList = new ArrayList();
+                instances.put(key, instancesList);
+            }
+            CiliaInstanceWrapper aci = (CiliaInstanceWrapper) _obj;
+            aci.addObserver(this);
+            instancesList.add(aci);
+        }
+    }
 
-
-		return valid;
-	}
-
-	public Set getKeys() {
-		Set keys = null;
-		synchronized (lockObject) {
-			keys = new HashSet(instances.keySet());   
-		}
-		return keys;
-	}
-
-	public Object getPojo(String key) {
-		List _ciliaInstance = null;
-		synchronized (lockObject) {
-			_ciliaInstance = (List)instances.get(key);
-		}
-		return _ciliaInstance;
-	}
-
-	public void reconfigurePOJOS(Dictionary props) {
-		synchronized (lockObject) {
-			Iterator it = instances.keySet().iterator();
-			while (it.hasNext()) {
-				List instanceList = (List) instances.get(it.next());
-				Iterator componentsInstances = instanceList.iterator();
-				while(componentsInstances.hasNext()) {
-					CiliaInstance component = (CiliaInstance) componentsInstances.next();
-					if (component != null) {
-						component.updateInstanceProperties(props);
-					}
-				}
-			}
-		}
-	}
-
-	public void removeAllInstances() {
-		synchronized (lockObject) {
-			Iterator it = instances.keySet().iterator();
-			while (it.hasNext()) {
-				List instanceList = (List) instances.get(it.next());
-				Iterator componentsInstances = instanceList.iterator();
-				while(componentsInstances.hasNext()) {
-					CiliaInstance component = (CiliaInstance) componentsInstances.next();
-					component.stop();
-				}
-				instanceList.clear();
-			}
-			instances.clear();
-		}
-	}
-
-	public boolean removeInstance(String portname, String instanceName) {
-		List instanceList = null ;
-		boolean removed = false;
-		synchronized (lockObject) {
-			if (portname != null) {
-				instanceList = (List) instances.get(portname);
-			}
-		}
-		if (instanceList != null) {
-			Iterator componentsInstances = instanceList.iterator();
-			while(componentsInstances.hasNext()) {
-				CiliaInstance component = (CiliaInstance) componentsInstances.next();
-				if (component.getName().compareTo(instanceName) == 0) {
-					component.stop();
-					componentsInstances.remove();
-					removed = true;
-				}
-			}
-		}
-		return removed;
-	}
+    public boolean checkAvailability() {
+        boolean valid = true;
+        Integer state;
+        CiliaInstance component = null;
+        synchronized (lockObject) {
+            Iterator it = instances.keySet().iterator();
+            while (it.hasNext()) {
+                List instanceList = (List) instances.get(it.next());
+                Iterator componentsInstances = instanceList.iterator();
+                while (componentsInstances.hasNext()) {
+                    component = (CiliaInstance) componentsInstances.next();
+                    if (component.getState() != ComponentInstance.VALID) {
+                        valid = false;
+                    }
+                }
+            }
+        }
+        if (valid) {
+            state = ComponentInstance.VALID;
+        } else {
+            state = ComponentInstance.INVALID;
+        }
+        generalState = Boolean.valueOf(valid);
 
 
-	public void startInstances() {
-		synchronized (lockObject) {
-			Iterator it = instances.keySet().iterator();
-			while (it.hasNext()) {
-				List instanceList = (List) instances.get(it.next());
-				Iterator componentsInstances = instanceList.iterator();
-				while(componentsInstances.hasNext()) {
-					CiliaInstance component = (CiliaInstance) componentsInstances.next();
-					component.start();
-				}
-			}
-		}
-	}
+        return valid;
+    }
 
-		
-	public void update(Observable o, Object arg) {
-		checkAvailability();
-	}
+    public Set getKeys() {
+        Set keys = null;
+        synchronized (lockObject) {
+            keys = new HashSet(instances.keySet());
+        }
+        return keys;
+    }
+
+    public Object getPojo(String key) {
+        List _ciliaInstance = null;
+        synchronized (lockObject) {
+            _ciliaInstance = (List) instances.get(key);
+        }
+        return _ciliaInstance;
+    }
+
+    public void reconfigurePOJOS(Dictionary props) {
+        synchronized (lockObject) {
+            Iterator it = instances.keySet().iterator();
+            while (it.hasNext()) {
+                List instanceList = (List) instances.get(it.next());
+                Iterator componentsInstances = instanceList.iterator();
+                while (componentsInstances.hasNext()) {
+                    CiliaInstance component = (CiliaInstance) componentsInstances.next();
+                    if (component != null) {
+                        component.updateInstanceProperties(props);
+                    }
+                }
+            }
+        }
+    }
+
+    public void removeAllInstances() {
+        synchronized (lockObject) {
+            Iterator it = instances.keySet().iterator();
+            while (it.hasNext()) {
+                List instanceList = (List) instances.get(it.next());
+                Iterator componentsInstances = instanceList.iterator();
+                while (componentsInstances.hasNext()) {
+                    CiliaInstance component = (CiliaInstance) componentsInstances.next();
+                    component.stop();
+                }
+                instanceList.clear();
+            }
+            instances.clear();
+        }
+    }
+
+    public boolean removeInstance(String portname, String instanceName) {
+        List instanceList = null;
+        boolean removed = false;
+        synchronized (lockObject) {
+            if (portname != null) {
+                instanceList = (List) instances.get(portname);
+            }
+        }
+        if (instanceList != null) {
+            Iterator componentsInstances = instanceList.iterator();
+            while (componentsInstances.hasNext()) {
+                CiliaInstance component = (CiliaInstance) componentsInstances.next();
+                if (component.getName().compareTo(instanceName) == 0) {
+                    component.stop();
+                    componentsInstances.remove();
+                    removed = true;
+                }
+            }
+        }
+        return removed;
+    }
+
+
+    public void startInstances() {
+        synchronized (lockObject) {
+            Iterator it = instances.keySet().iterator();
+            while (it.hasNext()) {
+                List instanceList = (List) instances.get(it.next());
+                Iterator componentsInstances = instanceList.iterator();
+                while (componentsInstances.hasNext()) {
+                    CiliaInstance component = (CiliaInstance) componentsInstances.next();
+                    component.start();
+                }
+            }
+        }
+    }
+
+
+    public void update(Observable o, Object arg) {
+        checkAvailability();
+    }
 }

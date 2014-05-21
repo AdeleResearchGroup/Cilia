@@ -15,23 +15,21 @@
 
 package fr.liglab.adele.cilia.exceptions;
 
-import fr.liglab.adele.cilia.exceptions.CiliaException;
-
 /**
  * Exception fired if the object doesn't exist anymore
- * 
+ *
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project
  *         Team</a>
  */
 public class CiliaIllegalStateException extends CiliaException {
-	private static final long serialVersionUID = -1599280766499136722L;
+    private static final long serialVersionUID = -1599280766499136722L;
 
-	public CiliaIllegalStateException() {
-		super();
-	}
+    public CiliaIllegalStateException() {
+        super();
+    }
 
-	public CiliaIllegalStateException(String message) {
-		super(message);
-	}
+    public CiliaIllegalStateException(String message) {
+        super(message);
+    }
 
 }

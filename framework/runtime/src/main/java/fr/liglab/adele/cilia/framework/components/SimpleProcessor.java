@@ -1,13 +1,13 @@
 package fr.liglab.adele.cilia.framework.components;
 
-import java.util.List;
-
 import fr.liglab.adele.cilia.framework.IProcessor;
+
+import java.util.List;
 
 public class SimpleProcessor implements IProcessor {
 
-	public List process(List dataSet) {
-		return dataSet;
-	}
+    public List process(List dataSet) {
+        return dataSet;
+    }
 
 }

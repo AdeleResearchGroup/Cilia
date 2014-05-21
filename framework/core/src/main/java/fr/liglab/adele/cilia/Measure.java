@@ -19,44 +19,39 @@ import java.util.Map;
 
 /**
  * Interface data recevied from the monitoring
- * 
+ *
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project
  *         Team</a>
- * 
  */
 public interface Measure {
 
-	static final String NO_VALUE = "cilia-framework#measure.with.no.data";
+    static final String NO_VALUE = "cilia-framework#measure.with.no.data";
 
-	/**
-	 * 
-	 * @return value
-	 */
-	Object value();
+    /**
+     * @return value
+     */
+    Object value();
 
-	/**
-	 * timestamp at source level
-	 * 
-	 * @return time in ms
-	 */
-	long timeStampMs();
+    /**
+     * timestamp at source level
+     *
+     * @return time in ms
+     */
+    long timeStampMs();
 
-	/**
-	 * 
-	 * @return clone this object
-	 */
-	Measure clone();
+    /**
+     * @return clone this object
+     */
+    Measure clone();
 
-	/**
-	 * 
-	 * @return true if no value has been stored
-	 */
-	boolean hasNoValue();
+    /**
+     * @return true if no value has been stored
+     */
+    boolean hasNoValue();
 
-	/**
-	 * 
-	 * @return Map of this object
-	 */
-	Map toMap();
+    /**
+     * @return Map of this object
+     */
+    Map toMap();
 
 }

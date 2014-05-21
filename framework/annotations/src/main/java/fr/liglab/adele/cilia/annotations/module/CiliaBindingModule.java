@@ -31,33 +31,33 @@ public class CiliaBindingModule extends AbsBindingModule {
 
     public void configure() {
         bind(Processor.class)
-            .to(new AnnotationVisitorFactory() {
-                public AnnotationVisitor newAnnotationVisitor(BindingContext context) {
-                    return new CiliaComponentVisitor("processor",context);
-                }
-            });
+                .to(new AnnotationVisitorFactory() {
+                    public AnnotationVisitor newAnnotationVisitor(BindingContext context) {
+                        return new CiliaComponentVisitor("processor", context);
+                    }
+                });
         bind(Scheduler.class)
                 .to(new AnnotationVisitorFactory() {
                     public AnnotationVisitor newAnnotationVisitor(BindingContext context) {
-                        return new CiliaComponentVisitor("scheduler",context);
+                        return new CiliaComponentVisitor("scheduler", context);
                     }
                 });
         bind(Dispatcher.class)
                 .to(new AnnotationVisitorFactory() {
                     public AnnotationVisitor newAnnotationVisitor(BindingContext context) {
-                        return new CiliaComponentVisitor("dispatcher",context);
+                        return new CiliaComponentVisitor("dispatcher", context);
                     }
                 });
         bind(Collector.class)
                 .to(new AnnotationVisitorFactory() {
                     public AnnotationVisitor newAnnotationVisitor(BindingContext context) {
-                        return new CiliaComponentVisitor("collector",context);
+                        return new CiliaComponentVisitor("collector", context);
                     }
                 });
         bind(Sender.class)
                 .to(new AnnotationVisitorFactory() {
                     public AnnotationVisitor newAnnotationVisitor(BindingContext context) {
-                        return new CiliaComponentVisitor("sender",context);
+                        return new CiliaComponentVisitor("sender", context);
                     }
                 });
         bind(IOAdapter.class)
@@ -72,6 +72,6 @@ public class CiliaBindingModule extends AbsBindingModule {
                         return new ProcessMethodVisitor(context);
                     }
                 });
-   }
+    }
 
 }

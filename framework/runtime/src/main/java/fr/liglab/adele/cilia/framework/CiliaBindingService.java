@@ -15,12 +15,11 @@
 
 package fr.liglab.adele.cilia.framework;
 
-import java.util.Dictionary;
-
 import fr.liglab.adele.cilia.exceptions.CiliaException;
 import fr.liglab.adele.cilia.model.Binding;
 import fr.liglab.adele.cilia.model.Component;
 
+import java.util.Dictionary;
 
 
 public interface CiliaBindingService {
@@ -45,14 +44,22 @@ public interface CiliaBindingService {
      */
     short NATURE_INOUT = 3;
 
-    
-    public Component getCollectorModel(Dictionary props) ;
+
+    public Component getCollectorModel(Dictionary props);
+
     public Component getSenderModel(Dictionary props);
+
     public void setSenderType(String senderType);
+
     public void setCollectorType(String collectorType);
+
     public void setSenderNS(String senderNS);
+
     public void setCollectorNS(String collectorNS);
+
     public Dictionary getProperties(Dictionary collectorProperties, Dictionary senderProperties, Binding binding) throws CiliaException;
+
     public void setBindingNature(String nature);
+
     public short getBindingNature();
 }

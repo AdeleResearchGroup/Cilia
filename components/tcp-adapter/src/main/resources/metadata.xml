@@ -1,5 +1,4 @@
-
-<!-- Copyright Adele Team LIG Licensed under the Apache License, Version 
+<!-- Copyright Adele Team LIG Licensed under the Apache License, Version
 	2.0 (the "License"); you may not use this file except in compliance with 
 	the License. You may obtain a copy of the License at    http://www.apache.org/licenses/LICENSE-2.0 
 	Unless required by applicable law or agreed to in writing, software distributed 
@@ -7,34 +6,34 @@
 	OR CONDITIONS OF ANY KIND, either express or implied. See the License for 
 	the specific language governing permissions and limitations under the License. -->
 <!-- xmlns="fr.liglab.adele.cilia" xmlns:ipojo="org.apache.felix.ipojo"  -->
-<cilia >
-	<sender classname="fr.liglab.adele.cilia.tcp.TCPSender" name="tcp-sender">
-		<properties>
-			<property name="port" method="setPort" value="9999"/>
-			<property name="hostname" method="setHostname" value="localhost"/>
-		</properties>
-	</sender>
+<cilia>
+    <sender classname="fr.liglab.adele.cilia.tcp.TCPSender" name="tcp-sender">
+        <properties>
+            <property name="port" method="setPort" value="9999"/>
+            <property name="hostname" method="setHostname" value="localhost"/>
+        </properties>
+    </sender>
 
-	<collector classname="fr.liglab.adele.cilia.tcp.TCPCollector"
-		name="tcp-collector" architecture="true">
-		<properties>
-			<property name="port" method="setPort" value="9999" />
-		</properties>
-		<callback transition="validate" method="start" />
-		<callback transition="invalidate" method="stop" />
-	</collector>
+    <collector classname="fr.liglab.adele.cilia.tcp.TCPCollector"
+               name="tcp-collector" architecture="true">
+        <properties>
+            <property name="port" method="setPort" value="9999"/>
+        </properties>
+        <callback transition="validate" method="start"/>
+        <callback transition="invalidate" method="stop"/>
+    </collector>
 
-	<adapter name="tcp-out-adapter" pattern="out-only">
-		<sender type="tcp-sender" />
-		<ports>
-			<in-port name="unique" type="*" />
-		</ports>
-	</adapter>
+    <adapter name="tcp-out-adapter" pattern="out-only">
+        <sender type="tcp-sender"/>
+        <ports>
+            <in-port name="unique" type="*"/>
+        </ports>
+    </adapter>
 
-	<adapter name="tcp-in-adapter" pattern="in-only">
-		<collector type="tcp-collector" />
-		<ports>
-			<out-port name="unique" type="*" />
-		</ports>
-	</adapter>
+    <adapter name="tcp-in-adapter" pattern="in-only">
+        <collector type="tcp-collector"/>
+        <ports>
+            <out-port name="unique" type="*"/>
+        </ports>
+    </adapter>
 </cilia>

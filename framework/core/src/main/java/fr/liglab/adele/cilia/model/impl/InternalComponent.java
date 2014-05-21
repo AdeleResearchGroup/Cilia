@@ -15,41 +15,45 @@
 package fr.liglab.adele.cilia.model.impl;
 
 import java.util.Dictionary;
+
 /**
  * This class is the Element representation model.
- * 
- * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project Team</a>
  *
+ * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project Team</a>
  */
 public abstract class InternalComponent extends ComponentImpl {
-	/**
-	 * Reference to the mediator which contain this element. 
-	 */
-	private volatile MediatorComponentImpl mediator;
-	
-	private final Object lockObject = new Object(); 
-	
-	public InternalComponent(String id, String type, String nspace,
-			Dictionary properties)  {
-		super(id, type, nspace, properties);
-	}
-	/**
-	 * Get the mediator wich contains this dispatcher.
-	 * @return the mediator.
-	 */
-	public MediatorComponentImpl getMediator() {
-		synchronized (lockObject) {
-			return mediator;	
-		}
-		
-	}
-	/**
-	 * Set the mediator reference which contains this dispatcher. 
-	 * @param mediator the mediator representation model reference.
-	 */
-	public void setMediator(MediatorComponentImpl mediator) {
-		synchronized (lockObject) {
-			this.mediator = mediator;	
-		}
-	}
+    /**
+     * Reference to the mediator which contain this element.
+     */
+    private volatile MediatorComponentImpl mediator;
+
+    private final Object lockObject = new Object();
+
+    public InternalComponent(String id, String type, String nspace,
+                             Dictionary properties) {
+        super(id, type, nspace, properties);
+    }
+
+    /**
+     * Get the mediator wich contains this dispatcher.
+     *
+     * @return the mediator.
+     */
+    public MediatorComponentImpl getMediator() {
+        synchronized (lockObject) {
+            return mediator;
+        }
+
+    }
+
+    /**
+     * Set the mediator reference which contains this dispatcher.
+     *
+     * @param mediator the mediator representation model reference.
+     */
+    public void setMediator(MediatorComponentImpl mediator) {
+        synchronized (lockObject) {
+            this.mediator = mediator;
+        }
+    }
 }

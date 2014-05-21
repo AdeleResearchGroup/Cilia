@@ -42,278 +42,278 @@ import java.util.Dictionary;
 import java.util.Hashtable;
 
 /**
- * 
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project
  *         Team</a>
- * 
  */
 public class CiliaHelper {
 
-	private static final Logger logger = LoggerFactory.getLogger(Const.LOGGER_CORE);
+    private static final Logger logger = LoggerFactory.getLogger(Const.LOGGER_CORE);
 
-	protected OSGiHelper ohelper;
+    protected OSGiHelper ohelper;
 
     protected IPOJOHelper ipojo;
-	
-	private static final String NAMESPACE = "fr.liglab.adele.cilia.test";
-	
-	private volatile static int initial = 0;
-	
-	private Object lock = new Object();
-	
-	public CiliaHelper(BundleContext bc) {
+
+    private static final String NAMESPACE = "fr.liglab.adele.cilia.test";
+
+    private volatile static int initial = 0;
+
+    private Object lock = new Object();
+
+    public CiliaHelper(BundleContext bc) {
         ipojo = new IPOJOHelper(bc);
-		ohelper = new OSGiHelper(bc);
-	}
-	/**
-	 * Get the mediator model.
-	 * @param chain The chain where the mediator is.
-	 * @param mm The mediator id.
-	 * @return The mediator model object.
-	 */
-	public Mediator getMediatorModel(String chain, String mm) {
-		CiliaContext context = getCiliaContext();
-		try {
-			return context.getApplicationRuntime().getChain(chain).getMediator(mm);
-		} catch (CiliaIllegalParameterException e) {
-			e.printStackTrace();
-		}
-		return null;
-	}
-	/**
-	 * 
-	 * @param chain
-	 * @param am
-	 * @return
-	 */
-	public Adapter getAdapterModel(String chain, String am) {
-		CiliaContext context = getCiliaContext();
-		try {
-			return context.getApplicationRuntime().getChain(chain).getAdapter(am);
-		} catch (CiliaIllegalParameterException e) {
-			e.printStackTrace();
-		}
-		return null;
-	}
+        ohelper = new OSGiHelper(bc);
+    }
 
-	public MediatorTestHelper instrumentMediatorInstance(String chainId,
-			String mediator, String inputports[], String exitports[]) {
-		
-		if ((exitports == null) && (inputports == null) ) {
-			System.err.println("Ilegal port parameters");
-			return null;
-		}
-		String id;
-		synchronized (lock) {
-			id= chainId+"_"+mediator + initial++;
-		}
-		CiliaContext ccontext = (CiliaContext) ohelper.getServiceObject(
-				CiliaContext.class.getName(), null);
-		Builder builder = ccontext.getBuilder();
-		Architecture arch = null;
-		try {
-			arch = builder.get(chainId);
-			arch.create().adapter().type("cilia-adapter-helper")
-			.namespace(NAMESPACE).id(id).configure().key("identifier").value(id);
-			for (int i = 0; inputports != null && i < inputports.length; i++) {
-				arch.bind().from(id+":unique")
-				.to(mediator + ":" + inputports[i]);
-			}
-			for (int i = 0; exitports != null && i < exitports.length; i++) {
-				arch.bind().from(mediator + ":" + exitports[i])
-				.to(id+":unique");
-			}
-			builder.done();
-		} catch (CiliaException e) {
-			e.printStackTrace();
-			return null;
-		}
-		ohelper.waitForService(MediatorTestHelper.class.getName(), "(identifier="+id+")", 8000);
-		MediatorTestHelper helper = (MediatorTestHelper)ohelper.getServiceObject(MediatorTestHelper.class.getName(), "(identifier="+id+")");
-		return helper;
-	}
+    /**
+     * Get the mediator model.
+     *
+     * @param chain The chain where the mediator is.
+     * @param mm    The mediator id.
+     * @return The mediator model object.
+     */
+    public Mediator getMediatorModel(String chain, String mm) {
+        CiliaContext context = getCiliaContext();
+        try {
+            return context.getApplicationRuntime().getChain(chain).getMediator(mm);
+        } catch (CiliaIllegalParameterException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 
-	public CiliaInstance createInstance(String factory){
-		return new CiliaInstanceWrapper(ohelper.getContext(), "0", "(factory.name="+factory+")", null, null);
-	}
+    /**
+     * @param chain
+     * @param am
+     * @return
+     */
+    public Adapter getAdapterModel(String chain, String am) {
+        CiliaContext context = getCiliaContext();
+        try {
+            return context.getApplicationRuntime().getChain(chain).getAdapter(am);
+        } catch (CiliaIllegalParameterException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 
-	public CiliaInstance createInstance(String factory, Dictionary props){
-		return new CiliaInstanceWrapper(ohelper.getContext(), "0", "(factory.name="+factory+")", props, null);
-	}
+    public MediatorTestHelper instrumentMediatorInstance(String chainId,
+                                                         String mediator, String inputports[], String exitports[]) {
 
-	public MediatorTestHelper instrumentChain(String chainId,
-			String firstMediatorWithPort, String lastMediatorWithPort) {
-		CiliaContext ccontext = (CiliaContext) ohelper.getServiceObject(
-				CiliaContext.class.getName(), null);
-		String id; 
-		synchronized (lock) {
-			id = chainId + "-" + "helper-" + initial++;
-		}
-		Builder builder = ccontext.getBuilder();
-		Architecture arch = null;
-		try {
-			arch = builder.get(chainId);
-			logger.debug("Getting chain {}", chainId);
-			arch.create().adapter().type("cilia-adapter-helper")
-			.namespace(NAMESPACE).id(id).configure().key("identifier").value(id);
-			arch.bind().from(id+":unique").to(firstMediatorWithPort);
-			arch.bind().from(lastMediatorWithPort).to(id+":unique");
-			logger.debug("Chain will be modified");
-			builder.done();
-			logger.debug("Chain is ready");
-		} catch (CiliaException e) {
-			e.printStackTrace();
-			return null;
-		}
-		waitSomeTime(3000);
-		ohelper.waitForService(MediatorTestHelper.class.getName(), "(identifier="+id+")", 5000);
-		MediatorTestHelper helper = (MediatorTestHelper)ohelper.getServiceObject(MediatorTestHelper.class.getName(), "(identifier="+id+")");
-		return helper;
-	}
+        if ((exitports == null) && (inputports == null)) {
+            System.err.println("Ilegal port parameters");
+            return null;
+        }
+        String id;
+        synchronized (lock) {
+            id = chainId + "_" + mediator + initial++;
+        }
+        CiliaContext ccontext = (CiliaContext) ohelper.getServiceObject(
+                CiliaContext.class.getName(), null);
+        Builder builder = ccontext.getBuilder();
+        Architecture arch = null;
+        try {
+            arch = builder.get(chainId);
+            arch.create().adapter().type("cilia-adapter-helper")
+                    .namespace(NAMESPACE).id(id).configure().key("identifier").value(id);
+            for (int i = 0; inputports != null && i < inputports.length; i++) {
+                arch.bind().from(id + ":unique")
+                        .to(mediator + ":" + inputports[i]);
+            }
+            for (int i = 0; exitports != null && i < exitports.length; i++) {
+                arch.bind().from(mediator + ":" + exitports[i])
+                        .to(id + ":unique");
+            }
+            builder.done();
+        } catch (CiliaException e) {
+            e.printStackTrace();
+            return null;
+        }
+        ohelper.waitForService(MediatorTestHelper.class.getName(), "(identifier=" + id + ")", 8000);
+        MediatorTestHelper helper = (MediatorTestHelper) ohelper.getServiceObject(MediatorTestHelper.class.getName(), "(identifier=" + id + ")");
+        return helper;
+    }
 
-	public void dispose() {
-		CiliaContext context = getCiliaContext(); 
-		String ids[] = context.getApplicationRuntime().getChainId();
-		for (int i=0; ids != null && i < ids.length; i ++) {
-			try {
-				System.out.println("Removing Chain " + ids[i]);
-				context.getBuilder().remove(ids[i]).done();
-			} catch (Throwable e) {
-				e.printStackTrace();
-			}
-		}
-		ohelper.dispose();
-	}
+    public CiliaInstance createInstance(String factory) {
+        return new CiliaInstanceWrapper(ohelper.getContext(), "0", "(factory.name=" + factory + ")", null, null);
+    }
 
-	public CiliaContext getCiliaContext() {
-		ohelper.waitForService(CiliaContext.class.getName(), null, 8000);
-		CiliaContext context = (CiliaContext)ohelper.getServiceObject(CiliaContext.class.getName(), null);
-		return context;
-	}
+    public CiliaInstance createInstance(String factory, Dictionary props) {
+        return new CiliaInstanceWrapper(ohelper.getContext(), "0", "(factory.name=" + factory + ")", props, null);
+    }
 
-	public Chain getChain(String chain){
-		CiliaContext cc = getCiliaContext();
-		try {
-			return cc.getApplicationRuntime().getChain(chain);
-		} catch (CiliaIllegalParameterException e) {
-			e.printStackTrace();
-			return null;
-		}
-	}
-	
-	public CollectorHelper getCollectorHelper(ICollector ic){
-		return new CollectorHelper(ic);
-	}
+    public MediatorTestHelper instrumentChain(String chainId,
+                                              String firstMediatorWithPort, String lastMediatorWithPort) {
+        CiliaContext ccontext = (CiliaContext) ohelper.getServiceObject(
+                CiliaContext.class.getName(), null);
+        String id;
+        synchronized (lock) {
+            id = chainId + "-" + "helper-" + initial++;
+        }
+        Builder builder = ccontext.getBuilder();
+        Architecture arch = null;
+        try {
+            arch = builder.get(chainId);
+            logger.debug("Getting chain {}", chainId);
+            arch.create().adapter().type("cilia-adapter-helper")
+                    .namespace(NAMESPACE).id(id).configure().key("identifier").value(id);
+            arch.bind().from(id + ":unique").to(firstMediatorWithPort);
+            arch.bind().from(lastMediatorWithPort).to(id + ":unique");
+            logger.debug("Chain will be modified");
+            builder.done();
+            logger.debug("Chain is ready");
+        } catch (CiliaException e) {
+            e.printStackTrace();
+            return null;
+        }
+        waitSomeTime(3000);
+        ohelper.waitForService(MediatorTestHelper.class.getName(), "(identifier=" + id + ")", 5000);
+        MediatorTestHelper helper = (MediatorTestHelper) ohelper.getServiceObject(MediatorTestHelper.class.getName(), "(identifier=" + id + ")");
+        return helper;
+    }
 
-	public ProcessorHelper getProcessorHelper(String processorname, String processornamespace){
-		return getProcessorHelper(processorname, processornamespace,null);
-	}
-	
-	public ProcessorHelper getProcessorHelper(String processorname, String processornamespace, Hashtable properties){
-		ProcessorHelperImpl proc = new ProcessorHelperImpl(this, processorname, processornamespace, properties);
-		proc.start();
-		return proc;
-	}
-	
-	public MediatorTestHelper getSchedulerHelper(String schedulername, String schedulernamespace, Hashtable properties){
-		SchedulerHelperCreator proc = new SchedulerHelperCreator(this, schedulername, schedulernamespace, properties);
-		proc.start();
-		System.out.println("Waiting for helper:" + proc.getId());
-		ohelper.waitForService(MediatorTestHelper.class.getName(), "(identifier="+proc.getId()+")", 8000);
-		MediatorTestHelper helper = (MediatorTestHelper)ohelper.getServiceObject(MediatorTestHelper.class.getName(), "(identifier="+proc.getId()+")");
-		return helper;
-	}
-	
-	public void loadFileFromResource(String filename){
-		URL url = ohelper.getContext().getBundle().getResource(filename);
-		load(url);
-	}
-	
-	public void load(URL url) {
-		InputStream fis = null;
-		String filename;
-		try {
-			fis = url.openStream();
-		} catch (IOException e) {
-			e.printStackTrace();
+    public void dispose() {
+        CiliaContext context = getCiliaContext();
+        String ids[] = context.getApplicationRuntime().getChainId();
+        for (int i = 0; ids != null && i < ids.length; i++) {
+            try {
+                System.out.println("Removing Chain " + ids[i]);
+                context.getBuilder().remove(ids[i]).done();
+            } catch (Throwable e) {
+                e.printStackTrace();
+            }
+        }
+        ohelper.dispose();
+    }
 
-		}
-		synchronized (lock) {
-			filename = "temporal-file-" + initial++;
-		}
-		File file = null;
-		try {
-			
-			file = File.createTempFile(filename, ".dscilia");
-			OutputStream out=new FileOutputStream(file);
-			byte buf[]=new byte[1024];
-			int len;
-			while((len=fis.read(buf))>0)
-				out.write(buf,0,len);
-			out.close();
-			fis.close();
+    public CiliaContext getCiliaContext() {
+        ohelper.waitForService(CiliaContext.class.getName(), null, 8000);
+        CiliaContext context = (CiliaContext) ohelper.getServiceObject(CiliaContext.class.getName(), null);
+        return context;
+    }
 
-		} catch (IOException e1) {
-			e1.printStackTrace();
-		}
-		System.out.println("chain to be loaded...");
-		ohelper.waitForService(CiliaFileManager.class.getName(), null, 8000);
-		CiliaFileManager service = (CiliaFileManager)ohelper.getServiceObject(CiliaFileManager.class.getName(), null);
-		
-		service.loadChain(file);
-		System.out.println("chain loaded");
-	}
+    public Chain getChain(String chain) {
+        CiliaContext cc = getCiliaContext();
+        try {
+            return cc.getApplicationRuntime().getChain(chain);
+        } catch (CiliaIllegalParameterException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 
-	public BundleContext getBundleContext(){
-		return ohelper.getContext();
-	}
-	
-	public Builder getBuilder(){
-		return getCiliaContext().getBuilder();
-	}
-	
-	public ApplicationRuntime getApplicationRuntime() {
-		return getCiliaContext().getApplicationRuntime();
-	}
-	
-	public void startChain(String id){
-		try {
-			getCiliaContext().getApplicationRuntime().startChain(id);
-		} catch (CiliaIllegalParameterException e) {
-			e.printStackTrace();
-			Assert.fail("Unable to start Chain: " +  id);
-		} catch (CiliaIllegalStateException e) {
-			e.printStackTrace();
-			Assert.fail("Unable to start Chain: " +  id);
-		}
-	}
-	
-	public void unload(String url){
+    public CollectorHelper getCollectorHelper(ICollector ic) {
+        return new CollectorHelper(ic);
+    }
 
-	}
+    public ProcessorHelper getProcessorHelper(String processorname, String processornamespace) {
+        return getProcessorHelper(processorname, processornamespace, null);
+    }
 
-	public  boolean waitToChain(String chainId, long time) {
-		boolean found = false;
-		long current = System.currentTimeMillis();
-		long finalTime = current + time;
-		while(!found && current <= finalTime) {
-			waitSomeTime(50);
-			Chain ch = null;
-			try {
-				ch = getCiliaContext().getApplicationRuntime().getChain(chainId);
-			} catch (CiliaIllegalParameterException e) {
-				e.printStackTrace();
-			}
-			if (ch != null){
-				found = true;
-			}
-			current = System.currentTimeMillis();
-		}
-		return found;
-	}
+    public ProcessorHelper getProcessorHelper(String processorname, String processornamespace, Hashtable properties) {
+        ProcessorHelperImpl proc = new ProcessorHelperImpl(this, processorname, processornamespace, properties);
+        proc.start();
+        return proc;
+    }
+
+    public MediatorTestHelper getSchedulerHelper(String schedulername, String schedulernamespace, Hashtable properties) {
+        SchedulerHelperCreator proc = new SchedulerHelperCreator(this, schedulername, schedulernamespace, properties);
+        proc.start();
+        System.out.println("Waiting for helper:" + proc.getId());
+        ohelper.waitForService(MediatorTestHelper.class.getName(), "(identifier=" + proc.getId() + ")", 8000);
+        MediatorTestHelper helper = (MediatorTestHelper) ohelper.getServiceObject(MediatorTestHelper.class.getName(), "(identifier=" + proc.getId() + ")");
+        return helper;
+    }
+
+    public void loadFileFromResource(String filename) {
+        URL url = ohelper.getContext().getBundle().getResource(filename);
+        load(url);
+    }
+
+    public void load(URL url) {
+        InputStream fis = null;
+        String filename;
+        try {
+            fis = url.openStream();
+        } catch (IOException e) {
+            e.printStackTrace();
+
+        }
+        synchronized (lock) {
+            filename = "temporal-file-" + initial++;
+        }
+        File file = null;
+        try {
+
+            file = File.createTempFile(filename, ".dscilia");
+            OutputStream out = new FileOutputStream(file);
+            byte buf[] = new byte[1024];
+            int len;
+            while ((len = fis.read(buf)) > 0)
+                out.write(buf, 0, len);
+            out.close();
+            fis.close();
+
+        } catch (IOException e1) {
+            e1.printStackTrace();
+        }
+        System.out.println("chain to be loaded...");
+        ohelper.waitForService(CiliaFileManager.class.getName(), null, 8000);
+        CiliaFileManager service = (CiliaFileManager) ohelper.getServiceObject(CiliaFileManager.class.getName(), null);
+
+        service.loadChain(file);
+        System.out.println("chain loaded");
+    }
+
+    public BundleContext getBundleContext() {
+        return ohelper.getContext();
+    }
+
+    public Builder getBuilder() {
+        return getCiliaContext().getBuilder();
+    }
+
+    public ApplicationRuntime getApplicationRuntime() {
+        return getCiliaContext().getApplicationRuntime();
+    }
+
+    public void startChain(String id) {
+        try {
+            getCiliaContext().getApplicationRuntime().startChain(id);
+        } catch (CiliaIllegalParameterException e) {
+            e.printStackTrace();
+            Assert.fail("Unable to start Chain: " + id);
+        } catch (CiliaIllegalStateException e) {
+            e.printStackTrace();
+            Assert.fail("Unable to start Chain: " + id);
+        }
+    }
+
+    public void unload(String url) {
+
+    }
+
+    public boolean waitToChain(String chainId, long time) {
+        boolean found = false;
+        long current = System.currentTimeMillis();
+        long finalTime = current + time;
+        while (!found && current <= finalTime) {
+            waitSomeTime(50);
+            Chain ch = null;
+            try {
+                ch = getCiliaContext().getApplicationRuntime().getChain(chainId);
+            } catch (CiliaIllegalParameterException e) {
+                e.printStackTrace();
+            }
+            if (ch != null) {
+                found = true;
+            }
+            current = System.currentTimeMillis();
+        }
+        return found;
+    }
 
     public boolean waitToComponent(String chainId, String componentId, long time) {
-        if(!waitToChain(chainId,5000)){
+        if (!waitToChain(chainId, 5000)) {
             return false;
         }
         Chain chain = getChain(chainId);
@@ -321,36 +321,36 @@ public class CiliaHelper {
         boolean found = false;
         long current = System.currentTimeMillis();
         long finalTime = current + time;
-        while(!found && current <= finalTime) {
+        while (!found && current <= finalTime) {
             waitSomeTime(500);
-            if(chain.getMediator(componentId) != null || chain.getAdapter(componentId)!=null){
-               found = true;
+            if (chain.getMediator(componentId) != null || chain.getAdapter(componentId) != null) {
+                found = true;
             }
             current = System.currentTimeMillis();
         }
         return found;
     }
 
-	public static void waitSomeTime(int l) {
-		try {
-			Thread.sleep(l);//wait to be registered
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-	}
-	
-	public OSGiHelper getOSGIHelper() {
-		return ohelper;
-	}
+    public static void waitSomeTime(int l) {
+        try {
+            Thread.sleep(l);//wait to be registered
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
 
-    public static boolean checkReceived(MediatorTestHelper helper, int count, long timeout){
+    public OSGiHelper getOSGIHelper() {
+        return ohelper;
+    }
+
+    public static boolean checkReceived(MediatorTestHelper helper, int count, long timeout) {
         boolean found = false;
         long current = System.currentTimeMillis();
         long finalTime = current + timeout;
-        while(!found && current <= finalTime) {
+        while (!found && current <= finalTime) {
             waitSomeTime(50);
             int amount = helper.getAmountData();
-            if (amount >= count){
+            if (amount >= count) {
                 found = true;
             }
             current = System.currentTimeMillis();
@@ -358,14 +358,14 @@ public class CiliaHelper {
         return found;
     }
 
-    public static boolean checkReceived(CollectorHelper helper, int count, long timeout){
+    public static boolean checkReceived(CollectorHelper helper, int count, long timeout) {
         boolean found = false;
         long current = System.currentTimeMillis();
         long finalTime = current + timeout;
-        while(!found && current <= finalTime) {
+        while (!found && current <= finalTime) {
             waitSomeTime(50);
             int amount = helper.countReceived();
-            if (amount >= count){
+            if (amount >= count) {
                 found = true;
             }
             current = System.currentTimeMillis();
@@ -373,30 +373,30 @@ public class CiliaHelper {
         return found;
     }
 
-    public boolean checkValidState(String chain, String componentId, long timeout){
+    public boolean checkValidState(String chain, String componentId, long timeout) {
         //wait to component.
         return checkComponentState(chain, componentId, MediatorComponent.State.VALID, timeout);
     }
 
-    public boolean checkComponentState(String chain, String componentId, MediatorComponent.State state, long timeout){
+    public boolean checkComponentState(String chain, String componentId, MediatorComponent.State state, long timeout) {
         //wait to component.
-        boolean existsComponent = waitToComponent(chain, componentId,timeout);
-        if(!existsComponent){
+        boolean existsComponent = waitToComponent(chain, componentId, timeout);
+        if (!existsComponent) {
             return false;
         }
         MediatorComponent component = getMediatorModel(chain, componentId);
-        if(component == null){
+        if (component == null) {
             component = getAdapterModel(chain, componentId);
         }
-        if(component == null ){
+        if (component == null) {
             return false;
         }
 
         long current = System.currentTimeMillis();
         long finalTime = current + timeout;
-        while(current <= finalTime) {
+        while (current <= finalTime) {
             waitSomeTime(50);
-            if(component.getState().compareTo(state) == 0){
+            if (component.getState().compareTo(state) == 0) {
                 return true;//state is the wanted.
             }
             current = System.currentTimeMillis();

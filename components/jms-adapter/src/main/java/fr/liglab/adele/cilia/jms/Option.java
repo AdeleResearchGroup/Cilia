@@ -19,7 +19,7 @@ package fr.liglab.adele.cilia.jms;
  *         Team</a>
  */
 public enum Option {
-		only_content, // send the content as a serialized object
-		map_elements, // send the map elements, but only its base elements
-		serialized_data // send the data as a serialized object
+    only_content, // send the content as a serialized object
+    map_elements, // send the map elements, but only its base elements
+    serialized_data // send the data as a serialized object
 }

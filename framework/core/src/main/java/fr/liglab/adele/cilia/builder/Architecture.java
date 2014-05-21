@@ -18,41 +18,39 @@ import fr.liglab.adele.cilia.exceptions.BuilderException;
 
 
 /**
- *
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project Team</a>
- *
  */
 public interface Architecture {
-	
-	final static int MEDIATOR = 0;
-	
-	final static int ADAPTER = 1;
-	
-	final static int BINDING = 2;
-	
-	final static int CREATE = 0;
-	
-	final static int MODIFY = 1;
-	
-	final static int REMOVE = 2;
-	
-	final static int REPLACE = 3;
-	
-	Binder bind ()throws BuilderException;
-	
-	Binder unbind ()throws BuilderException;
-	
-	Creator create ()throws BuilderException;
-	
-	Replacer replace ()throws BuilderException;
 
-	Replacer copy() throws BuilderException;
-	
-	Remover remove ()throws BuilderException;
-	
-	Modifier configure() throws BuilderException;
-	
-	boolean toCreate();
+    final static int MEDIATOR = 0;
 
-	
+    final static int ADAPTER = 1;
+
+    final static int BINDING = 2;
+
+    final static int CREATE = 0;
+
+    final static int MODIFY = 1;
+
+    final static int REMOVE = 2;
+
+    final static int REPLACE = 3;
+
+    Binder bind() throws BuilderException;
+
+    Binder unbind() throws BuilderException;
+
+    Creator create() throws BuilderException;
+
+    Replacer replace() throws BuilderException;
+
+    Replacer copy() throws BuilderException;
+
+    Remover remove() throws BuilderException;
+
+    Modifier configure() throws BuilderException;
+
+    boolean toCreate();
+
+
 }

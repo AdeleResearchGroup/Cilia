@@ -17,12 +17,10 @@ package fr.liglab.adele.cilia.builder;
 import fr.liglab.adele.cilia.exceptions.BuilderConfigurationException;
 
 /**
- *
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project Team</a>
- *
  */
 public interface BinderToSetter {
-	
-	BinderConfigurator to (String to) throws BuilderConfigurationException;
-	
+
+    BinderConfigurator to(String to) throws BuilderConfigurationException;
+
 }

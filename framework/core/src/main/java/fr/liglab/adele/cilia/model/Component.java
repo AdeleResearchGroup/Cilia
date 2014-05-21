@@ -19,62 +19,74 @@ import java.util.Hashtable;
 
 /**
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project Team</a>
- *
  */
 //@SuppressWarnings("rawtypes")
 public interface Component {
 
-	/**
-	 * Set new properties as String separated as Strings.
-	 * @param propertiesAsString
-	 */
-	//void setProperties(String propertiesAsString) ;
-	/**
-	 *Get a copy of the properties.
-	 *@return properties. 
-	 */
-	Hashtable getProperties() ;
-	
-	/**
-	 * get the model representation identificator.
-	 * @return the model representation identificator.
-	 */
-	String getId() ;
+    /**
+     * Set new properties as String separated as Strings.
+     * @param propertiesAsString
+     */
+    //void setProperties(String propertiesAsString) ;
 
-	/**
-	 * Get this model representation type.
-	 * @return the model type.
-	 */
-	String getType() ;
-	/**
-	 * @return the namespace
-	 */
-	String getNamespace() ;
-	/**
-	 * Get the specified property.
-	 * @param key property name.
-	 * @return the property asociated to the given key.
-	 */
-	Object getProperty(Object key) ;
-	/**
-	 * Set new properties.
-	 * @param newProps the new properties.
-	 */
-	void setProperties(Dictionary newProps) ;
-	/**
-	 * Set a new property.
-	 * @param key property key.
-	 * @param value property value.
-	 */
-	void setProperty(Object key, Object value);
-	/**
-	 * This method returns the identificator of the model representation.
-	 * @return the model representation identificator. 
-	 */
-	String toString() ;
-	/**
-	 * @param namespace the namespace to set
-	 */
-	//void setNamespace(String namespace) ;
+    /**
+     * Get a copy of the properties.
+     *
+     * @return properties.
+     */
+    Hashtable getProperties();
+
+    /**
+     * get the model representation identificator.
+     *
+     * @return the model representation identificator.
+     */
+    String getId();
+
+    /**
+     * Get this model representation type.
+     *
+     * @return the model type.
+     */
+    String getType();
+
+    /**
+     * @return the namespace
+     */
+    String getNamespace();
+
+    /**
+     * Get the specified property.
+     *
+     * @param key property name.
+     * @return the property asociated to the given key.
+     */
+    Object getProperty(Object key);
+
+    /**
+     * Set new properties.
+     *
+     * @param newProps the new properties.
+     */
+    void setProperties(Dictionary newProps);
+
+    /**
+     * Set a new property.
+     *
+     * @param key   property key.
+     * @param value property value.
+     */
+    void setProperty(Object key, Object value);
+
+    /**
+     * This method returns the identificator of the model representation.
+     *
+     * @return the model representation identificator.
+     */
+    String toString();
+    /**
+     * @param namespace the namespace to set
+     */
+    //void setNamespace(String namespace) ;
 
 }

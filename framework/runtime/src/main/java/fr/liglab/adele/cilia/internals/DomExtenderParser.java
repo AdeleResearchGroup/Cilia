@@ -22,94 +22,91 @@ import org.w3c.dom.NodeList;
 /**
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project
  *         Team</a>
- * 
  */
 public class DomExtenderParser {
 
-	protected String NAMESPACE = "fr.imag.adele.cilia.compendium";
+    protected String NAMESPACE = "fr.imag.adele.cilia.compendium";
 
-	protected String NAME = "extender";
+    protected String NAME = "extender";
 
-	protected Node getNode(String parentName, Object componentDescription) {
-		if (componentDescription == null || !(componentDescription instanceof Node)) {
-			return null;
-		}
-		Node parent = ((Node) componentDescription).getFirstChild();
-		Node child = null;
-		while (parent != null) {
-			if (parent.getLocalName() != null
-					&& parent.getLocalName().equalsIgnoreCase(parentName)) {
-				child = parent.cloneNode(true).getFirstChild();
-				break;
-			}
-			parent = parent.getNextSibling();
-		}
+    protected Node getNode(String parentName, Object componentDescription) {
+        if (componentDescription == null || !(componentDescription instanceof Node)) {
+            return null;
+        }
+        Node parent = ((Node) componentDescription).getFirstChild();
+        Node child = null;
+        while (parent != null) {
+            if (parent.getLocalName() != null
+                    && parent.getLocalName().equalsIgnoreCase(parentName)) {
+                child = parent.cloneNode(true).getFirstChild();
+                break;
+            }
+            parent = parent.getNextSibling();
+        }
 
-		while (child != null) {
-			if (child.getNamespaceURI() != null
-					&& child.getNamespaceURI().equalsIgnoreCase(NAMESPACE)
-					&& child.getLocalName().equalsIgnoreCase(NAME)) {
-				return child;
-			}
-			child = child.getNextSibling();
-		}
-		return null;
-	}
+        while (child != null) {
+            if (child.getNamespaceURI() != null
+                    && child.getNamespaceURI().equalsIgnoreCase(NAMESPACE)
+                    && child.getLocalName().equalsIgnoreCase(NAME)) {
+                return child;
+            }
+            child = child.getNextSibling();
+        }
+        return null;
+    }
 
-	protected String getAttributeValue(Node node, String attrName) {
-		NamedNodeMap attribs = node.getAttributes();
-		if (attribs == null) {
-			return null;
-		}
-		Node nodeAttr = attribs.getNamedItem(attrName);
-		String value = null;
-		if (nodeAttr != null) {
-			value = nodeAttr.getNodeValue();
-		}
-		return value;
-	}
+    protected String getAttributeValue(Node node, String attrName) {
+        NamedNodeMap attribs = node.getAttributes();
+        if (attribs == null) {
+            return null;
+        }
+        Node nodeAttr = attribs.getNamedItem(attrName);
+        String value = null;
+        if (nodeAttr != null) {
+            value = nodeAttr.getNodeValue();
+        }
+        return value;
+    }
 
-	/**
-	 * Retreive a Node (baseName)
-	 * 
-	 * @param sTag
-	 *            localname (base)
-	 * @param e
-	 *            node to look for
-	 * @return null if not found or the node
-	 */
-	protected static Node getElement(String sTag, Node e) {
-		Node node;
-		for (Node n = e; n != null; n = n.getNextSibling()) {
-			if (n.getNodeType() == Node.ELEMENT_NODE) {
-				node = getTagValue(sTag, (Element) n);
-				if (node !=null) return node ;
-			}
-		}
-		return null;
-	}
+    /**
+     * Retreive a Node (baseName)
+     *
+     * @param sTag localname (base)
+     * @param e    node to look for
+     * @return null if not found or the node
+     */
+    protected static Node getElement(String sTag, Node e) {
+        Node node;
+        for (Node n = e; n != null; n = n.getNextSibling()) {
+            if (n.getNodeType() == Node.ELEMENT_NODE) {
+                node = getTagValue(sTag, (Element) n);
+                if (node != null) return node;
+            }
+        }
+        return null;
+    }
 
-	protected Node nextElementSibling(Node elem) {
-		do {
-			elem = elem.getNextSibling();
-		} while ((elem != null) && (elem.getNodeType() != Node.ELEMENT_NODE));
+    protected Node nextElementSibling(Node elem) {
+        do {
+            elem = elem.getNextSibling();
+        } while ((elem != null) && (elem.getNodeType() != Node.ELEMENT_NODE));
 
-		return elem;
-	}
-	
-	private static Node getTagValue(String sTag, Element eElement) {
-		NodeList nList = eElement.getElementsByTagName(sTag);
-		if (nList != null) {
-			for (int i = 0; i < nList.getLength(); i++) {
-				Node node = nList.item(i);
-				if ((node != null) && (node.getLocalName() != null)) {
-					if (node.getLocalName().equalsIgnoreCase(sTag))
-						return node;
-				}
-			}
-		}
-		return null;
-	}
-	
-	
+        return elem;
+    }
+
+    private static Node getTagValue(String sTag, Element eElement) {
+        NodeList nList = eElement.getElementsByTagName(sTag);
+        if (nList != null) {
+            for (int i = 0; i < nList.getLength(); i++) {
+                Node node = nList.item(i);
+                if ((node != null) && (node.getLocalName() != null)) {
+                    if (node.getLocalName().equalsIgnoreCase(sTag))
+                        return node;
+                }
+            }
+        }
+        return null;
+    }
+
+
 }

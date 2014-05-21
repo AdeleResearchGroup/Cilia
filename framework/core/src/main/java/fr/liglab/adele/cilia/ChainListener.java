@@ -19,8 +19,8 @@ import fr.liglab.adele.cilia.model.Chain;
 
 
 public interface ChainListener {
-	
-	void onAddingChain(Chain chain);
-	
-	void onRemovingChain(Chain chain);
+
+    void onAddingChain(Chain chain);
+
+    void onRemovingChain(Chain chain);
 }

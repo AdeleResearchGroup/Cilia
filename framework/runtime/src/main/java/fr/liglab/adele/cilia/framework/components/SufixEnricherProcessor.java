@@ -18,18 +18,17 @@ import fr.liglab.adele.cilia.Data;
 
 /**
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project Team</a>
- *
  */
 public class SufixEnricherProcessor {
-	private String sufix;
+    private String sufix;
 
-	public Data process(final Data data){
-		if (sufix == null){
-			return data;
-		}
-		StringBuilder sb = new StringBuilder(String.valueOf(data.getContent()));
-		sb.append(sufix);
-		data.setContent(sb.toString());
-		return data;
-	}
+    public Data process(final Data data) {
+        if (sufix == null) {
+            return data;
+        }
+        StringBuilder sb = new StringBuilder(String.valueOf(data.getContent()));
+        sb.append(sufix);
+        data.setContent(sb.toString());
+        return data;
+    }
 }

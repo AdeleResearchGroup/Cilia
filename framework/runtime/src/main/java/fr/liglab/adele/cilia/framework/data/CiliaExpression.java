@@ -16,37 +16,41 @@
 package fr.liglab.adele.cilia.framework.data;
 
 
+import fr.liglab.adele.cilia.Data;
+
 import java.util.List;
 
-import fr.liglab.adele.cilia.Data;
 /**
  * Cilia Expression to analize Data
- * 
- * @author torito
  *
+ * @author torito
  */
 public interface CiliaExpression {
-	
-   /**
-	 * Evaluate and expression.
-	 * @param expr expression to be evaluated.
-	 * @param data data to be used in the expression evaluation.
-	 * @return the expression result.
-	 */
-	boolean evaluateBooleanExpression(String expr, Data data);
 
-	/**
-	 * Used to remplace variables in the given expression.
-	 * @param expr expression to be parsed.
-	 * @param data data which will contain the variable values.
-	 * @return the modified expression or variables.
-	 */
-	String resolveVariables(String expr, Data data);
-	/**
-	 * Evaluate an expression.
-	 * @param expre expression to be evaluated.
-	 * @param data data to be used when parsing the expression.
-	 * @return the result.
-	 */
-	List evaluateExpression(String expre, Data data);
+    /**
+     * Evaluate and expression.
+     *
+     * @param expr expression to be evaluated.
+     * @param data data to be used in the expression evaluation.
+     * @return the expression result.
+     */
+    boolean evaluateBooleanExpression(String expr, Data data);
+
+    /**
+     * Used to remplace variables in the given expression.
+     *
+     * @param expr expression to be parsed.
+     * @param data data which will contain the variable values.
+     * @return the modified expression or variables.
+     */
+    String resolveVariables(String expr, Data data);
+
+    /**
+     * Evaluate an expression.
+     *
+     * @param expre expression to be evaluated.
+     * @param data  data to be used when parsing the expression.
+     * @return the result.
+     */
+    List evaluateExpression(String expre, Data data);
 }

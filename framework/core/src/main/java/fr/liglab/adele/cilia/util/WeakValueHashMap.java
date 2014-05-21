@@ -19,15 +19,7 @@ package fr.liglab.adele.cilia.util;
 
 import java.lang.ref.ReferenceQueue;
 import java.lang.ref.WeakReference;
-
-import java.util.AbstractCollection;
-import java.util.AbstractSet;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.NoSuchElementException;
-import java.util.Set;
+import java.util.*;
 
 /**
  * A WeakValueHashMap is implemented as a HashMap that maps keys to
@@ -37,18 +29,19 @@ import java.util.Set;
  * objects, so the added allocation overhead is tolerable. This
  * implementaton directly extends java.util.HashMap.
  *
- * @author  Markus Fuchs
- * @see   java.util.HashMap
- * @see         java.lang.ref.WeakReference
+ * @author Markus Fuchs
+ * @see java.util.HashMap
+ * @see java.lang.ref.WeakReference
  */
 
 public class WeakValueHashMap extends HashMap {
 
     /* Reference queue for cleared WeakValues */
-	private ReferenceQueue queue = new ReferenceQueue();
+    private ReferenceQueue queue = new ReferenceQueue();
 
     /**
      * Returns the number of key-value mappings in this map.<p>
+     *
      * @return the number of key-value mappings in this map.
      */
     public int size() {
@@ -58,6 +51,7 @@ public class WeakValueHashMap extends HashMap {
 
     /**
      * Returns <tt>true</tt> if this map contains no key-value mappings.<p>
+     *
      * @return <tt>true</tt> if this map contains no key-value mappings.
      */
     public boolean isEmpty() {
@@ -67,6 +61,7 @@ public class WeakValueHashMap extends HashMap {
     /**
      * Returns <tt>true</tt> if this map contains a mapping for the specified
      * key.<p>
+     *
      * @param key key whose presence in this map is to be tested
      * @return <tt>true</tt> if this map contains a mapping for the specified
      * key.
@@ -77,9 +72,10 @@ public class WeakValueHashMap extends HashMap {
         return super.containsKey(key);
     }
 
-   /**
+    /**
      * Returns <tt>true</tt> if this map maps one or more keys to the
      * specified value.<p>
+     *
      * @param value value whose presence in this map is to be tested
      * @return <tt>true</tt> if this map maps one or more keys to this value.
      */
@@ -89,6 +85,7 @@ public class WeakValueHashMap extends HashMap {
 
     /**
      * Gets the value for the given key.<p>
+     *
      * @param key key whose associated value, if any, is to be returned
      * @return the value to which this map maps the specified key.
      */
@@ -102,7 +99,8 @@ public class WeakValueHashMap extends HashMap {
 
     /**
      * Puts a new (key,value) into the map.<p>
-     * @param key key with which the specified value is to be associated.
+     *
+     * @param key   key with which the specified value is to be associated.
      * @param value value to be associated with the specified key.
      * @return previous value associated with specified key, or null
      * if there was no mapping for key or the value has been garbage
@@ -120,13 +118,14 @@ public class WeakValueHashMap extends HashMap {
         // clean up calls on different operations.
         processQueue();
 
-        WeakValue oldValue = 
-            (WeakValue)super.put(key, WeakValue.create(key, value, queue));
+        WeakValue oldValue =
+                (WeakValue) super.put(key, WeakValue.create(key, value, queue));
         return getReferenceObject(oldValue);
     }
 
     /**
      * Removes key and value for the given key.<p>
+     *
      * @param key key whose mapping is to be removed from the map.
      * @return previous value associated with specified key, or null
      * if there was no mapping for key or the value has been garbage
@@ -181,9 +180,9 @@ public class WeakValueHashMap extends HashMap {
          * Creates a new weak reference without adding it to a
          * ReferenceQueue.
          */
-  private static WeakValue create(Object value) {
-      if (value == null) return null;
-      else return new WeakValue(value);
+        private static WeakValue create(Object value) {
+            if (value == null) return null;
+            else return new WeakValue(value);
         }
 
         private WeakValue(Object key, Object value, ReferenceQueue queue) {
@@ -194,10 +193,10 @@ public class WeakValueHashMap extends HashMap {
         /**
          * Creates a new weak reference and adds it to the given queue.
          */
-        private static WeakValue create(Object key, Object value, 
+        private static WeakValue create(Object key, Object value,
                                         ReferenceQueue queue) {
-      if (value == null) return null;
-      else return new WeakValue(key, value, queue);
+            if (value == null) return null;
+            else return new WeakValue(key, value, queue);
         }
 
         /**
@@ -234,7 +233,7 @@ public class WeakValueHashMap extends HashMap {
         }
     }
 
-    /** 
+    /**
      * Internal class for entries. This class wraps/unwraps the
      * values of the Entry objects returned from the underlying map.
      */
@@ -356,8 +355,8 @@ public class WeakValueHashMap extends HashMap {
             } else if (hv.equals(ev)) {
                 WeakValueHashMap.this.remove(ek);
                 return true;
-            }                
-                
+            }
+
             return false;
         }
 
@@ -384,6 +383,7 @@ public class WeakValueHashMap extends HashMap {
 
     /**
      * Returns a <code>Set</code> view of the mappings in this map.<p>
+     *
      * @return a <code>Set</code> view of the mappings in this map.
      */
     public Set entrySet() {
@@ -400,47 +400,47 @@ public class WeakValueHashMap extends HashMap {
     /**
      * Returns a <code>Collection</code> view of the values contained
      * in this map.<p>
+     *
      * @return a <code>Collection</code> view of the values contained
      * in this map.
      */
     public Collection values() {
         // delegates to entrySet, because super method returns
         // WeakValues instead of value objects
-  if (values == null) {
-      values = new AbstractCollection() {
-    public Iterator iterator() {
-        return new Iterator() {
-      private Iterator i = entrySet().iterator();
+        if (values == null) {
+            values = new AbstractCollection() {
+                public Iterator iterator() {
+                    return new Iterator() {
+                        private Iterator i = entrySet().iterator();
 
-      public boolean hasNext() {
-          return i.hasNext();
-      }
+                        public boolean hasNext() {
+                            return i.hasNext();
+                        }
 
-      public Object next() {
-          return ((Entry)i.next()).getValue();
-      }
+                        public Object next() {
+                            return ((Entry) i.next()).getValue();
+                        }
 
-      public void remove() {
-          i.remove();
-      }
+                        public void remove() {
+                            i.remove();
+                        }
                     };
                 }
 
-    public int size() {
-        return WeakValueHashMap.this.size();
-    }
+                public int size() {
+                    return WeakValueHashMap.this.size();
+                }
 
-    public boolean contains(Object v) {
-        return WeakValueHashMap.this.containsValue(v);
-    }
-      };
-  }
-  return values;
+                public boolean contains(Object v) {
+                    return WeakValueHashMap.this.containsValue(v);
+                }
+            };
+        }
+        return values;
     }
 
 }
 
    
-    
     
     

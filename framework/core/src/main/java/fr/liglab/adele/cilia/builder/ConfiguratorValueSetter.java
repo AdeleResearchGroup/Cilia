@@ -17,10 +17,8 @@ package fr.liglab.adele.cilia.builder;
 import fr.liglab.adele.cilia.exceptions.BuilderException;
 
 /**
- *
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project Team</a>
- *
  */
 public interface ConfiguratorValueSetter {
-	MediatorConfigurator value(Object value) throws BuilderException;
+    MediatorConfigurator value(Object value) throws BuilderException;
 }

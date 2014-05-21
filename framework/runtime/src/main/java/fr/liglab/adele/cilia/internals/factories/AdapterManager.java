@@ -18,29 +18,27 @@ import org.apache.felix.ipojo.HandlerManager;
 import org.osgi.framework.BundleContext;
 
 /**
- *
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project Team</a>
- *
  */
 public class AdapterManager extends MediatorComponentManager {
 
-	/**
-	 * @param factory
-	 * @param context
-	 * @param handlers
-	 */
-	public AdapterManager(MediatorComponentFactory factory, BundleContext context,
-			HandlerManager[] handlers) {
-		super(factory, context, handlers);
-	}
-	
-	public void stop(){
-		super.stop();
-		super.stopManagers();
-	}
-	
-	public void start(){
-		super.startManagers();
-		super.start();
-	}
+    /**
+     * @param factory
+     * @param context
+     * @param handlers
+     */
+    public AdapterManager(MediatorComponentFactory factory, BundleContext context,
+                          HandlerManager[] handlers) {
+        super(factory, context, handlers);
+    }
+
+    public void stop() {
+        super.stop();
+        super.stopManagers();
+    }
+
+    public void start() {
+        super.startManagers();
+        super.start();
+    }
 }

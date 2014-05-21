@@ -15,9 +15,8 @@
 
 package fr.liglab.adele.cilia.framework.data;
 
-import org.osgi.framework.BundleContext;
-
 import fr.liglab.adele.cilia.exceptions.CiliaException;
+import org.osgi.framework.BundleContext;
 
 /**
  * This class is used to create an instance
@@ -25,40 +24,44 @@ import fr.liglab.adele.cilia.exceptions.CiliaException;
  * Is intended to extend this class
  * to later use different comands
  * provided as a services.
- * @author torito
  *
+ * @author torito
  */
 public class ExpressionFactory {
     /**
      * Constant to create an ldap CiliaExpression object
      */
-    public static final  String LDAP = "ldap";
+    public static final String LDAP = "ldap";
     /**
      * Constant to create an xpath CiliaExpression object
      */
-    public static final  String XPATH = "xpath";
+    public static final String XPATH = "xpath";
     /**
      * OSGi BundleContext
      */
     private BundleContext bcontext = null;
+
     /**
      * Constructor.
+     *
      * @param context OSGi BundleContext.
      */
-    public ExpressionFactory (BundleContext context) {
+    public ExpressionFactory(BundleContext context) {
         bcontext = context;
     }
+
     /**
      * create an instance of a CiliaExpression.
+     *
      * @param expression
      * @return
      * @throws CiliaException
      */
-    public CiliaExpression getExpressionParser(String expression) throws CiliaException{
+    public CiliaExpression getExpressionParser(String expression) throws CiliaException {
         CiliaExpression ciliaExpression = null;
         if (expression.compareTo(LDAP) == 0) {
             if (bcontext == null) {
-                throw new CiliaException ("LDAP expression require BundleContext to be created");
+                throw new CiliaException("LDAP expression require BundleContext to be created");
             }
             ciliaExpression = new ExpressionLDAP(bcontext);
         } else if (expression.compareTo(XPATH) == 0) {

@@ -15,63 +15,52 @@
 
 package fr.liglab.adele.cilia;
 
-import fr.liglab.adele.cilia.Node;
-
 /**
  * Callback , events [ node arrival / node departure ]
- * 
+ *
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project
  *         Team</a>
- * 
  */
 public interface NodeCallback {
-	/**
-	 * 
-	 * @param node
-	 *            , node arrival
-	 */
-	void onArrival(Node node);
+    /**
+     * @param node , node arrival
+     */
+    void onArrival(Node node);
 
-	/**
-	 * 
-	 * @param node
-	 *            , node departure
-	 */
-	void onDeparture(Node node);
+    /**
+     * @param node , node departure
+     */
+    void onDeparture(Node node);
 
-	/**
-	 * 
-	 * @param node
-	 *            node property updated
-	 */
-	void onModified(Node node);
-	
-	/**
-	 * bind between nodes 'from -> to' 
-	 * Event fired only by the applicationSpecification
-	 * 
-	 * @param from
-	 *            node source
-	 * @param dest
-	 *            node dest
-	 */
-	void onBind(Node from, Node to);
+    /**
+     * @param node node property updated
+     */
+    void onModified(Node node);
 
-	/**
-	 * unbind between nodes 'from-> to'
-	 * Event fired only by the applicationSpecification
-	 * 
-	 * @param source
-	 * @param dest
-	 */
-	void onUnBind(Node from, Node to);
+    /**
+     * bind between nodes 'from -> to'
+     * Event fired only by the applicationSpecification
+     *
+     * @param from node source
+     * @param dest node dest
+     */
+    void onBind(Node from, Node to);
 
-	/**
-	 * New executing state of a node ,
-	 * @param isValid
-	 *            true if the new state is valid.<br>
-	 *            Valid means Scheduler/Processor/Dispatcher are all valid 
-	 */
-	void onStateChange(Node node,boolean isValid);
+    /**
+     * unbind between nodes 'from-> to'
+     * Event fired only by the applicationSpecification
+     *
+     * @param source
+     * @param dest
+     */
+    void onUnBind(Node from, Node to);
+
+    /**
+     * New executing state of a node ,
+     *
+     * @param isValid true if the new state is valid.<br>
+     *                Valid means Scheduler/Processor/Dispatcher are all valid
+     */
+    void onStateChange(Node node, boolean isValid);
 
 }

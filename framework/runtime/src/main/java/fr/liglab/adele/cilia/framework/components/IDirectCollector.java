@@ -20,12 +20,13 @@ import fr.liglab.adele.cilia.Data;
 
 /**
  * Interface used to export the direct collector as a service.
- * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project Team</a>
  *
+ * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project Team</a>
  */
 public interface IDirectCollector {
     /**
      * Method called when direct sender send data.
+     *
      * @param data data sended by direct sender.
      */
     public void receive(Data data);

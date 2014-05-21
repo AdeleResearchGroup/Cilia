@@ -14,48 +14,48 @@
  */
 package fr.liglab.adele.cilia;
 
-import java.util.Date;
-
 import fr.liglab.adele.cilia.builder.Builder;
+
+import java.util.Date;
 
 /**
  * Main Cilia Service. It contains methods to retrieve information of mediation
  * applications and also to modify Chains. It allows to modify mediation chains
  * by using a retrieved builder and to inspect applications in both: Structural
  * information and Executing Information.
- * 
+ *
  * @author <a href="mailto:cilia-devel@lists.ligforge.imag.fr">Cilia Project
  *         Team</a>
- * 
  */
 public interface CiliaContext {
-	/**
-	 * Get the version of the executing Cilia.
-	 * 
-	 * @return the version as an String.
-	 */
-	String getVersion();
-	
-	/** 
-	 * @return the date of start up of the Executing Cilia 
-	 */
-	Date getDateStartUp() ;
+    /**
+     * Get the version of the executing Cilia.
+     *
+     * @return the version as an String.
+     */
+    String getVersion();
 
-	/**
-	 * Retrieve a builder instance to modify/create a mediation chain and its
-	 * components. This method always return a new Builder object. And this
-	 * objects have an internal state.
-	 * 
-	 * @return the new Builder object.
-	 */
-	Builder getBuilder();
-	
-		
-	/**
-	 * Retrieve the ApplicationRuntime instance which allows to inspect the runtime information
-	 * of mediation chains. 
-	 * @return the ApplicationSpecification instance.
-	 * */
-	ApplicationRuntime getApplicationRuntime();
+    /**
+     * @return the date of start up of the Executing Cilia
+     */
+    Date getDateStartUp();
+
+    /**
+     * Retrieve a builder instance to modify/create a mediation chain and its
+     * components. This method always return a new Builder object. And this
+     * objects have an internal state.
+     *
+     * @return the new Builder object.
+     */
+    Builder getBuilder();
+
+
+    /**
+     * Retrieve the ApplicationRuntime instance which allows to inspect the runtime information
+     * of mediation chains.
+     *
+     * @return the ApplicationSpecification instance.
+     */
+    ApplicationRuntime getApplicationRuntime();
 
 }

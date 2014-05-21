@@ -9,72 +9,73 @@
 	the specific language governing permissions and limitations under the License. -->
 
 <project
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
-	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-	<modelVersion>4.0.0</modelVersion>
+        xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+        xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <modelVersion>4.0.0</modelVersion>
 
-	<!--<parent> <groupId>fr.liglab.adele.cilia</groupId> <artifactId>cilia-project</artifactId> 
-		<version>1.7.5-SNAPSHOT</version> <relativePath>../../../parent</relativePath> 
-		</parent> -->
+    <!--<parent> <groupId>fr.liglab.adele.cilia</groupId> <artifactId>cilia-project</artifactId>
+        <version>1.7.5-SNAPSHOT</version> <relativePath>../../../parent</relativePath>
+        </parent> -->
 
-	<groupId>fr.liglab.adele.cilia.examples</groupId>
-   <artifactId>annotated-hello-world-mediator</artifactId>
-   <version>1.7.5-SNAPSHOT</version><!-- The current trunk version-->
-	<packaging>bundle</packaging>
-	<name>Hello Mediator</name>
+    <groupId>fr.liglab.adele.cilia.examples</groupId>
+    <artifactId>annotated-hello-world-mediator</artifactId>
+    <version>1.7.5-SNAPSHOT</version>
+    <!-- The current trunk version-->
+    <packaging>bundle</packaging>
+    <name>Hello Mediator</name>
 
-	<dependencies>
-		<dependency>
-			<groupId>org.apache.felix</groupId>
-			<artifactId>org.apache.felix.ipojo.annotations</artifactId>
+    <dependencies>
+        <dependency>
+            <groupId>org.apache.felix</groupId>
+            <artifactId>org.apache.felix.ipojo.annotations</artifactId>
             <version>1.10.1</version>
-		</dependency>
-		<dependency>
-			<groupId>fr.liglab.adele.cilia</groupId>
-			<artifactId>cilia-core</artifactId>
-			<version>${project.version}</version>
-		</dependency>
+        </dependency>
+        <dependency>
+            <groupId>fr.liglab.adele.cilia</groupId>
+            <artifactId>cilia-core</artifactId>
+            <version>${project.version}</version>
+        </dependency>
         <dependency>
             <groupId>fr.liglab.adele.cilia</groupId>
             <artifactId>cilia-runtime</artifactId>
             <version>${project.version}</version>
         </dependency>
-	</dependencies>
+    </dependencies>
 
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.felix</groupId>
-				<artifactId>maven-bundle-plugin</artifactId>
-				<version>2.3.7</version>
-				<extensions>true</extensions>
-				<configuration>
-					<instructions>
-						<Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
-						<Private-Package>hello.world.example.adapters, hello.world.example.processors</Private-Package>
-					</instructions>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.felix</groupId>
-				<artifactId>maven-ipojo-plugin</artifactId>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <version>2.3.7</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <instructions>
+                        <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
+                        <Private-Package>hello.world.example.adapters, hello.world.example.processors</Private-Package>
+                    </instructions>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-ipojo-plugin</artifactId>
                 <version>1.10.1</version>
-				<dependencies>
-               <!-- Added to handle Cilia annotations in iPOJO manipulation-->
-					<dependency>
-						<groupId>fr.liglab.adele.cilia</groupId>
-						<artifactId>cilia-ipojo-plugin</artifactId>
-						<version>${project.version}</version>
-					</dependency>
-				</dependencies>
-				<executions>
-					<execution>
-						<goals>
-							<goal>ipojo-bundle</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-		</plugins>
-	</build>
+                <dependencies>
+                    <!-- Added to handle Cilia annotations in iPOJO manipulation-->
+                    <dependency>
+                        <groupId>fr.liglab.adele.cilia</groupId>
+                        <artifactId>cilia-ipojo-plugin</artifactId>
+                        <version>${project.version}</version>
+                    </dependency>
+                </dependencies>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>ipojo-bundle</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 </project>
