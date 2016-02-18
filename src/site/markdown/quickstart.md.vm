@@ -123,7 +123,7 @@ You can also use a pluging for your IDE as [M2Eclipse][].
 Hello World Sample
 ------------------
 
-In this lesson, you will manipulate Cilia mediation chains. We will
+In this example, you will manipulate Cilia mediation chains. We will
 extend the Hello Mediator example to add other mediators to the chain.
 In addition, we will study other capabilities of mediators and bindings.
 
